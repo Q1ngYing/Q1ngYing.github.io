@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icons8-autumn-material-filled-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icons8-autumn-material-filled-16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="hello_world第一个 Rust 程序：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rust、Cargo简介">
+<meta property="og:url" content="http://example.com/2023/10/23/Rust%E5%85%A5%E9%97%A8/index.html">
+<meta property="og:site_name" content="Q1ngying">
+<meta property="og:description" content="hello_world第一个 Rust 程序：">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-10-23T06:17:46.000Z">
+<meta property="article:modified_time" content="2023-10-26T10:42:58.933Z">
+<meta property="article:author" content="Q1ngying">
+<meta property="article:tag" content="learn">
+<meta property="article:tag" content="Rust">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2023/10/23/Rust%E5%85%A5%E9%97%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Rust、Cargo简介 | Q1ngying</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Q1ngying</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">清影的个人站</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/10/23/Rust%E5%85%A5%E9%97%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Q1ngying">
+      <meta itemprop="description" content="今朝梦醒与君别，遥盼春风寄相思">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Q1ngying">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Rust、Cargo简介
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-10-23 14:17:46" itemprop="dateCreated datePublished" datetime="2023-10-23T14:17:46+08:00">2023-10-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-10-26 18:42:58" itemprop="dateModified" datetime="2023-10-26T18:42:58+08:00">2023-10-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Rust/" itemprop="url" rel="index"><span itemprop="name">Rust</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">笔记</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>10 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="hello-world"><a href="#hello-world" class="headerlink" title="hello_world"></a>hello_world</h1><h2 id="第一个-Rust-程序："><a href="#第一个-Rust-程序：" class="headerlink" title="第一个 Rust 程序："></a>第一个 Rust 程序：</h2><span id="more"></span>
+
+<p>新建完文件夹后，新建一个后缀名为 <code>.rs</code> 的文件（<strong>Rust 源文件总是以 <code>.rs</code> 拓展名结尾</strong>）</p>
+<p>新建后编写下面的代码：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;hello, world&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>保存文件，使用命令运行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rustc main.rs</span><br></pre></td></tr></table></figure>
+
+<h2 id="Rust-程序分析："><a href="#Rust-程序分析：" class="headerlink" title="Rust 程序分析："></a>Rust 程序分析：</h2><p><strong>Rust 和 C 语言类似，需要有一个 <code>main</code>函数。</strong></p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>官方文档中的描述：</p>
+<blockquote>
+<p><code>main</code> 函数是一个特殊的函数：在可执行的 Rust 程序中，它总是最先运行的代码。第一行代码声明了一个叫做 <code>main</code> 的函数，它没有参数也没有返回值。如果有参数的话，它们的名称应该出现在小括号 <code>()</code> 中。</p>
+<p>函数体被包裹在 <code>&#123;&#125;</code> 中。Rust 要求所有函数体都要用花括号包裹起来。一般来说，将左花括号与函数声明置于同一行并以空格分隔，是良好的代码风格。</p>
+</blockquote>
+<p>在 <code>main</code> 函数中有下面的代码：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">println!</span>(<span class="string">&quot;Hello, world&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>需要注意的有：</p>
+<ul>
+<li><strong>首先，Rust 的缩进风格是使用 4 个空格，而不是 1 个制表符（tab）</strong></li>
+<li><strong><code>println!</code>调用了一个 Rust 宏（macro）。</strong>如果是调用函数，应该输入<code>println</code>（没有 ! ）。**&#x3D;&#x3D;当看到符号<code>!</code>的时候，就意味着调用的是宏而不是普通函数，并且宏并不总是遵循与函数相同的规则&#x3D;&#x3D;**</li>
+<li><code>&quot;hello, world&quot;</code>是一个字符串。把这个字符串作为一个参数传递给<code>println!</code>，字符串将被打印到屏幕上。</li>
+<li><strong>大部分 <code>Rust</code> 代码行以分号结尾。</strong></li>
+</ul>
+<h2 id="在-Rust-中，编译个运行时彼此独立的步骤"><a href="#在-Rust-中，编译个运行时彼此独立的步骤" class="headerlink" title="在 Rust 中，编译个运行时彼此独立的步骤"></a>在 Rust 中，编译个运行时彼此独立的步骤</h2><p><strong>在运行<code>Rust</code>程序之前，必须使用 <code>Rust</code> 编译器编译它。</strong>即输入 <code>rustc</code> 命令并传入源代码名称：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rustc main.rs</span><br></pre></td></tr></table></figure>
+
+<p><strong>与 C 语言类型，Rust 编译成功后会输出一个二进制的可执行文件</strong></p>
+<p>在 Linux 和 macOS，可以看到两个文件。在 Windows PowerShell 中，可以看到的三个文件。<code>.exe  .pdb   .rs</code></p>
+<p><strong>其中拓展名为*<code>.pdb</code>*的文件是一个包含调试信息的文件。</strong></p>
+<p>&#x3D;&#x3D;Rust 是一种 <strong>预编译静态类型</strong>（<em>ahead-of-time compiled</em>）语言，这意味着你可以编译程序，并将可执行文件送给其他人，他们甚至不需要安装 Rust 就可以运行。&#x3D;&#x3D;</p>
+<h1 id="Cargo"><a href="#Cargo" class="headerlink" title="Cargo"></a>Cargo</h1><p><strong>可参考：<a target="_blank" rel="noopener" href="https://course.rs/first-try/cargo.html">Rust 圣经-初始Cargo</a></strong></p>
+<p><strong>定义：</strong>（来自官方文档）</p>
+<blockquote>
+<p>Cargo 是 Rust 的构建系统和包管理器。大多数 Rustacean 们使用 Cargo 来管理他们的 Rust 项目，因为它可以为你处理很多任务，比如构建代码、下载依赖库并编译这些库。（我们把代码所需要的库叫做 <strong>依赖</strong>（<em>dependencies</em>））。</p>
+</blockquote>
+<p><strong>在编写一些较复杂的 Rust 程序时，需要添加依赖项，如果使用 Cargo 启动项目，则添加依赖项将更加容易。</strong></p>
+<h2 id="使用-Cargo-创建项目"><a href="#使用-Cargo-创建项目" class="headerlink" title="使用 Cargo 创建项目"></a>使用 Cargo 创建项目</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cargo new hello_cargo</span><br><span class="line">cd hello_cargo</span><br></pre></td></tr></table></figure>
+
+<p><strong>第一行命令新建了一个名为*<code>hello_cargo</code><em>的目录和项目。我们将项目命名为</em><code>hello_cargo</code>*，同时 Cargo 在一个同名目录中创建项目文件</strong></p>
+<p>进入 <em>hello_cargo</em> 目录并列出文件。可以看到 <em><em>Cargo 生成了两个文件和一个目录：一个 <em>Cargo.toml</em> 文件，一个 <em><code>src</code></em> 目录，以及位于</em><code>src</code></em> 目录中的*<code>main.rs</code><em>文件。</em>*</p>
+<p>这也会在 <em>hello_cargo</em> 目录初始化了一个 git 仓库，以及一个 <em>.gitignore</em> 文件。如果在一个已经存在的 git 仓库中运行 <code>cargo new</code>，则这些 git 相关文件则不会生成；可以通过运行 <code>cargo new --vcs=git</code> 来覆盖这些行为。</p>
+<h3 id="Cargo-toml"><a href="#Cargo-toml" class="headerlink" title="Cargo.toml"></a>Cargo.toml</h3><p>这个文件使用 <a target="_blank" rel="noopener" href="https://toml.io/en/">TOML</a>*（Tom’s Obvious,Minimal Language)*格式，这是 Cargo 配置文件的格式。</p>
+<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[package]</span></span><br><span class="line"><span class="attr">name</span> = <span class="string">&quot;hello_cargo&quot;</span></span><br><span class="line"><span class="attr">version</span> = <span class="string">&quot;0.1.0&quot;</span></span><br><span class="line"><span class="attr">edition</span> = <span class="string">&quot;2021&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html</span></span><br><span class="line"></span><br><span class="line"><span class="section">[dependencies]</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>上面的示例：*<code>cargo new</code>*命令生成的 *<code>Cargo.toml</code>*的内容</p>
+<ul>
+<li>第一行，<code>[package]</code>，是一个片段（section）标题，表明下面的语句用来配置一个包。随着我们在这个文件增加更多的信息，还将增加其他片段（section）。</li>
+<li>接下来的三行设置了**<code>Cargo</code>编译程序所需的配置：**<ul>
+<li><strong>项目名称</strong></li>
+<li><strong>项目版本</strong></li>
+<li><strong>要使用的 Rust 版本</strong></li>
+</ul>
+</li>
+<li>最后一行，**<code>[dependencies]</code>，是罗列项目以来的片段的开始。<strong>在 Rust 中，代码包被称为</strong>*<code>crates</code>***，这个项目不需要其他的 <code>crate</code>，不过在后面会用到依赖，那是会用得上这个片段。</li>
+</ul>
+<p><a href="">这里</a>会介绍<code>edition</code>的值。</p>
+<h3 id="src-目录"><a href="#src-目录" class="headerlink" title="src 目录"></a>src 目录</h3><p>打开 ***<code>src</code><em><strong>目录，可以看到一个</strong></em><code>main.rs</code>***文件：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;Hello, world！&quot;</span>)；</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Cargo 会自动生成一个”Hello ,world!”程序</p>
+<p><strong>目前为止，我们自己的项目与使用 Cargo 生成项目的区别是 Cargo 将代码放到*<code>src</code><em>目录中，同时项目根目录包含一个</em><code>Cargo.toml</code>*配置文件</strong></p>
+<p><strong>Cargo 期望源文件存放在 <em>src</em> 目录中。项目根目录只存放 README、license 信息、配置文件和其他跟代码无关的文件。使用 Cargo 帮助你保持项目干净整洁，一切井井有条。</strong></p>
+<p>如果没有使用 Cargo 开始项目，我们可以将其转化成为一个 <code>Cargo</code> 项目，将代码放入*<code>src</code><em>目录，并创建一个合适的</em><code>Cargo.toml</code>*文件。</p>
+<h2 id="构建-运行-Cargo-项目"><a href="#构建-运行-Cargo-项目" class="headerlink" title="构建&amp;运行 Cargo 项目"></a>构建&amp;运行 Cargo 项目</h2><p><em><strong>通过 Cargo 构建和运行”Hello, world!” 程序有什么不同？</strong></em></p>
+<h3 id="Cargo-build"><a href="#Cargo-build" class="headerlink" title="Cargo build"></a>Cargo build</h3><p><strong>在 <em>hello_cargo</em> 目录下，输入下面的命令来构建项目：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cargo build</span><br><span class="line">   Compiling hello_cargo v0.1.0 (F:\Rust\projects\hello_cargo)</span><br><span class="line">    Finished dev [unoptimized + debuginfo] target(s) in 0.38s</span><br></pre></td></tr></table></figure>
+
+<p><em><em>上述命令会创建一个可执行文件</em><code>target/debug/hello_cargo.exe</code></em><strong>,而不是放在目前目录下。由于默认的构建方法是调试构建（debug building），</strong>Cargo 会将可执行文件放在名为 *<code>debug</code>*的目录中。**可通过这个命令运行可执行文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">.\target\debug\hello_cargo.exe</span><br><span class="line">Hello, world!</span><br></pre></td></tr></table></figure>
+
+<p><strong>首次运行<code>cargo build</code>时，也会使<code>Cargo</code>在项目根目录创建一个新文件*<code>Cargo.lock</code>*。这个文件记录项目以来的实际版本</strong>因为这个项目没有以来，所以其中内容较少。</p>
+<h3 id="Cargo-run"><a href="#Cargo-run" class="headerlink" title="Cargo run"></a>Cargo run</h3><p>刚刚使用<code>cargo build</code>构建了项目，并使用<code>.\target\debug\hello_cargo</code>来运行了程序，也<strong>可以使用<code>cargo run</code> 在一个命令中同时编译并运行生成的可执行文件：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cargo run</span><br><span class="line">    Finished dev [unoptimized + debuginfo] target(s) in 0.02s</span><br><span class="line">     Running `target\debug\hello_cargo.exe`</span><br><span class="line">Hello, world!</span><br></pre></td></tr></table></figure>
+
+<h3 id="Cargo-check"><a href="#Cargo-check" class="headerlink" title="Cargo check"></a>Cargo check</h3><p>Cargo 还提供了一个叫<code>cargo check</code>的命令。**<code>cargo check</code>命令可以快速检查代码确保其可以编译，但并不产生可执行文件：**</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cargo check</span><br><span class="line">    Checking hello_cargo v0.1.0 (F:\Rust\projects\hello_cargo)</span><br><span class="line">    Finished dev [unoptimized + debuginfo] target(s) in 0.05s</span><br></pre></td></tr></table></figure>
+
+<p><strong>小结：</strong></p>
+<ul>
+<li>可以使用 <code>cargo new</code> 创建项目。</li>
+<li>可以使用 <code>cargo build</code> 构建项目。</li>
+<li>可以使用 <code>cargo run</code> 一步构建并运行项目。</li>
+<li>可以使用 <code>cargo check</code> 在不生成二进制文件的情况下构建项目来检查错误。</li>
+<li>有别于将构建结果放在与源码相同的目录，Cargo 会将其放到 <em>target&#x2F;debug</em> 目录。</li>
+</ul>
+<p>使用 Cargo 的一个额外的优点是，不管你使用什么操作系统，其命令都是一样的。所以从现在开始本书将不再为 Linux 和 macOS 以及 Windows 提供相应的命令。</p>
+<h2 id="发布（release）构建"><a href="#发布（release）构建" class="headerlink" title="发布（release）构建"></a>发布（release）构建</h2><p><strong>当项目最终准备好发布时，可以使用<code>cargo build --release</code>来优化编译项目。这会在*<code>target/release</code>*<em><em>而不是</em><code>target/debug</code></em> <strong>生成可执行文件</strong>。这些优化可以</strong>让 Rust 代码运行的更快<strong>，</strong>不过<strong>启用这些优化也</strong>需要消耗更长的编译时间<strong>。这也就是</strong>为什么会有两种不同的配置：**一种是为了开发，需要经常快速重新构建；另一种是为了用户构建最终程序，它们不会经常重新构建，并且希望程序运行得越快越好。</p>
+<p><strong>如果在测试代码的运行时间，确保运行<code>cargo build --release</code>并使用*<code>target/release</code>*下的可执行文件进行测试。</strong></p>
+<h1 id="不仅仅是-Hello-world"><a href="#不仅仅是-Hello-world" class="headerlink" title="不仅仅是 Hello world"></a>不仅仅是 Hello world</h1><h2 id="多国语言的“hello-world”"><a href="#多国语言的“hello-world”" class="headerlink" title="多国语言的“hello world”"></a>多国语言的“hello world”</h2><p>使用 VSCode 新建一个 world_hello 工程，进入 <code>main.rs</code>文件。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">greet_world</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">southern_germany</span> = <span class="string">&quot;Grüß Gott!&quot;</span>;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">chinese</span> = <span class="string">&quot;世界，你好&quot;</span>;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">english</span> = <span class="string">&quot;World, hello&quot;</span>;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">regions</span> = [southern_germany, chinese, english];</span><br><span class="line">    <span class="keyword">for</span> <span class="variable">region</span> <span class="keyword">in</span> regions.<span class="title function_ invoke__">iter</span>() &#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">&quot;&#123;&#125;&quot;</span>, &amp;region);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="title function_ invoke__">greet_world</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>首先，Rust 原生支持 UTF-8 编码的字符串，这意味着你可以很容易的使用世界各国文字作为字符串内容。</p>
+<p>其次，<strong>关注下 <code>println</code> 后面的 <code>!</code>，是在 Rust 中的 <code>宏</code> 操作</strong>。目前可认为是一种特殊类型函数。</p>
+<p><strong>对于 <code>println</code> 来说，是使用 <code>&#123;&#125;</code>作为输出占位符，</strong>因为 Rust 在底层帮我们做了大量工作，会自动识别输出数据的类型，例如当前例子，会识别为 <code>String</code> 类型。</p>
+<p>最后，和其它语言不同，Rust 的集合类型不能直接进行循环，需要变成迭代器（这里是通过 <code>.iter()</code> 方法），才能用于迭代循环。<em>在目前来看，你会觉得这一点好像挺麻烦，不急，以后就知道这么做的好处所在。</em></p>
+<blockquote>
+<p>实际上这段代码可以简写，在 2021 edition 及以后，支持直接写 <code>for region in regions</code>，原因会在迭代器章节的开头提到，是因为 for 隐式地将 regions 转换成迭代器。</p>
+</blockquote>
+<p>至于函数声明、调用、数组的使用，和其它语言没什么区别.</p>
+<h2 id="Rust-初印象"><a href="#Rust-初印象" class="headerlink" title="Rust 初印象"></a>Rust 初印象</h2><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">   <span class="keyword">let</span> <span class="variable">penguin_data</span> = <span class="string">&quot;\</span></span><br><span class="line"><span class="string">   common name,length (cm)</span></span><br><span class="line"><span class="string">   Little penguin,33</span></span><br><span class="line"><span class="string">   Yellow-eyed penguin,65</span></span><br><span class="line"><span class="string">   Fiordland penguin,60</span></span><br><span class="line"><span class="string">   Invalid,data</span></span><br><span class="line"><span class="string">   &quot;</span>;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">let</span> <span class="variable">records</span> = penguin_data.<span class="title function_ invoke__">lines</span>();</span><br><span class="line"></span><br><span class="line">   <span class="title function_ invoke__">for</span> (i, record) <span class="keyword">in</span> records.<span class="title function_ invoke__">enumerate</span>() &#123;</span><br><span class="line">     <span class="keyword">if</span> i == <span class="number">0</span> || record.<span class="title function_ invoke__">trim</span>().<span class="title function_ invoke__">len</span>() == <span class="number">0</span> &#123;</span><br><span class="line">       <span class="keyword">continue</span>;</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="comment">// 声明一个 fields 变量，类型是 Vec</span></span><br><span class="line">     <span class="comment">// Vec 是 vector 的缩写，是一个可伸缩的集合类型，可以认为是一个动态数组</span></span><br><span class="line">     <span class="comment">// &lt;_&gt;表示 Vec 中的元素类型由编译器自行推断，在很多场景下，都会帮我们省却不少功夫</span></span><br><span class="line">     <span class="keyword">let</span> <span class="variable">fields</span>: <span class="type">Vec</span>&lt;_&gt; = record</span><br><span class="line">       .<span class="title function_ invoke__">split</span>(<span class="string">&#x27;,&#x27;</span>)</span><br><span class="line">       .<span class="title function_ invoke__">map</span>(|field| field.<span class="title function_ invoke__">trim</span>())</span><br><span class="line">       .<span class="title function_ invoke__">collect</span>();</span><br><span class="line">     <span class="keyword">if</span> <span class="built_in">cfg!</span>(debug_assertions) &#123;</span><br><span class="line">         <span class="comment">// 输出到标准错误输出</span></span><br><span class="line">       eprintln!(<span class="string">&quot;debug: &#123;:?&#125; -&gt; &#123;:?&#125;&quot;</span>,</span><br><span class="line">              record, fields);</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">let</span> <span class="variable">name</span> = fields[<span class="number">0</span>];</span><br><span class="line">     <span class="comment">// 1. 尝试把 fields[1] 的值转换为 f32 类型的浮点数，如果成功，则把 f32 值赋给 length 变量</span></span><br><span class="line">     <span class="comment">//</span></span><br><span class="line">     <span class="comment">// 2. if let 是一个匹配表达式，用来从=右边的结果中，匹配出 length 的值：</span></span><br><span class="line">     <span class="comment">//   1）当=右边的表达式执行成功，则会返回一个 Ok(f32) 的类型，若失败，则会返回一个 Err(e) 类型，if let 的作用就是仅匹配 Ok 也就是成功的情况，如果是错误，就直接忽略</span></span><br><span class="line">     <span class="comment">//   2）同时 if let 还会做一次解构匹配，通过 Ok(length) 去匹配右边的 Ok(f32)，最终把相应的 f32 值赋给 length</span></span><br><span class="line">     <span class="comment">//</span></span><br><span class="line">     <span class="comment">// 3. 当然你也可以忽略成功的情况，用 if let Err(e) = fields[1].parse::&lt;f32&gt;() &#123;...&#125;匹配出错误，然后打印出来，但是没啥卵用</span></span><br><span class="line">     <span class="keyword">if</span> <span class="keyword">let</span> <span class="variable">Ok</span>(length) = fields[<span class="number">1</span>].parse::&lt;<span class="type">f32</span>&gt;() &#123;</span><br><span class="line">         <span class="comment">// 输出到标准输出</span></span><br><span class="line">         <span class="built_in">println!</span>(<span class="string">&quot;&#123;&#125;, &#123;&#125;cm&quot;</span>, name, length);</span><br><span class="line">     &#125;</span><br><span class="line">   &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面代码中，值得注意的 Rust 特性有：</p>
+<ul>
+<li>控制流：<code>for</code> 和 <code>continue</code> 连在一起使用，实现循环控制。</li>
+<li>方法语法：由于 Rust 没有继承，因此 Rust 不是传统意义上的面向对象语言，但是它却从 <code>OO</code> 语言那里偷师了方法的使用 <code>record.trim()</code>，<code>record.split(&#39;,&#39;)</code> 等。</li>
+<li>高阶函数编程：函数可以作为参数也能作为返回值，例如 <code>.map(|field| field.trim())</code>，这里 <code>map</code> 方法中使用闭包函数作为参数，也可以称呼为 <code>匿名函数</code>、<code>lambda 函数</code>。</li>
+<li>类型标注：<code>if let Ok(length) = fields[1].parse::&lt;f32&gt;()</code>，通过 <code>::&lt;f32&gt;</code> 的使用，告诉编译器 <code>length</code> 是一个 <code>f32</code> 类型的浮点数。这种类型标注不是很常用，但是在编译器无法推断出你的数据类型时，就很有用了。</li>
+<li>条件编译：<code>if cfg!(debug_assertions)</code>，说明紧跟其后的输出（打印）只在 <code>debug</code> 模式下生效。</li>
+<li>隐式返回：Rust 提供了 <code>return</code> 关键字用于函数返回，但是在很多时候，我们可以省略它。因为 Rust 是 <a target="_blank" rel="noopener" href="https://course.rs/basic/base-type/statement-expression.html"><strong>基于表达式的语言</strong></a>。</li>
+</ul>
+<p>在终端中运行上述代码时，会看到很多 <code>debug: ...</code> 的输出，上面有讲，这些都是 <code>条件编译</code> 的输出</p>
+<p><code>cargo run</code> 默认是运行 <code>debug</code> 模式。因此想要消灭那些 <code>debug:</code> 输出，需要更改为其它模式，其中最常用的模式就是 <code>--release</code> 也就是生产发布的模式。</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Q1ngying
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2023/10/23/Rust%E5%85%A5%E9%97%A8/" title="Rust、Cargo简介">http://example.com/2023/10/23/Rust入门/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/learn/" rel="tag"># learn</a>
+              <a href="/tags/Rust/" rel="tag"># Rust</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/10/08/solidity%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2%E7%9B%B8%E5%85%B3/" rel="prev" title="solidity类型转换相关">
+      <i class="fa fa-chevron-left"></i> solidity类型转换相关
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/10/23/Rust%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%EF%BC%8C%E5%8F%98%E9%87%8F%E7%BB%91%E5%AE%9A%E4%B8%8E%E8%A7%A3%E6%9E%84/" rel="next" title="Rust基本概念，变量绑定与解构">
+      Rust基本概念，变量绑定与解构 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#hello-world"><span class="nav-number">1.</span> <span class="nav-text">hello_world</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E4%B8%AA-Rust-%E7%A8%8B%E5%BA%8F%EF%BC%9A"><span class="nav-number">1.1.</span> <span class="nav-text">第一个 Rust 程序：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rust-%E7%A8%8B%E5%BA%8F%E5%88%86%E6%9E%90%EF%BC%9A"><span class="nav-number">1.2.</span> <span class="nav-text">Rust 程序分析：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8-Rust-%E4%B8%AD%EF%BC%8C%E7%BC%96%E8%AF%91%E4%B8%AA%E8%BF%90%E8%A1%8C%E6%97%B6%E5%BD%BC%E6%AD%A4%E7%8B%AC%E7%AB%8B%E7%9A%84%E6%AD%A5%E9%AA%A4"><span class="nav-number">1.3.</span> <span class="nav-text">在 Rust 中，编译个运行时彼此独立的步骤</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Cargo"><span class="nav-number">2.</span> <span class="nav-text">Cargo</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-Cargo-%E5%88%9B%E5%BB%BA%E9%A1%B9%E7%9B%AE"><span class="nav-number">2.1.</span> <span class="nav-text">使用 Cargo 创建项目</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Cargo-toml"><span class="nav-number">2.1.1.</span> <span class="nav-text">Cargo.toml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#src-%E7%9B%AE%E5%BD%95"><span class="nav-number">2.1.2.</span> <span class="nav-text">src 目录</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA-%E8%BF%90%E8%A1%8C-Cargo-%E9%A1%B9%E7%9B%AE"><span class="nav-number">2.2.</span> <span class="nav-text">构建&amp;运行 Cargo 项目</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Cargo-build"><span class="nav-number">2.2.1.</span> <span class="nav-text">Cargo build</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cargo-run"><span class="nav-number">2.2.2.</span> <span class="nav-text">Cargo run</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cargo-check"><span class="nav-number">2.2.3.</span> <span class="nav-text">Cargo check</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%91%E5%B8%83%EF%BC%88release%EF%BC%89%E6%9E%84%E5%BB%BA"><span class="nav-number">2.3.</span> <span class="nav-text">发布（release）构建</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%8D%E4%BB%85%E4%BB%85%E6%98%AF-Hello-world"><span class="nav-number">3.</span> <span class="nav-text">不仅仅是 Hello world</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E5%9B%BD%E8%AF%AD%E8%A8%80%E7%9A%84%E2%80%9Chello-world%E2%80%9D"><span class="nav-number">3.1.</span> <span class="nav-text">多国语言的“hello world”</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rust-%E5%88%9D%E5%8D%B0%E8%B1%A1"><span class="nav-number">3.2.</span> <span class="nav-text">Rust 初印象</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Q1ngying"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Q1ngying</p>
+  <div class="site-description" itemprop="description">今朝梦醒与君别，遥盼春风寄相思</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/q1ngying" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;q1ngying" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:q1ngying@163.com" title="E-Mail → mailto:q1ngying@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-09 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Q1ngying</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">41k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">2:18</span>
+</div>
+
+<div class="powered-by">
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <i class="fa fa-user-md"></i>
+    <span id="busuanzi_container_site_uv">
+        本站访客数:<span id="busuanzi_value_site_uv"></span>人
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_pv">
+        本站访问量<span id="busuanzi_value_site_pv"></span>人次
+    </span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,255,255' opacity='1' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icons8-autumn-material-filled-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icons8-autumn-material-filled-16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Rust 基本概念在 Rust 中的一些概念：  所有权、借用、生命周期 宏编程 模式匹配  下面，通过一点代码来简单浏览下Rust语法： 123456789101112131415161718192021222324252627&#x2F;&#x2F; Rust 程序入口函数，main，该函数目前无返回值fn main() &amp;#123;    &#x2F;&#x2F; 使用 let 来声明变量，进行绑定 a 不可变    &#x2F;&#x2F; 此处没">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rust基本概念，变量绑定与解构">
+<meta property="og:url" content="http://example.com/2023/10/23/Rust%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%EF%BC%8C%E5%8F%98%E9%87%8F%E7%BB%91%E5%AE%9A%E4%B8%8E%E8%A7%A3%E6%9E%84/index.html">
+<meta property="og:site_name" content="Q1ngying">
+<meta property="og:description" content="Rust 基本概念在 Rust 中的一些概念：  所有权、借用、生命周期 宏编程 模式匹配  下面，通过一点代码来简单浏览下Rust语法： 123456789101112131415161718192021222324252627&#x2F;&#x2F; Rust 程序入口函数，main，该函数目前无返回值fn main() &amp;#123;    &#x2F;&#x2F; 使用 let 来声明变量，进行绑定 a 不可变    &#x2F;&#x2F; 此处没">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-10-23T06:22:30.000Z">
+<meta property="article:modified_time" content="2023-10-26T10:42:47.773Z">
+<meta property="article:author" content="Q1ngying">
+<meta property="article:tag" content="learn">
+<meta property="article:tag" content="Rust">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2023/10/23/Rust%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%EF%BC%8C%E5%8F%98%E9%87%8F%E7%BB%91%E5%AE%9A%E4%B8%8E%E8%A7%A3%E6%9E%84/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Rust基本概念，变量绑定与解构 | Q1ngying</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Q1ngying</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">清影的个人站</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/10/23/Rust%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%EF%BC%8C%E5%8F%98%E9%87%8F%E7%BB%91%E5%AE%9A%E4%B8%8E%E8%A7%A3%E6%9E%84/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Q1ngying">
+      <meta itemprop="description" content="今朝梦醒与君别，遥盼春风寄相思">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Q1ngying">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Rust基本概念，变量绑定与解构
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-10-23 14:22:30" itemprop="dateCreated datePublished" datetime="2023-10-23T14:22:30+08:00">2023-10-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-10-26 18:42:47" itemprop="dateModified" datetime="2023-10-26T18:42:47+08:00">2023-10-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Rust/" itemprop="url" rel="index"><span itemprop="name">Rust</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">笔记</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>11 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Rust-基本概念"><a href="#Rust-基本概念" class="headerlink" title="Rust 基本概念"></a>Rust 基本概念</h1><p>在 Rust 中的一些概念：</p>
+<ul>
+<li>所有权、借用、生命周期</li>
+<li>宏编程</li>
+<li>模式匹配</li>
+</ul>
+<p>下面，通过一点代码来简单浏览下<code>Rust</code>语法：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Rust 程序入口函数，main，该函数目前无返回值</span></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="comment">// 使用 let 来声明变量，进行绑定 a 不可变</span></span><br><span class="line">    <span class="comment">// 此处没有指定 a 的类型，编译器会默认根据 a 的值为 a 推测类型：i32 ，有符号 32 位整数</span></span><br><span class="line">    <span class="comment">// 语句末尾必须以分号结尾</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">a</span> = <span class="number">10</span>;</span><br><span class="line">    <span class="comment">// 主动指定 b 的类型为 i32</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">b</span> : <span class="type">i32</span> = <span class="number">20</span>;</span><br><span class="line">    <span class="comment">// 这里有两点需要注意：</span></span><br><span class="line">    <span class="comment">// 1. 可以在数值中带上类型：30i32 表示数组是 30，类型是 i32</span></span><br><span class="line">    <span class="comment">// 2. c 是可变的，mut 是 mutable 的缩写。</span></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">c</span> = <span class="number">30i32</span>;</span><br><span class="line">    <span class="comment">// 还能再数值和类型中间添加一个下划线，让可读性更好</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">d</span> = <span class="number">30_i32</span>;</span><br><span class="line">    <span class="comment">// 和其他语言一样，可以使用一个函数的返回值来作为另一个函数的参数</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">e</span> = <span class="title function_ invoke__">add</span>(<span class="title function_ invoke__">add</span>(a, b), <span class="title function_ invoke__">add</span>(c, d));</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// println! 是宏调用，看起来像是函数但是他返回的是宏定义的代码块</span></span><br><span class="line">    <span class="comment">// 该函数将指定的格式化字符串输出到标准输出中（控制台）</span></span><br><span class="line">    <span class="comment">// &#123;&#125; 是占位符，在具体执行过程中，会把 e 的值带入进来</span></span><br><span class="line">    <span class="built_in">println!</span>&#123;<span class="string">&quot;(a + b) + (c + d) = &#123;&#125;&quot;</span>, e&#125;;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 定义一个函数，输入两个 i32 类型的 32 位有符号整数，返回它们的和</span></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">add</span>(i : <span class="type">i32</span>, j : <span class="type">i32</span>) <span class="punctuation">-&gt;</span> <span class="type">i32</span> &#123;</span><br><span class="line">    <span class="comment">// 返回相加值，这里可以省略 return</span></span><br><span class="line">	i + j	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意 在上面的 <code>add</code> 函数中，不要为 <code>i+j</code> 添加 <code>;</code>，这会改变语法导致函数返回 <code>()</code> 而不是 <code>i32</code>，具体参见<a target="_blank" rel="noopener" href="https://course.rs/basic/base-type/statement-expression.html">语句和表达式</a>。</p>
+</blockquote>
+<p>有几点可以留意下：</p>
+<ul>
+<li>字符串使用双引号 <code>&quot;&quot;</code> 而不是单引号 <code>&#39;&#39;</code>，Rust 中单引号是留给单个字符类型（<code>char</code>）使用的</li>
+<li>Rust 使用 <code>&#123;&#125;</code> 来作为格式化输出占位符，其它语言可能使用的是 <code>%s</code>，<code>%d</code>，<code>%p</code> 等，由于 <code>println!</code> 会自动推导出具体的类型，因此无需手动指定</li>
+</ul>
+<h1 id="变量绑定与解构"><a href="#变量绑定与解构" class="headerlink" title="变量绑定与解构"></a>变量绑定与解构</h1><h2 id="为什么要手动设置变量的可变性？"><a href="#为什么要手动设置变量的可变性？" class="headerlink" title="为什么要手动设置变量的可变性？"></a>为什么要手动设置变量的可变性？</h2><p>声明可变的变量为编程提供了<strong>灵活性</strong>，声明不可变的变量为程序提供了<strong>安全性</strong>，而 Rust 中在底层二者同时存在。同时，还有一个优点，那就是<strong>运行性能上提升</strong>。将本身无需改变的变量声明为不可变在运行期会避免一些多余的 <code>runtime</code> 检查。</p>
+<h2 id="变量命名"><a href="#变量命名" class="headerlink" title="变量命名"></a>变量命名</h2><p>命名方面，和其他语言没有区别，不过当给变量命名时，需要遵循  <a target="_blank" rel="noopener" href="https://course.rs/practice/naming.html">Rust 命名规范</a>。</p>
+<blockquote>
+<p>Rust 语言有一些<strong>关键字</strong>（<em>keywords</em>），和其他语言一样，这些关键字都是被保留给 Rust 语言使用的，因此，它们不能被用作变量或函数的名称。在 <a target="_blank" rel="noopener" href="https://course.rs/appendix/keywords.html">附录 A</a> 中可找到关键字列表。</p>
+</blockquote>
+<h2 id="变量绑定"><a href="#变量绑定" class="headerlink" title="变量绑定"></a>变量绑定</h2><p>在其他语言中，我们使用 <code>var a = &quot;hello world&quot;</code>的方式为<code>a</code>赋值，也就是把等式右边的<code>&quot;hello world&quot;</code>字符串赋值给变量<code>a</code>，而在 Rust 中，我们这样写：<code>let a = &quot;hello world&quot;</code>，同时给这个过程称作：<strong>变量绑定</strong></p>
+<p>使用绑定，是因为这涉及到了 Rust 最核心的原则——<strong>所有权</strong>，简单来说，任何内存对象都是有主人的，而且一般情况下完全属于它的主人，绑定就是把这个对象绑定给一个变量，让这个变量成为它的主人。<u><em>在这种情况下，该对象之前的主人就会丧失对该对象的所有权</em></u>。</p>
+<h2 id="变量可变性"><a href="#变量可变性" class="headerlink" title="变量可变性"></a>变量可变性</h2><p>Rust 的变量在默认情况下是<strong>不可变的</strong>。这让我们的编写的代码更加安全，性能更好。我们也还可以使用<code>mut</code>关键字让变量变为<strong>可变的</strong>，让设计更灵活。</p>
+<p>如果变量<code>a</code>不可变，那么一点为它绑定值，就不能再修改<code>a</code>。</p>
+<p>来自 Rust 圣经：</p>
+<blockquote>
+<p>然后在新建的 <em>variables</em> 目录下，编辑 <em>src&#x2F;main.rs</em> ，改为下面代码：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line"> <span class="keyword">let</span> <span class="variable">x</span> = <span class="number">5</span>;</span><br><span class="line"> <span class="built_in">println!</span>(<span class="string">&quot;The value of x is: &#123;&#125;&quot;</span>, x);</span><br><span class="line"> x = <span class="number">6</span>;</span><br><span class="line"> <span class="built_in">println!</span>(<span class="string">&quot;The value of x is: &#123;&#125;&quot;</span>, x);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>保存文件，再使用 <code>cargo run</code> 运行它，迎面而来的是一条错误提示：</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">cargo run</span></span><br><span class="line">Compiling variables v0.1.0 (file:///projects/variables)</span><br><span class="line">error[E0384]: cannot assign twice to immutable variable `x`</span><br><span class="line"><span class="meta prompt_">--&gt; </span><span class="language-bash">src/main.rs:4:5</span></span><br><span class="line">|</span><br><span class="line">2 |     let x = 5;</span><br><span class="line">|         -</span><br><span class="line">|         |</span><br><span class="line">|         first assignment to `x`</span><br><span class="line">|         help: consider making this binding mutable: `mut x`</span><br><span class="line">3 |     println!(&quot;The value of x is: &#123;&#125;&quot;, x);</span><br><span class="line">4 |     x = 6;</span><br><span class="line">|     ^^^^^ cannot assign twice to immutable variable</span><br><span class="line"></span><br><span class="line">error: aborting due to previous error</span><br></pre></td></tr></table></figure>
+
+<p>具体的错误原因是 <code>cannot assign twice to immutable variable x</code>（无法对不可变的变量进行重复赋值），因为我们想为不可变的 <code>x</code> 变量再次赋值。</p>
+<p>这种错误是为了避免无法预期的错误发生在我们的变量上：一个变量往往被多处代码所使用，其中一部分代码假定该变量的值永远不会改变，而另外一部分代码却无情的改变了这个值，在实际开发过程中，这个错误是很难被发现的，特别是在多线程编程中。</p>
+<p>这种规则让我们的代码变得非常清晰，只有你想让你的变量改变时，它才能改变，这样就不会造成心智上的负担，也给别人阅读代码带来便利。</p>
+<p>但是可变性也非常重要，否则我们就要像 ClojureScript 那样，每次要改变，就要重新生成一个对象，在拥有大量对象的场景，性能会变得非常低下，内存拷贝的成本异常的高。</p>
+<p>在 Rust 中，可变性很简单，只要在变量名前加一个 <code>mut</code> 即可, 而且这种显式的声明方式还会给后来人传达这样的信息：嗯，这个变量在后面代码部分会发生改变。</p>
+<p>为了让变量声明为可变,将 <em>src&#x2F;main.rs</em> 改为以下内容：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line"> <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">x</span> = <span class="number">5</span>;</span><br><span class="line"> <span class="built_in">println!</span>(<span class="string">&quot;The value of x is: &#123;&#125;&quot;</span>, x);</span><br><span class="line"> x = <span class="number">6</span>;</span><br><span class="line"> <span class="built_in">println!</span>(<span class="string">&quot;The value of x is: &#123;&#125;&quot;</span>, x);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行程序将得到下面结果：</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">cargo run</span></span><br><span class="line">Compiling variables v0.1.0 (file:///projects/variables)</span><br><span class="line"> Finished dev [unoptimized + debuginfo] target(s) in 0.30s</span><br><span class="line">  Running `target/debug/variables`</span><br><span class="line">The value of x is: 5</span><br><span class="line">The value of x is: 6</span><br></pre></td></tr></table></figure>
+
+<p>选择可变还是不可变，更多的还是取决于你的使用场景，例如不可变可以带来安全性，但是丧失了灵活性和性能（如果你要改变，就要重新创建一个新的变量，这里涉及到内存对象的再分配）。而可变变量最大的好处就是使用上的灵活性和性能上的提升。</p>
+<p>例如，在使用大型数据结构或者热点代码路径（被大量频繁调用）的情形下，在同一内存位置更新实例可能比复制并返回新分配的实例要更快。使用较小的数据结构时，通常创建新的实例并以更具函数式的风格来编写程序，可能会更容易理解，所以值得以较低的性能开销来确保代码清晰。</p>
+</blockquote>
+<h2 id="使用下划线开头忽略未使用的变量"><a href="#使用下划线开头忽略未使用的变量" class="headerlink" title="使用下划线开头忽略未使用的变量"></a>使用下划线开头忽略未使用的变量</h2><p><strong>如果创建了一个变量，却不在任何地方使用它，Rust 会给出一个警告</strong>，因为这可能是一个 BUG。但是有时创建一个不会被使用的变量是有用的，比如正在设计原型或刚刚开始一个项目。<strong>如果希望 Rust 不要警告未使用的变量，可以使用 下划线<code>_</code> 作为变量名的开头</strong></p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">_x</span> = <span class="number">5</span>;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">y</span> = <span class="number">10</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用 <code>cargo run</code> 运行下试试:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">warning: unused variable: `y`</span><br><span class="line"><span class="meta prompt_"> --&gt; </span><span class="language-bash">src/main.rs:3:9</span></span><br><span class="line">  |</span><br><span class="line">3 |     let y = 10;</span><br><span class="line">  |         ^ help: 如果 y 故意不被使用，请添加一个下划线前缀: `_y`</span><br><span class="line">  |</span><br><span class="line">  = note: `#[warn(unused_variables)]` on by default</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，两个变量都是只有声明，没有使用，但是编译器却独独给出了 <code>y</code> 未被使用的警告，充分说明了 <code>_</code> 变量名前缀在这里发挥的作用。</p>
+<p>值得注意的是，这里编译器还很善意的给出了提示( Rust 的编译器非常强大，这里的提示只是小意思 ): 将 <code>y</code> 修改 <code>_y</code> 即可。这里就不再给出代码，留给大家手动尝试并观察下运行结果。</p>
+<p>更多关于 <code>_x</code> 的使用信息，请阅读后面的<a target="_blank" rel="noopener" href="https://course.rs/basic/match-pattern/all-patterns.html?highlight=_#%E4%BD%BF%E7%94%A8%E4%B8%8B%E5%88%92%E7%BA%BF%E5%BC%80%E5%A4%B4%E5%BF%BD%E7%95%A5%E6%9C%AA%E4%BD%BF%E7%94%A8%E7%9A%84%E5%8F%98%E9%87%8F">模式匹配章节</a>。</p>
+<h2 id="变量解构"><a href="#变量解构" class="headerlink" title="变量解构"></a>变量解构</h2><p><code>let</code>表达式不仅仅用于变量的绑定，还可以进行复杂<strong>变量的解构：从一个相对复杂的变量中，匹配出该变量的一部分内容：</strong></p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> (a, <span class="keyword">mut</span> b): (<span class="type">bool</span>, <span class="type">bool</span>) = (<span class="literal">true</span>, <span class="literal">false</span>);</span><br><span class="line">    <span class="comment">// a = true, 不可变； b = false，可变</span></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;a = &#123;:?&#125;, b = &#123;:?&#125;&quot;</span>, a, b);</span><br><span class="line">    </span><br><span class="line">    b = <span class="literal">true</span>;</span><br><span class="line">    <span class="built_in">assert_eq!</span>(a, b);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="解构式赋值"><a href="#解构式赋值" class="headerlink" title="解构式赋值"></a>解构式赋值</h3><p>在 <a target="_blank" rel="noopener" href="https://course.rs/appendix/rust-versions/1.59.html">Rust 1.59</a> 版本后，我们可以在赋值语句的左式中使用元组、切片和结构体模式了。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">Struct</span> &#123;</span><br><span class="line">    e : <span class="type">i32</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> (a, b, c ,d, e);</span><br><span class="line">    </span><br><span class="line">    (a, b) = (<span class="number">1</span>, <span class="number">2</span>);</span><br><span class="line">    <span class="comment">// _ 代表匹配一个值，但是我们不关心具体是什么，因此没有使用一个变量名而是使用了 _</span></span><br><span class="line">    [c, .., d, _] = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>];</span><br><span class="line">    Struct &#123;e, ..&#125; = Struct &#123;e : <span class="number">5</span>&#125;;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">assert_eq!</span>([<span class="number">1</span>], <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>], [a, b, c, d, e]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这种使用方式跟之前的 <code>let</code> 保持了一致性，但是 <code>let</code> 会重新绑定，而这里仅仅是对之前绑定的变量进行再赋值。</p>
+<p>需要注意的是，使用 <code>+=</code> 的赋值语句还不支持解构式赋值。</p>
+<h2 id="变量和常量之间的差异"><a href="#变量和常量之间的差异" class="headerlink" title="变量和常量之间的差异"></a>变量和常量之间的差异</h2><p><strong>常量</strong>(<em>constant</em>)。与不可变变量一样，常量也是绑定到一个常量名且不允许更改的值，但是常量和变量之间存在一些差异：</p>
+<ul>
+<li>常量不允许使用<code>mut</code>。<strong>常量不仅仅默认不可变，而且自始至终不可变关键字</strong>。因为常量在编译完成后，已经确定它的值</li>
+<li><strong>常量使用<code>const</code>关键字</strong>而不是<code>let</code>关键字来声明，并且<strong>值的类型必须标注。</strong></li>
+</ul>
+<p>下面是一个常量声明的例子，其常量名为<code>MAX_POINTS</code>，值设置为<code>100,000</code>。（Rust 常量的命名约定是全部字母都是用大写，并使用下划线分割单词，另外对数字字面量可插入下划线以提高可读性）：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> MAX_POINTS: <span class="type">u32</span> = <span class="number">100_000</span>;</span><br></pre></td></tr></table></figure>
+
+<p>常量可以在任意作用域内声明，包括全局作用域，在声明的作用域内，常量在程序运行的整个过程中都有效。对于需要在多处代码共享一个不可变的值时非常有用，例如游戏中允许玩家赚取的最大点数或光速。</p>
+<blockquote>
+<p>在实际使用中，最好将程序中用到的硬编码值都声明为常量，对于代码后续的维护有莫大的帮助。如果将来需要更改硬编码的值，你也只需要在代码中更改一处即可。</p>
+</blockquote>
+<h2 id="变量遮蔽-shadowing"><a href="#变量遮蔽-shadowing" class="headerlink" title="变量遮蔽(shadowing)"></a>变量遮蔽(shadowing)</h2><p>Rust 允许声明相同的变量名，在后面声明的变量会遮蔽掉前面声明的，如下所示：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">x</span> = <span class="number">5</span>;</span><br><span class="line">    <span class="comment">// 在 main 函数的作用域内对之前的 x 进行遮蔽</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">x</span> = x + <span class="number">1</span>;</span><br><span class="line">    </span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 在当前的花括号作用域内，对之前的 x 进行遮蔽</span></span><br><span class="line">        <span class="keyword">let</span> <span class="variable">x</span> = x + <span class="number">2</span>;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">&quot;The value of x in the inner scope is : &#123;&#125;&quot;</span>, x);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;The value of x is : &#123;&#125;&quot;</span>, x);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个程序首先将数值 <code>5</code> 绑定到 <code>x</code>，然后通过重复使用 <code>let x =</code> 来遮蔽之前的 <code>x</code>，并取原来的值加上 <code>1</code>，所以 <code>x</code> 的值变成了 <code>6</code>。第三个 <code>let</code> 语句同样遮蔽前面的 <code>x</code>，取之前的值并乘上 <code>2</code>，得到的 <code>x</code> 最终值为 <code>12</code>。当运行此程序，将输出以下内容：</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">cargo run</span></span><br><span class="line">   Compiling variables v0.1.0 (file:///projects/variables)</span><br><span class="line">   ...</span><br><span class="line">The value of x in the inner scope is: 12</span><br><span class="line">The value of x is: 6</span><br></pre></td></tr></table></figure>
+
+<p>这和<code>mut</code>变量的使用不同，<strong>第二个<code>let</code>生成了完全不同的新变量，两个变量只是恰好拥有同样的名称，涉及一次内存对象的再分配</strong>，而**<code>mut</code>声明的变量，可以修改同一个内存地址上的值，并不会发生内存对象的再分配，性能更好。**</p>
+<p>变量遮蔽的用处在于，如果你在某个作用域内无需再使用之前的变量（在被遮蔽后，无法在访问到之前的同名变量），就可以重复的使用变量名字，而不用绞尽脑汁去想名字。</p>
+<p>例如，假如有一个程序要统计一个空格字符串的空格数量：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 字符串类型</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">spaces</span> = <span class="string">&quot;  &quot;</span>;</span><br><span class="line"><span class="comment">// usize数值类型</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">spaces</span> = spaces.<span class="title function_ invoke__">len</span>();</span><br></pre></td></tr></table></figure>
+
+<p>这种结构是允许的，因为第一个<code>spaces</code>变量是一个字符串类型，第二个<code>spaces</code>变量是一个全新的变量且和第一个具有相同的变量名，且是一个数值类型。</p>
+<p>所以变量遮蔽可以帮我们节省些脑细胞，不用去想如 <code>spaces_str</code> 和 <code>spaces_num</code> 此类的变量名；相反我们可以重复使用更简单的 <code>spaces</code> 变量名。如果你不用 <code>let</code> :</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">spaces</span> = <span class="string">&quot;   &quot;</span>;</span><br><span class="line">spaces = spaces.<span class="title function_ invoke__">len</span>();</span><br></pre></td></tr></table></figure>
+
+<p>运行一下，你就会发现编译器报错：</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">cargo run</span></span><br><span class="line">   Compiling variables v0.1.0 (file:///projects/variables)</span><br><span class="line">error[E0308]: mismatched types</span><br><span class="line"><span class="meta prompt_"> --&gt; </span><span class="language-bash">src/main.rs:3:14</span></span><br><span class="line">  |</span><br><span class="line">3 |     spaces = spaces.len();</span><br><span class="line">  |              ^^^^^^^^^^^^ expected `&amp;str`, found `usize`</span><br><span class="line"></span><br><span class="line">error: aborting due to previous error</span><br></pre></td></tr></table></figure>
+
+<p>显然，Rust 对类型的要求很严格，不允许将整数类型 <code>usize</code> 赋值给字符串类型。<code>usize</code> 是一种 CPU 相关的整数类型，在<a target="_blank" rel="noopener" href="https://course.rs/basic/base-type/numbers.html#%E6%95%B4%E6%95%B0%E7%B1%BB%E5%9E%8B">数值类型</a>中有详细介绍。</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Q1ngying
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2023/10/23/Rust%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%EF%BC%8C%E5%8F%98%E9%87%8F%E7%BB%91%E5%AE%9A%E4%B8%8E%E8%A7%A3%E6%9E%84/" title="Rust基本概念，变量绑定与解构">http://example.com/2023/10/23/Rust基本概念，变量绑定与解构/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/learn/" rel="tag"># learn</a>
+              <a href="/tags/Rust/" rel="tag"># Rust</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/10/23/Rust%E5%85%A5%E9%97%A8/" rel="prev" title="Rust、Cargo简介">
+      <i class="fa fa-chevron-left"></i> Rust、Cargo简介
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/10/26/Foundry%E5%85%A5%E9%97%A8/" rel="next" title="Foundry入门">
+      Foundry入门 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Rust-%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text">Rust 基本概念</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%98%E9%87%8F%E7%BB%91%E5%AE%9A%E4%B8%8E%E8%A7%A3%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">变量绑定与解构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E6%89%8B%E5%8A%A8%E8%AE%BE%E7%BD%AE%E5%8F%98%E9%87%8F%E7%9A%84%E5%8F%AF%E5%8F%98%E6%80%A7%EF%BC%9F"><span class="nav-number">2.1.</span> <span class="nav-text">为什么要手动设置变量的可变性？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%98%E9%87%8F%E5%91%BD%E5%90%8D"><span class="nav-number">2.2.</span> <span class="nav-text">变量命名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%98%E9%87%8F%E7%BB%91%E5%AE%9A"><span class="nav-number">2.3.</span> <span class="nav-text">变量绑定</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%98%E9%87%8F%E5%8F%AF%E5%8F%98%E6%80%A7"><span class="nav-number">2.4.</span> <span class="nav-text">变量可变性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E4%B8%8B%E5%88%92%E7%BA%BF%E5%BC%80%E5%A4%B4%E5%BF%BD%E7%95%A5%E6%9C%AA%E4%BD%BF%E7%94%A8%E7%9A%84%E5%8F%98%E9%87%8F"><span class="nav-number">2.5.</span> <span class="nav-text">使用下划线开头忽略未使用的变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%98%E9%87%8F%E8%A7%A3%E6%9E%84"><span class="nav-number">2.6.</span> <span class="nav-text">变量解构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E6%9E%84%E5%BC%8F%E8%B5%8B%E5%80%BC"><span class="nav-number">2.6.1.</span> <span class="nav-text">解构式赋值</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%98%E9%87%8F%E5%92%8C%E5%B8%B8%E9%87%8F%E4%B9%8B%E9%97%B4%E7%9A%84%E5%B7%AE%E5%BC%82"><span class="nav-number">2.7.</span> <span class="nav-text">变量和常量之间的差异</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%98%E9%87%8F%E9%81%AE%E8%94%BD-shadowing"><span class="nav-number">2.8.</span> <span class="nav-text">变量遮蔽(shadowing)</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Q1ngying"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Q1ngying</p>
+  <div class="site-description" itemprop="description">今朝梦醒与君别，遥盼春风寄相思</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/q1ngying" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;q1ngying" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:q1ngying@163.com" title="E-Mail → mailto:q1ngying@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-09 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Q1ngying</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">41k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">2:18</span>
+</div>
+
+<div class="powered-by">
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <i class="fa fa-user-md"></i>
+    <span id="busuanzi_container_site_uv">
+        本站访客数:<span id="busuanzi_value_site_uv"></span>人
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_pv">
+        本站访问量<span id="busuanzi_value_site_pv"></span>人次
+    </span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,255,255' opacity='1' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

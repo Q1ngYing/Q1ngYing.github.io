@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icons8-autumn-material-filled-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icons8-autumn-material-filled-16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="前言：按照正常的逻辑，每一笔签名后的交易只能被执行一次。如果交易可以被多次执行，那就存在重放攻击(Replay Attack) 的风险。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="重放">
+<meta property="og:url" content="http://example.com/2023/10/08/%E9%87%8D%E6%94%BE/index.html">
+<meta property="og:site_name" content="Q1ngying">
+<meta property="og:description" content="前言：按照正常的逻辑，每一笔签名后的交易只能被执行一次。如果交易可以被多次执行，那就存在重放攻击(Replay Attack) 的风险。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-10-08T00:38:22.000Z">
+<meta property="article:modified_time" content="2023-10-08T06:03:40.976Z">
+<meta property="article:author" content="Q1ngying">
+<meta property="article:tag" content="Solidity">
+<meta property="article:tag" content="Smart Contract">
+<meta property="article:tag" content="智能合约审计">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2023/10/08/%E9%87%8D%E6%94%BE/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>重放 | Q1ngying</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Q1ngying</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">清影的个人站</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/10/08/%E9%87%8D%E6%94%BE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Q1ngying">
+      <meta itemprop="description" content="今朝梦醒与君别，遥盼春风寄相思">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Q1ngying">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          重放
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-10-08 08:38:22 / 修改时间：14:03:40" itemprop="dateCreated datePublished" datetime="2023-10-08T08:38:22+08:00">2023-10-08</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Solidity-%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">Solidity 安全</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>8 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><strong>前言：</strong><br>按照正常的逻辑，每一笔签名后的交易只能被执行一次。如果交易可以被多次执行，那就存在重放攻击(Replay Attack) 的风险。</p>
+<span id="more"></span>
+
+<h1 id="交易签名"><a href="#交易签名" class="headerlink" title="交易签名"></a>交易签名</h1><p>在了解重放攻击之前，我们需要先了解一下<strong>一笔签名后的交易是由哪些参数构成的：</strong></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">type txdata struct <span class="punctuation">&#123;</span></span><br><span class="line">    AccountNonce uint64          `json<span class="punctuation">:</span><span class="string">&quot;nonce&quot;</span>    gencodec<span class="punctuation">:</span><span class="string">&quot;required&quot;</span>`</span><br><span class="line">    Price        *big.Int        `json<span class="punctuation">:</span><span class="string">&quot;gasPrice&quot;</span> gencodec<span class="punctuation">:</span><span class="string">&quot;required&quot;</span>`</span><br><span class="line">    GasLimit     uint64          `json<span class="punctuation">:</span><span class="string">&quot;gas&quot;</span>      gencodec<span class="punctuation">:</span><span class="string">&quot;required&quot;</span>`</span><br><span class="line">    Recipient    *common.Address `json<span class="punctuation">:</span><span class="string">&quot;to&quot;</span>       rlp<span class="punctuation">:</span><span class="string">&quot;nil&quot;</span>`</span><br><span class="line">    Amount       *big.Int        `json<span class="punctuation">:</span><span class="string">&quot;value&quot;</span>    gencodec<span class="punctuation">:</span><span class="string">&quot;required&quot;</span>`</span><br><span class="line">    Payload      <span class="punctuation">[</span><span class="punctuation">]</span>byte          `json<span class="punctuation">:</span><span class="string">&quot;input&quot;</span>    gencodec<span class="punctuation">:</span><span class="string">&quot;required&quot;</span>`</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Signature values</span></span><br><span class="line">    V *big.Int `json<span class="punctuation">:</span><span class="string">&quot;v&quot;</span> gencodec<span class="punctuation">:</span><span class="string">&quot;required&quot;</span>`</span><br><span class="line">    R *big.Int `json<span class="punctuation">:</span><span class="string">&quot;r&quot;</span> gencodec<span class="punctuation">:</span><span class="string">&quot;required&quot;</span>`</span><br><span class="line">    S *big.Int `json<span class="punctuation">:</span><span class="string">&quot;s&quot;</span> gencodec<span class="punctuation">:</span><span class="string">&quot;required&quot;</span>`</span><br><span class="line"></span><br><span class="line">    <span class="comment">// This is only used when marshaling to JSON.</span></span><br><span class="line">    Hash *common.Hash `json<span class="punctuation">:</span><span class="string">&quot;hash&quot;</span> rlp<span class="punctuation">:</span><span class="string">&quot;-&quot;</span>`</span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>接下来具体分析每个参数的意义：</p>
+<h2 id="参数构成"><a href="#参数构成" class="headerlink" title="参数构成"></a>参数构成</h2><h3 id="AccountNonce"><a href="#AccountNonce" class="headerlink" title="AccountNonce:"></a><em><strong>AccountNonce:</strong></em></h3><p><strong>AccountNonce(账户 Nonce) 是一个与账户相关的数值，用于确保区块链网络中交易的顺序性和唯一性</strong>。在区块链中，每个账户都有一个关联的 Nonce（也称为 transaction count 或 transaction index），用于标识该账户发起的交易数量。它是本期文章的主角，主要作用是<strong>防止重放攻击</strong>。<em><strong>每当一个账户发送一笔交易时，Nonce 值就会自动增加。网络接收到交易时，会检查交易中的 Nonce 与账户当前的 Nonce 是否匹配，以确保交易按照正确的顺序进行，同时也防止了交易被重复执行。</strong></em></p>
+<p><em><strong>那么 Nonce 是如何保证交易的顺序性的呢？</strong></em></p>
+<p>由于区块链是一个分布式系统，多个节点可能同时接收到不同的交易。通过设置 Nonce 可以对交易进行排序，确保他们按照正确的顺序被打包在区块链中。</p>
+<p><em><strong>在以太坊中，Nonce 有下面几条规则：</strong></em></p>
+<ul>
+<li>当 Nonce 太小（小于当前账户的 Nonce 值），交易会被直接拒绝；</li>
+<li>当 Nonce 太大（大于当前账户的 Nonce 值），交易会已知处于队列中；</li>
+<li>当发送了一个比较大的 Nonce 值，此时该交易处于 <strong>pending 状态</strong>。如果想要执行该笔交易，需要继续发送多笔交易。当账户 Nonce 值累计到提交的高度时，交易就可以被执行；</li>
+<li>交易队列最多只能保存 64 个从同一个账户发出的交易，也就是说，如果要批量转账，同一节点不能发送超过 64 笔交易；</li>
+<li>当前 Nonce 合适，但是账户余额不足时，交易也会被以太坊拒绝。</li>
+</ul>
+<h3 id="Price"><a href="#Price" class="headerlink" title="Price"></a><em><strong>Price</strong></em></h3><p>这笔交易的 GasPrice</p>
+<h3 id="GasLimit"><a href="#GasLimit" class="headerlink" title="GasLimit"></a><em><strong>GasLimit</strong></em></h3><p>这笔交易允许消耗的最大 Gas 量。</p>
+<h3 id="Recipient"><a href="#Recipient" class="headerlink" title="Recipient"></a><em><strong>Recipient</strong></em></h3><p><strong>交易接收者如果为空，说明该笔交易时合约部署交易。</strong></p>
+<p>Recipient 同样也是以太坊代码中的字段，转换为 <code>json</code> 时被重命名为 <code>to</code>。交易的接收者在 <code>to</code> 字段中指定，这包含了一个 20 字节的以太坊地址，地址可以是 EOA 或合约地址。</p>
+<p><strong>以太坊不会进一步验证这个字段，任何 20 字节的值都被认为时有效的。即使该接收者地址无人认领，该交易依然有效</strong>。如果是一笔转账交易，以太币会被发送到指定地址，但是因为指定地址的私钥无法获得，相当于失去了这笔钱的控制权，也就丢失了 ETH。</p>
+<h3 id="Amount"><a href="#Amount" class="headerlink" title="Amount"></a><em><strong>Amount</strong></em></h3><p><strong>Amount 表示交易转移的 ETH 数量，单位是 wei。</strong></p>
+<h3 id="Payload"><a href="#Payload" class="headerlink" title="Payload"></a><em><strong>Payload</strong></em></h3><p>当该笔交易为合约部署交易时，Payload 字段表示部署合约的内容，否则表示调用合约的代码，其中包含要调用的函数签名和函数参数。</p>
+<h3 id="VRS"><a href="#VRS" class="headerlink" title="VRS"></a><em><strong>VRS</strong></em></h3><ul>
+<li><strong>V：</strong> <strong>是一个用于恢复公钥的值，他表示签名所使用的椭圆曲线上的点的索引。</strong>在以太坊中，V 的取值通常为 27 或 28，有时也可能是其他值。实际取值是通过下面的公式计算得出的：<code>V = ChainId * 2 + 35 + RecoveryId</code>，其中 ChainId 是用于标识以太坊网络的链 ID，RecoveryId 是一个用于恢复公钥的附加值。在以太坊伦敦升级后，主网链 ID 是单独编码的，不再包含在签名 V 值内，签名 V 值变成了一个简单的校验位（“签名 Y 校验位”），不是 0 就是 1，具体取决于使用椭圆曲线上的哪个点。</li>
+<li><strong>R：</strong> 是签名的一部分，表示椭圆曲线上的 x 坐标</li>
+<li><strong>S：</strong> 是签名的另一部分，表示椭圆曲线上的一个参数</li>
+</ul>
+<p>使用 VRS 格式的签名可以方便地提取公钥，并用于验证签名的有效性。需要注意的是，<strong>虽然 VRS 格式的签名在以太坊中被广泛使用，但在其他加密货币和区块链网络中，可能存在不同的签名格式。</strong></p>
+<h1 id="签名重放分类："><a href="#签名重放分类：" class="headerlink" title="签名重放分类："></a>签名重放分类：</h1><p><strong>以太坊中的签名重复大致分为两种：</strong></p>
+<h2 id="1-不同链签名重放攻击"><a href="#1-不同链签名重放攻击" class="headerlink" title="1. 不同链签名重放攻击"></a>1. 不同链签名重放攻击</h2><p>不同链签名重放，就是在不同链上重放交易，从而完成攻击。最典型的例子就是 2022 年 6 月 9 日 Optimism 被盗 2000 万 OP 事件，该事件就是由于 Gnosis Safe 钱包合约交易签名不符合 <a target="_blank" rel="noopener" href="https://learnblockchain.cn/docs/eips/eip-155.html">EIP155 标准</a>（符合 EIP155 标准的签名会对 9 个 RLP 编码元素 (nonce, gasPrice, gas, to, value, data, chainId, 0, 0) 进⾏哈希，其中包含了 chainId，因此符合 EIP155 标准的签名 V 值就为 {0,1} + chainId * 2 + 35 。⽽对不符合EIP155 标准的签名，其只对 6 个元素进⾏哈希 (nonce, gasPrice, gas, to, value, data) ，因此签名后的 V 值为 {0,1} + 27）。不难发现，不使用 EIP155 标准的交易签名中没有 chainId，从而造成一笔交易可以被拿到其他链上进行重放。</p>
+<p>著名的 Optimism 事件的攻击者就是利用这一点，找到 Gnosis Safe 在以太坊主网部署 proxy factory 合约的 input data，并在 Optimism 链上重放该笔交易部署 proxy factory 合约，接下来不断调用该合约创建钱包合约直至 Nonce 达到可以生成存着 2000 万 OP 的地址的高度，从而获取该地址的控制权，完成攻击。该攻击细节可查看《<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzU4ODQ3NTM2OA==&mid=2247495732&idx=1&sn=bb707c74e5724a603fc4b59296c2d92e&scene=21#wechat_redirect">2000 万 OP 代币被盗关键：交易重放</a>》和《<a target="_blank" rel="noopener" href="https://jason.mirror.xyz/Vwdd1b2V52q9A2rvRTvGI8lkIkY4DkMLPGxAld_gKko">深度解析 Optimism 被盗 2000 万来龙去脉！真 tm 精彩！</a>。</p>
+<h2 id="2-同链签名重放攻击"><a href="#2-同链签名重放攻击" class="headerlink" title="2.同链签名重放攻击"></a>2.同链签名重放攻击</h2><p>同链签名重放攻击一般是利用合约漏洞完成攻击的，最典型的就是合约在生成签名时没有加入 Nonce，从而导致签名数据可以被无限次使用，造成危害。</p>
+<p>合约实例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity ^0.8.17;</span><br><span class="line"></span><br><span class="line">import &quot;github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v4.5/contracts/utils/cryptography/ECDSA.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract MultiSigWallet &#123;</span><br><span class="line">	using ECDSA for bytes32;</span><br><span class="line">	</span><br><span class="line">	address[2] public owners;</span><br><span class="line">	</span><br><span class="line">	constructor(address[2] memory _owners) payable &#123;</span><br><span class="line">	owners = _owners;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	function deposit() external payable &#123;&#125;</span><br><span class="line">	</span><br><span class="line">	function transfer(address _to, uint _amount, bytes[2] memory _sigs) external &#123;</span><br><span class="line">	bytes32 txHash = getTxHash(_to, _amount);</span><br><span class="line">	require(_checkSigs(_sigs, txHash), &#x27;invalid sig&#x27;);</span><br><span class="line">	</span><br><span class="line">	(bool sent, ) = _to.call&#123;value : _amount&#125;(&quot;&quot;);</span><br><span class="line">	require(sent, &quot;failed to send Ether&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	function getTxHash(address _to, uint _amount) public view returns(bytes32) &#123;</span><br><span class="line">	return keccak256(abi..encodePacked(_to, _amount));</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	function _checkSigs(bytes[2] memory _sigs, bytes32 _txHash) private view return (bool) &#123;</span><br><span class="line">	bytes32 ethSignedHash = _txHash.toEthSignedMessageHash();</span><br><span class="line">	</span><br><span class="line">	for(uint i =0; i &lt; _sigs.length; i++) &#123;</span><br><span class="line">		address signer = ethSignedHash.recover(_sigs[i]);</span><br><span class="line">		bool valid = signer == owners[i];</span><br><span class="line">		</span><br><span class="line">		if(!valid) &#123;</span><br><span class="line">			return false;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	return true;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面的 MultiSigWallet 合约是一个 2&#x2F;2 多签合约，两名 Owner 将钱存入合约，转账时需要发起人调用 MultiSigWallet.getTxHash() 并传入转账目标及转账数量，得到哈希后，两个 Owner 使用私钥签名，得到两个签名数据后成功调用 MultiSigWallet.transfer() 将钱转出。下面使用 Evil，Bob 和 Alice 演绎攻击流程：</p>
+<p>1.Alice 与 Bob 共同创建了 MultiSigWallet 合约，并同时向合约中打入 10 个 ETH（此时合约中有 20 个 ETH）；</p>
+<p>2.Alice 告诉 Bob 自己男朋友 Evil 过生日，想给他转 1 个 ETH 作为生日礼物；</p>
+<p>3.Alice 调用 MultiSigWallet.getTxHash() 将 Evil 的 EOA 地址与转账数量传入，得到交易哈希；</p>
+<p>4.Bob 与 Alice 同时为生成的交易哈希签名；</p>
+<p>5.Alice 将两份签名数据交给 Evil 让他自己取；</p>
+<p>6.Evil 发现自己可以使用两份签名无限调用 MultiSigWallet.transfer() 给自己重复转账 1 ETH；</p>
+<p>7.Evil 调用 20 次 MultiSigWallet.transfer() 将合约中的 20 个 ETH 全部拿走。</p>
+<h2 id="攻击分析"><a href="#攻击分析" class="headerlink" title="攻击分析"></a><strong>攻击分析</strong></h2><p>其实很简单，Alice 调用 MultiSigWallet.getTxHash() 生成的交易哈希中并未加入 Nonce，这将导致签名数据可以被无限使用，所以 Evil 可以使用两份签名数据无限取款。</p>
+<h2 id="修复合约"><a href="#修复合约" class="headerlink" title="修复合约"></a>修复合约</h2><p>只要在交易哈希中加入 Nonce 就可以完美防止重放。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">//SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity ^0.8.17;</span><br><span class="line"></span><br><span class="line">import &quot;github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v4.5/contracts/utils/cryptography/ECDSA.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract MultiSigWallet &#123;</span><br><span class="line">	using ECDSA for bytes32;</span><br><span class="line">	</span><br><span class="line">	address[2] public owners;</span><br><span class="line">	mapping(bytes32 =&gt; bool) public executed;</span><br><span class="line">	</span><br><span class="line">	constructor(address[2] memory _owners) payable &#123;</span><br><span class="line">	owners = _owners;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	function deposit() external payable &#123;&#125;</span><br><span class="line">	</span><br><span class="line">	function transfer(address _to, uint _amount, uint _nonce, bytes[2] memory _sigs) external &#123;</span><br><span class="line">	bytes32 txHash = getTxHash(_to, _amount, _nonce);</span><br><span class="line">	require(!executed[txHash], &quot;tx executed&quot;);</span><br><span class="line">	require(_checkSigs(_sigs, txHash), &quot;invalid sig&quot;);</span><br><span class="line">	</span><br><span class="line">	executed[txHash] = true;</span><br><span class="line">	</span><br><span class="line">	(bool sent, ) = _to.call&#123;value: _amount&#125;(&quot;&quot;);</span><br><span class="line">	require(sent, &quot;Failed to send Ether&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	function getTxHash(address _to, uint _amount, uint _nonce) publlic view returns(bytes32) &#123;</span><br><span class="line">	return keccak256(abi.encodePacked(address(this), _to, _amount, _nonce));	</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	function _checkSigs(bytes[2] memory _sigs, bytes32 _txHash) private view returns(bool) &#123;</span><br><span class="line">	bytes32 ethSignedHash = _txHash.toEthSignedMessageHash();</span><br><span class="line">	</span><br><span class="line">	for(uint i = 0; i &lt; _sigs.length; i++) &#123;</span><br><span class="line">		address signer = ethSignenHash.recover(_sigs[i]);</span><br><span class="line">		bool valid = signer == owners[i];</span><br><span class="line">	</span><br><span class="line">		if(!valid) &#123;</span><br><span class="line">			return false;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	return true;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到修复合约在 MultiSigWallet.getTxHash() 中加入了 Nonce 来生成交易哈希，并且合约还加入了 executed 列表，当调用 MultiSigWallet.transfer() 转账后，会将签名对应的状态改为 executed[txHash] &#x3D; true，这是为了防止重复提交转账。</p>
+<p><strong>总结</strong></p>
+<p>作为开发者，当业务涉及签名数据使用时，应当评估正常业务设计是否允许签名被重放。如果不允许，应当加入 Nonce 参数。</p>
+<p>作为审计者，在审计中，所有签名的使用都需要检查是否能够被重放。如果满足重放特征，需要及时与项目方沟通是否符合业务设计。</p>
+<p>来源：慢雾公众号</p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzU4ODQ3NTM2OA==&mid=2247498135&idx=1&sn=247b149eb5b0b1c5b4348ce7512adf03&chksm=fdde8710caa90e06922e46f142a57fd8d6de5718e84547e6c548c45e301172f14dcebf73f00f&scene=178&cur_album_id=1378653641065857025#rd">https://mp.weixin.qq.com/s?__biz=MzU4ODQ3NTM2OA==&amp;mid=2247498135&amp;idx=1&amp;sn=247b149eb5b0b1c5b4348ce7512adf03&amp;chksm=fdde8710caa90e06922e46f142a57fd8d6de5718e84547e6c548c45e301172f14dcebf73f00f&amp;scene=178&amp;cur_album_id=1378653641065857025#rd</a></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Q1ngying
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2023/10/08/%E9%87%8D%E6%94%BE/" title="重放">http://example.com/2023/10/08/重放/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Solidity/" rel="tag"># Solidity</a>
+              <a href="/tags/Smart-Contract/" rel="tag"># Smart Contract</a>
+              <a href="/tags/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E5%AE%A1%E8%AE%A1/" rel="tag"># 智能合约审计</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/10/06/%E6%B7%B1%E5%85%A5EVM%E8%99%9A%E6%8B%9F%E6%9C%BA-part6/" rel="prev" title="深入EVM虚拟机-part6">
+      <i class="fa fa-chevron-left"></i> 深入EVM虚拟机-part6
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/10/08/%E6%8A%A2%E8%B7%91/" rel="next" title="抢跑">
+      抢跑 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D"><span class="nav-number">1.</span> <span class="nav-text">交易签名</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E6%95%B0%E6%9E%84%E6%88%90"><span class="nav-number">1.1.</span> <span class="nav-text">参数构成</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AccountNonce"><span class="nav-number">1.1.1.</span> <span class="nav-text">AccountNonce:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Price"><span class="nav-number">1.1.2.</span> <span class="nav-text">Price</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GasLimit"><span class="nav-number">1.1.3.</span> <span class="nav-text">GasLimit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Recipient"><span class="nav-number">1.1.4.</span> <span class="nav-text">Recipient</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Amount"><span class="nav-number">1.1.5.</span> <span class="nav-text">Amount</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Payload"><span class="nav-number">1.1.6.</span> <span class="nav-text">Payload</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VRS"><span class="nav-number">1.1.7.</span> <span class="nav-text">VRS</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AD%BE%E5%90%8D%E9%87%8D%E6%94%BE%E5%88%86%E7%B1%BB%EF%BC%9A"><span class="nav-number">2.</span> <span class="nav-text">签名重放分类：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E4%B8%8D%E5%90%8C%E9%93%BE%E7%AD%BE%E5%90%8D%E9%87%8D%E6%94%BE%E6%94%BB%E5%87%BB"><span class="nav-number">2.1.</span> <span class="nav-text">1. 不同链签名重放攻击</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%90%8C%E9%93%BE%E7%AD%BE%E5%90%8D%E9%87%8D%E6%94%BE%E6%94%BB%E5%87%BB"><span class="nav-number">2.2.</span> <span class="nav-text">2.同链签名重放攻击</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%BB%E5%87%BB%E5%88%86%E6%9E%90"><span class="nav-number">2.3.</span> <span class="nav-text">攻击分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E5%A4%8D%E5%90%88%E7%BA%A6"><span class="nav-number">2.4.</span> <span class="nav-text">修复合约</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Q1ngying"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Q1ngying</p>
+  <div class="site-description" itemprop="description">今朝梦醒与君别，遥盼春风寄相思</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/q1ngying" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;q1ngying" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:q1ngying@163.com" title="E-Mail → mailto:q1ngying@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-09 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Q1ngying</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">41k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">2:18</span>
+</div>
+
+<div class="powered-by">
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <i class="fa fa-user-md"></i>
+    <span id="busuanzi_container_site_uv">
+        本站访客数:<span id="busuanzi_value_site_uv"></span>人
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_pv">
+        本站访问量<span id="busuanzi_value_site_pv"></span>人次
+    </span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,255,255' opacity='1' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icons8-autumn-material-filled-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icons8-autumn-material-filled-16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="前言： 可以说，抢跑是智能合约攻击中非常常见的攻击手法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="抢跑">
+<meta property="og:url" content="http://example.com/2023/10/08/%E6%8A%A2%E8%B7%91/index.html">
+<meta property="og:site_name" content="Q1ngying">
+<meta property="og:description" content="前言： 可以说，抢跑是智能合约攻击中非常常见的攻击手法">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/%E6%8A%A2%E8%B7%91/640.png">
+<meta property="og:image" content="http://example.com/images/%E6%8A%A2%E8%B7%91/640-16967474444573.png">
+<meta property="article:published_time" content="2023-10-08T06:23:38.000Z">
+<meta property="article:modified_time" content="2023-10-08T07:55:11.852Z">
+<meta property="article:author" content="Q1ngying">
+<meta property="article:tag" content="Solidity">
+<meta property="article:tag" content="Smart Contract">
+<meta property="article:tag" content="智能合约审计">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/%E6%8A%A2%E8%B7%91/640.png">
+
+<link rel="canonical" href="http://example.com/2023/10/08/%E6%8A%A2%E8%B7%91/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>抢跑 | Q1ngying</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Q1ngying</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">清影的个人站</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/10/08/%E6%8A%A2%E8%B7%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Q1ngying">
+      <meta itemprop="description" content="今朝梦醒与君别，遥盼春风寄相思">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Q1ngying">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          抢跑
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-10-08 14:23:38 / 修改时间：15:55:11" itemprop="dateCreated datePublished" datetime="2023-10-08T14:23:38+08:00">2023-10-08</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Solidity-%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">Solidity 安全</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>9 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><strong>前言：</strong></p>
+<p>可以说，抢跑是智能合约攻击中非常常见的攻击手法</p>
+<span id="more"></span>
+
+<h1 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h1><p>想要了解抢跑攻击，必须先了解以太坊的交易流程：</p>
+<p><img src="/../images/%E6%8A%A2%E8%B7%91/640.png" alt="图片"></p>
+<p>可以看到图中一笔交易从签名被打包一共会经历 7 个阶段：</p>
+<ul>
+<li>使用私钥对交易内容签名</li>
+<li>选择 Gas Price</li>
+<li>发送签名后的交易</li>
+<li>交易在各个节点之间广播</li>
+<li>交易进入交易池</li>
+<li>矿工取出 Gas Price 高的交易</li>
+<li>矿工打包交易并出块</li>
+</ul>
+<p><strong>交易发送后会被丢进交易池中，等待被矿工打包。矿工从交易池中取出交易进行打包与出块。</strong>根据 Etherscan 的数据，目前区块 Gas 限制在 3000w 左右，这是一个动态调整的值。若有一笔基础交易 21000 Gas 来计算，则目前一个以太坊区块可以容纳 1428 笔交易。因此，当交易池中的交易量大时，会有许多交易没办法即使被打包而滞留在交易池中等待。</p>
+<p><em><strong>交易池中存在多笔交易，矿工有限打包哪笔交易？</strong></em></p>
+<p>矿工节点可以自行设置参数，不过大多数矿工都是按照手续费的多少排序，手续费高的会被优先打包出块，手续费低的则需要等前面手续费高的交易全部打包完成后才能会被打包。<strong>进入交易池中的交易是源源不断的，不管交易进入交易池时间的先后，手续费高的永远会优先打包，手续费过低的可能永远不会被打包</strong></p>
+<p><em><strong>手续费是怎么来的？</strong></em></p>
+<p>以太坊手续续费计算公式：</p>
+<p>Tx Fee（手续费） &#x3D; Gas Used *  Gas Price</p>
+<p>其中 Gas Used 是由系统计算得出的，Gas Price 是可以自定义的，所以最终手续费的多少取决于 Gas Price 设置的多少</p>
+<p>举个例子：</p>
+<p>例如 Gas Price 设置为 10 GWEI，Gas Used 为 21,000（WEI 是以太坊上最小的单位 1 WEI &#x3D; 10^-18 个 Ether，GWEI 则是 1G 的 WEI，1 GWEI &#x3D; 10^-9 个 Ether）。因此，根据手续费计算公式可以算出手续费为：</p>
+<p>10 GWEI（单位燃料价格）* 21,000（燃料用量）&#x3D; 0.00021 Ether（手续费）</p>
+<p>在合约中我们常见到 Call 函数会设置 Gas Limit，下面我们来看看它是什么东西：</p>
+<p>Gas Limit 可以从字面意思理解，就是 Gas 限制的意思，设置它是为了表示你愿意花多少数量的 Gas 在这笔交易上。当交易涉及复杂的合约交互时，不太确定实际的 Gas Used，可以设置 Gas Limit，被打包时只会收取实际 Gas Used 作为手续费，多给的 Gas 会退返回来，当然如果实际操作中 Gas Used &gt; Gas Limit 就会发生 Out of gas，造成交易回滚。</p>
+<p>当然，在实际交易中选择一个合适的 Gas Price 也是有讲究的，我们可以在 ETH GAS STATION 上看到实时的 Gas Price 对应的打包速度：</p>
+<p><img src="/../images/%E6%8A%A2%E8%B7%91/640-16967474444573.png" alt="图片"></p>
+<p>由上图可见，当前最快的打包速度对应的 Gas Price 为 2，我们只需要在发送交易时将 Gas Price 设置为 &gt;&#x3D; 2 的值就可以被尽快打包。</p>
+<p>好了，到这里相信大家已经可以大致猜出抢跑的攻击方式了，就是在发送交易时将 Gas Price 调高从而被矿工优先打包。下面我们还是通过一个合约代码来带大家了解抢跑是如何完成攻击的。</p>
+<h1 id="合约示例"><a href="#合约示例" class="headerlink" title="合约示例"></a>合约示例</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line">//SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity ^0.8.17;</span><br><span class="line"></span><br><span class="line">import &quot;github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v4.5/contracts/utils/Strings.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract SecuredFindThisHash &#123;</span><br><span class="line">	//Struct is used to store the commit details</span><br><span class="line">	struct Commit &#123;</span><br><span class="line">        bytes32 solutionHash;</span><br><span class="line">        uint commitTime;</span><br><span class="line">        bool revealed;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	// The hash that is needed to be solved</span><br><span class="line">	bytes32 public hash = 0x564ccaf7594d66b1eaaea24fe01f0585bf52ee70852af4eac0cc4b04711cd0e2;</span><br><span class="line">	</span><br><span class="line">	// Address of the winner</span><br><span class="line">	address public winner;</span><br><span class="line">	</span><br><span class="line">	// Price to be rewarded</span><br><span class="line">	uint public reward;</span><br><span class="line">	</span><br><span class="line">	// Status of game</span><br><span class="line">	bool public ended;</span><br><span class="line">	</span><br><span class="line">	// Mapping to store the commit details with address</span><br><span class="line">	mapping(address =&gt; Commit) commits;</span><br><span class="line">	</span><br><span class="line">	// Modifier to check if the game is active</span><br><span class="line">	modifier gameActive() &#123;</span><br><span class="line">		require(!ended,&quot;Already ended&quot;);</span><br><span class="line">		_;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	constructor() payable &#123;</span><br><span class="line">		reward = msg.value;</span><br><span class="line">	&#125;</span><br><span class="line">	    /* </span><br><span class="line">       		Commit function to store the hash calculated using keccak256(address in lowercase + solution + secret). </span><br><span class="line">       		Users can only commit once and if the game is active.</span><br><span class="line">    	*/</span><br><span class="line">	function commitSolution(bytes32 _solutionHash) public gameActive &#123;</span><br><span class="line">	Commit storage commit = commits[msg.sender];</span><br><span class="line">	require(commit.commitTime == 0,&quot;Already committed&quot;);</span><br><span class="line">	commit.solutionHash = _solutionHash;</span><br><span class="line">	commit.commitTime = block.timestamp;</span><br><span class="line">	commit.revealed = false;</span><br><span class="line">	&#125;</span><br><span class="line">	/* </span><br><span class="line">        Function to get the commit details. It returns a tuple of (solutionHash, commitTime, revealStatus);  </span><br><span class="line">        Users can get solution only if the game is active and they have committed a solutionHash</span><br><span class="line">    */</span><br><span class="line">	function getMySolution() public view gameActive returns(bytes32, uint, bool) &#123;</span><br><span class="line">	Commit storage commit = commits[msg.sender];</span><br><span class="line">	require(commit.commitTime != 0,&quot;Not committed yet&quot;);</span><br><span class="line">	return (commit.solutionHash, commit.commitTime, commit.revealed);</span><br><span class="line">	&#125;</span><br><span class="line">	/* </span><br><span class="line">        Function to reveal the commit and get the reward. </span><br><span class="line">        Users can get reveal solution only if the game is active and they have committed a solutionHash before this block and not revealed yet.</span><br><span class="line">        It generates an keccak256(msg.sender + solution + secret) and checks it with the previously commited hash.  </span><br><span class="line">        Front runners will not be able to pass this check since the msg.sender is different.</span><br><span class="line">        Then the actual solution is checked using keccak256(solution), if the solution matches, the winner is declared, </span><br><span class="line">        the game is ended and the reward amount is sent to the winner.</span><br><span class="line">    */</span><br><span class="line">	function revealSolution(string memory _solution, string memory _secret) public gameActive &#123;</span><br><span class="line">	Commit storage commit = commits[msg.sender];</span><br><span class="line">	require(commit.commitTime != 0,&quot;Not commit yet&quot;);</span><br><span class="line">	require(commit.commitTime &lt; block.timestamp, &quot;Cannot reveal in the same block&quot;);</span><br><span class="line">	require(!commit.revealed,&quot;Already commited and revealed&quot;);</span><br><span class="line">	</span><br><span class="line">	bytes32 solutionHash = keccak256(abi.encodePacked(Strings.toHexString(msg.sender), _solution, _secret));</span><br><span class="line">	require(solutionHash == commit.solutionHash,&quot;Hash doesn&#x27;t match&quot;);</span><br><span class="line">	</span><br><span class="line">	require(keccak256(abi.encodePacked(_solution)) == hash, &quot;Incorrect answer&quot;);</span><br><span class="line">	</span><br><span class="line">	winner = msg.sender;</span><br><span class="line">	ended = true;</span><br><span class="line">	</span><br><span class="line">	(bool sent, ) = payable(msg.sender).call&#123;value: reward&#125;(&quot;&quot;);</span><br><span class="line">	if(!sent) &#123;</span><br><span class="line">        winner = address(0);</span><br><span class="line">	    ended = false;</span><br><span class="line">	    revert(&quot;Failed to send ether.&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="攻击分析"><a href="#攻击分析" class="headerlink" title="攻击分析"></a>攻击分析</h2><p>通过合约代码可以看到 FindThisHash 合约的部署者给出了一个哈希值，任何人都可以通过<code>solve()</code>提交答案，只要 solution 的哈希值与部署者的哈希值相同就可以得到 10 个以太的奖励。我们这里排除部署者自己拿取奖励的可能。</p>
+<p>我们还是请出老朋友 Eve（攻击者） 看看他是如何使用抢跑攻击拿走本该属于 Bob（受害者）的奖励的：</p>
+<ol>
+<li><p>Alice（合约部署者）使用 10 Ether 部署 FindThisHash 合约；</p>
+</li>
+<li><p>Bob 找到哈希值为目标哈希值的正确字符串；</p>
+</li>
+<li><p>Bob 调用 solve(“Ethereum”) 并将 Gas 价格设置为 15 Gwei；</p>
+</li>
+<li><p>Eve 正在监控交易池，等待有人提交正确的答案；</p>
+</li>
+<li><p>Eve 看到 Bob 发送的交易，设置比 Bob 更高的 Gas Price（100 Gwei），调用 solve(“Ethereum”)；</p>
+</li>
+<li><p>Eve 的交易先于 Bob 的交易被矿工打包；</p>
+</li>
+<li><p>Eve 赢得了 10 个以太币的奖励。</p>
+</li>
+</ol>
+<p>这里 Eve 的一系列操作就是标准的抢跑攻击，我们这里就可以给以太坊中的抢跑下一个定义：<strong>抢跑就是通过设置更高的 Gas Price 来影响交易被打包的顺序，从而完成攻击</strong>。</p>
+<p>那么这类攻击该如何避免呢？</p>
+<h2 id="修复建议"><a href="#修复建议" class="headerlink" title="修复建议"></a>修复建议</h2><p>在编写合约时可以使用 Commit-Reveal 方案：</p>
+<p><a target="_blank" rel="noopener" href="https://medium.com/swlh/exploring-commit-reveal-schemes-on-ethereum-c4ff5a777db8">https://medium.com/swlh/exploring-commit-reveal-schemes-on-ethereum-c4ff5a777db8</a></p>
+<p><em>Solidity by Example</em> 中提供了下面这段修复代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><span class="line">//SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity ^0.8.17;</span><br><span class="line"></span><br><span class="line">import &quot;github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v4.5/contracts/utils/Strings.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract SecuredFindThisHash &#123;</span><br><span class="line">	//Struct is used to store the commit details</span><br><span class="line">	struct Commit &#123;</span><br><span class="line">        bytes32 solutionHash;</span><br><span class="line">        uint commitTime;</span><br><span class="line">        bool revealed;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	// The hash that is needed to be solved</span><br><span class="line">	bytes32 public hash = 0x564ccaf7594d66b1eaaea24fe01f0585bf52ee70852af4eac0cc4b04711cd0e2;</span><br><span class="line">	</span><br><span class="line">	// Address of the winner</span><br><span class="line">	address public winner;</span><br><span class="line">	</span><br><span class="line">	// Price to be rewarded</span><br><span class="line">	uint public reward;</span><br><span class="line">	</span><br><span class="line">	// Status of game</span><br><span class="line">	bool public ended;</span><br><span class="line">	</span><br><span class="line">	// Mapping to store the commit details with address</span><br><span class="line">	mapping(address =&gt; Commit) commits;</span><br><span class="line">	</span><br><span class="line">	// Modifier to check if the game is active</span><br><span class="line">	modifier gaameActive() &#123;</span><br><span class="line">		require(!ended,&quot;Already ended&quot;);</span><br><span class="line">		_;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	constructor() payable &#123;</span><br><span class="line">		reward = msg.value;</span><br><span class="line">	&#125;</span><br><span class="line">	    /* </span><br><span class="line">       		Commit function to store the hash calculated using keccak256(address in lowercase + solution + secret). </span><br><span class="line">       		Users can only commit once and if the game is active.</span><br><span class="line">    	*/</span><br><span class="line">	function commitSolution(bytes32 _solutionHash) public gameActive &#123;</span><br><span class="line">	Commit storage commit = commits[msg.sender];</span><br><span class="line">	require(commit.commitTime == 0,&quot;Already committed&quot;);</span><br><span class="line">	commit.solutionHash = _solutionHash;</span><br><span class="line">	commit.commitTime = block.timestamp;</span><br><span class="line">	commit.revealed = false;</span><br><span class="line">	&#125;</span><br><span class="line">	/* </span><br><span class="line">        Function to get the commit details. It returns a tuple of (solutionHash, commitTime, revealStatus);  </span><br><span class="line">        Users can get solution only if the game is active and they have committed a solutionHash</span><br><span class="line">    */</span><br><span class="line">	function getMySolution() public view gameActive returns(bytes32, uint, bool) &#123;</span><br><span class="line">	Commit storage commit = commits[msg.sender];</span><br><span class="line">	require(commit.commitTime != 0,&quot;Not committed yet&quot;);</span><br><span class="line">	return (commit.solutionHash, commit.commitTime, commit.revealed);</span><br><span class="line">	&#125;</span><br><span class="line">	/* </span><br><span class="line">        Function to reveal the commit and get the reward. </span><br><span class="line">        Users can get reveal solution only if the game is active and they have committed a solutionHash before this block and not revealed yet.</span><br><span class="line">        It generates an keccak256(msg.sender + solution + secret) and checks it with the previously commited hash.  </span><br><span class="line">        Front runners will not be able to pass this check since the msg.sender is different.</span><br><span class="line">        Then the actual solution is checked using keccak256(solution), if the solution matches, the winner is declared, </span><br><span class="line">        the game is ended and the reward amount is sent to the winner.</span><br><span class="line">    */</span><br><span class="line">	function revealSolution(string memory _solution, string memory _secret) public gameActive &#123;</span><br><span class="line">	Commit storage commit = commits[msg.sender];</span><br><span class="line">	require(commit.commitTime != 0,&quot;Not commit yet&quot;);</span><br><span class="line">	require(commit.commitTime &lt; block.timestamp, &quot;Cannot reveal in the same block&quot;);</span><br><span class="line">	require(!commit.revealed,&quot;Already commited and revealed&quot;);</span><br><span class="line">	</span><br><span class="line">	bytes32 solutionHash = keccak256(abi.encodePacked(String.toHexString(msg.sender), _solution, _secret));</span><br><span class="line">	require(solutionHash == commit.solutionHash,&quot;Hash doesn&#x27;t match&quot;);</span><br><span class="line">	</span><br><span class="line">	require(keccak256(abi.encodePacked(_solution)) == hash, &quot;Incorrect answer&quot;);</span><br><span class="line">	</span><br><span class="line">	winner = msg.sender;</span><br><span class="line">	ended = true;</span><br><span class="line">	</span><br><span class="line">	(bool sent, ) = payable(msg.sender).call&#123;value: reward&#125;(&quot;&quot;);</span><br><span class="line">	winner = address(0);</span><br><span class="line">	ended = false;</span><br><span class="line">	revert(&quot;Failed to send ether.&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>首先，在修复代码中使用了结构体 Commit 记录玩家提交的信息，其中：</p>
+<p>commit.solutionHash &#x3D; _solutionHash &#x3D; keccak256(玩家地址 + 答案 + 密码) [记录玩家提交的答案哈希]</p>
+<p>commit.commitTime &#x3D; block.timestamp [记录提交时间]</p>
+<p>commit.revealed &#x3D; false [记录状态]</p>
+<p>下面我们来看这个合约是如何运作的：</p>
+<ol>
+<li>Alice 使用十个以太部署 SecuredFindThisHash 合约；</li>
+<li>Bob 找到哈希值为目标哈希值的正确字符串</li>
+<li>Bob 计算 solutionHash &#x3D; keccak256(Bob’s Address + “Ethereum” + Bob’s secret);</li>
+<li>Bob 调用 commitSolution(_solutionHash)，提交刚刚算出的 solutionHash；</li>
+<li>Bob 在下个区块调用 revealSolution(“Ethereum”, Bob’s secret) 函数，传入答案和自己的密码，领取奖励。</li>
+</ol>
+<p>这里我们看到了上述合约如何避免抢跑的，首先在第四步，Bob 提交的是 <code>Bob&#39;s Address + &quot;Ethereum&quot; + Bob&#39;s secret</code> 这三个值的哈希，所以没有人知道 Bob 提交的内容到底是什么，还进一步记录了提交的区块时间并且在第五步的 revealSolution() 中就先检查了区块时间，这是为了防止在同一个区块开奖被抢跑，因为调用 revealSolution() 时需要传入明文答案，最后使用 Bob 输入的答案和密码验证值卡提交的 solutionHash 哈希是否匹配，这一步是为了防止有人不走 commitSolution() 直接去调用 revealSolution()。验证成功后，检查答案是否正确，最后发放奖励。</p>
+<p><em><strong>所以这个合约真的完美地防止了 Eve 抄答案吗？</strong></em></p>
+<p>Of course not！</p>
+<p>咋回事呢？我们看到在 revealSolution() 中仅限制了 commit.commitTime &lt; block.timestamp ，所以假设 Bob 在第一个区块提交了答案，在第二个区块立马调用 revealSolution(“Ethereum”,Bob’s secret) 并设置 Gas Price &#x3D; 15 Gwei ，Eve 通过监控交易池拿到答案，拿到答案后他立即设置 Gas Price &#x3D; 100 Gwei ，在第二个区块中调用 commitSolution() ，提交答案并构造多笔高 Gas Price 的交易，将第二个区块填满，从而将 Bob 提交的交易挤到第三个区块中。在第三个区块中以 100 Gwei 的 Gas Price 调用 revealSolution(“Ethereum”,Eve’s secret) ，得到奖励。</p>
+<p>那么问题来了，如何才能有效地防止此类攻击呢？</p>
+<p>很简单，只需要设置 uint256 revealSpan 值并在 commitSolution() 中检查 require(commit.commitTime + revealSpan &gt;&#x3D; block.timestamp, “Cannot commit in this block”);，这样就可以防止 Eve 抄答案的情况。但是在开奖的时候，还是无法防止提交过答案的人抢先领奖。</p>
+<p>另外还有一点，本着代码严谨性，修复代码中的 revealSolution() 函数执行完后并没有将 commit.revealed 设为 True，虽然这并不会影响什么，但是在编写代码的时候还是建议养成良好的编码习惯，执行完函数逻辑后将开关设置成正确的状态。</p>
+<p>来源：慢雾公众号</p>
+<p>链接：</p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzU4ODQ3NTM2OA==&mid=2247497405&idx=1&sn=b215346b43437ed18a5e67a556d5c814&chksm=fdde883acaa9012cdfc683b01171acbfc66802e9745d3732c3344b69f76ea0c56ea58cbeda19&scene=178&cur_album_id=1378653641065857025#rd">https://mp.weixin.qq.com/s?__biz=MzU4ODQ3NTM2OA==&amp;mid=2247497405&amp;idx=1&amp;sn=b215346b43437ed18a5e67a556d5c814&amp;chksm=fdde883acaa9012cdfc683b01171acbfc66802e9745d3732c3344b69f76ea0c56ea58cbeda19&amp;scene=178&amp;cur_album_id=1378653641065857025#rd</a></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Q1ngying
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2023/10/08/%E6%8A%A2%E8%B7%91/" title="抢跑">http://example.com/2023/10/08/抢跑/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Solidity/" rel="tag"># Solidity</a>
+              <a href="/tags/Smart-Contract/" rel="tag"># Smart Contract</a>
+              <a href="/tags/%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6%E5%AE%A1%E8%AE%A1/" rel="tag"># 智能合约审计</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/10/08/%E9%87%8D%E6%94%BE/" rel="prev" title="重放">
+      <i class="fa fa-chevron-left"></i> 重放
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/10/08/solidity%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2%E7%9B%B8%E5%85%B3/" rel="next" title="solidity类型转换相关">
+      solidity类型转换相关 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86"><span class="nav-number">1.</span> <span class="nav-text">前置知识</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%88%E7%BA%A6%E7%A4%BA%E4%BE%8B"><span class="nav-number">2.</span> <span class="nav-text">合约示例</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%BB%E5%87%BB%E5%88%86%E6%9E%90"><span class="nav-number">2.1.</span> <span class="nav-text">攻击分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E5%A4%8D%E5%BB%BA%E8%AE%AE"><span class="nav-number">2.2.</span> <span class="nav-text">修复建议</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Q1ngying"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Q1ngying</p>
+  <div class="site-description" itemprop="description">今朝梦醒与君别，遥盼春风寄相思</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/q1ngying" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;q1ngying" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:q1ngying@163.com" title="E-Mail → mailto:q1ngying@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-09 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Q1ngying</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">41k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">2:18</span>
+</div>
+
+<div class="powered-by">
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <i class="fa fa-user-md"></i>
+    <span id="busuanzi_container_site_uv">
+        本站访客数:<span id="busuanzi_value_site_uv"></span>人
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_pv">
+        本站访问量<span id="busuanzi_value_site_pv"></span>人次
+    </span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,255,255' opacity='1' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
