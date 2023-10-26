@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icons8-autumn-material-filled-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icons8-autumn-material-filled-16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="基本类型由于 Rust 是一门静态语言，所以Rust 每个值都有其确切的数据类型 总的来说，可以分为两类：基本类型和复合类型。 基本类型意味着它们往往是一个最小化原子类型，无法解构为其他类型（一般意义上来说），由以下组成：  数值类型：有符号整数（i8，i16，i32，i64，isize）、无符号整数（u8，u16，u32，u64，usize）、浮点数（f32，f64）、以及有理数、复数 字符串：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2.2基本类型">
+<meta property="og:url" content="http://example.com/2023/10/23/2-2%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/index.html">
+<meta property="og:site_name" content="Q1ngying">
+<meta property="og:description" content="基本类型由于 Rust 是一门静态语言，所以Rust 每个值都有其确切的数据类型 总的来说，可以分为两类：基本类型和复合类型。 基本类型意味着它们往往是一个最小化原子类型，无法解构为其他类型（一般意义上来说），由以下组成：  数值类型：有符号整数（i8，i16，i32，i64，isize）、无符号整数（u8，u16，u32，u64，usize）、浮点数（f32，f64）、以及有理数、复数 字符串：">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/2-2%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/v2-54b3a6d435d2482243edc4be9ab98153_1440w.png">
+<meta property="article:published_time" content="2023-10-23T06:22:30.000Z">
+<meta property="article:modified_time" content="2023-10-26T11:51:02.070Z">
+<meta property="article:author" content="Q1ngying">
+<meta property="article:tag" content="learn">
+<meta property="article:tag" content="Rust">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/2-2%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/v2-54b3a6d435d2482243edc4be9ab98153_1440w.png">
+
+<link rel="canonical" href="http://example.com/2023/10/23/2-2%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>2.2基本类型 | Q1ngying</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Q1ngying</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">清影的个人站</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/10/23/2-2%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Q1ngying">
+      <meta itemprop="description" content="今朝梦醒与君别，遥盼春风寄相思">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Q1ngying">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          2.2基本类型
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-10-23 14:22:30" itemprop="dateCreated datePublished" datetime="2023-10-23T14:22:30+08:00">2023-10-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-10-26 19:51:02" itemprop="dateModified" datetime="2023-10-26T19:51:02+08:00">2023-10-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Rust/" itemprop="url" rel="index"><span itemprop="name">Rust</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">笔记</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>6.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>21 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="基本类型"><a href="#基本类型" class="headerlink" title="基本类型"></a>基本类型</h1><p>由于 Rust 是一门静态语言，所以<strong>Rust 每个值都有其确切的数据类型</strong></p>
+<p>总的来说，<strong>可以分为两类：基本类型和复合类型</strong>。</p>
+<p><strong>基本类型意味着它们往往是一个最小化原子类型，无法解构为其他类型（一般意义上来说），由以下组成：</strong></p>
+<ul>
+<li><strong>数值类型</strong>：有符号整数（<code>i8</code>，<code>i16</code>，<code>i32</code>，<code>i64</code>，<code>isize</code>）、无符号整数（<code>u8</code>，<code>u16</code>，<code>u32</code>，<code>u64</code>，<code>usize</code>）、浮点数（<code>f32</code>，<code>f64</code>）、以及有理数、复数</li>
+<li><strong>字符串：</strong>字符串字面量和字符串切片<code>&amp;str</code></li>
+<li><strong>布尔类型：</strong><code>true</code>和<code>false</code></li>
+<li><strong>字符类型：</strong>表示单个 Unicode 字符，存储为 4 个字节</li>
+<li><strong>单元类型：</strong>即<code>()</code>，其唯一值也是<code>()</code></li>
+</ul>
+<h2 id="类型推导与标注"><a href="#类型推导与标注" class="headerlink" title="类型推导与标注"></a>类型推导与标注</h2><p>与 Python、JavaScript 等动态语言不同，Rust 是一门静态类型语言。也就是说：编译器必须在编译期知道我们所有变量的类型，但这不意味着我们需要为每个变量指定类型。因为<strong>Rust 编译器很聪明，它可以根据变量的值和上下文中的使用方式来自动推导出变量的类型</strong>，但是在某些情况下，他无法推导出变量的类型，需要手动去给予一个类型标准。</p>
+<p>代码示例：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">guess</span> = <span class="string">&quot;42&quot;</span>.<span class="title function_ invoke__">parse</span>().<span class="title function_ invoke__">expect</span>(<span class="string">&quot;Not a number!&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>先忽略<code>,parse().expect..</code>部分，这段代码的目的是将字符串<code>&quot;42&quot;</code>进行解析，而编译器在这里无法推导出我们想要的类型，因此编译器会报错：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ cargo build</span><br><span class="line">   Compiling no_type_annotations v0.1.0 (file:///projects/no_type_annotations)</span><br><span class="line">error[E0282]: <span class="built_in">type</span> annotations needed</span><br><span class="line"> --&gt; src/main.rs:2:9</span><br><span class="line">  |</span><br><span class="line">2 |     <span class="built_in">let</span> guess = <span class="string">&quot;42&quot;</span>.parse().expect(<span class="string">&quot;Not a number!&quot;</span>);</span><br><span class="line">  |         ^^^^^ consider giving `guess` a <span class="built_in">type</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>因此我们需要给编译器更多的信息，例如给<code>guess</code>一个<strong>显式的类型标注：</strong><code>let guess : i32 = ...</code>或者<code>&quot;42&quot;.parse::&lt;i32&gt;()</code></p>
+<h1 id="—————————————"><a href="#—————————————" class="headerlink" title="—————————————"></a>—————————————</h1><h1 id="数值类型"><a href="#数值类型" class="headerlink" title="数值类型"></a>数值类型</h1><p>Rust 允许在复杂类型上定义运算符，例如在自定义类型上定义<code>+</code>运算符，这种行为被称为运算符重载，Rust 具体支持的重载运算符见<a target="_blank" rel="noopener" href="https://course.rs/appendix/operators.html#%E8%BF%90%E7%AE%97%E7%AC%A6">附录 B</a>。</p>
+<h2 id="整数类型"><a href="#整数类型" class="headerlink" title="整数类型"></a>整数类型</h2><p><strong>整数</strong>是没有小数部分的数字。之前使用过的<code>i32</code>类型，表示有符号的 32 位整数（<code>i</code>是英文单词<em>integer</em>的首字母，与之相反的是<code>u</code>，代表无符号<code>unsigned</code>类型）。下表显示了 Rust 中的内置的整数类型：</p>
+<table>
+<thead>
+<tr>
+<th>长度</th>
+<th>有符号类型</th>
+<th>无符号类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>8 位</td>
+<td><code>i8</code></td>
+<td><code>u8</code></td>
+</tr>
+<tr>
+<td>16 位</td>
+<td><code>i16</code></td>
+<td><code>u16</code></td>
+</tr>
+<tr>
+<td>32 位</td>
+<td><code>i32</code></td>
+<td><code>u32</code></td>
+</tr>
+<tr>
+<td>64 位</td>
+<td><code>i64</code></td>
+<td><code>u64</code></td>
+</tr>
+<tr>
+<td>128 位</td>
+<td><code>i128</code></td>
+<td><code>u128</code></td>
+</tr>
+<tr>
+<td>视架构而定</td>
+<td><code>isize</code></td>
+<td><code>usize</code></td>
+</tr>
+</tbody></table>
+<p>类型定义的形式统一为：<code>有无符号 + 类型大小（位数）</code>。<strong>无符号数</strong>表示数字只能取正数和0，而<strong>有符号</strong>则表示数字可以取正数、负数、0。<br><strong>当强调符号时，数字前面需要进行补码，而规定为无符号时，就不需要加上正好了。</strong></p>
+<p>每个有符号类型规定的数字范围是 -(2n - 1) ~ 2n - 1 - 1，其中 <code>n</code> 是该定义形式的位长度。因此 <code>i8</code> 可存储数字范围是 -(27) ~ 27 - 1，即 -128 ~ 127。无符号类型可以存储的数字范围是 0 ~ 2n - 1，所以 <code>u8</code> 能够存储的数字为 0 ~ 28 - 1，即 0 ~ 255。</p>
+<p>此外，<code>isize</code> 和 <code>usize</code> 类型取决于程序运行的计算机 CPU 类型： 若 CPU 是 32 位的，则这两个类型是 32 位的，同理，若 CPU 是 64 位，那么它们则是 64 位。</p>
+<p>整形字面量可以用下表的形式书写：</p>
+<table>
+<thead>
+<tr>
+<th>数字字面量</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>十进制</td>
+<td><code>98_222</code></td>
+</tr>
+<tr>
+<td>十六进制</td>
+<td><code>0xff</code></td>
+</tr>
+<tr>
+<td>八进制</td>
+<td><code>0o77</code></td>
+</tr>
+<tr>
+<td>二进制</td>
+<td><code>0b1111_0000</code></td>
+</tr>
+<tr>
+<td>字节 (仅限于 <code>u8</code>)</td>
+<td><code>b&#39;A&#39;</code></td>
+</tr>
+</tbody></table>
+<p>这么多类型，有没有一个简单的使用准则？答案是肯定的， Rust 整型默认使用 <code>i32</code>，例如 <code>let i = 1</code>，那 <code>i</code> 就是 <code>i32</code> 类型，因此你可以首选它，同时该类型也往往是性能最好的。<code>isize</code> 和 <code>usize</code> 的主要应用场景是用作集合的索引。</p>
+<h3 id="整型溢出"><a href="#整型溢出" class="headerlink" title="整型溢出"></a>整型溢出</h3><p>假设有一个 <code>u8</code>，它可以存放从 0 到 255 的值，当将其修改为范围之外的值（如 256）则会发生<strong>整型溢出</strong>。<strong>当在 debug 模式编译时，Rust 会检查整型溢出</strong>，若存在这些问题，则使程序在编译时 <em>panic</em>(崩溃,Rust 使用这个术语来表明程序因错误而退出)。</p>
+<p><strong>在使用<code>--release</code>参数进行 release (发布模式)模式构建时， Rust 不会检测溢出。</strong>当检测到整型溢出时，Rust 会<strong>按照补码循环溢出的规则处理</strong>，比如，在 <code>u8</code> 的情况下，256 会变成 0，257 会变成 1，以此类推。程序不会 <em>panic</em>，打不世故该变量的值可能不是我们期望的值。以来这种默认行为的代码都应该被认为是错误的代码。</p>
+<p>如果要显式处理可能的溢出，可以使用标准库准对原始数字类型提供的这些方法：</p>
+<ul>
+<li>使用<code>wrapping_*</code>方法在所有模式下都按照补码循环溢出规则处理，例如<code>wrapping_add</code></li>
+<li>如果使用<code>checked_*</code> 方法时发生溢出，则返回<code>None</code>值</li>
+<li>使用<code>overflowing_*</code>方法返回该值和一个指示是否存在溢出的布尔值</li>
+<li>使用<code>saturating_*</code>方法使值达到最小值或最大值</li>
+</ul>
+<p>下面是一个演示 <code>wrapping_*</code>方法的示例：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">a</span> : <span class="type">u8</span> = <span class="number">255</span>;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">b</span> : a.<span class="title function_ invoke__">wrapping_add</span>(<span class="number">20</span>);</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;&#123;&#125;&quot;</span>,b); <span class="comment">// 19</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="浮点类型"><a href="#浮点类型" class="headerlink" title="浮点类型"></a>浮点类型</h2><p><strong>浮点类型数字</strong> 是带有小数点的数字，在 Rust 中浮点类型数字也有两种基本类型：<code>f32</code>和<code>f64</code>，分别为 32 位和 64 位大小。默认浮点类型是<code>f64</code>，在现代的 CPU 中它的速度与<code>f32</code>几乎相同，但精度更高。</p>
+<p>下面是一个浮点数示例：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">x</span> = <span class="number">2.0</span>; <span class="comment">// f64</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">y</span> : <span class="type">f32</span> = <span class="number">3.0</span>; <span class="comment">// f32</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>浮点数根据<code>IEEE-754</code>标准实现。<code>f32</code>类型是单精度浮点型，<code>f64</code>为双精度。</p>
+<h3 id="浮点数陷阱"><a href="#浮点数陷阱" class="headerlink" title="浮点数陷阱"></a>浮点数陷阱</h3><p>浮点数由于底层格式的特殊性，导致了如果在使用浮点数时不够谨慎，就可能造成危险，有两个原因：</p>
+<ol>
+<li><strong>浮点数往往是你想要数字的近似表达</strong> 浮点数类型是基于二进制实现的，但是我们想要计算的数字往往是基于十进制，例如 <code>0.1</code> 在二进制上并不存在精确的表达形式，但是在十进制上就存在。这种不匹配性导致一定的歧义性，更多的，虽然浮点数能代表真实的数值，但是由于底层格式问题，它往往受限于定长的浮点数精度，如果你想要表达完全精准的真实数字，只有使用无限精度的浮点数才行</li>
+<li><strong>浮点数在某些特性上是反直觉的</strong> 例如大家都会觉得浮点数可以进行比较，对吧？是的，它们确实可以使用 <code>&gt;</code>，<code>&gt;=</code> 等进行比较，但是在某些场景下，这种直觉上的比较特性反而会害了你。因为 <code>f32</code> ， <code>f64</code> 上的比较运算实现的是 <code>std::cmp::PartialEq</code> 特征(类似其他语言的接口)，但是并没有实现 <code>std::cmp::Eq</code> 特征，但是后者在其它数值类型上都有定义，说了这么多，可能大家还是云里雾里，用一个例子来举例：</li>
+</ol>
+<p>&#x3D;&#x3D;下面来自 Rust 圣经&#x3D;&#x3D;</p>
+<p>Rust 的 <code>HashMap</code> 数据结构，是一个 KV 类型的 Hash Map 实现，它对于 <code>K</code> 没有特定类型的限制，但是要求能用作 <code>K</code> 的类型必须实现了 <code>std::cmp::Eq</code> 特征，因此这意味着你无法使用浮点数作为 <code>HashMap</code> 的 <code>Key</code>，来存储键值对，但是作为对比，Rust 的整数类型、字符串类型、布尔类型都实现了该特征，因此可以作为 <code>HashMap</code> 的 <code>Key</code>。</p>
+<p>为了避免上面说的两个陷阱，你需要遵守以下准则：</p>
+<ul>
+<li>避免在浮点数上测试相等性</li>
+<li>当结果在数学上可能存在未定义时，需要格外的小心</li>
+</ul>
+<p>来看个小例子:</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">  <span class="comment">// 断言0.1 + 0.2与0.3相等</span></span><br><span class="line">  <span class="built_in">assert!</span>(<span class="number">0.1</span> + <span class="number">0.2</span> == <span class="number">0.3</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>你可能以为，这段代码没啥问题吧，实际上它会 <em>panic</em>(程序崩溃，抛出异常)，因为二进制精度问题，导致了 0.1 + 0.2 并不严格等于 0.3，它们可能在小数点 N 位后存在误差。</p>
+<p>那如果非要进行比较呢？可以考虑用这种方式 <code>(0.1_f64 + 0.2 - 0.3).abs() &lt; 0.00001</code> ，具体小于多少，取决于你对精度的需求。</p>
+<p>下面是一段更神奇的代码：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">abc</span> : (<span class="type">f32</span>, <span class="type">f32</span>, <span class="type">f32</span>) = (<span class="number">0.1</span>, <span class="number">0.2</span>, <span class="number">0.3</span>);</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">xyz</span> : (<span class="type">f64</span>, <span class="type">f64</span>, <span class="type">f64</span>) = (<span class="number">0.1</span>, <span class="number">0.2</span>, <span class="number">0.3</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;abc (f32)&quot;</span>);</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;	0.1 + 0.2 : &#123;:x&#125;&quot;</span>, (abc.<span class="number">0</span> + abc.<span class="number">1</span>).<span class="title function_ invoke__">to_bits</span>());</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;		  0.3 : &#123;:x&#125;&quot;</span>, (abc.<span class="number">2</span>).<span class="title function_ invoke__">to_bits</span>());</span><br><span class="line">    <span class="built_in">println!</span>();</span><br><span class="line">    </span><br><span class="line">  	<span class="built_in">println!</span>(<span class="string">&quot;xyz (f64)&quot;</span>);</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;   0.1 + 0.2: &#123;:x&#125;&quot;</span>, (xyz.<span class="number">0</span> + xyz.<span class="number">1</span>).<span class="title function_ invoke__">to_bits</span>());</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;         0.3: &#123;:x&#125;&quot;</span>, (xyz.<span class="number">2</span>).<span class="title function_ invoke__">to_bits</span>());</span><br><span class="line">    <span class="built_in">println!</span>();</span><br><span class="line"></span><br><span class="line">    <span class="built_in">assert!</span>(abc.<span class="number">0</span> + abc.<span class="number">1</span> == abc.<span class="number">2</span>);</span><br><span class="line">    <span class="built_in">assert!</span>(xyz.<span class="number">0</span> + xyz.<span class="number">1</span> == xyz.<span class="number">2</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>允许该程序，输出如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">abc (f32)</span><br><span class="line">   0.1 + 0.2: 3e99999a</span><br><span class="line">         0.3: 3e99999a</span><br><span class="line"></span><br><span class="line">xyz (f64)</span><br><span class="line">   0.1 + 0.2: 3fd3333333333334</span><br><span class="line">         0.3: 3fd3333333333333</span><br><span class="line"></span><br><span class="line">thread <span class="string">&#x27;main&#x27;</span> panicked at <span class="string">&#x27;assertion failed: xyz.0 + xyz.1 == xyz.2&#x27;</span>,</span><br><span class="line">➥ch2-add-floats.rs.rs:14:5</span><br><span class="line">note: run with `RUST_BACKTRACE=1` environment variable to display</span><br><span class="line">➥a backtrace</span><br></pre></td></tr></table></figure>
+
+<p>仔细看，对 <code>f32</code> 类型做加法时，<code>0.1 + 0.2</code> 的结果是 <code>3e99999a</code>，<code>0.3</code> 也是 <code>3e99999a</code>，因此 <code>f32</code> 下的 <code>0.1 + 0.2 == 0.3</code> 通过测试，但是到了 <code>f64</code> 类型时，结果就不一样了，因为 <code>f64</code> 精度高很多，因此在小数点非常后面发生了一点微小的变化，<code>0.1 + 0.2</code> 以 <code>4</code> 结尾，但是 <code>0.3</code> 以<code>3</code>结尾，这个细微区别导致 <code>f64</code> 下的测试失败了，并且抛出了异常。</p>
+<h2 id="NaN"><a href="#NaN" class="headerlink" title="NaN"></a>NaN</h2><p>对于数学上未定义的结果，例如对负数取平方根<code>-42.1.sqrt()</code>，会产生一个特殊的结果： Rust 的浮点数类型使用<code>NaN</code>（not a number）来处理这些情况。</p>
+<p>**所有跟<code>NaN</code>交互的操作，都会返回一个<code>NaN</code>**，而且<code>NaN</code>不能用来比较，下面的代码会崩溃：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">x</span> = (-<span class="number">42.0_f32</span>).<span class="title function_ invoke__">sqrt</span>();</span><br><span class="line">    <span class="built_in">assert_eq!</span>(x, x);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>出于防御性编程的考虑，可以使用<code>is_nan()</code>等方法，来判断一个数值是否是<code>NaN</code>：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">x</span> = (-<span class="number">42.0_f32</span>).<span class="title function_ invoke__">sqrt</span>();</span><br><span class="line">    <span class="keyword">if</span> x.<span class="title function_ invoke__">is_nan</span>() &#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">&quot;未定义的数学行为&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="数字运算"><a href="#数字运算" class="headerlink" title="数字运算"></a>数字运算</h2><p>Rust  支持所有数字类型的基本数学运算：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="comment">// +</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">sum</span> = <span class="number">5</span> + <span class="number">10</span>;</span><br><span class="line">    <span class="comment">// - </span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">difference</span> = <span class="number">95.5</span> - <span class="number">4.3</span>;</span><br><span class="line">    <span class="comment">// *</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">product</span> = <span class="number">4</span> * <span class="number">30</span>;</span><br><span class="line">    <span class="comment">// /</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">quotient</span> = <span class="number">56.7</span> / <span class="number">32.2</span>;</span><br><span class="line">    <span class="comment">// %</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">remainder</span> = <span class="number">43</span> % <span class="number">5</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接下来看一个例子：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="comment">// 编译器自动推导，给予 twenty i32 类型</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">twenty</span> = <span class="number">20</span>;</span><br><span class="line">    <span class="comment">// 类型标准：</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">twenty_one</span> : <span class="type">i32</span> = <span class="number">21</span>;</span><br><span class="line">    <span class="comment">// 通过 类型后缀 的方式进行类型标准：22是i32类型</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">twenty_two</span> = <span class="number">22i32</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 相同类型才能运算</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">addition</span> = twenty + twenty_one + twenty_two;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;&#123;&#125; + &#123;&#125; + &#123;&#125; = &#123;&#125;&quot;</span>, twenty, twenty_one, twenty_two, addition)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 对于较长的数字，使用 _ 进行分割，提升可读性</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">one_million</span> : <span class="type">i64</span> = <span class="number">1_000_000</span>;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;&#123;&#125;&quot;</span>,one_million.<span class="title function_ invoke__">pow</span>(<span class="number">2</span>));</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 定义一个 f32 数组，其中 42.0 会自动被推导为 f32 类型</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">forty_twos</span> = [</span><br><span class="line">        <span class="number">42.0</span>,</span><br><span class="line">        <span class="number">42f32</span>,</span><br><span class="line">        <span class="number">42.0_f32</span>,</span><br><span class="line">    ];</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 打印数组中第一个值，并控制小数位为 2 位</span></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;&#123;:2&#125;&quot;</span>, forty_twos[<span class="number">0</span>]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="位运算"><a href="#位运算" class="headerlink" title="位运算"></a>位运算</h2><p>Rust的位运算基本上和其他语言一样</p>
+<table>
+<thead>
+<tr>
+<th>运算符</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&amp; 位与</td>
+<td>相同位置均为1时则为1，否则为0</td>
+</tr>
+<tr>
+<td>| 位或</td>
+<td>相同位置只要有1时则为1，否则为0</td>
+</tr>
+<tr>
+<td>^ 异或</td>
+<td>相同位置不相同则为1，相同则为0</td>
+</tr>
+<tr>
+<td>! 位非</td>
+<td>把位中的0和1相互取反，即0置为1，1置为0</td>
+</tr>
+<tr>
+<td>&lt;&lt; 左移</td>
+<td>所有位向左移动指定位数，右位补0</td>
+</tr>
+<tr>
+<td>&gt;&gt; 右移</td>
+<td>所有位向右移动指定位数，带符号移动（正数补0，负数补1）</td>
+</tr>
+</tbody></table>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="comment">// 二进制为 00000010</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">a</span>:<span class="type">i32</span> = <span class="number">2</span>;</span><br><span class="line">    <span class="comment">// 二进制为 00000011</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">b</span>:<span class="type">i32</span> = <span class="number">3</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;(a &amp; b) value is &#123;&#125;&quot;</span>, a &amp; b);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;(a | b) value is &#123;&#125;&quot;</span>, a | b);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;(a ^ b) value is &#123;&#125;&quot;</span>, a ^ b);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;(!b) value is &#123;&#125;&quot;</span>, !b);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;(a &lt;&lt; b) value is &#123;&#125;&quot;</span>, a &lt;&lt; b);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;(a &gt;&gt; b) value is &#123;&#125;&quot;</span>, a &gt;&gt; b);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">a</span> = a;</span><br><span class="line">     <span class="comment">// 注意这些计算符除了!之外都可以加上=进行赋值 (因为!=要用来判断不等于)</span></span><br><span class="line">    a &lt;&lt;= b;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;(a &lt;&lt; b) value is &#123;&#125;&quot;</span>, a);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="序列（Range）"><a href="#序列（Range）" class="headerlink" title="序列（Range）"></a>序列（Range）</h2><p>Rust 提供了一个非常简洁的方式，用来生成连续的数值，例如**<code>1..5</code>，生成从 1 到 4 的连续数字，不包含 5；<code>1..=5</code>，生成从 1 到 5 的连续数字，包含 5 ，**它的用途很简单，常常用于循环（感觉像 Python 的 **<code>range()</code>**）中：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> <span class="variable">i</span> <span class="keyword">in</span> <span class="number">1</span>..=<span class="number">5</span> &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;&#123;&#125;&quot;</span>,i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>程序输出：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td></tr></table></figure>
+
+<p>序列只允许用于数字或字符类型，原因是：它们可以连续，同时编译器在编译期可以检查该序列是否为空，字符和数字值是 Rust 中仅有的可以用于判断是否为空的类型。如下是一个使用字符类型序列的例子：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> <span class="variable">i</span> <span class="keyword">in</span> <span class="string">&#x27;a&#x27;</span>..=<span class="string">&#x27;z&#x27;</span> &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;&#123;&#125;&quot;</span>,i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="使用-As-完成类型转换"><a href="#使用-As-完成类型转换" class="headerlink" title="使用 As 完成类型转换"></a>使用 As 完成类型转换</h2><p>Rust 中可以使用 As 来完成一个类型到另一个类型的转换，其最常用于将原始类型转换为其他原始类型，但是它也可以完成诸如将指针转换为地址、地址转换为指针以及将指针转换为其他指针等功能。你可以在<a target="_blank" rel="noopener" href="https://course.rs/advance/into-types/converse.html">这里</a>了解更多相关的知识。</p>
+<h2 id="有理数和复数"><a href="#有理数和复数" class="headerlink" title="有理数和复数"></a>有理数和复数</h2><p>Rust 的标准库相比其它语言，准入门槛较高，因此有理数和复数并未包含在标准库中：</p>
+<ul>
+<li>有理数和复数</li>
+<li>任意大小的整数和任意精度的浮点数</li>
+<li>固定精度的十进制小数，常用于货币相关的场景</li>
+</ul>
+<p>好在社区已经开发出高质量的 Rust 数值库：<a target="_blank" rel="noopener" href="https://crates.io/crates/num">num</a>。</p>
+<p>按照以下步骤来引入 <code>num</code> 库：</p>
+<ol>
+<li>创建新工程 <code>cargo new complex-num &amp;&amp; cd complex-num</code></li>
+<li>在 <code>Cargo.toml</code> 中的 <code>[dependencies]</code> 下添加一行 <code>num = &quot;0.4.0&quot;</code></li>
+<li>将 <code>src/main.rs</code> 文件中的 <code>main</code> 函数替换为下面的代码</li>
+<li>运行 <code>cargo run</code></li>
+</ol>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> num::complex::Complex;</span><br><span class="line"></span><br><span class="line"> <span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">   <span class="keyword">let</span> <span class="variable">a</span> = Complex &#123; re: <span class="number">2.1</span>, im: -<span class="number">1.2</span> &#125;;</span><br><span class="line">   <span class="keyword">let</span> <span class="variable">b</span> = Complex::<span class="title function_ invoke__">new</span>(<span class="number">11.1</span>, <span class="number">22.2</span>);</span><br><span class="line">   <span class="keyword">let</span> <span class="variable">result</span> = a + b;</span><br><span class="line"></span><br><span class="line">   <span class="built_in">println!</span>(<span class="string">&quot;&#123;&#125; + &#123;&#125;i&quot;</span>, result.re, result.im)</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a><a target="_blank" rel="noopener" href="https://course.rs/basic/base-type/numbers.html#%E6%80%BB%E7%BB%93">总结</a></h2><p>之前提到了过 Rust 的数值类型和运算跟其他语言较为相似，但是实际上，除了语法上的不同之外，还是存在一些差异点：</p>
+<ul>
+<li><strong>Rust 拥有相当多的数值类型</strong>. 因此你需要熟悉这些类型所占用的字节数，这样就知道该类型允许的大小范围以及你选择的类型是否能表达负数</li>
+<li><strong>类型转换必须是显式的</strong>. Rust 永远也不会偷偷把你的 16bit 整数转换成 32bit 整数</li>
+<li><strong>Rust 的数值上可以使用方法</strong>. 例如你可以用以下方法来将 <code>13.14</code> 取整：<code>13.14_f32.round()</code>，在这里我们使用了类型后缀，因为编译器需要知道 <code>13.14</code> 的具体类型</li>
+</ul>
+<p>数值类型的讲解已经基本结束，接下来，来看看字符和布尔类型。</p>
+<h1 id="—————————————-1"><a href="#—————————————-1" class="headerlink" title="—————————————"></a>—————————————</h1><h1 id="字符、布尔、单元类型"><a href="#字符、布尔、单元类型" class="headerlink" title="字符、布尔、单元类型"></a>字符、布尔、单元类型</h1><h2 id="字符类型（char）"><a href="#字符类型（char）" class="headerlink" title="字符类型（char）"></a>字符类型（char）</h2><p><strong>注意：在Rust 中，使用<code>&#39;&#39;</code>表示字符，使用<code>&quot;&quot;</code>表示字符串</strong></p>
+<p>字符可以把它理解为英文中的字母，中文中的汉字。</p>
+<p>下面的代码展示了几个颇具异域风情的字符：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">c</span> = <span class="string">&#x27;z&#x27;</span>;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">z</span> = <span class="string">&#x27;ℤ&#x27;</span>;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">g</span> = <span class="string">&#x27;国&#x27;</span>;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">heart_eyed_cat</span> = &#x27;😻&#x27;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在 Rust 语言中这些都是字符，<strong>Rust 的字符不仅仅是 <code>ASCII</code>，所有的 <code>Unicode</code> 值都可以作为 Rust 字符</strong>，包括单个的中文、日文、韩文、emoji 表情符号等等，都是合法的字符类型。**<code>Unicode</code> 值的范围从 <code>U+0000 ~ U+D7FF</code> 和 <code>U+E000 ~ U+10FFFF</code>。**不过“字符”并不是 <code>Unicode</code> 中的一个概念，所以人在直觉上对“字符”的理解和 Rust 的字符概念并不一致。</p>
+<p><strong>由于 <code>Unicode</code> 都是 4 个字节编码，因此字符类型也是占用 4 个字节：</strong></p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">x</span> = <span class="string">&#x27;中&#x27;</span>;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;字符&#x27;中&#x27;占用了&#123;&#125;字节的内存大小&quot;</span>,std::mem::<span class="title function_ invoke__">size_of_val</span>(&amp;x));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出如下:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ cargo run</span><br><span class="line">   Compiling ...</span><br><span class="line"></span><br><span class="line">字符<span class="string">&#x27;中&#x27;</span>占用了4字节的内存大小</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意，我们还没开始讲字符串，但是这里提前说一下，和一些语言不同，Rust 的字符只能用 <code>&#39;&#39;</code> 来表示， <code>&quot;&quot;</code> 是留给字符串的。</p>
+</blockquote>
+<h2 id="布尔-bool"><a href="#布尔-bool" class="headerlink" title="布尔(bool)"></a>布尔(bool)</h2><p>Rust 中的布尔类型有两个可能的值：<code>true</code> 和 <code>false</code>，布尔值占用内存的大小为 <code>1</code> 个字节：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">t</span> = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">f</span>: <span class="type">bool</span> = <span class="literal">false</span>; <span class="comment">// 使用类型标注,显式指定f的类型</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> f &#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">&quot;这是段毫无意义的代码&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用布尔类型的场景主要在于流程控制，例如上述代码的中的 <code>if</code> 就是其中之一。</p>
+<h2 id="单元类型"><a href="#单元类型" class="headerlink" title="单元类型"></a>单元类型</h2><p>单元类型就是 <code>()</code>，唯一值也是<code>()</code>。</p>
+<p>在我们看到了主函数<code>fn main()</code>函数，该函数返回的就是单元类型<code>()</code>。我们不能说<code>main</code>函数没有返回值，因为<strong>没有返回值的函数在 Rust 中有单独的定义：<code>发散函数（ diverge function)</code>，顾名思义，无法收敛的函数。</strong></p>
+<p>例如，常见的 <code>println!()</code> 的返回值也是一个单元类型<code>()</code>。</p>
+<p>再比如，可以使用<code>()</code>作为<code>map</code>的值，表示我们不关注具体的值，只关注<code>key</code>。<strong>可以作为一个值来占位，但 <em>完全不占用</em> 任何内存</strong></p>
+<h1 id="—————————————-2"><a href="#—————————————-2" class="headerlink" title="—————————————"></a>—————————————</h1><h1 id="语句和表达式"><a href="#语句和表达式" class="headerlink" title="语句和表达式"></a>语句和表达式</h1><p>Rust 的函数体是由一系列语句组成，最后一个表达式来返回值，例如：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">add_with_extra</span>(x : <span class="type">i32</span>, y : <span class="type">i32</span>) <span class="punctuation">-&gt;</span> <span class="type">i32</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">x</span> = x + <span class="number">1</span>; <span class="comment">// 语句</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">y</span> = y + <span class="number">5</span>; <span class="comment">// 语句</span></span><br><span class="line">    x + y <span class="comment">// 表达式</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>语句会执行一些操作但是不会返回一个值，而表达式会在求值后返回一个值，因此在上述函数体的三行代码中，前两行是语句，最后一行是表达式。</strong></p>
+<p>对于 Rust 而言，<strong>这种基于语句（statement）和表达式（expression）的方式是非常重要的，你需要能明确的区分这两个概念</strong>，但是对于很多其他语言而言，这两个往往无需区分。基于表达式时函数式语言的重要特征，<strong>表达式总要返回值</strong></p>
+<h2 id="语句："><a href="#语句：" class="headerlink" title="语句："></a>语句：</h2><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">a</span> = <span class="number">8</span>;</span><br><span class="line"><span class="keyword">let</span> <span class="variable">b</span> : <span class="type">Vec</span>&lt;<span class="type">f64</span>&gt; = <span class="type">Vec</span>::<span class="title function_ invoke__">new</span>();</span><br><span class="line"><span class="keyword">let</span> (a, c) = (<span class="string">&quot;hi&quot;</span>, <span class="literal">false</span>);</span><br></pre></td></tr></table></figure>
+
+<p>以上都是语句，他们完成了一个具体的操作，但没有返回值，因此时语句。</p>
+<p>由于<code>let</code>是语句，因此不能将<code>let</code>语句赋值给其他值，以下形式是错误的：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">b</span> = (<span class="keyword">let</span> <span class="variable">a</span> = <span class="number">8</span>);</span><br></pre></td></tr></table></figure>
+
+<p>错误如下:</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">error: expected expression, found statement (`let`) // 期望表达式，却发现`let`语句</span><br><span class="line"><span class="meta prompt_"> --&gt; </span><span class="language-bash">src/main.rs:2:13</span></span><br><span class="line">  |</span><br><span class="line">2 |     let b = let a = 8;</span><br><span class="line">  |             ^^^^^^^^^</span><br><span class="line">  |</span><br><span class="line">  = note: variable declaration using `let` is a statement `let`是一条语句</span><br><span class="line"></span><br><span class="line">error[E0658]: `let` expressions in this position are experimental</span><br><span class="line">          // 下面的 `let` 用法目前是试验性的，在稳定版中尚不能使用</span><br><span class="line"><span class="meta prompt_"> --&gt; </span><span class="language-bash">src/main.rs:2:13</span></span><br><span class="line">  |</span><br><span class="line">2 |     let b = let a = 8;</span><br><span class="line">  |             ^^^^^^^^^</span><br><span class="line">  |</span><br><span class="line">  = note: see issue #53667 &lt;https://github.com/rust-lang/rust/issues/53667&gt; for more information</span><br><span class="line">  = help: you can write `matches!(&lt;expr&gt;, &lt;pattern&gt;)` instead of `let &lt;pattern&gt; = &lt;expr&gt;`</span><br></pre></td></tr></table></figure>
+
+<p>以上的错误告诉我们 <code>let</code> 是语句，不是表达式，因此它不返回值，也就不能给其它变量赋值。但是该错误还透漏了一个重要的信息， <code>let</code> 作为表达式已经是试验功能了，也许不久的将来，我们在 <a target="_blank" rel="noopener" href="https://course.rs/appendix/rust-version.html"><code>stable rust</code></a> 下可以这样使用。</p>
+<h2 id="表达式"><a href="#表达式" class="headerlink" title="表达式"></a>表达式</h2><p><strong>表达式会进行求值，然后返回一个值。</strong>例如<code>5 + 6</code>，在求值后，返回值<code>11</code>，因此它就是一条表达式。</p>
+<p><strong>表达式可以成为语句的一部分</strong>，例如<code>let y = 6</code>，<code>6</code>就是一个表达式，它在求值后返回一个值<code>6</code>（有些反直觉，但是确实是表达式）。</p>
+<p>调用一个函数是表达式，因为会返回一个值，调用宏也是表达式，用花括号包裹最终返回一个值的语句块也是表达式，总之<strong>能返回值就是一个表达式：</strong></p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">y</span> = &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="variable">x</span> = <span class="number">3</span>;</span><br><span class="line">        x + <span class="number">1</span></span><br><span class="line">    &#125;;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;The value of y is: &#123;&#125;&quot;</span>, y);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面使用一个语句块表达式将值赋给<code>y</code>变量，语句块长这样：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">x</span> = <span class="number">3</span>;</span><br><span class="line">    x + <span class="number">1</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>该语句块是表达式的原因是：它的最后一行是表达式，返回了 <code>x + 1</code> 的值，注意 <code>x + 1</code> 不能以分号结尾，否则就会从表达式变成语句， <strong>表达式不能包含分号</strong>。这一点非常重要，一旦你在表达式后加上分号，它就会变成一条语句，再也<strong>不会</strong>返回一个值，请牢记！</p>
+<p>最后，<strong>表达式如果不返回任何值，会隐式地返回一个 <code>()</code>。</strong></p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="built_in">assert_eq!</span>(<span class="title function_ invoke__">ret_unit_type</span>(), ())</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">ret_unit_type</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">x</span> = <span class="number">1</span>;</span><br><span class="line">    <span class="comment">// if 语句块也是一个表达式，因此可以用于赋值，也可以直接返回</span></span><br><span class="line">    <span class="comment">// 类似三元运算符，在Rust里我们可以这样写</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">y</span> = <span class="keyword">if</span> x % <span class="number">2</span> == <span class="number">1</span> &#123;</span><br><span class="line">        <span class="string">&quot;odd&quot;</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="string">&quot;even&quot;</span></span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="comment">// 或者写成一行</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">z</span> = <span class="keyword">if</span> x % <span class="number">2</span> == <span class="number">1</span> &#123; <span class="string">&quot;odd&quot;</span> &#125; <span class="keyword">else</span> &#123; <span class="string">&quot;even&quot;</span> &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="—————————————-3"><a href="#—————————————-3" class="headerlink" title="—————————————"></a>—————————————</h1><h1 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h1><p>上图：</p>
+<p><img src="/../images/2-2%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/v2-54b3a6d435d2482243edc4be9ab98153_1440w.png" alt="img"></p>
+<h2 id="函数要点"><a href="#函数要点" class="headerlink" title="函数要点"></a>函数要点</h2><ul>
+<li><strong>函数名和变量名使用<a target="_blank" rel="noopener" href="https://course.rs/practice/naming.html">蛇形命名法(snake case)</a>，例如 <code>fn add_two() -&gt; &#123;&#125;</code></strong></li>
+<li><strong>函数的位置可以随便放</strong>，Rust 不关心我们在哪里定义了函数，只要有定义即可</li>
+<li><strong>每个函数参数都需要标注类型</strong></li>
+</ul>
+<h2 id="函数参数"><a href="#函数参数" class="headerlink" title="函数参数"></a>函数参数</h2><p><strong>Rust 是强类型语言，因此需要为每一个函数参数都标识出它的具体类型</strong>，如：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="title function_ invoke__">another_function</span>(<span class="number">5</span>, <span class="number">6.1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">another_function</span>(x: <span class="type">i32</span>, y : <span class="type">f32</span>) &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;The value of x is : &#123;&#125;&quot;</span>, x);</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;The value of y is : &#123;&#125;&quot;</span>, y);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>another_function</code> 函数有两个参数，其中 <code>x</code> 是 <code>i32</code> 类型，<code>y</code> 是 <code>f32</code> 类型，然后在该函数内部，打印出这两个值。这里去掉 <code>x</code> 或者 <code>y</code> 的任何一个的类型，都会报错：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="title function_ invoke__">another_function</span>(<span class="number">5</span>, <span class="number">6.1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">another_function</span>(x: <span class="type">i32</span>, y) &#123;</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;The value of x is: &#123;&#125;&quot;</span>, x);</span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;The value of y is: &#123;&#125;&quot;</span>, y);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>错误如下:</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">error: expected one of `:`, `@`, or `|`, found `)`</span><br><span class="line"><span class="meta prompt_"> --&gt; </span><span class="language-bash">src/main.rs:5:30</span></span><br><span class="line">  |</span><br><span class="line">5 | fn another_function(x: i32, y) &#123;</span><br><span class="line">  |                              ^ expected one of `:`, `@`, or `|` // 期待以下符号之一 `:`, `@`, or `|`</span><br><span class="line">  |</span><br><span class="line">  = note: anonymous parameters are removed in the 2018 edition (see RFC 1685)</span><br><span class="line">    // 匿名参数在 Rust 2018 edition 中就已经移除</span><br><span class="line">help: if this is a parameter name, give it a type // 如果y是一个参数名，请给予它一个类型</span><br><span class="line">  |</span><br><span class="line">5 | fn another_function(x: i32, y: TypeName) &#123;</span><br><span class="line">  |                             ~~~~~~~~~~~</span><br><span class="line">help: if this is a type, explicitly ignore the parameter name // 如果y是一个类型，请使用_忽略参数名</span><br><span class="line">  |</span><br><span class="line">5 | fn another_function(x: i32, _: y) &#123;</span><br><span class="line">  |                             ~~~~</span><br></pre></td></tr></table></figure>
+
+<h2 id="函数返回"><a href="#函数返回" class="headerlink" title="函数返回"></a>函数返回</h2><p>在上一章节语句和表达式中，我们有提到，<strong>在 Rust 中函数就是表达式，因此我们可以把函数的返回值直接赋给调用者</strong>。</p>
+<p><strong>函数的返回值就是函数体最后一条表达式的返回值</strong>，当然我们<strong>也可以使用 <code>return</code> 提前返回</strong>，下面的函数使用最后一条表达式来返回一个值：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">plus_five</span>(x:<span class="type">i32</span>) <span class="punctuation">-&gt;</span> <span class="type">i32</span> &#123;</span><br><span class="line">    x + <span class="number">5</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">x</span> = <span class="title function_ invoke__">plus_five</span>(<span class="number">5</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;The value of x is: &#123;&#125;&quot;</span>, x);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>x + 5</code> 是一条表达式，求值后，返回一个值，因为它是函数的最后一行，因此该表达式的值也是函数的返回值。</p>
+<p>再来看两个重点：</p>
+<ol>
+<li><code>let x = plus_five(5)</code>，说明我们用一个函数的返回值来初始化 <code>x</code> 变量，因此侧面说明了在 Rust 中函数也是表达式，这种写法等同于 <code>let x = 5 + 5;</code></li>
+<li><code>x + 5</code> 没有分号，因为它是一条表达式，这个在上一节中我们也有详细介绍</li>
+</ol>
+<p>再来看一段代码，同时使用 <code>return</code> 和表达式作为返回值：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">plus_or_minus</span>(x:<span class="type">i32</span>) <span class="punctuation">-&gt;</span> <span class="type">i32</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> x &gt; <span class="number">5</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> x - <span class="number">5</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    x + <span class="number">5</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">x</span> = <span class="title function_ invoke__">plus_or_minus</span>(<span class="number">5</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">println!</span>(<span class="string">&quot;The value of x is: &#123;&#125;&quot;</span>, x);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>plus_or_minus</code> 函数根据传入 <code>x</code> 的大小来决定是做加法还是减法，若 <code>x &gt; 5</code> 则通过 <code>return</code> 提前返回 <code>x - 5</code> 的值,否则返回 <code>x + 5</code> 的值。</p>
+<h3 id="Rust-中的特殊返回类型"><a href="#Rust-中的特殊返回类型" class="headerlink" title="Rust 中的特殊返回类型"></a>Rust 中的特殊返回类型</h3><h4 id="无返回值"><a href="#无返回值" class="headerlink" title="无返回值()"></a>无返回值<code>()</code></h4><p>例如<strong>单元类型 <code>()</code>，是一个零长度的元组</strong>。它没啥作用，但是<strong>可以用来表达一个函数没有返回值：</strong></p>
+<ul>
+<li><strong>函数没有返回值，那么返回一个 <code>()</code></strong></li>
+<li><strong>通过 <code>;</code> 结尾的表达式返回一个 <code>()</code></strong></li>
+</ul>
+<p>例如下面的 <code>report</code> 函数会隐式返回一个 <code>()</code>：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> std::fmt::<span class="built_in">Debug</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">report</span>&lt;T: <span class="built_in">Debug</span>&gt;(item: T) &#123;</span><br><span class="line">  <span class="built_in">println!</span>(<span class="string">&quot;&#123;:?&#125;&quot;</span>, item);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>与上面的函数返回值相同，但是下面的函数显式的返回了 <code>()</code>：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">clear</span>(text: &amp;<span class="keyword">mut</span> <span class="type">String</span>) <span class="punctuation">-&gt;</span> () &#123;</span><br><span class="line">  *text = <span class="type">String</span>::<span class="title function_ invoke__">from</span>(<span class="string">&quot;&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>在实际编程中，你会经常在错误提示中看到该 <code>()</code> 的身影出没</strong>，假如你的函数需要返回一个 <code>u32</code> 值，但是如果你不幸的以 <code>表达式;</code> 的方式作为函数的最后一行代码，就会报错：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">add</span>(x:<span class="type">u32</span>,y:<span class="type">u32</span>) <span class="punctuation">-&gt;</span> <span class="type">u32</span> &#123;</span><br><span class="line">    x + y;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>错误如下：</p>
+<figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">error[E0308]: mismatched types // 类型不匹配</span><br><span class="line"><span class="meta prompt_"> --&gt; </span><span class="language-bash">src/main.rs:6:24</span></span><br><span class="line">  |</span><br><span class="line">6 | fn add(x:u32,y:u32) -&gt; u32 &#123;</span><br><span class="line">  |    ---                 ^^^ expected `u32`, found `()` // 期望返回u32,却返回()</span><br><span class="line">  |    |</span><br><span class="line">  |    implicitly returns `()` as its body has no tail or `return` expression</span><br><span class="line">7 |     x + y;</span><br><span class="line">  |          - help: consider removing this semicolon</span><br></pre></td></tr></table></figure>
+
+<p>还记得我们在语句与表达式中讲过的吗？<strong>只有表达式能返回值，而 <code>;</code> 结尾的是语句</strong>，在 Rust 中，一定要严格区分<strong>表达式</strong>和<strong>语句</strong>的区别，这个在其它语言中往往是被忽视的点。</p>
+<h4 id="永不返回的发散函数"><a href="#永不返回的发散函数" class="headerlink" title="永不返回的发散函数&#96;!"></a>永不返回的发散函数&#96;!</h4><p><strong>当用 <code>!</code> 作函数返回类型的时候，表示该函数永不返回（diverge function）</strong>，这种语法往往<strong>用于会导致程序崩溃的函数</strong>：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">dead_end</span>() <span class="punctuation">-&gt;</span> ! &#123;</span><br><span class="line">  <span class="built_in">panic!</span>(<span class="string">&quot;你已经到了穷途末路，崩溃吧！&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>下面的函数创建了一个无限循环，该循环永不跳出，因此函数也永不返回：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">fn</span> <span class="title function_">forever</span>() <span class="punctuation">-&gt;</span> ! &#123;</span><br><span class="line">  <span class="keyword">loop</span> &#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Q1ngying
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2023/10/23/2-2%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/" title="2.2基本类型">http://example.com/2023/10/23/2-2基本类型/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/learn/" rel="tag"># learn</a>
+              <a href="/tags/Rust/" rel="tag"># Rust</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/10/23/2.1Rust%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%EF%BC%8C%E5%8F%98%E9%87%8F%E7%BB%91%E5%AE%9A%E4%B8%8E%E8%A7%A3%E6%9E%84/" rel="prev" title="2.1Rust基本概念，变量绑定与解构">
+      <i class="fa fa-chevron-left"></i> 2.1Rust基本概念，变量绑定与解构
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/10/26/Foundry%E5%85%A5%E9%97%A8/" rel="next" title="Foundry入门">
+      Foundry入门 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">基本类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B1%BB%E5%9E%8B%E6%8E%A8%E5%AF%BC%E4%B8%8E%E6%A0%87%E6%B3%A8"><span class="nav-number">1.1.</span> <span class="nav-text">类型推导与标注</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94"><span class="nav-number">2.</span> <span class="nav-text">—————————————</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E5%80%BC%E7%B1%BB%E5%9E%8B"><span class="nav-number">3.</span> <span class="nav-text">数值类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B4%E6%95%B0%E7%B1%BB%E5%9E%8B"><span class="nav-number">3.1.</span> <span class="nav-text">整数类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B4%E5%9E%8B%E6%BA%A2%E5%87%BA"><span class="nav-number">3.1.1.</span> <span class="nav-text">整型溢出</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%AE%E7%82%B9%E7%B1%BB%E5%9E%8B"><span class="nav-number">3.2.</span> <span class="nav-text">浮点类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%AE%E7%82%B9%E6%95%B0%E9%99%B7%E9%98%B1"><span class="nav-number">3.2.1.</span> <span class="nav-text">浮点数陷阱</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NaN"><span class="nav-number">3.3.</span> <span class="nav-text">NaN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E5%AD%97%E8%BF%90%E7%AE%97"><span class="nav-number">3.4.</span> <span class="nav-text">数字运算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%8D%E8%BF%90%E7%AE%97"><span class="nav-number">3.5.</span> <span class="nav-text">位运算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%8F%E5%88%97%EF%BC%88Range%EF%BC%89"><span class="nav-number">3.6.</span> <span class="nav-text">序列（Range）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-As-%E5%AE%8C%E6%88%90%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2"><span class="nav-number">3.7.</span> <span class="nav-text">使用 As 完成类型转换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%89%E7%90%86%E6%95%B0%E5%92%8C%E5%A4%8D%E6%95%B0"><span class="nav-number">3.8.</span> <span class="nav-text">有理数和复数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">3.9.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94-1"><span class="nav-number">4.</span> <span class="nav-text">—————————————</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E3%80%81%E5%B8%83%E5%B0%94%E3%80%81%E5%8D%95%E5%85%83%E7%B1%BB%E5%9E%8B"><span class="nav-number">5.</span> <span class="nav-text">字符、布尔、单元类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E7%B1%BB%E5%9E%8B%EF%BC%88char%EF%BC%89"><span class="nav-number">5.1.</span> <span class="nav-text">字符类型（char）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%83%E5%B0%94-bool"><span class="nav-number">5.2.</span> <span class="nav-text">布尔(bool)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E5%85%83%E7%B1%BB%E5%9E%8B"><span class="nav-number">5.3.</span> <span class="nav-text">单元类型</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94-2"><span class="nav-number">6.</span> <span class="nav-text">—————————————</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AF%AD%E5%8F%A5%E5%92%8C%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">7.</span> <span class="nav-text">语句和表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%AD%E5%8F%A5%EF%BC%9A"><span class="nav-number">7.1.</span> <span class="nav-text">语句：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">7.2.</span> <span class="nav-text">表达式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E2%80%94-3"><span class="nav-number">8.</span> <span class="nav-text">—————————————</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%87%BD%E6%95%B0"><span class="nav-number">9.</span> <span class="nav-text">函数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E8%A6%81%E7%82%B9"><span class="nav-number">9.1.</span> <span class="nav-text">函数要点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E5%8F%82%E6%95%B0"><span class="nav-number">9.2.</span> <span class="nav-text">函数参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E8%BF%94%E5%9B%9E"><span class="nav-number">9.3.</span> <span class="nav-text">函数返回</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Rust-%E4%B8%AD%E7%9A%84%E7%89%B9%E6%AE%8A%E8%BF%94%E5%9B%9E%E7%B1%BB%E5%9E%8B"><span class="nav-number">9.3.1.</span> <span class="nav-text">Rust 中的特殊返回类型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%A0%E8%BF%94%E5%9B%9E%E5%80%BC"><span class="nav-number">9.3.1.1.</span> <span class="nav-text">无返回值()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B0%B8%E4%B8%8D%E8%BF%94%E5%9B%9E%E7%9A%84%E5%8F%91%E6%95%A3%E5%87%BD%E6%95%B0"><span class="nav-number">9.3.1.2.</span> <span class="nav-text">永不返回的发散函数&#96;!</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Q1ngying"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Q1ngying</p>
+  <div class="site-description" itemprop="description">今朝梦醒与君别，遥盼春风寄相思</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/q1ngying" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;q1ngying" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:q1ngying@163.com" title="E-Mail → mailto:q1ngying@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-09 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Q1ngying</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">48k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">2:39</span>
+</div>
+
+<div class="powered-by">
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <i class="fa fa-user-md"></i>
+    <span id="busuanzi_container_site_uv">
+        本站访客数:<span id="busuanzi_value_site_uv"></span>人
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_pv">
+        本站访问量<span id="busuanzi_value_site_pv"></span>人次
+    </span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,255,255' opacity='1' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
