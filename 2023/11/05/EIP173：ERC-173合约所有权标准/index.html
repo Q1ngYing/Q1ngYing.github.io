@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icons8-autumn-material-filled-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icons8-autumn-material-filled-16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="ERC-173 合约所有权标准简要说明： 合约所有权的标准接口">
+<meta property="og:type" content="article">
+<meta property="og:title" content="EIP173：ERC-173合约所有权标准">
+<meta property="og:url" content="http://example.com/2023/11/05/EIP173%EF%BC%9AERC-173%E5%90%88%E7%BA%A6%E6%89%80%E6%9C%89%E6%9D%83%E6%A0%87%E5%87%86/index.html">
+<meta property="og:site_name" content="Q1ngying">
+<meta property="og:description" content="ERC-173 合约所有权标准简要说明： 合约所有权的标准接口">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-11-05T12:05:11.000Z">
+<meta property="article:modified_time" content="2023-11-05T12:09:46.496Z">
+<meta property="article:author" content="Q1ngying">
+<meta property="article:tag" content="Solidity">
+<meta property="article:tag" content="EIPs">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2023/11/05/EIP173%EF%BC%9AERC-173%E5%90%88%E7%BA%A6%E6%89%80%E6%9C%89%E6%9D%83%E6%A0%87%E5%87%86/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>EIP173：ERC-173合约所有权标准 | Q1ngying</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Q1ngying</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">清影的个人站</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/11/05/EIP173%EF%BC%9AERC-173%E5%90%88%E7%BA%A6%E6%89%80%E6%9C%89%E6%9D%83%E6%A0%87%E5%87%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Q1ngying">
+      <meta itemprop="description" content="今朝梦醒与君别，遥盼春风寄相思">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Q1ngying">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          EIP173：ERC-173合约所有权标准
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-11-05 20:05:11 / 修改时间：20:09:46" itemprop="dateCreated datePublished" datetime="2023-11-05T20:05:11+08:00">2023-11-05</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/EIPs/" itemprop="url" rel="index"><span itemprop="name">EIPs</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="ERC-173-合约所有权标准"><a href="#ERC-173-合约所有权标准" class="headerlink" title="ERC-173 合约所有权标准"></a>ERC-173 合约所有权标准</h1><p><strong>简要说明：</strong></p>
+<p>合约所有权的标准接口</p>
+<span id="more"></span>
+
+<p>原文章：<a target="_blank" rel="noopener" href="https://eips.ethereum.org/EIPS/eip-173">https://eips.ethereum.org/EIPS/eip-173</a></p>
+<h2 id="摘要："><a href="#摘要：" class="headerlink" title="摘要："></a>摘要：</h2><p>该规范定义了拥有或控制合约的标准功能。</p>
+<p>实现允许读取当前所有者（**<code>owner() returns (address)</code><strong>）并转移所有权（</strong><code>transferOwnership(address newOwner)</code><strong>）以及所有权变更时的标准化事件（</strong><code>OwnershipTransferred(address indexed previousOwner, address indexed newOwner)</code>**）。</p>
+<h2 id="动机："><a href="#动机：" class="headerlink" title="动机："></a>动机：</h2><p><strong>许多智能合约要求以某种方式拥有或控制它们</strong>。例如提取资金或执行管理操作，用于处理合约所有权的合约接口应该标准化，以允许与管理合约的用户界面和合约兼容，这是很常见的。</p>
+<p>下面是可以从此标准中受益的合约和应用程序类型的一些示例：</p>
+<ol>
+<li>购买&#x2F;出售&#x2F;拍卖以太坊合约的交易所。只有存在获取合约所有者和转让所有权的标准，这才有可能实现。</li>
+<li>合约钱包，持有合约的所有权，并且可以转让合约的所有权</li>
+<li>合约登记处。对于某些注册管理机构来说，只允许合约所有者添加&#x2F;删除其合约是有意义的。这些合约注册中心必须存在一个标准，以再接受合约之前验证合约是否由其所有者提交</li>
+<li>显示和转让合约所有权的用户界面。</li>
+</ol>
+<h2 id="规范"><a href="#规范" class="headerlink" title="规范"></a>规范</h2><p>每个符合 ERC-173 的合约都必须实现该<code>ERC173</code>接口。合约还应该实现<code>REC165</code>ERC173 接口</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">/// @title ERC-173 Contract Ownership Standard</span><br><span class="line">///  Note: the ERC-165 identifier for this interface is 0x7f5828d0</span><br><span class="line">interface ERC173 &#123; // is ERC165</span><br><span class="line">    /// @dev This emits when ownership of a contract changes.    </span><br><span class="line">    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);</span><br><span class="line"></span><br><span class="line">    /// @notice Get the address of the owner    </span><br><span class="line">    /// @return The address of the owner.</span><br><span class="line">    function owner() view external returns(address);</span><br><span class="line">	</span><br><span class="line">    /// @notice Set the address of the new owner of the contract</span><br><span class="line">    /// @dev Set _newOwner to address(0) to renounce any ownership.</span><br><span class="line">    /// @param _newOwner The address of the new owner of the contract    </span><br><span class="line">    function transferOwnership(address _newOwner) external;	</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">interface ERC165 &#123;</span><br><span class="line">    /// @notice Query if a contract implements an interface</span><br><span class="line">    /// @param interfaceID The interface identifier, as specified in ERC-165</span><br><span class="line">    /// @dev Interface identification is specified in ERC-165. </span><br><span class="line">    /// @return `true` if the contract implements `interfaceID` and</span><br><span class="line">    ///  `interfaceID` is not 0xffffffff, `false` otherwise</span><br><span class="line">    function supportsInterface(bytes4 interfaceID) external view returns (bool);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>该<code>owner()</code>函数可以实现为<code>pure</code>或<code>view</code></p>
+<p>该<code>transferOwnership(address _newOwner)</code>函数可以实现为<code>public</code>或<code>external</code></p>
+<p>要放弃合约的任何所有权，请将 _newOwner 设置为零地址：<code>transferOwnership(address(0))</code>。<strong>如果这样做了，那么合约将不再属于任何人</strong></p>
+<p>创建合约时应发出 OwnershipTransferred 事件。</p>
+<h2 id="基本原理："><a href="#基本原理：" class="headerlink" title="基本原理："></a>基本原理：</h2><p>映像标准的关键因素：</p>
+<ul>
+<li>将接口中的函数数量保持在最低限度，以防止合约膨胀</li>
+<li>与现有合约的向后兼容性</li>
+<li>简单</li>
+<li>气体效率高</li>
+</ul>
+<p>考虑了几种所有权方案。选择该标准中的方案是因为其简单、天然气成本低以及与现有合约的向后兼容性。</p>
+<p>以下是考虑过的其他方案：</p>
+<ol>
+<li><strong>将以太坊名称服务 (ENS) 域名与合同关联。</strong>合约的<code>owner()</code>函数可以查找特定 ENS 名称的所有者地址，并将其用作合约的所有者地址。使用此方案，可以通过将 ENS 域名的所有权转移到不同的地址来转移合同。这种方法的缺点是它不能向后兼容现有合约，并且需要gas对ENS相关合约进行外部调用以获取所有者地址。</li>
+<li><strong>将基于 ERC721 的不可替代代币 (NFT) 与合约关联。</strong>合约的所有权可能与 NFT 的所有权挂钩。这种方法的好处是现有的基于 ERC721 的基础设施可用于出售&#x2F;购买&#x2F;拍卖合同。这种方法的缺点是额外的复杂性和所需的基础设施。合约可以与特定的 NFT 相关联，但 NFT 不会跟踪它拥有合约的所有权，除非它被编程为跟踪合约。此外，以这种方式处理合约所有权并不向后兼容。</li>
+</ol>
+<p>本标准不排除上述所有权方案或其他方案也在同一合同中实施。例如，合同可以实施该标准，也可以实施其他方案，以便可以通过多种方式管理和转让所有权。该标准确实提供了一种简单的所有权方案，该方案向后兼容、轻量级且易于实施，并且可以被广泛采用和依赖。</p>
+<p>该标准可以（并且已经）由其他标准扩展以添加额外的所有权功能。</p>
+<h2 id="安全考虑"><a href="#安全考虑" class="headerlink" title="安全考虑"></a>安全考虑</h2><p>如果返回的地址<code>owner()</code>是外部拥有的帐户，则其私钥不得丢失或泄露。</p>
+<h2 id="向后兼容性"><a href="#向后兼容性" class="headerlink" title="向后兼容性"></a>向后兼容性</h2><p>许多现有合同已经实施该标准。</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Q1ngying
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2023/11/05/EIP173%EF%BC%9AERC-173%E5%90%88%E7%BA%A6%E6%89%80%E6%9C%89%E6%9D%83%E6%A0%87%E5%87%86/" title="EIP173：ERC-173合约所有权标准">http://example.com/2023/11/05/EIP173：ERC-173合约所有权标准/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Solidity/" rel="tag"># Solidity</a>
+              <a href="/tags/EIPs/" rel="tag"># EIPs</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/11/05/EIP165%EF%BC%9AERC-165%E6%A0%87%E5%87%86%E6%8E%A5%E5%8F%A3%E6%A3%80%E6%B5%8B/" rel="prev" title="EIP165：ERC-165标准接口检测">
+      <i class="fa fa-chevron-left"></i> EIP165：ERC-165标准接口检测
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/11/05/EIP191%EF%BC%9AERC191-%E6%95%B0%E6%8D%AE%E7%AD%BE%E5%90%8D%E6%A0%87%E5%87%86/" rel="next" title="EIP191：ERC191-数据签名标准">
+      EIP191：ERC191-数据签名标准 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ERC-173-%E5%90%88%E7%BA%A6%E6%89%80%E6%9C%89%E6%9D%83%E6%A0%87%E5%87%86"><span class="nav-number">1.</span> <span class="nav-text">ERC-173 合约所有权标准</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%91%98%E8%A6%81%EF%BC%9A"><span class="nav-number">1.1.</span> <span class="nav-text">摘要：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%9C%BA%EF%BC%9A"><span class="nav-number">1.2.</span> <span class="nav-text">动机：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%84%E8%8C%83"><span class="nav-number">1.3.</span> <span class="nav-text">规范</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%EF%BC%9A"><span class="nav-number">1.4.</span> <span class="nav-text">基本原理：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E8%80%83%E8%99%91"><span class="nav-number">1.5.</span> <span class="nav-text">安全考虑</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%91%E5%90%8E%E5%85%BC%E5%AE%B9%E6%80%A7"><span class="nav-number">1.6.</span> <span class="nav-text">向后兼容性</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Q1ngying"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Q1ngying</p>
+  <div class="site-description" itemprop="description">今朝梦醒与君别，遥盼春风寄相思</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/q1ngying" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;q1ngying" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:q1ngying@163.com" title="E-Mail → mailto:q1ngying@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-09 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Q1ngying</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">60k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:20</span>
+</div>
+
+<div class="powered-by">
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <i class="fa fa-user-md"></i>
+    <span id="busuanzi_container_site_uv">
+        本站访客数:<span id="busuanzi_value_site_uv"></span>人
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_pv">
+        本站访问量<span id="busuanzi_value_site_pv"></span>人次
+    </span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,255,255' opacity='1' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
