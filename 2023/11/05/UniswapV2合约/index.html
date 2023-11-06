@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icons8-autumn-material-filled-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icons8-autumn-material-filled-16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="深入理解 Uniswap v2 合约代码来源：https:&#x2F;&#x2F;hackmd.io&#x2F;@adshao&#x2F;rk7nI-EG9 合约架构：Unsiwap-v2 合约主要分为两类：core 合约和 periphery 合约。其中 ，core 合约仅包含最基础的交易功能，核心代码仅 200 行左右，由于用户资金都存储在 core 合约中，因此需要保证 core 合约最简化，避免引入 bug；periphery">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UniswapV2合约">
+<meta property="og:url" content="http://example.com/2023/11/05/UniswapV2%E5%90%88%E7%BA%A6/index.html">
+<meta property="og:site_name" content="Q1ngying">
+<meta property="og:description" content="深入理解 Uniswap v2 合约代码来源：https:&#x2F;&#x2F;hackmd.io&#x2F;@adshao&#x2F;rk7nI-EG9 合约架构：Unsiwap-v2 合约主要分为两类：core 合约和 periphery 合约。其中 ，core 合约仅包含最基础的交易功能，核心代码仅 200 行左右，由于用户资金都存储在 core 合约中，因此需要保证 core 合约最简化，避免引入 bug；periphery">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/UniswapV2%E5%90%88%E7%BA%A6/J9txqxI.png">
+<meta property="og:image" content="http://example.com/images/UniswapV2%E5%90%88%E7%BA%A6/vw84rOW.png">
+<meta property="og:image" content="http://example.com/images/UniswapV2%E5%90%88%E7%BA%A6/image-20231101170847732.png">
+<meta property="og:image" content="http://example.com/images/UniswapV2%E5%90%88%E7%BA%A6/image-20231101171606197.png">
+<meta property="article:published_time" content="2023-11-05T12:16:15.000Z">
+<meta property="article:modified_time" content="2023-11-06T11:46:51.142Z">
+<meta property="article:author" content="Q1ngying">
+<meta property="article:tag" content="Solidity">
+<meta property="article:tag" content="DeFi">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/UniswapV2%E5%90%88%E7%BA%A6/J9txqxI.png">
+
+<link rel="canonical" href="http://example.com/2023/11/05/UniswapV2%E5%90%88%E7%BA%A6/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>UniswapV2合约 | Q1ngying</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Q1ngying</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">清影的个人站</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/11/05/UniswapV2%E5%90%88%E7%BA%A6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Q1ngying">
+      <meta itemprop="description" content="今朝梦醒与君别，遥盼春风寄相思">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Q1ngying">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          UniswapV2合约
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-11-05 20:16:15" itemprop="dateCreated datePublished" datetime="2023-11-05T20:16:15+08:00">2023-11-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-11-06 19:46:51" itemprop="dateModified" datetime="2023-11-06T19:46:51+08:00">2023-11-06</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/learn/" itemprop="url" rel="index"><span itemprop="name">learn</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Solidity/" itemprop="url" rel="index"><span itemprop="name">Solidity</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/DeFi/" itemprop="url" rel="index"><span itemprop="name">DeFi</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>5.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>18 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="深入理解-Uniswap-v2-合约代码"><a href="#深入理解-Uniswap-v2-合约代码" class="headerlink" title="深入理解 Uniswap v2 合约代码"></a>深入理解 Uniswap v2 合约代码</h1><p>来源：<a target="_blank" rel="noopener" href="https://hackmd.io/@adshao/rk7nI-EG9">https://hackmd.io/@adshao/rk7nI-EG9</a></p>
+<h2 id="合约架构："><a href="#合约架构：" class="headerlink" title="合约架构："></a>合约架构：</h2><p><strong>Unsiwap-v2 合约主要分为两类：core 合约和 periphery 合约。</strong>其中 ，<strong>core 合约仅包含最基础的交易功能</strong>，核心代码仅 200 行左右，由于<strong>用户资金都存储在 core 合约中</strong>，因此<strong>需要保证 core 合约最简化，避免引入 bug</strong>；periphery 合约则针对用户使用场景提供多种封装方法，比如支持原生 ETH 交易（自动转为 WETH），多路径交换（一个方法同时执行 A-&gt; B -&gt; C 交易）等，其底层调用的是 core 合约，我们在<a target="_blank" rel="noopener" href="https://app.uniswap.org/">app.uniswap.org</a>界面操作时用的就是periphery合约。</p>
+<p><img src="/../images/UniswapV2%E5%90%88%E7%BA%A6/J9txqxI.png" alt="img"></p>
+<p>首先介绍几个主要合约的功能：</p>
+<ul>
+<li>uniswap-v2-core<ul>
+<li>UniswapV2Factory：工厂合约，用于创建 Pair 合约（以及设置协议手续费接收地址）</li>
+<li>UniswapV2Pair：Pair（交易对）合约，定义和交易有关的几个最基础方法，如：swap&#x2F;mint&#x2F;burn，价格预言机等功能，其本身是一个 ERC20 合约，继承 UniswapV2ERC20</li>
+<li>UniswapV2ERC20：实现 ERC20 标准方法</li>
+</ul>
+</li>
+<li>uniswap-v2-periphery<ul>
+<li>UniswapV2Router02：最新版的路由合约，相比 UniswapV2Rounter01 增加了对 FeeOnTransfer 代币的支持；实现 Uniswap-v2 最常用的接口，比如添加&#x2F;移出流动性，使用代币 A 兑换代币 B，使用 ETH 交换代币等</li>
+<li>UniswapV1Rount01：旧版本 Rounter 实现，与 Rounter02 类似，但不支持 FeeOnTransferTokens，目前已不使用</li>
+</ul>
+</li>
+</ul>
+<h2 id="Uniswap-v2-core"><a href="#Uniswap-v2-core" class="headerlink" title="Uniswap-v2-core"></a>Uniswap-v2-core</h2><p><a target="_blank" rel="noopener" href="https://github.com/Uniswap/v2-core">代码地址</a></p>
+<h3 id="UniswapV2Factory"><a href="#UniswapV2Factory" class="headerlink" title="UniswapV2Factory"></a>UniswapV2Factory</h3><p>在工厂合约最重要的是 createPair 方法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">function createPair(address tokenA, address tokenB) external returns (address pair) &#123;</span><br><span class="line">	require(tokenA != tokenB, &quot;UniswapV2: IDENTICAL_ADDRESS&quot;);</span><br><span class="line">	(address token0, address token1) = tokenA &lt; tokenB ? (tokenA, tokenB) : (tokenB, tokenA);</span><br><span class="line">	require(token0 != address(0), &#x27;UniswapV2: ZERO_ADDRESS&#x27;);</span><br><span class="line">	require(getPair[token0][token1] == address(0), &quot;UniswapV2: PAIR_EXISTS&quot;);</span><br><span class="line">	bytes memory bytecode = type(UniswapV2Pair).creationCode;</span><br><span class="line">	bytes32 salt = keccak256(abi.encodePacked(token0, token1));</span><br><span class="line">	assembly &#123;</span><br><span class="line">		pair := create2(0, add(bytecode, 32), mload(bytecode), salt)</span><br><span class="line">	&#125;</span><br><span class="line">	IUniswapV2Pair(pair).initialize(token0, token1);</span><br><span class="line">	getPair[token0][token1] = pair;</span><br><span class="line">	getPair[token1][token0] = pair; // populate mapping in the reverse direction</span><br><span class="line">	allPairs.push(pair);</span><br><span class="line">	emit PairCreated(token0, token1, pair, allPairs.length);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>首先将 token0 和 token1 按照顺序排序，确保 token0 字面地址小于 token1。接着使用 <code>assembly + create2</code> 创建合约。</strong><code>assembly</code>可以在 Solidity 中使用 Yul 语言直接操作 EVM，是较底层的操作方法。<strong>create2 主要用于创建确定性的交易对合约地址，目的是根据两个代币地址直接计算 pair 地址</strong>，而无需调用链上合约查询</p>
+<p>根据 CREATE2 的 <a target="_blank" rel="noopener" href="https://eips.ethereum.org/EIPS/eip-1014">EIP-1014</a> 规范，在<strong>这里影响最终生成合约地址的是</strong>用户自定义的 <strong><code>salt</code><strong>。</strong>对于同一个交易对的两种代币，其 salt 值应该是一样的</strong>，<strong>通俗规定，通过交易对的两种代币的地址直接计算出 salt 值</strong>，而生成 <strong>salt 值又受到两种代币地址的先后顺序的影响</strong>，因此<strong>在合约开始时，先对两种代币进行排序，确保其按照从小到大的顺序生成 salt 值。</strong></p>
+<p>在最新版的 EVM 中，已经支持给 new 方法传递 salt 参数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pair = new UniswapV2Pair&#123;sa;t: salt&#125;();</span><br></pre></td></tr></table></figure>
+
+<p>因为 Uniswap-v2 合约在开发时还没有这个功能，所以使用 assembly create2。</p>
+<p>根据<a target="_blank" rel="noopener" href="https://docs.soliditylang.org/en/develop/yul.html#yul">Yul规范</a>，create2 的定义如下：</p>
+<blockquote>
+<p>create2(v, p, n, s)</p>
+<p>create new contract with code mem[p…(p+n)) at address keccak256(0xff . this . s . keccak256(mem[p…(p+n))) and send v wei and return the new address, where 0xff is a 1 byte value, this is the current contract’s address as a 20 byte value and s is a big-endian 256-bit value; returns 0 on error</p>
+</blockquote>
+<p>源码中调用create2方法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pair := create2(0, add(bytecode, 32), mload(bytecode), salt)</span><br></pre></td></tr></table></figure>
+
+<p>因此，这几个参数含义如下：</p>
+<ul>
+<li><p>v&#x3D;0：向新创建的pair合约中发送的ETH代币数量（单位wei）</p>
+</li>
+<li><p>p&#x3D;add(bytecode, 32)：合约字节码的起始位置</p>
+<blockquote>
+<p>此处为什么要add 32呢？因为bytecode类型为bytes，根据ABI规范，bytes为变长类型，在编码时前32个字节存储bytecode的长度，接着才是bytecode的真正内容，因此合约字节码的起始位置在bytecode+32字节</p>
+</blockquote>
+</li>
+<li><p>n&#x3D;mload(bytecode)：合约字节码总字节长度</p>
+<blockquote>
+<p>根据上述说明，bytecode前32个字节存储合约字节码的真正长度（以字节为单位），而mload的作用正是读出传入参数的前32个字节的值，因此mload(bytecode)就等于n</p>
+</blockquote>
+</li>
+<li><p>s&#x3D;salt：s为自定义传入的salt，即token0和token1合并编码</p>
+</li>
+</ul>
+<h3 id="UniswapV2ERC20"><a href="#UniswapV2ERC20" class="headerlink" title="UniswapV2ERC20"></a>UniswapV2ERC20</h3><p>这个合约主要定义了 UniswapV2 的 ERC20 标准实现，代码比较简单。下面介绍 <code>permit</code> 方法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">function permit(address owner, address spender, uint value, uint deadline, uint8 v, bytes32 r, bytes32 s) external &#123;</span><br><span class="line">	require(deadline &gt; block.timestamp, &#x27;UniswapV2: EXPIRED&#x27;);</span><br><span class="line">	bytes32 digest = keccak256(</span><br><span class="line">		abi.encodePacked(</span><br><span class="line">            &#x27;\x19\x01&#x27;,</span><br><span class="line">            DOMAIN_SEPARATOR,</span><br><span class="line">            keccak256(abi.encode(PERMIT_TYPEHASH, owner, spender, value, nonces[owner]++, deadline))</span><br><span class="line">		)</span><br><span class="line">	);</span><br><span class="line">	address recoveredAddress = ecrecover(digest, v, r, s);</span><br><span class="line">	require(recoverAddress != address(0) &amp;&amp; recoveredAddress == owner, &#x27;UniswapV2: INVALID_SIGNATURE&#x27;);</span><br><span class="line">	_approve(owner, spender, value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>permit方法实现的就是白皮书2.5节中介绍的<strong>“Meta transactions for pool shares 元交易”</strong>功能。<a target="_blank" rel="noopener" href="https://eips.ethereum.org/EIPS/eip-712">EIP-712</a>定义了<strong>离线签名的规范</strong>，即digest的格式定义，用户签名的内容是其（owner）授权（approve）某个合约（spender）可以在截止时间（deadline）之前花掉一定数量（value）的代币（Pair流动性代币），应用（periphery合约）拿着签名的原始信息和签名后生成的v, r, s，可以调用Pair合约的permit方法获得授权，permit 方法使用 ecrecover 还原出签名地址为代币所有人，验证通过则批准授权。</p>
+<h3 id="UniswapV2Pair"><a href="#UniswapV2Pair" class="headerlink" title="UniswapV2Pair"></a>UniswapV2Pair</h3><p>Pair 合约主要实现了三个方法：mint（添加流动性）、burn（移出流动性）、swap（兑换）。</p>
+<h4 id="mint-实现添加流动性功能"><a href="#mint-实现添加流动性功能" class="headerlink" title="mint-实现添加流动性功能"></a><strong>mint-实现添加流动性功能</strong></h4><p>该方法实现添加流动性功能：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">// this low-level function should be called from a contract which performs important safety checks</span><br><span class="line">function mint(address to) external lock returns (uint liquidity) &#123;</span><br><span class="line">	(uint112 _reserve0, uint112 _reserve1, ) = getReserves(); // gas savings </span><br><span class="line">	uint balance0 = IERC20(token0).balanceOf(address(this));</span><br><span class="line">	uint balance1 = IERC20(token1).balanceOf(address(this));</span><br><span class="line">	uint amount0 = balance0.sub(_reserve0);</span><br><span class="line">	uint amount1 = balance1.sub(_reserve1);</span><br><span class="line">	</span><br><span class="line">	bool feeOn = _mintFee(_reserve0, _resverve1); // 计算协议手续费</span><br><span class="line">	uint _totalSupply = totalSupply; // gas savings, must be define here since totalSupply can update in _mintFee</span><br><span class="line">	if (_totalSupply == 0) &#123;</span><br><span class="line">		liquidity = Math.sqrt(amount0.mul(amount1)).sub(MINIMUM_LIQUIDITY);</span><br><span class="line">		_mint(address(0), MINTMUM_LIQUIDITY); // permanently lock the first MINIMUM_LIQUIDITY tokens</span><br><span class="line">	&#125; else &#123;</span><br><span class="line">		liquidity = Math.min(amount0.mul(_totalSupply) / _reserve0, amount1.mul(_totalSupply) / _reserve1);</span><br><span class="line">	&#125;</span><br><span class="line">	require(liquidity &gt; 0, &#x27;UniswapV2: INSUFFICIENT_LIQUIDITY_MINTED&#x27;);</span><br><span class="line">	_mint(to, liquidity);</span><br><span class="line">	</span><br><span class="line">	_update(balance0, balance1, _reserve0, _reserve1);</span><br><span class="line">	if (feeOn) kLast = uint(reserve0).mul(reserve1); // reserve0 and reserve1 are up-to-date</span><br><span class="line">	emit Mint(msg.sender, amount0, amount1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>首先，<code>getReserves()</code>获取两种代币的缓存余额（函数内第一行），在白皮书中提到，<strong>保存缓存余额是为了防止攻击者操控价格预言机</strong>。此处还用于计算协议手续费，并通过当前余额与缓存余额获取转账的代币数量。</p>
+<h5 id="mintFee用于计算协议手续费："><a href="#mintFee用于计算协议手续费：" class="headerlink" title="_mintFee用于计算协议手续费："></a><code>_mintFee</code>用于计算协议手续费：</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">// if fee is on, mint liquidity equivalent to 1/6th of the growth in sqrt(k)</span><br><span class="line">function _mintFee(uint112 _reserve0, uint112 _reserve1) private returns (bool feeOn) &#123;</span><br><span class="line">    address feeTo = IUniswapV2Factory(factory).feeTo();</span><br><span class="line">    feeOn = feeTo != address(0);</span><br><span class="line">    uint _kLast = kLast; // gas savings</span><br><span class="line">    if (feeOn) &#123;</span><br><span class="line">        if (_kLast != 0) &#123;</span><br><span class="line">            uint rootK = Math.sqrt(uint(_reserve0).mul(_reserve1));</span><br><span class="line">            uint rootKLast = Math.sqrt(_kLast);</span><br><span class="line">            if (rootK &gt; rootKLast) &#123;</span><br><span class="line">                uint numerator = totalSupply.mul(rootK.sub(rootKLast));</span><br><span class="line">                uint denominator = rootK.mul(5).add(rootKLast);</span><br><span class="line">                uint liquidity = numerator / denominator;</span><br><span class="line">                if (liquidity &gt; 0) _mint(feeTo, liquidity);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; else if (_kLast != 0) &#123;</span><br><span class="line">        kLast = 0;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>关于协议手续费的计算公式可以参考白皮书。</p>
+<p>mint 方法中判断，如果是首次提供该交易对的流动性，则根据根号 xy 生成流动性代币，并销毁其中的 MINIMUM_LIQUIDITY（即1000 wei ）；否则根据转入的代币价值与当前流动性价值比例铸造流动性代币。</p>
+<h4 id="burn-实现移除流动性功能"><a href="#burn-实现移除流动性功能" class="headerlink" title="burn-实现移除流动性功能"></a><strong>burn-实现移除流动性功能</strong></h4><p>该方法实现移除流动性功能：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">// this low-level function should be called from a contract which contract which performs important safety checks</span><br><span class="line">function burn(address to) external lock returns(uint amount0, uint amount1) &#123;</span><br><span class="line">	(uint112 _reserve0, uint112 _reserve1, ) = getReserves(); //gas savings</span><br><span class="line">	address _token0 = token0;</span><br><span class="line">	address _token1 = token1;</span><br><span class="line">	uint balance0 = IERC20(_token0).balanceOf(address(this));</span><br><span class="line">	uint balance1 = IERC20(_token1).balanceOf(address(this));</span><br><span class="line">	uint liquidity = balanceOf[address(this)];</span><br><span class="line">	</span><br><span class="line">	bool feeOn = _mintFee(_reserve0, _reserve1);</span><br><span class="line">	uint _totalSupply = totalSupply; // gas savings, must be define here since totalSupply can uodate in _mintFee</span><br><span class="line">	amount0 = liquidity.mul(balance0) / _totalSupply; // using balances ensure pro-rate distribution</span><br><span class="line">	amount1 = liquidity.mul(balance1) / _totalSupply; // using balances ensure pro-rate distribution</span><br><span class="line">	require(amount0 &gt; 0 &amp;&amp; amount1 &gt; 0,&#x27;UniswapV2: INSUFFICIENT_LIQUIDITY_BURNED&#x27;);</span><br><span class="line">	_burn(address(this), liquidity);</span><br><span class="line">	_safeTransfer(_token0, to, amount0);</span><br><span class="line">	_safeTransfer(_token1, to, amount1);</span><br><span class="line">	balance0 = IERC20(_token0).balanceOf(address(this));</span><br><span class="line">	balance1 = IERC20(_token1).balanceOf(address(this));</span><br><span class="line">	</span><br><span class="line">	_update(balance0, balance1, _reserve0, _reserve1);</span><br><span class="line">	if (feeOn) kLast = uint(reserve0).mul(reserve1); // reserve0 and reserbe1 are up-to-date</span><br><span class="line">	emit Burn(msg.sender, amount0, amount1, to);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>与 mint 类似，burn 方法也会先计算协议手续费</p>
+<p>参考白皮书，为了节省交易手续费，Uniswap v2 只在 mint&#x2F;burn 流动性时收取累计的协议手续费。</p>
+<p>移出流动性后，根据销毁的流动性代币占总量的比例获得对应的两种代币。</p>
+<h4 id="swap-实现两种代币的交换（交易）功能"><a href="#swap-实现两种代币的交换（交易）功能" class="headerlink" title="swap-实现两种代币的交换（交易）功能"></a><strong>swap-实现两种代币的交换（交易）功能</strong></h4><p>该方法实现两种代币的交换（交易）功能。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">// this low-level function should be called from a contract which performs important safety checks</span><br><span class="line">function swap(uint amount0Out, uint amount1Out, address to, bytes calldata data) external lock &#123;</span><br><span class="line">	require(amount0Out &gt; 0 || amount1Out &gt; 0, &#x27;UniswapV2: INSUFFICIENT_OUTPUT_AMOUNT&#x27;);</span><br><span class="line">	(uint112 _reserve0, uint112 _reserve1,) = getReserves(); // gas savings</span><br><span class="line">	require(amount0Out &lt; _reserve0 &amp;&amp; amount1Out &lt; _reserve1, &#x27;UnsiwapV2: INSUFFICIENT_LIQUIDITY&#x27;);</span><br><span class="line">	</span><br><span class="line">	uint balance0;</span><br><span class="line">	uint balance1;</span><br><span class="line">	&#123; // scope for _token&#123;0, 1&#125;, avoids stack too deep errors</span><br><span class="line">	address _token0 = token0;</span><br><span class="line">	address _token1 = token1;</span><br><span class="line">	require(to != _token0 &amp;&amp; to != _token1,&#x27;Uniswap: INVALID_TO&#x27;);</span><br><span class="line">	if (amount0Out &gt; 0) _safeTransfer(_token0, to, amount0Out);</span><br><span class="line">	if (amount1Out &gt; 0) _safeTransfer(_token1, to, amount1Out);</span><br><span class="line">	if (data.length &gt; 0) IUniswapV2Callee(to).uniswapV2Call(msg.sender, amount0Out, amount1Out, data);</span><br><span class="line">	balance0 = IERC20(_token0).balanceOf(address(this));</span><br><span class="line">	balance1 = IERC20(_token1).balanceOf(address(this));</span><br><span class="line">	&#125;</span><br><span class="line">	uint amount0In = balance0 &gt; _reserve0 - amount0Out ? balance0 - (_reserve0 - amount0Out) : 0;</span><br><span class="line">	uint amount1In = balance1 &gt; _reserve1 - amount1Out ? balance1 - (_reserve1 - amount1Out) : 0;</span><br><span class="line">	require(amount0In &gt; 0 || amount1In &gt; 0, &#x27;UniswapV2: INSUFFICIENT_INPUT_AMOUNT&#x27;);</span><br><span class="line">	&#123; // scope for reserve&#123;0, 1&#125;Adjusted, avoids stacj too deep errors</span><br><span class="line">	uint balance0Adjusted = balance0.mul(1000).sub(amount0In.mul(3));</span><br><span class="line">	uint balance1Adjusted = balance1.mul(1000).sub(amount0In.mul(3));</span><br><span class="line">	require(balance0Adjusted.mul(balance1Adjusted) &gt;= uint(_reserve0).mul(_reserve1).mul(1000**2), &#x27;UniswapV2: K&#x27;);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	_update(balance0, balance1, _reserve0, _reserve1);</span><br><span class="line">	emit Swap(msg.sender, amount0In, amount1In, amount0Out, amount1Out, to);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>为了兼容闪电贷功能，以及不依赖特定代币的 transfer 方法，整个 swap 方法并没有类型 amountln 的参数，而是通过比较当前余额与缓存余额的差值来得出转入的代币数量。</p>
+<p>由于在 swap 方法最后会检查余额（扣掉手续费后）符合 k 常量函数约束（参考白皮书公式），因此合约可以先将用户希望获得的代币转出，如果用户之前并没有向合约转入用于交易的代币，则相当于借币（即：<strong>闪电贷</strong>）；如果使用闪电贷，则需要在自定义的 uniswapV2Call 方法中将借出的代币归还。</p>
+<p>在 swap 方法最后会使用缓存余额更新价格预言机所需的累计价格，最后更新缓存余额为当前余额。</p>
+<h5 id="update更新缓存余额"><a href="#update更新缓存余额" class="headerlink" title="_update更新缓存余额"></a><code>_update</code>更新缓存余额</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">// update reserves and, on first call per block, price accumulators</span><br><span class="line">function _update(uint balance0, uint balance1, uint112 _reserve0, uint112 _reserve1) private &#123;</span><br><span class="line">	require(balance0 &lt;= uint112(-1) &amp;&amp; balance1 &lt;= uint112(-1), &#x27;UniswapV2: OVERFLOW&#x27;);</span><br><span class="line">	uint32 blockTimestamp = uint32(block.timestamp % 2** 32);</span><br><span class="line">	uint32 timeElapsed = blockTimestamp - blockTimestampLast; // overflow is desired</span><br><span class="line">	if(timeElapsed &gt; 0 &amp;&amp; reserve0 != 0 &amp;&amp; _reserve1 != 0) &#123;</span><br><span class="line">	price0CumulativeLast += uint(UQ112x112.encode(_reserve1).uqdiv(_reserve0)) * timeElapsed;</span><br><span class="line">	price1CumulativeLast += uint(UQ112x112.encode(_reserve0).uqdiv(_reserve1)) * timeElapsed;</span><br><span class="line">	&#125;</span><br><span class="line">	reserve0 = uint112(balance0);</span><br><span class="line">	reserve1 = uint112(balance1);</span><br><span class="line">	blockTimestampLast = blockTimestamp;</span><br><span class="line">	emit Sync(reserve0, reserve1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>主要，其中区块时间戳和累计价格都是溢出安全的。（具体推导过程参考白皮书）</p>
+<h2 id="UniswapV2Router02"><a href="#UniswapV2Router02" class="headerlink" title="UniswapV2Router02"></a>UniswapV2Router02</h2><p>Router02 封装了最常用的几个交易接口；为了满足原生 ETH 交易需求，大部分接口都支持 ETH 版本；同，相比 Router01，部分接口增加了 FeeOnTransferTokens 的支持。</p>
+<p><img src="/../images/UniswapV2%E5%90%88%E7%BA%A6/vw84rOW.png" alt="img"></p>
+<p>接下来主要研究 ERC20 版本的代码，因为 ETH 版本只是将 ETH 和 WETH 做转换，逻辑与 ERC20 一致。</p>
+<p>首先先了解 Library 合约中的几个常用方法，以及它们的数学公式推导。</p>
+<h3 id="Library"><a href="#Library" class="headerlink" title="Library"></a>Library</h3><p><a target="_blank" rel="noopener" href="https://github.com/Uniswap/v2-periphery/blob/master/contracts/libraries/UniswapV2Library.sol">代码地址</a></p>
+<h4 id="pairFor-计算两个代币的交易对地址"><a href="#pairFor-计算两个代币的交易对地址" class="headerlink" title="pairFor-计算两个代币的交易对地址"></a>pairFor-计算两个代币的交易对地址</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// calculates the CREATE2 address for a pair without making any external calls</span><br><span class="line">function pairFor(address factory, address tokenA, address tokenB) internal pure returns (address pair) &#123;</span><br><span class="line">	(address token0, address token1) = sortTokens(tokenA, tokenB);</span><br><span class="line">	pair = address(uint(keccak(abi.encodePacked(</span><br><span class="line">		hex&#x27;ff&#x27;,</span><br><span class="line">		factory,</span><br><span class="line">		keccak256(abi.encodePacked(token0, token1)),</span><br><span class="line">		hex&#x27;96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f&#x27; // init code hash</span><br><span class="line">	))));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上文提到，由于使用 CREATE2 操作码，交易对地址可以直接根据规范算出，而无需调用链上合约进行查询。</p>
+<blockquote>
+<p>create2(v, p, n, s)</p>
+<p>create new contract with code mem[p…(p+n)) at address keccak256(0xff . this . s . keccak256(mem[p…(p+n))) and send v wei and return the new address, where 0xff is a 1 byte value, this is the current contract’s address as a 20 byte value and s is a big-endian 256-bit value; returns 0 on error</p>
+</blockquote>
+<p>其中，新创建的 pair 合约的地址计算方法为：<code>keccak256(0xff + this + salt + keccak256(mem[p…(p+n)))</code>：</p>
+<ul>
+<li>this：工厂合约地址</li>
+<li>salt：<code>keccak256(abi,encodePacked(token0, token1))</code></li>
+<li>keccak256(mem[p…(p+n))： 0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f</li>
+</ul>
+<p> 由于每个交易对都使用 UniswapV2Pair 合约创建，init code hash 都是一样的。我们可以在 UniswapV2Factory 写一个 Solidity 方法计算 hash：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">function initCodeHash() external returns (bytes32) &#123;</span><br><span class="line">	bytes memory bytecode = type(UniswapV2Pair).creationCode;</span><br><span class="line">	bytes32 hash;</span><br><span class="line">	assembly &#123;</span><br><span class="line">		hash := keccak256(add(bytecode, 32), mload(bytecode))</span><br><span class="line">	&#125;</span><br><span class="line">	return hash;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="quote-两个代币之间计价单位转换"><a href="#quote-两个代币之间计价单位转换" class="headerlink" title="quote-两个代币之间计价单位转换"></a>quote-两个代币之间计价单位转换</h4><p>quote 方法将数量为 amountA 的代币 A，按照合约中两种代币余额比例，换算成另一个代币 B。此时不考虑手续费，因为仅是计价单位的换算。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// given some amount of an asset and pair reserves, returns an equivalent amount of the other asset</span><br><span class="line">function quote(uint amountA, uint reserveA, uint reserveB) internal pure returns (uint amountB) &#123;</span><br><span class="line">	require(amountA &gt; 0, &#x27;UniswapV2Library: INSUFFICIENT_AMOUNT&#x27;);</span><br><span class="line">	require(reserveA &gt; 0 &amp;&amp; reserveB &gt; 0, &#x27;UniswapV2Library: INSUFFICIENT_LIQUDITY&#x27;);</span><br><span class="line">	amountB = amountA.mul(reserveB) / reserveA;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="getAmountOut"><a href="#getAmountOut" class="headerlink" title="getAmountOut"></a>getAmountOut</h4><p>该方法计算：输入一定数量（amountIn）代币 A，根据池子中代币余额，能得到多少数量（amountOut）代币B。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// give an input amount an asset and pair reserves, returns the maximum output amout of the other asset</span><br><span class="line">function getAmountOut(uint amountIn, uint reserveIn, uint reserveOut) internal pure returns (uint amountOut) &#123;</span><br><span class="line">	require(amountIn &gt; 0, &#x27;UniswapV2Library: INSUFFICIENT_INPUT_AMOUNT&#x27;);</span><br><span class="line">	require(reserveIn &gt; 0 &amp;&amp; reserveOut &gt; 0, &#x27;UniswapV2Library: INSUFFICIENT_LIQUIDITY&#x27;);</span><br><span class="line">	uint amountInWithFee = amountIn.mul(997);</span><br><span class="line">	uint numerator = amountInWithFee.mul(reserveOut);</span><br><span class="line">	uint denominator = reserveIn.mul(1000).add(amountInWithFee);</span><br><span class="line">	amountOut = numerator / denominator;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>该方法的数学公式如下：</p>
+<p><img src="/../images/UniswapV2%E5%90%88%E7%BA%A6/image-20231101170847732.png" alt="image-20231101170847732"></p>
+<h4 id="getAmountIn"><a href="#getAmountIn" class="headerlink" title="getAmountIn"></a>getAmountIn</h4><p>该方法计算当希望获得一定数量（amountOut）的代币 B 是，应该输入多少数量（amountIn）的代币 A。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// given an output amount of an asset and pair reserves, returns a require input amount of the other asset</span><br><span class="line">function getAmountIn(uint amountOut, uint reserveIn, uint reserveOut) internal pure returns (uint amountIn) &#123;</span><br><span class="line">	require(amountOut &gt; 0, &#x27;UniswapV2Library: INSUFFICIENT_OUTPUT_AMOUNT&#x27;);</span><br><span class="line">	require(reserveIn &gt; 0 &amp;&amp; reserveOut &gt; 0, &#x27;UniswapV2Library: INSUFFICIENT_LIQUIDITY&#x27;);</span><br><span class="line">	uint numerator = reserveIn.mul(amountOut).mul(1000);</span><br><span class="line">	uint denominator = reserveOut.sub(amountOut).mul(997);</span><br><span class="line">	amountIn = (numerator / denominator).add(1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../images/UniswapV2%E5%90%88%E7%BA%A6/image-20231101171606197.png" alt="image-20231101171606197"></p>
+<p>计算结果即为合约中代码所示，注意最后有一个<code>add(1)</code>，这是为了防止 amountIn 为小鼠的情况，加 1 可以保证输入的数（amountIn）不小于理论的最小值。</p>
+<h4 id="getAmountsOut"><a href="#getAmountsOut" class="headerlink" title="getAmountsOut"></a>getAmountsOut</h4><p>该方法用于计算在使用多个交易对时，输入一定数量（amountIn）的第一种代币，最终能收到多少数量的最后一种代币（amounts）。amounts 数组中的第一个元素表示 amountIn，最后一个元素表示该目标代币对应的数量。该方法实际上时循环调用 getAmountIn 方法。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// performs chained getAmountOut calculations on any number of pairs</span><br><span class="line">function getAmountsOut(address factory, uint amountIn, address[] memory path) internal view returns(uint[] memory amounts) &#123;</span><br><span class="line">	require(path.length &gt;= 2, &#x27;UniswapV2Library: INVALID_PATH&#x27;);</span><br><span class="line">	amounts = new uint[](path.length);</span><br><span class="line">	amounts[0] = amountIn;</span><br><span class="line">	for (uint i; i &lt; path.length - 1; i++) &#123;</span><br><span class="line">		(uint reserveIn, uint reserveOut) = getReserves(factory, path[i], path[i+1]);</span><br><span class="line">		amounts[i + 1] = getAmountOut(amounts[i], reserveIn, reserveOut);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="getAmountsIn"><a href="#getAmountsIn" class="headerlink" title="getAmountsIn"></a>getAmountsIn</h4><p>与 getAmountsOut 相对，getAmountsIn 用于计算当希望收到一定数量（amountOut）的目标代笔，应该分别输入多少数量的中间代币。计算方法也是循环调用 getAmountIn。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// performs chained getAmountIn calculations on any number of paids</span><br><span class="line">function getAmountsIn(address factory, uint amountOut, address[] memory path) internal view returns(uint[] memory amounts) &#123;</span><br><span class="line">	require(path.length &gt;= 2, &#x27;UniswapV2Library: INVALID_PATH&#x27;);</span><br><span class="line">	amounts = new uint[](path.length);</span><br><span class="line">	amounts[amounts.length - 1] = amountOut;</span><br><span class="line">	for(uint i = path.length - 1; i &gt; 0; i--) &#123;</span><br><span class="line">	(uint reserveIn, uint reserveOut) = getReserves(factory, path[i - 1], path[i]);</span><br><span class="line">	amounts[i - 1] = getAmountIn(amounts[i], reserveIn, reserveOut);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="ERC20-ERC20"><a href="#ERC20-ERC20" class="headerlink" title="ERC20-ERC20"></a>ERC20-ERC20</h3><h4 id="addLiquidity-添加流动性"><a href="#addLiquidity-添加流动性" class="headerlink" title="addLiquidity 添加流动性"></a>addLiquidity 添加流动性</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">function addLiquidity(</span><br><span class="line">	address tokenA,</span><br><span class="line">	address tokenB,</span><br><span class="line">	uint amountADesired,</span><br><span class="line">	uint amountBDesired,</span><br><span class="line">	uint amountAMin,</span><br><span class="line">	uint amountBMin,</span><br><span class="line">	address to,</span><br><span class="line">	uint deadline</span><br><span class="line">) external virtual override ensure(deadline) returns(uint amountA, uint amountB, uint liquidity) &#123;</span><br><span class="line">	(amountA, amountB) = _addLiquidity(tokenA, tokenB, amountADesired, amountBDesired, amountAMin, amountBMin);</span><br><span class="line">	address pair = UniswapV2Library.pariFor(factory, tokenA, tokenB);</span><br><span class="line">	TransferHelper.safeTransferFrom(tokenA, msg.sender, pair, amountA);</span><br><span class="line">	TransferHelper.safeTransferFrom(tokenB, msg.sender, pair, amountB);</span><br><span class="line">	liquidity = IUniswapV2Pair(pair).mint(to);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>由于Router02是直接与用户交互的，因此接口设计需要从用户使用场景考虑。addLiquidity提供了8个参数：</p>
+<ul>
+<li>address tokenA：代币A</li>
+<li>address tokenB：代币B</li>
+<li>uint amountADesired：希望存入的代币A数量</li>
+<li>uint amountBDesired：希望存入的代币B数量</li>
+<li>uint amountAMin：最少存入的代币A数量</li>
+<li>uint amountBMin：最少存入的代币B数量</li>
+<li>address to：流动性代币接收地址</li>
+<li>uint deadline：请求失效时间</li>
+</ul>
+<p>用户提交交易后，该交易被矿工打包的时间是不确定的，因此提交时的代币价格与交易打包时的价格可能不同，通过amountMin可以控制价格的浮动范围，防止被矿工或机器人套利；同样，deadline可以确保该交易在超过指定时间后将失效。</p>
+<p>在 core 合约中提到，如果用户提供流动性时的代币价格与实际价格有差距，则只会按照较低的汇率得到流动性代币，多余的代币将贡献给整个池子。**<code>_addLiquidity</code>可以帮组计算最佳汇率<strong>。如果是</strong>首次添加流动性，则会创建交易对合约<strong>；</strong>否则根据当前池子余额计算**应该注入的最佳代币数量。</p>
+<h5 id="addLiquidity计算最佳汇率"><a href="#addLiquidity计算最佳汇率" class="headerlink" title="_addLiquidity计算最佳汇率"></a><code>_addLiquidity</code>计算最佳汇率</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">// **** ADD LIQUIDITY ****</span><br><span class="line">function _addLiquidity(</span><br><span class="line">	address tokenA,</span><br><span class="line">	address tokenB,</span><br><span class="line">	uint amountADesired,</span><br><span class="line">	uint amountBDesired,</span><br><span class="line">	uint amountAMin,</span><br><span class="line">	uint amountBmin</span><br><span class="line">) internal virtual returns (uint amountA, uint amountB) &#123;</span><br><span class="line">	// create the pair if it doesn&#x27;t exist yet</span><br><span class="line">	if (IUniswapV2Factory(factory).getPair(tokenA, tokenB) == address(0)) &#123;</span><br><span class="line">	IUniswapV2Factory(factory).createPair(tokenA, tokenB);</span><br><span class="line">	&#125;</span><br><span class="line">	(uint reserveA, uint reserveB) = UniswapV2Library.getReserves(factory, tokenA, tokenB);</span><br><span class="line">	if(reserveA == 0 &amp;&amp; reserveB == 0) &#123;</span><br><span class="line">		(amountA, amountB) = (amountADesired, amountBDesired);</span><br><span class="line">	&#125; else &#123;</span><br><span class="line">		uint amountBOptimal = UniswapV2Library.getReserves(factory, tokenA, tokenB);</span><br><span class="line">		if (amountBOptimal &lt;= amountBDesired) &#123;</span><br><span class="line">			require(amountBOptimal &gt;= amountBMin, &#x27;UniswapV2Router: INSUFFICIENT_B_AMOUNT&#x27;);</span><br><span class="line">			(amountA, amountB) = (amountADesired, amountBOptimal);</span><br><span class="line">		&#125; else &#123;</span><br><span class="line">			uint amountBOptimal = UniswapV2Library.quote(amountBDesired, reserveB, reserveA);</span><br><span class="line">			assert(amountAOptimal &lt;= amountDesired);</span><br><span class="line">			require(amountA, amountB) = (amountAOptimal, amountBDesired);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后调用 core 合约 mint 方法铸造流动性代币。</p>
+<h4 id="removeLiquidity-移出流动性"><a href="#removeLiquidity-移出流动性" class="headerlink" title="removeLiquidity 移出流动性"></a>removeLiquidity 移出流动性</h4><p>首先将流动性代币发送到 pair 合约，根据收到的流动性代币占全部代币比例，计算该流动性代币的两种代币数量。合约销毁流动性代币后，用户将受到对应比例的代币。如果低于用户的设定的最低预期（amountAMin&#x2F;amountBMin），则回滚交易。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">// **** REMOVE LIQUIDITY ****</span><br><span class="line">function removeLiquidity(</span><br><span class="line">	address tokenA,</span><br><span class="line">	address tokenB,</span><br><span class="line">	uint liquidity,</span><br><span class="line">	uint amountAMin,</span><br><span class="line">	uint amountBMin,</span><br><span class="line">	address to,</span><br><span class="line">	uint deadline</span><br><span class="line">) public virtual override ensure(deadline) returns(uint amountA, uint amountB) &#123;</span><br><span class="line">	address pair = UniswapV2Library.pairFor(factory, tokenA, tokenB);</span><br><span class="line">	IUniswapV2Pair(pair).transderFrom(msg.sender, pair, liquidity); // send liquidity to pair</span><br><span class="line">	(uint amount0, uint amount1) = IUniswapV2Pair(pair).burn(to);</span><br><span class="line">	(address token0, ) = UniswapV2Library.sortTokens(tokenA, tokenB);</span><br><span class="line">	(amountA, amountB) = tokenA == token0 ? (amount0, amount1) : (amount1, amount0);</span><br><span class="line">	require(amountA &gt;= amountAMin, &#x27;UniswapV2Router: INSUFFICIENT_A_AMOUNT&#x27;);</span><br><span class="line">	require(amountB &gt;= amountBMin, &#x27;UniswapV2Router: INSUFFICIENT_B_AMOUNT&#x27;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="removeLiquidityWithPermit-使用签名移除流动性"><a href="#removeLiquidityWithPermit-使用签名移除流动性" class="headerlink" title="removeLiquidityWithPermit 使用签名移除流动性"></a>removeLiquidityWithPermit 使用签名移除流动性</h4><p>用户正常移除流动性时，需要两个操作：</p>
+<ul>
+<li>approve：授权 Router 合约花费自己的流动性代币</li>
+<li>removeLiquidity：调用 Router 合约移除流动性</li>
+</ul>
+<p>除非第一次授权了最大限额的代币，否则每次移除流动性都需要两次交互，这意味着用户需要支付两次手续费。而<strong>使用 removeLiquidityWithPermit 方法，用户可以通过签名方式授权 Router 合约花费自己的代币</strong>，无需单独调用 approve ，<strong>只需要调用一次移除流动性方法即可完成操作</strong>，节省了 gas 费用。同时，由于<strong>离线签名不需要花费 gas，因此可以每次签名仅授权一定额度的代币，提高安全性</strong>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">function removeLiquidityWithPermit(</span><br><span class="line">	address tokenA,</span><br><span class="line">	address tokenB,</span><br><span class="line">	uint liquidity,</span><br><span class="line">	uint amountAMin,</span><br><span class="line">	uint amountBMin,</span><br><span class="line">	address to,</span><br><span class="line">	uint deadline,</span><br><span class="line">	bool approveMax, uint8 v, bytes32 r, bytes32 s</span><br><span class="line">) external virtual override returns(uint amountA, uint amountB) &#123;</span><br><span class="line">	address pair = UniswapV2Library.pairFor(factory, tokenA, tokenB);</span><br><span class="line">	uint value = approveMax ? uint(-1) : liquidity;</span><br><span class="line">	IUniswapV2Pair(pair).permit(msg.sender, address(this), value, deadline, v, r, s);</span><br><span class="line">	(amountA, amountB) = removeLiquidity(tokenA, tokenB, liquidiry, amountAMin, amountBMin, to, deadline);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="swapExactTokensForTokens-根据指定的输入代币，获得最多的输出代币"><a href="#swapExactTokensForTokens-根据指定的输入代币，获得最多的输出代币" class="headerlink" title="swapExactTokensForTokens-根据指定的输入代币，获得最多的输出代币"></a>swapExactTokensForTokens-根据指定的输入代币，获得最多的输出代币</h4><p>交易时的两个常见场景：</p>
+<ol>
+<li>使用指定数量的代币 A（输入），尽可能兑换最多数量的代币 B （输出）</li>
+<li>获得指定数量的代币 B（输出），尽可能使用最少数量的代币 A （输入）</li>
+</ol>
+<p>本方法实现了第一个场景，即根据指定的输入代币，获得最多的输出代币</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">function sawpExactTokensForTokens(</span><br><span class="line">	uint amountIn,</span><br><span class="line">	uint amountOutMin,</span><br><span class="line">	address[] calldata path,</span><br><span class="line">	address to,</span><br><span class="line">	uint deadline</span><br><span class="line">) external virtual override ensure(deadline) returns (uint[] memory amounts) &#123;</span><br><span class="line">	amounts = UniswapV2Library.getAmountsOut(factory, amountIn, path);</span><br><span class="line">	require(amounts[amounts.length -1] &gt;= amountOutMin, &#x27;UniswapV2Router: INSUFFICIENT_OUTPUT_AMOUNT&#x27;);</span><br><span class="line">	TransferHelper.safeTransferFrom(</span><br><span class="line">		path[0], msg.sender, UniswapV2Library(factory, path[0], path[1]), amounts[0]</span><br><span class="line">	);</span><br><span class="line">	_swap(amounts, path, to);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>首先<strong>使用 Library 合约中的 getAmountsOut 方法，根据兑换路径计算每一次交易的输出代币数量</strong>，<strong>确认</strong>最后一次交易得到的数量<code>(amounts[amounts.length - 1])</code> <strong>不小于预期最少输出</strong><code>(amountOutMin)</code>；<strong>将代币发送到第一个交易对地址，开始执行整个兑换交易。</strong></p>
+<p>假设用户希望使用 WETH 兑换 DYDX，链下计算的最佳兑换路径为 WETH -&gt; USDC -&gt; DYDX，则 amountIn 为 WETH 数量，amountOutMin 为希望获得最少 DYDX 数量， path 为 <code>[WETH address, USDC address, DYDX address]</code>，amounts 为<code>[amountIn, USDC amount, DYDX amount]</code>。在 _swap 执行交易的过程中，每次中间交易获得的中间代币将被发送到下一个交易对地址，以此类推，直到最后一个交易完成，_to地址将收到最后一次交易的输入代币。</p>
+<h5 id="swap"><a href="#swap" class="headerlink" title="_swap"></a>_swap</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// requires the initial amount to have already been sent to the first pair</span><br><span class="line">function _swap(uint[] memory amounts, address[] memory path, address _to) internal virtual &#123;</span><br><span class="line">	for (uint o; i &lt; path.length - 1; i++) &#123;</span><br><span class="line">		(address input, address output) = (path[i], path[i+1]);</span><br><span class="line">		(address token0,) = UniswapV2Library.sortRokens(input, output);</span><br><span class="line">		uint amountOut = amounts[i + 1];</span><br><span class="line">		(uint amount0Out, uint amount1Out) = input == token0 ? (uint(0), amountOut) : (amountOut, uint(0));</span><br><span class="line">		address to = i &lt; path.length - 2 ? UniswapV2Library.pairFor(factory, output, path[i + 2]) : _to;</span><br><span class="line">		IUniswapV2Pair(UniswapV2Library.pairFor(factory, input, output)).swap(</span><br><span class="line">			amount0Out, amount1Out, to, new bytes(0)</span><br><span class="line">		);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="swapTokensForExactTokens-根据指定的输入代币使用最少的输入代币完成兑换"><a href="#swapTokensForExactTokens-根据指定的输入代币使用最少的输入代币完成兑换" class="headerlink" title="swapTokensForExactTokens-根据指定的输入代币使用最少的输入代币完成兑换"></a>swapTokensForExactTokens-根据指定的输入代币使用最少的输入代币完成兑换</h4><p>该方法实现交易的第二个场景，根据指定的输入代币，使用最少的输入代币完成兑换。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">function swapTokensForExactTokens(</span><br><span class="line">	uint amountOut,</span><br><span class="line">	uint amountInMax,</span><br><span class="line">	address[] calldata path,</span><br><span class="line">	address to,</span><br><span class="line">	uint deadline</span><br><span class="line">) external virtual override ensure(deadline) returns (uint[] memory amounts) &#123;</span><br><span class="line">	amounts = UniswapV2Library.getAmountsIn(factory, amountOut, path);</span><br><span class="line">	require(amounts[0] &lt;= amountInMax, &#x27;UniswapV2Router: EXCESSIVE_INPUT_AMOUNT&#x27;);</span><br><span class="line">	TransferHelper.safeTransferFrom(</span><br><span class="line">		path[0], msg.sender, UniswapV2Library.pairFor(factory, path[0], path[1]) amounts[0]</span><br><span class="line">	);</span><br><span class="line">	_swap(amounts, path, to);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>与上面类似，这里先使用Library的getAmountsIn方法反向计算每一次兑换所需的最少输入代币数量，确认计算得出的（扣除手续费后）第一个代币所需的最少代币数不大于用户愿意提供的最大代币数（amountInMax）；将代币发送到第一个交易对地址，调用_swap开始执行整个兑换交易。</p>
+<h3 id="ERC20-ETH"><a href="#ERC20-ETH" class="headerlink" title="ERC20_ETH"></a>ERC20_ETH</h3><h4 id="ETH-Support"><a href="#ETH-Support" class="headerlink" title="ETH Support"></a>ETH Support</h4><p>由于 core 合约只支持 ERC20 代币支付，为了支持 ETH 交易，periphery 合约需要将 ETH 与 WETH 做转换；并为大部分方法提供了 ETH 版本，兑换主要这几两种操作：</p>
+<ul>
+<li><strong>地址转换</strong>：由于 ETH 没有合约地址，因此需要使用 WETH 合约的 deposit 和 withdraw 方法完成 ETH 和 WETH 的兑换</li>
+<li><strong>代币数量转换：</strong>ETH代币需要通过 msg.value 获取，可根据该值计算对应的 WETH 数量，而后使用标准 ERC20 接口即可。</li>
+</ul>
+<h4 id="FeeOnTransferTokens"><a href="#FeeOnTransferTokens" class="headerlink" title="FeeOnTransferTokens"></a>FeeOnTransferTokens</h4><p>由于某些代币会在转账（transfer）过程中收取手续费，转账数量与实际收到的数量有差异，因此无法直接通过计算得出中间兑换过程中所需的代币数量，此时应该通过balanceOf方法（而非transfer方法）判断实际收到的代币数量。Router02新增了对Inclusive Fee On Transfer Tokens的支持，更具体说明可以参考<a target="_blank" rel="noopener" href="https://docs.uniswap.org/protocol/V2/reference/smart-contracts/common-errors#inclusive-fee-on-transfer-tokens">官方文档</a>。</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Q1ngying
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2023/11/05/UniswapV2%E5%90%88%E7%BA%A6/" title="UniswapV2合约">http://example.com/2023/11/05/UniswapV2合约/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Solidity/" rel="tag"># Solidity</a>
+              <a href="/tags/DeFi/" rel="tag"># DeFi</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/11/05/EIP601%EF%BC%9AERC-601%E7%A1%AE%E5%AE%9A%E6%80%A7%E9%92%B1%E5%8C%85%E7%9A%84%E4%BB%A5%E5%A4%AA%E5%9D%8A%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84/" rel="prev" title="EIP601：ERC-601确定性钱包的以太坊层次结构">
+      <i class="fa fa-chevron-left"></i> EIP601：ERC-601确定性钱包的以太坊层次结构
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/11/06/%E7%99%BB%E9%93%BE-%E7%AC%AC%E4%B8%80%E8%AF%BE/" rel="next" title="登链-第一课">
+      登链-第一课 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3-Uniswap-v2-%E5%90%88%E7%BA%A6%E4%BB%A3%E7%A0%81"><span class="nav-number">1.</span> <span class="nav-text">深入理解 Uniswap v2 合约代码</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%88%E7%BA%A6%E6%9E%B6%E6%9E%84%EF%BC%9A"><span class="nav-number">1.1.</span> <span class="nav-text">合约架构：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Uniswap-v2-core"><span class="nav-number">1.2.</span> <span class="nav-text">Uniswap-v2-core</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#UniswapV2Factory"><span class="nav-number">1.2.1.</span> <span class="nav-text">UniswapV2Factory</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UniswapV2ERC20"><span class="nav-number">1.2.2.</span> <span class="nav-text">UniswapV2ERC20</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UniswapV2Pair"><span class="nav-number">1.2.3.</span> <span class="nav-text">UniswapV2Pair</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#mint-%E5%AE%9E%E7%8E%B0%E6%B7%BB%E5%8A%A0%E6%B5%81%E5%8A%A8%E6%80%A7%E5%8A%9F%E8%83%BD"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">mint-实现添加流动性功能</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#mintFee%E7%94%A8%E4%BA%8E%E8%AE%A1%E7%AE%97%E5%8D%8F%E8%AE%AE%E6%89%8B%E7%BB%AD%E8%B4%B9%EF%BC%9A"><span class="nav-number">1.2.3.1.1.</span> <span class="nav-text">_mintFee用于计算协议手续费：</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#burn-%E5%AE%9E%E7%8E%B0%E7%A7%BB%E9%99%A4%E6%B5%81%E5%8A%A8%E6%80%A7%E5%8A%9F%E8%83%BD"><span class="nav-number">1.2.3.2.</span> <span class="nav-text">burn-实现移除流动性功能</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#swap-%E5%AE%9E%E7%8E%B0%E4%B8%A4%E7%A7%8D%E4%BB%A3%E5%B8%81%E7%9A%84%E4%BA%A4%E6%8D%A2%EF%BC%88%E4%BA%A4%E6%98%93%EF%BC%89%E5%8A%9F%E8%83%BD"><span class="nav-number">1.2.3.3.</span> <span class="nav-text">swap-实现两种代币的交换（交易）功能</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#update%E6%9B%B4%E6%96%B0%E7%BC%93%E5%AD%98%E4%BD%99%E9%A2%9D"><span class="nav-number">1.2.3.3.1.</span> <span class="nav-text">_update更新缓存余额</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UniswapV2Router02"><span class="nav-number">1.3.</span> <span class="nav-text">UniswapV2Router02</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Library"><span class="nav-number">1.3.1.</span> <span class="nav-text">Library</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#pairFor-%E8%AE%A1%E7%AE%97%E4%B8%A4%E4%B8%AA%E4%BB%A3%E5%B8%81%E7%9A%84%E4%BA%A4%E6%98%93%E5%AF%B9%E5%9C%B0%E5%9D%80"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">pairFor-计算两个代币的交易对地址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#quote-%E4%B8%A4%E4%B8%AA%E4%BB%A3%E5%B8%81%E4%B9%8B%E9%97%B4%E8%AE%A1%E4%BB%B7%E5%8D%95%E4%BD%8D%E8%BD%AC%E6%8D%A2"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">quote-两个代币之间计价单位转换</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#getAmountOut"><span class="nav-number">1.3.1.3.</span> <span class="nav-text">getAmountOut</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#getAmountIn"><span class="nav-number">1.3.1.4.</span> <span class="nav-text">getAmountIn</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#getAmountsOut"><span class="nav-number">1.3.1.5.</span> <span class="nav-text">getAmountsOut</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#getAmountsIn"><span class="nav-number">1.3.1.6.</span> <span class="nav-text">getAmountsIn</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ERC20-ERC20"><span class="nav-number">1.3.2.</span> <span class="nav-text">ERC20-ERC20</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#addLiquidity-%E6%B7%BB%E5%8A%A0%E6%B5%81%E5%8A%A8%E6%80%A7"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">addLiquidity 添加流动性</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#addLiquidity%E8%AE%A1%E7%AE%97%E6%9C%80%E4%BD%B3%E6%B1%87%E7%8E%87"><span class="nav-number">1.3.2.1.1.</span> <span class="nav-text">_addLiquidity计算最佳汇率</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#removeLiquidity-%E7%A7%BB%E5%87%BA%E6%B5%81%E5%8A%A8%E6%80%A7"><span class="nav-number">1.3.2.2.</span> <span class="nav-text">removeLiquidity 移出流动性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#removeLiquidityWithPermit-%E4%BD%BF%E7%94%A8%E7%AD%BE%E5%90%8D%E7%A7%BB%E9%99%A4%E6%B5%81%E5%8A%A8%E6%80%A7"><span class="nav-number">1.3.2.3.</span> <span class="nav-text">removeLiquidityWithPermit 使用签名移除流动性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#swapExactTokensForTokens-%E6%A0%B9%E6%8D%AE%E6%8C%87%E5%AE%9A%E7%9A%84%E8%BE%93%E5%85%A5%E4%BB%A3%E5%B8%81%EF%BC%8C%E8%8E%B7%E5%BE%97%E6%9C%80%E5%A4%9A%E7%9A%84%E8%BE%93%E5%87%BA%E4%BB%A3%E5%B8%81"><span class="nav-number">1.3.2.4.</span> <span class="nav-text">swapExactTokensForTokens-根据指定的输入代币，获得最多的输出代币</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#swap"><span class="nav-number">1.3.2.4.1.</span> <span class="nav-text">_swap</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#swapTokensForExactTokens-%E6%A0%B9%E6%8D%AE%E6%8C%87%E5%AE%9A%E7%9A%84%E8%BE%93%E5%85%A5%E4%BB%A3%E5%B8%81%E4%BD%BF%E7%94%A8%E6%9C%80%E5%B0%91%E7%9A%84%E8%BE%93%E5%85%A5%E4%BB%A3%E5%B8%81%E5%AE%8C%E6%88%90%E5%85%91%E6%8D%A2"><span class="nav-number">1.3.2.5.</span> <span class="nav-text">swapTokensForExactTokens-根据指定的输入代币使用最少的输入代币完成兑换</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ERC20-ETH"><span class="nav-number">1.3.3.</span> <span class="nav-text">ERC20_ETH</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ETH-Support"><span class="nav-number">1.3.3.1.</span> <span class="nav-text">ETH Support</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#FeeOnTransferTokens"><span class="nav-number">1.3.3.2.</span> <span class="nav-text">FeeOnTransferTokens</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Q1ngying"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Q1ngying</p>
+  <div class="site-description" itemprop="description">今朝梦醒与君别，遥盼春风寄相思</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/q1ngying" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;q1ngying" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:q1ngying@163.com" title="E-Mail → mailto:q1ngying@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-09 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Q1ngying</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">69k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:51</span>
+</div>
+
+<div class="powered-by">
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <i class="fa fa-user-md"></i>
+    <span id="busuanzi_container_site_uv">
+        本站访客数:<span id="busuanzi_value_site_uv"></span>人
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_pv">
+        本站访问量<span id="busuanzi_value_site_pv"></span>人次
+    </span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,255,255' opacity='1' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icons8-autumn-material-filled-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icons8-autumn-material-filled-16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="来源：https:&#x2F;&#x2F;learnblockchain.cn&#x2F;article&#x2F;3507 去中心化交易所（DEX）去中心化交易所是指使用智能合约，部署在区块链允许的非托管式交易所。目前的主流去中心化交易所，主要有三大特征：  去中心化允许：应用的允许不依赖于中心化服务器的服务；或者即使依赖的中心化服务器宕机，应用的核心数据和服务也不会收到影响 不托管用户资产：用户无需向应用本身或第三方托管资产，就可以">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DeFi基础概念">
+<meta property="og:url" content="http://example.com/2023/11/06/DeFi%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/index.html">
+<meta property="og:site_name" content="Q1ngying">
+<meta property="og:description" content="来源：https:&#x2F;&#x2F;learnblockchain.cn&#x2F;article&#x2F;3507 去中心化交易所（DEX）去中心化交易所是指使用智能合约，部署在区块链允许的非托管式交易所。目前的主流去中心化交易所，主要有三大特征：  去中心化允许：应用的允许不依赖于中心化服务器的服务；或者即使依赖的中心化服务器宕机，应用的核心数据和服务也不会收到影响 不托管用户资产：用户无需向应用本身或第三方托管资产，就可以">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-11-06T11:44:31.000Z">
+<meta property="article:modified_time" content="2023-11-06T11:46:13.376Z">
+<meta property="article:author" content="Q1ngying">
+<meta property="article:tag" content="Solidity">
+<meta property="article:tag" content="DeFi">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2023/11/06/DeFi%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>DeFi基础概念 | Q1ngying</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Q1ngying</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">清影的个人站</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/11/06/DeFi%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Q1ngying">
+      <meta itemprop="description" content="今朝梦醒与君别，遥盼春风寄相思">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Q1ngying">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          DeFi基础概念
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-11-06 19:44:31 / 修改时间：19:46:13" itemprop="dateCreated datePublished" datetime="2023-11-06T19:44:31+08:00">2023-11-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/learn/" itemprop="url" rel="index"><span itemprop="name">learn</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Solidity/" itemprop="url" rel="index"><span itemprop="name">Solidity</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/DeFi/" itemprop="url" rel="index"><span itemprop="name">DeFi</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>5 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>来源：<a target="_blank" rel="noopener" href="https://learnblockchain.cn/article/3507">https://learnblockchain.cn/article/3507</a></p>
+<h2 id="去中心化交易所（DEX）"><a href="#去中心化交易所（DEX）" class="headerlink" title="去中心化交易所（DEX）"></a>去中心化交易所（DEX）</h2><p><strong>去中心化交易所是指使用智能合约，部署在区块链允许的非托管式交易所。</strong>目前的主流去中心化交易所，主要有三大特征：</p>
+<ul>
+<li><strong>去中心化允许：</strong>应用的允许不依赖于中心化服务器的服务；或者即使依赖的中心化服务器宕机，应用的核心数据和服务也不会收到影响</li>
+<li><strong>不托管用户资产：</strong>用户无需向应用本身或第三方托管资产，就可以获得完整的交易服务</li>
+<li><strong>无审核服务：</strong>应用不会对特定用户拒绝服务，也不会限制用户交易任何种类的资产</li>
+</ul>
+<h2 id="自动化做市商（AMM）"><a href="#自动化做市商（AMM）" class="headerlink" title="自动化做市商（AMM）"></a>自动化做市商（AMM）</h2><p>在传统的中心化交易所当中，有专门的市商在交易所中挂买卖单，以提供资产流动性。同样，在去中心化交易所，也需要有人为资产提供流动性。然而，不同于中心化交易所挂单成本几乎为0，在区块链上进行频繁的挂单、撤单操作会消耗大量手续费，而且并不及时，这会导致市商的严重亏损。<strong>因此，去中心化交易所必须要开发出一套能在区块链上允许的自动化做市商系统，能够为提供流动性的市商自动地配置买卖双边资产，减少损失</strong></p>
+<h2 id="恒定乘积做市模型（CPMM）"><a href="#恒定乘积做市模型（CPMM）" class="headerlink" title="恒定乘积做市模型（CPMM）"></a>恒定乘积做市模型（CPMM）</h2><p>Uniswap-v2 使用了 <strong>恒定乘积做市模型</strong> 来实现自动化做市商。其计算步骤如下：</p>
+<ol>
+<li>甲在 Uniswap-v2 上提供了 1000 个 TokenA 和 100 个 TokenB 作为流动池，计乘数 Kab &#x3D; 1000 * 100 &#x3D; 100000</li>
+<li>乙想要在 Uniswap-v2 上使用 100 个 TokenA兑换 TokenB ，那么 Uniswap-v2 会首先计算交易后流动池会有 1000 + 100 &#x3D; 1100 个 TokenA；为了维持 Kab 的不变，就需要 TokenB 的数量减少为 100000&#x2F;1100 &#x3D; 90.909…。因此 Uniswap-v2会给乙兑换出 100 - 90.909 &#x3D; 9.091 个 TokenB。</li>
+<li>乙成功地使用 100 个 TokenA 在 Uniswap-v2 上兑换了 9.091 个 TokenB，可以预见的是，根据这套算法，乙需要兑换的 TokenA 越多，平均每个 TokenA 能兑换的 TokenB 就会越少。这就产生了<strong>滑点</strong>的概念。</li>
+</ol>
+<p><strong>简化公式：<code>（TokenA 余额 + 你出售的 TokenA）*（TokenB 余额 - 你获得的 TokenB）= 常熟 K </code></strong></p>
+<h2 id="滑点"><a href="#滑点" class="headerlink" title="滑点"></a>滑点</h2><p>在上面的例子中，甲在 Uniswap-v2 上提供了 1000 个 TokenA 和 100 个 TokenB 作为流动池，<strong>TokenA 和 TokenB 的标记比价为 10：1，即10个 TokenA 可以兑换 1 个 TokenB</strong>。然而在乙使用 1000 个 TokenA 在 Uniswap-v2 上兑换了 50 个 TokenB之后，其<strong>实际的交易比价约为 1000：50，实际上使用 10 个 TokenA 只能兑换 0.5 个 TokenB</strong>。这就是在 Uniswap-v2 上<strong>交易产生了滑点，滑点高达 50%</strong> 。</p>
+<h2 id="流动池"><a href="#流动池" class="headerlink" title="流动池"></a>流动池</h2><p>不同于传统中心化交易所的订单交易，可以理解为有一个和你博弈的对手，你需要买入他卖出的单子，或者等他吃掉你卖出的单子。不管是买入还是卖出，在 Uniswap-v2 上的所有交易都是对流动池的交易，没有对手会直接和你做交易</p>
+<h2 id="流动性凭证-（LP）"><a href="#流动性凭证-（LP）" class="headerlink" title="流动性凭证 （LP）"></a>流动性凭证 （LP）</h2><p>当你在 Uniswap-v2 上为代币提供流动性时，Uniswap-v2 会发送给你一个流动性凭证(LP)，这代表了你对你所提供流动性的所有权。<strong>要从流动池中提取资产时，必需要返回流动性凭证</strong>。因此<strong>千万不要随意转移LP到不受你控制的地址。</strong></p>
+<h2 id="无常损失"><a href="#无常损失" class="headerlink" title="无常损失"></a>无常损失</h2><p>当在 Uniswap-v2 上为代币提供流动性，赚取手续费时，会涉及到无常损失的计算：</p>
+<ol>
+<li>甲在 Uniswap-v2 上提供了 1000 个 TokenA 和 100 个 usdt 作为流动池，乙在 Uniswap-v2 上使用 1000 个 TokenA 兑换了 50 个 usdt，池子里剩下 2000 个 TokenA 和 50 个 usdt。</li>
+<li>原来甲在 Uniswap-v2 上提供的总资产价值为 1000 个 TokenA 和 100 个 usdt，TokenA 对 usdt 的兑换比例为 1000：100，可以换算为 200 个 usdt。乙兑换之后，甲在 Uniswap-v2 上提供的流动性资产价值为：2000 个 TokenA 和 50 个 usdt，TokenA 对 usdt 的兑换比例为 2000：50，总计为 100 个 usdt</li>
+<li>而如果甲本来就不提供流动性，TokenA 对 usdt 的兑换比率跌为 2000：50，则其资产为 1000 个 TokenA 和 100 个 usdt &#x3D; 125 usdt。可以看到，甲因为提供流动性多损失了 25 usdt，这就是资产下跌的无常损失。</li>
+<li>乙改为在 Uniswap-v2 上使用 100 个 usdt 兑换 500 个 TokenA。乙兑换之后，甲在 Uniswap-v2 上提供的流动性资产价值为：500 个 TokenA 和 200 个 usdt，TokenA 对 usdt 的兑换比例为 500：200，总计为 400 个 usdt。</li>
+<li>而如果甲本来就不提供流动性，TokenA 对 usdt 的兑换比例涨到 500：200，则其资产为 1000 个 TokenA 和 100 个usdt &#x3D; 500 usdt。</li>
+<li>可以看到，甲因为提供流动性少赚了100usdt，这就是资产上涨造成的无常损失。</li>
+</ol>
+<p><strong>简单总结：无常损失就是流动性提供者，在资产上涨过程中自动卖出，在资产下跌过程中自动买入所造成的损失。</strong></p>
+<h2 id="闪电贷"><a href="#闪电贷" class="headerlink" title="闪电贷"></a>闪电贷</h2><p>闪电贷是一种新型的无抵押贷款，目前只能在区块链上实现，Uniswap-v2 也完成了闪电贷的实现。其主要特点如下：</p>
+<ul>
+<li><strong>使用闪电贷借出的资产无需任何抵押品，也不要任何身份认证，但必须在借出的同一个区块内完成还款并支付利息，否则借款就会失败并回滚交易数据</strong></li>
+</ul>
+<p>目前来说，闪电贷的主要用途是借贷平仓、交易所搬砖、黑客攻击等。很多被黑客攻击的受害者认为闪电贷是一种危险的工具，不应该存在。但不管怎么说，它赋予了所有人用极小成本，使用极大资金的能力。</p>
+<h2 id="价格预言机"><a href="#价格预言机" class="headerlink" title="价格预言机"></a>价格预言机</h2><p>Uniswap-v2 所代表的去中心化交易所，提供去中心化的价格生成体系。以此为基础，可以打造出一个去中心化的价格生成和获取系统。这对于去中心化的借贷、杠杆等金融衍生品来说非常重要，虽然目前 Uniswap-v2 所代表的去中心化单一流动池价格预言机并不是完全安全的。</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Q1ngying
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2023/11/06/DeFi%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/" title="DeFi基础概念">http://example.com/2023/11/06/DeFi基础概念/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Solidity/" rel="tag"># Solidity</a>
+              <a href="/tags/DeFi/" rel="tag"># DeFi</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/11/06/%E7%99%BB%E9%93%BE-%E7%AC%AC%E4%BA%8C%E8%AF%BE/" rel="prev" title="登链-第二课">
+      <i class="fa fa-chevron-left"></i> 登链-第二课
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%BB%E4%B8%AD%E5%BF%83%E5%8C%96%E4%BA%A4%E6%98%93%E6%89%80%EF%BC%88DEX%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">去中心化交易所（DEX）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E5%8C%96%E5%81%9A%E5%B8%82%E5%95%86%EF%BC%88AMM%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">自动化做市商（AMM）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%81%92%E5%AE%9A%E4%B9%98%E7%A7%AF%E5%81%9A%E5%B8%82%E6%A8%A1%E5%9E%8B%EF%BC%88CPMM%EF%BC%89"><span class="nav-number">3.</span> <span class="nav-text">恒定乘积做市模型（CPMM）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BB%91%E7%82%B9"><span class="nav-number">4.</span> <span class="nav-text">滑点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%81%E5%8A%A8%E6%B1%A0"><span class="nav-number">5.</span> <span class="nav-text">流动池</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%81%E5%8A%A8%E6%80%A7%E5%87%AD%E8%AF%81-%EF%BC%88LP%EF%BC%89"><span class="nav-number">6.</span> <span class="nav-text">流动性凭证 （LP）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%A0%E5%B8%B8%E6%8D%9F%E5%A4%B1"><span class="nav-number">7.</span> <span class="nav-text">无常损失</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AA%E7%94%B5%E8%B4%B7"><span class="nav-number">8.</span> <span class="nav-text">闪电贷</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%B7%E6%A0%BC%E9%A2%84%E8%A8%80%E6%9C%BA"><span class="nav-number">9.</span> <span class="nav-text">价格预言机</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Q1ngying"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Q1ngying</p>
+  <div class="site-description" itemprop="description">今朝梦醒与君别，遥盼春风寄相思</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/q1ngying" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;q1ngying" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:q1ngying@163.com" title="E-Mail → mailto:q1ngying@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-09 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Q1ngying</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">69k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:51</span>
+</div>
+
+<div class="powered-by">
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <i class="fa fa-user-md"></i>
+    <span id="busuanzi_container_site_uv">
+        本站访客数:<span id="busuanzi_value_site_uv"></span>人
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_pv">
+        本站访问量<span id="busuanzi_value_site_pv"></span>人次
+    </span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,255,255' opacity='1' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
