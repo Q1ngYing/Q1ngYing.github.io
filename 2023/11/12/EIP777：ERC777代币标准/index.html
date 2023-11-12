@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icons8-autumn-material-filled-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icons8-autumn-material-filled-16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="ERC777 代币标准简要说明：该 EIP 定义了代币合约的标准接口和行为">
+<meta property="og:type" content="article">
+<meta property="og:title" content="EIP777：ERC777代币标准">
+<meta property="og:url" content="http://example.com/2023/11/12/EIP777%EF%BC%9AERC777%E4%BB%A3%E5%B8%81%E6%A0%87%E5%87%86/index.html">
+<meta property="og:site_name" content="Q1ngying">
+<meta property="og:description" content="ERC777 代币标准简要说明：该 EIP 定义了代币合约的标准接口和行为">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/EIP777%EF%BC%9AERC777%E4%BB%A3%E5%B8%81%E6%A0%87%E5%87%86/image-20231112171857503-16997807429141.png">
+<meta property="og:image" content="http://example.com/images/EIP777%EF%BC%9AERC777%E4%BB%A3%E5%B8%81%E6%A0%87%E5%87%86/image-20231112172242665.png">
+<meta property="og:image" content="http://example.com/images/EIP777%EF%BC%9AERC777%E4%BB%A3%E5%B8%81%E6%A0%87%E5%87%86/image-20231112172250126.png">
+<meta property="og:image" content="http://example.com/images/EIP777%EF%BC%9AERC777%E4%BB%A3%E5%B8%81%E6%A0%87%E5%87%86/image-20231112172004849.png">
+<meta property="og:image" content="http://example.com/images/EIP777%EF%BC%9AERC777%E4%BB%A3%E5%B8%81%E6%A0%87%E5%87%86/image-20231112172021198.png">
+<meta property="article:published_time" content="2023-11-12T09:16:47.000Z">
+<meta property="article:modified_time" content="2023-11-12T09:22:52.214Z">
+<meta property="article:author" content="Q1ngying">
+<meta property="article:tag" content="Solidity">
+<meta property="article:tag" content="EIPs">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/EIP777%EF%BC%9AERC777%E4%BB%A3%E5%B8%81%E6%A0%87%E5%87%86/image-20231112171857503-16997807429141.png">
+
+<link rel="canonical" href="http://example.com/2023/11/12/EIP777%EF%BC%9AERC777%E4%BB%A3%E5%B8%81%E6%A0%87%E5%87%86/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>EIP777：ERC777代币标准 | Q1ngying</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Q1ngying</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">清影的个人站</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/11/12/EIP777%EF%BC%9AERC777%E4%BB%A3%E5%B8%81%E6%A0%87%E5%87%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Q1ngying">
+      <meta itemprop="description" content="今朝梦醒与君别，遥盼春风寄相思">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Q1ngying">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          EIP777：ERC777代币标准
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-11-12 17:16:47 / 修改时间：17:22:52" itemprop="dateCreated datePublished" datetime="2023-11-12T17:16:47+08:00">2023-11-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/EIPs/" itemprop="url" rel="index"><span itemprop="name">EIPs</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>10k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>34 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="ERC777-代币标准"><a href="#ERC777-代币标准" class="headerlink" title="ERC777 代币标准"></a>ERC777 代币标准</h1><p><strong>简要说明：</strong>该 EIP 定义了代币合约的标准接口和行为</p>
+<span id="more"></span>
+
+<p>原文章：<a target="_blank" rel="noopener" href="https://eips.ethereum.org/EIPS/eip-777">https://eips.ethereum.org/EIPS/eip-777</a></p>
+<h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>该标准定义了一种与代币合约交互的新方式，同时保持了与 ERC-20 的向后兼容。</p>
+<p>它定义了与 Token 交互的高级功能，也就是说，运营商代表另一个地址（合约或常规账户）发送代币，并发送&#x2F;接受挂钩（hooks），为 Token 持有者提供对齐代币的更多控制权。</p>
+<p>他利用 ERC-1820 来确定当合约和常规地址收到 Token 时是否以及在何处通知它们，并允许与已部署的合约兼容。</p>
+<h2 id="动机"><a href="#动机" class="headerlink" title="动机"></a>动机</h2><p>该标准尝试改进广泛使用的 ERC-20 代币标准。该标准的主要优点是：</p>
+<ul>
+<li>使用和 Ether 相同的原理，即通过<code>send(dest, value, data)</code> 发送 Token</li>
+<li>合约和常规地址都可以通过注册 <code>tokensReceived</code> 挂钩（hooks）来控制和拒接接受它们的 Token。（拒绝是通过在钩子函数（hooks function）中revert 来完成的）</li>
+<li><code>tokensReceived</code> hooks (钩子) 允许将代币发送到合约并在单个交易中通知它，这与 ERC-20 不同，ERC-20 需要两次调用（<code>approve/transferFrom</code>）才能实现这一点</li>
+<li>授权者可以“授权”和“撤销”那些可以代表它们发送代币的运营商。这些运营商旨在成为经过验证的合约，例如交易所、支票管理器或自动收费系统</li>
+<li>每个 Token 交易都包含数据和操作员字节字段，可分别自由地用于传递来自持有者和操作员的数据。</li>
+<li>通过部署实现钱包 <code>tokensReceived</code> 挂钩的代理合约，他向后不兼容不包含 <code>tokensReceived</code> 挂钩函数的钱包</li>
+</ul>
+<h2 id="规范"><a href="#规范" class="headerlink" title="规范"></a>规范</h2><h3 id="ERC777Token（Token-Contract）"><a href="#ERC777Token（Token-Contract）" class="headerlink" title="ERC777Token（Token Contract）"></a>ERC777Token（Token Contract）</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">interface ERC777Token &#123;</span><br><span class="line">	function name() external view returns (string memory);</span><br><span class="line">	function symbol() external view returns (string memory);</span><br><span class="line">	function totalSupply() external view returns (uint256);</span><br><span class="line">	function balanceOf(address holder) external view returns (uint256);</span><br><span class="line">	function granularity() external view returns (uint256);</span><br><span class="line">	</span><br><span class="line">	function defaultOperators() external view returns (address[] memory);</span><br><span class="line">	function isOperatorFor(</span><br><span class="line">		address operator,</span><br><span class="line">        address holder</span><br><span class="line">	) external view returns (bool);</span><br><span class="line">	function authorizeOperator(address operator) external;</span><br><span class="line">	function revokeOperator(address operator) external;</span><br><span class="line">	</span><br><span class="line">	function send(address to, uint256 amount, bytes calldata data) external;</span><br><span class="line">	function operatorSend(</span><br><span class="line">		address from,</span><br><span class="line">		address to,</span><br><span class="line">		uint256 amount,</span><br><span class="line">		bytes calldata data.</span><br><span class="line">		bytes calldata operatorData</span><br><span class="line">	) external;</span><br><span class="line">	</span><br><span class="line">	event Sent(</span><br><span class="line">		address indexed operator,</span><br><span class="line">		address indexed from,</span><br><span class="line">		address indexed to,</span><br><span class="line">		uint256 amount,</span><br><span class="line">		bytes data,</span><br><span class="line">		bytes operatorData</span><br><span class="line">	);</span><br><span class="line">	event Minted(</span><br><span class="line">		address indexed operator;</span><br><span class="line">		address indexed to,</span><br><span class="line">		uint256 amount,</span><br><span class="line">		bytes data,</span><br><span class="line">		bytes operatorData</span><br><span class="line">	);</span><br><span class="line">	event Burned(</span><br><span class="line">		address indexed operator,</span><br><span class="line">        address indexed from,</span><br><span class="line">        uint256 amount,</span><br><span class="line">        bytes data,</span><br><span class="line">        bytes operatorData</span><br><span class="line">	);</span><br><span class="line">	event AuthorizedOperator(</span><br><span class="line">		address indexed operator,</span><br><span class="line">		address indexed holder</span><br><span class="line">	);</span><br><span class="line">	event RevokedOperator(address indexed operator, address indexed holder);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>代币合约必须实现上述接口。是是必须遵循下面描述的规范。</p>
+<p>代币合约必须通过 ERC-1820 使用自己的地址注册 <code>ERC777Token</code> 接口</p>
+<blockquote>
+<p>这里通过调用 ERC-1820 注册表上的 <code>setInterfaceImplementer</code> 函数来完成的，其中代币合约地址作为地址和实现者，<code>ERC777Token </code>的 <code>keccak256 </code>哈希 <code>0xac7fbab5f54a3ca8194167523c6753bfeb96a445279294b6125b68cce2177054</code>作为接口哈希。</p>
+</blockquote>
+<p>如果合约有启用或禁止 ERC777 功能的开关，则每次触发该开关时，代币必须通过 ERC1820 相应为自己的地址注册或取消注册 <code>ERC777Token </code>接口。取消注册意味着调用 <code>setInerfaceImplementer</code>，以代币合约为地址，以 <code>ERC777Token </code>的 <code>keccak256 </code>哈希为接口哈希，以<code>0x0</code>为实现者（有关更多详细信息，请参阅为 ERC-1820 中的地址设置接口）</p>
+<p>与代币合约交互时，所有金额和余额必须是无符号整数。在内部，所有值都存储为 1E-18 面额的代币。显示面额（向最终用户显示任何金额）必须是 10^18^ 的内部面额。</p>
+<p>换一种说法，内部面额类似于”wei”，显示面额类似于 “ether”。它相当于 ERC-20 的小数函数返回18。如果代币合约为用户返回<code>500000000000000000</code>(0.5*1018)的余额，则用户界面必须向用户显示 <code>0.5</code> 个代币。如果用户希望发送 <code>0.3</code> 个代币，则必须以<code>300000000000000000</code>(0.3*1018) 的金额调用合约。</p>
+<p>从代币合约的 ABI 以编程方式产生的用户界面可以使用并显示内部面额。但这必须明确，例如通过显示 <code>uint256</code> 类型</p>
+<h3 id="View-函数"><a href="#View-函数" class="headerlink" title="View 函数"></a>View 函数</h3><p>以下是必须实现的 <code>view</code> 函数：</p>
+<ul>
+<li><code>name</code> 函数</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function name() external view returns (string memory)</span><br></pre></td></tr></table></figure>
+
+<p>获得代币的名称，例如<code>MyToken</code></p>
+<blockquote>
+<p><em>identifier:<code>0fdde03</code></em></p>
+<p><em>return: Name of the token</em></p>
+</blockquote>
+<ul>
+<li><code>symbol</code> 函数</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function sumbol() external view returns (string memory)</span><br></pre></td></tr></table></figure>
+
+<p>获得代币的代号，如：<code>MYT</code></p>
+<blockquote>
+<p><em>identifier:<code>95d89b41</code></em></p>
+<p><em>return: Symbol of the token</em></p>
+</blockquote>
+<ul>
+<li><code>totalSupply</code> 函数</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function totalSupply() external view returns (uint256)</span><br></pre></td></tr></table></figure>
+
+<p>获得已铸造代币的总数。</p>
+<p>注意：总供应量必须等于所有地址的余额之和，即由 <code>balanceOf</code> 函数返回的值。</p>
+<p>注意：总供应量必须等于在所有 <code>Minted</code> 事件中定义的所有已铸造代币的总和减去在所有 <code>Burned </code>事件中定义的所有销毁代币的总和。</p>
+<blockquote>
+<p><em>identifier:<code>18160ddd</code></em></p>
+<p><em>return: Total supply of tokens currently in cirulation</em>目前流通中的代币总量</p>
+</blockquote>
+<ul>
+<li><code>balanceOf</code> 函数</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function balanceOf(address holder) external view returns (uint256)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>获得<code>holder</code>地址对应的账户余额。</p>
+<p>余额必须大于等于零。</p>
+<blockquote>
+<p><em>identifier: <code>70a08231</code></em></p>
+<p><em>parameters（参数）：<code>holder：要查询的余额地址</code></em></p>
+<p><em>return <code>holder</code> 在代币合约中持有的代币数量</em></p>
+</blockquote>
+<ul>
+<li><code>granularity</code> 函数</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function granularity() external view returns(uint256)</span><br></pre></td></tr></table></figure>
+
+<p>获取代币中不可分割的最小单位。</p>
+<p>换句话说，granularity 是代币内部单位中可以在任何时候铸造、发送或销毁的最小数量。</p>
+<p>granularity 必须遵循以下规则 ：</p>
+<ul>
+<li>granularity 的值必须在创建时设置</li>
+<li>granularity 的值不能被更改，绝对不能</li>
+<li>granularity 的值必须大于等于 <code>1</code></li>
+<li>所有余额必须是 granularity 的倍数</li>
+<li>铸造、发送或销毁的任何数量的代币（以内部单位计）必须是 granularity 值的倍数</li>
+<li>任何导致余额不是 granularity 值的倍数的操作必须被视为无效，并且交易必须回滚</li>
+</ul>
+<p>注意：大多数代币应该是完全可分割的。也就是说，除非有充分理由不允许代币的有任何分数，此函数才应该返回 1 。</p>
+<p><strong>ERC-20 兼容性问题：</strong></p>
+<p>代币的小数位必须始终为 <code>18</code>。对于纯ERC777代币，ERC-20 <code>decimals</code>函数是可选的。并且与代币合约交互时不应该依赖其存在（18 的小数值是隐含的）。对于兼容 ERC-20 的代币，<code>decimals</code>函数是必须的，并且必须返回 <code>18</code>（在 ERC-20 中，<code>decimals</code> 函数是可选的。如果该函数不存在，则小数位的值没有明确定义，可以假设为 <code>0</code> 。因此，出于兼容性的原因，对于兼容 ERC-20 的代币，必须实现<code>decimals</code>函数）</p>
+<h3 id="Operators（运营商）"><a href="#Operators（运营商）" class="headerlink" title="Operators（运营商）"></a>Operators（运营商）</h3><p><strong><code>operator</code>是被允许代表某个持有者发送和销毁代表的地址</strong></p>
+<p>当一个地址成为持有者的运营商时，必须发出 <code>AuthorizedOperator</code> 事件。<code>AuthorizedOperator</code> 的<code>operator</code>（主题 1）和 <code>holder</code>（主题2）必须分别是运营商(operator)和持有者(holder)的地址。</p>
+<p>当一个持有者撤销一个运营商时，必须发出 <code>RevokedOperator</code> 事件。<code>RevokedOperator</code>的<code>operator</code>（主题 1）和 <code>holder</code>（主题2）必须分别是运营商(operator)和持有者(holder)的地址。</p>
+<p>注意：一个持有者可以同时拥有多个运营商</p>
+<p>代币可以定义默认运营商。默认运营商时所有持有者隐式授权的运营商。在定义默认运营商时，不得发出<code>AuthorizedPoerator</code> 事件。以下是适用于默认运营商的规则：</p>
+<ul>
+<li>代币合约在创建时，必须定义默认运营商</li>
+<li>默认运营商必须是不变的。<strong>也就是说，代币合约绝对不能添加或删除默认运营商</strong></li>
+<li>在定义默认运营商时，不得发出 <code>AuthorizedOperator</code> 事件</li>
+<li>除非持有者本身是受影响的默认运营商（除非持有者必须被允许撤销一个默认运营商）</li>
+<li>持有者必须被允许重新授权先前被撤销的默认运营商</li>
+<li>当特有的持有者明确授权或撤销默认运营商时，必须分别发出<code>AuthorizedOperator</code>或<code>RevokedOperator</code>事件</li>
+</ul>
+<p>以下规则使用于任何运营商：</p>
+<ul>
+<li>一个地址必须始终是自己的运营商，因此地址作为其自己的运营商绝对不能被撤销</li>
+<li>如果一个地址是一个持有者的运营商，<code>isOperatorFor</code> 必须返回 <code>true</code></li>
+<li>如果一个地址不是一个持有者的运营商，<code>isOpreatorFor</code> 必须返回 <code>false</code></li>
+<li>当持有者按照<code>AuthorizedOperator</code>事件定义，授权某个地址为其操作员时，必须以正确的值触发<code>AuthorizedOperator</code>事件。 </li>
+<li>当持有者按照<code>RevokedOperator</code>事件定义，撤销某个地址为其操作员时，必须以正确的值触发<code>RevokedOperator</code>事件。</li>
+</ul>
+<p>注意：</p>
+<ul>
+<li>持有者可以授权已经被授权的操作员，每次都必须触发<code>AuthorizedOperator</code>事件</li>
+<li>持有者可以撤销已经被撤销的操作员，每次都必须触发<code>RevokedOperator</code>事件</li>
+</ul>
+<p><strong><code>AuthorizedOperator</code>事件</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">event AuthorizedOperator(address indexed operator, address indexed holder);</span><br></pre></td></tr></table></figure>
+
+<p>表示将 <code>operator</code> 地址授权为 <code>holder</code> 持有者的操作员事件。</p>
+<p>注意：此事件在操作员授权过程中，绝不能在外部触发</p>
+<blockquote>
+<p><em><code>operator</code>: 成为 holder 操作员的地址</em></p>
+<p><em><code>holder</code>：授权 operator 地址为操作员的授权者地址</em></p>
+</blockquote>
+<p><strong><code>RevokeOperator</code>事件</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">event RevokeOperator(address indexed operator, address indexed holder);</span><br></pre></td></tr></table></figure>
+
+<p>表示撤销<code>operator</code>地址作为<code>holder</code>持有者的操作员事件。</p>
+<p>注意：此事件在操作员撤销过程中，绝不能在外部触发</p>
+<blockquote>
+<p><code>operator</code>: 作为<code>holder</code>操作员而被撤销的地址</p>
+<p><code>holder</code>: 撤销<code>operator</code> 地址作为操作员的持有者的地址。</p>
+</blockquote>
+<p><strong>必须实现以下<code>defaultOperators</code>、<code>authorizedOperator</code>、<code>revokeOperator</code>、<code>isOperatorFor</code>函数来管理运营商，代币合约可以通过其他函数来管理运营商</strong></p>
+<p><strong><code>defaultOperators</code>函数</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function defaultOperators() external view returns (address[] memory);</span><br></pre></td></tr></table></figure>
+
+<p>获取由代币合约定义的默认操作员列表的函数。</p>
+<p>注意：如果代币合约没有任何默认操作员，则此函数必须返回一个空列表。</p>
+<blockquote>
+<p><em>identifier: <code>06e48538</code></em></p>
+<p><em>return: 返回默认操作员地址的列表</em></p>
+</blockquote>
+<p><code>authorizeOperator</code>函数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function authorizeOperator(address operator) external </span><br></pre></td></tr></table></figure>
+
+<p>将第三方操作员地址设置为 <code>msg.sender</code> 的<code>operator</code>，以便代表其发送和销毁代币</p>
+<p>注意：持有者（<code>msg.sender</code>）始终是其自身的操作员。此权利不得撤销。因此，如果调用此函数将 <code>msg.sender</code> 授权为其自身的操作员(即 <code>opetaror</code> &#x3D;&#x3D; <code>msg.sender</code>)，则此函数必须回滚。</p>
+<blockquote>
+<p><em>identifier:<code>959b8c3f</code></em></p>
+<p><em>参数：</em></p>
+<p><em><code>operator</code>: 要为<code>msg.sender</code>设置的操作员的地址。</em></p>
+</blockquote>
+<p><code>revokeOperator</code> 函数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function revokeOperator(address operator) external</span><br></pre></td></tr></table></figure>
+
+<p>撤销<code>operator</code>地址的权力，使其无法代表 <code>msg.sender</code> 发送和销毁代币。</p>
+<p>注意：持有者(<code>msg.sender</code>)始终是其自己的操作员。此权力不得撤销。因此，如果调用此函数将<code>msg.sender</code>作为要被撤销的操作员(即<code>operator == msg.sender</code>) ，则此函数必须回滚。</p>
+<blockquote>
+<p><em>identifier:<code>fad8b32a</code></em></p>
+<p><em>参数：</em></p>
+<p><em><code>operator</code>: 要为<code>msg.sender</code>撤销的操作员的地址</em></p>
+</blockquote>
+<p><code>isOperatorFor</code> 函数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">function isOperatorFoe(</span><br><span class="line">	address operator,</span><br><span class="line">	address holder</span><br><span class="line">) external view returns (bool)</span><br></pre></td></tr></table></figure>
+
+<p>判断<code>opetator</code>地址是否是<code>holder</code>的操作员。</p>
+<blockquote>
+<p>identifier:<code>d95b6371</code></p>
+<p>参数：</p>
+<p><code>operator</code>：可能是<code>holder</code>操作员的地址</p>
+<p><code>holder</code>：可能具有<code>operator</code>地址作为操作员的持有者地址</p>
+<p>返回值：如果<code>operator</code>是<code>holder</code>的操作员，则返回  <code>true</code> 否则返回<code>false</code>。</p>
+</blockquote>
+<p>注意：要了解给定持有者的操作员是哪些地址，必须为每个默认操作员调用<code>isOperatorFor</code>，并解析涉及持有者的<code>AuthorizedOperator</code>和<code>RevokedOperator</code>事件。</p>
+<h3 id="发送代币"><a href="#发送代币" class="headerlink" title="发送代币"></a>发送代币</h3><p>当运营商将一定数量（<code>amount</code>）的代币以及相关数据（<code>data</code>）和运营商数据（<code>operatorData</code>）从持有者发送到接收者时，代币合约必须应用以下规则：</p>
+<ul>
+<li>任何授权的操作员都可以向任何接收者发送代币（除了<code>0x0</code>）</li>
+<li>持有者的余额必须减少<code>amount</code></li>
+<li>接收者的余额必须增加<code>amount</code></li>
+<li>持有者的余额在发送后必须大于或等于该<code>amount</code>，以确保其最终余额大于或等于零<code>(0)</code></li>
+<li>Token 合约必须触发<code>Sent</code>事件发出正确的值，如<code>Sent</code>事件中所定义的</li>
+<li>操作员可以在<code>operatorData</code>中包含信息</li>
+<li>如果持有者通过 ERC-1820 注册了 <code>ERC777TokenSender </code>实现，代币合约必须调用持有者的 <code>tokensToSend </code>钩子(hook)</li>
+<li>如果接收者通过 ERC-1820 注册了 <code>ERC777TokenRecipient</code> 实现，代币合约必须调用接收者的 <code>tokensReceived</code> 钩子(hook)</li>
+<li>在整个发送过程中，<code>data</code> 和 <code>operatorData</code> 必须是不可变的，因此在调用两个钩子(hook)和发出<code>Sent</code>事件时必须使用相同的 <code>data</code> 和 <code>operatorData</code></li>
+</ul>
+<p><strong>代币合约在以下任何情况下都必须回滚<code>revert</code></strong></p>
+<ul>
+<li>操作员地址不是持有者的授权操作员</li>
+<li>发送后的持有者余额或接收者余额不是代币合约定义的粒度(<code>granularity</code>)的倍数。</li>
+<li>接收者是一个合约，他不通过 ERC-1820 实现 <code>ERC777TokensRecipient</code></li>
+<li>持有者或接收者的地址是<code>0x0</code></li>
+<li>持有者的 <code>tokensToSend</code> 钩子（hook）<code>revert</code></li>
+<li>持有者的 <code>tokensReceived</code> 钩子（hook）<code>revert</code></li>
+</ul>
+<p><strong>代币合约可以从多个持有者，多个接收者或两者发送代笔，在这种情况下：</strong></p>
+<ul>
+<li>先前的发送规则必须适用于所有持有者和所有接收者</li>
+<li>所有增加的余额的总和必须等于发送的总金额(<code>amount</code>)</li>
+<li>所有减少的余额的总和必须等于发送的总金额(<code>amount</code>)</li>
+<li>必须为每个持有者和接收者触发对应的<code>Sent</code>事件，并为每对发出相应的金额</li>
+<li><code>Sent</code>事件的所有金额的总和必须等于发送的总金额(<code>amount</code>)</li>
+</ul>
+<p><em>注意</em>：对发送收取费用等机制被视为向多个收件人发送：预期收件人和费用收件人</p>
+<p><em>注意</em>：代币的移动可能是连锁的。例如，如果合约在收到代币后将其进一步发送到另一个地址。在这种情况下，先前的发送规则按顺序应用于每个发送</p>
+<p><em>注意</em>：发送零个<code>(0)</code>Token 是有效的，并且必须被视为常规发送。</p>
+<p>实施要求：</p>
+<ul>
+<li><p>Token 合约必须在更新状态之前调用<code>tokensToSend</code>挂钩（hook）</p>
+</li>
+<li><p>Token 合约必须在更新状态之后调用<code>tokensReceived</code>挂钩（hook）</p>
+<p>即：必须首先调用<code>tokensToSend</code>，然后必须更新余额以反映发送情况，最后必须调用<code>tokenReceived</code>。因此，<code>tokensToSend</code>中的<code>balanceOf</code>调用返回发送前的地址余额，<code>tokensReceived</code>中的<code>balanceOf</code>调用返回发送后地址的余额</p>
+</li>
+</ul>
+<p><em>注意：</em> 数据(<code>data</code>)字段包含持有提供的信息，类似于常规以太坊发送交易中的数据字段。<code>tokensToSend()</code>挂钩、<code>tokenReceived()</code>或二者都可以使用该信息来决定是否希望拒绝交易。</p>
+<p><em>注意：</em><code>operatorData</code>字段类似于<code>data</code>字段，只不过它应由操作员提供。</p>
+<p>操作员数据<code>operatorData</code>必须仅由操作员提供。它更多地用于日志记录目的和特殊情况。（示例包括付款参考、支票号码、会签等。）在大多数情况下，接收者会忽略操作员数据，或者最多会记录操作员数据。 </p>
+<p><strong><code>Sent</code>事件</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">event Sent (</span><br><span class="line">	address indexed operator,</span><br><span class="line">	address indexed from,</span><br><span class="line">	address indexed to,</span><br><span class="line">	uint256 amount,</span><br><span class="line">	bytes data,</span><br><span class="line">	bytes operatorData</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>指示运营商(<code>operator</code>)地址从 <code>from</code> 地址到<code>to</code>地址发送的代币数量(<code>amount</code>)</p>
+<p><em>注意</em>：此事件不得在发送或 ERC-20 传输过程之外发出。</p>
+<blockquote>
+<p><em>参数parameters：</em></p>
+<p><em><code>operator</code>：触发发送的地址</em></p>
+<p><em><code>from</code>：发送代币的持有者</em></p>
+<p><em><code>to</code>：Token 的接收者</em></p>
+<p><em><code>amount</code>：发送的代币数量</em></p>
+<p><em><code>data</code>：持有者提供的信息</em></p>
+<p><em><code>operatorData</code>：运营商提供的信息</em></p>
+</blockquote>
+<p>必须实现下面描述的<code>send</code>和<code>operatorSend</code>函数来发送 Token，代币合约可以实现其他功能来发送 Token。</p>
+<p><strong><code>send</code> 函数</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function send(address to, uint256 amount, bytes calldata data) external</span><br></pre></td></tr></table></figure>
+
+<p>从地址<code>msg.sender</code>向地址<code>to</code>发送一定量的 Token。</p>
+<p>操作者和持有者都必须是 <code>msg.sender</code></p>
+<blockquote>
+<p><em>identifier: <code>9bd9bbc6</code></em></p>
+<p><em>parameters:</em></p>
+<p><em><code>to</code>：Token 的接收者</em></p>
+<p><em><code>amount</code>：要发送的 Token 数量</em></p>
+<p><em><code>data</code>：持有者提供的信息</em></p>
+</blockquote>
+<p><code>operatorSend</code>函数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">function operatorSend(</span><br><span class="line">	address from,</span><br><span class="line">	address to,</span><br><span class="line">	uint256 amount,</span><br><span class="line">	bytes calldata data,</span><br><span class="line">	bytes calldata operatorData</span><br><span class="line">) external</span><br></pre></td></tr></table></figure>
+
+<p>代表地址<code>from</code> 发送一定数量(<code>amount</code>)的 Token 到地址<code>to</code></p>
+<p><em>提醒</em>：如果操作员地址不是发件人地址的授权操作员，则发送过程必须 <code>revert</code></p>
+<p><em>注意：</em><code>from</code> 和 <code>msg.sender</code> 可能是相同的地址，即，一个地址可以为自己调用<code>operatorSend</code>。此调用必须和<code>send</code>等效，此外，操作符可以为<code>operatorData</code>指定显式值（这不能用 <code>send</code> 函数完成）。</p>
+<blockquote>
+<p><em>identifier:<code>62ad1b83</code></em></p>
+<p><em>参数 parameters:</em></p>
+<p><em><code>from</code>：正在发送的代币的持有者</em></p>
+<p><em><code>to</code>：代币的接收者</em></p>
+<p><em><code>amount</code>：要发送的代币数量</em></p>
+<p><em><code>data</code>：持有者提供的信息</em></p>
+<p><em><code>operatorData</code>：运营商提供的信息</em></p>
+</blockquote>
+<h3 id="Minting-Tokens（铸造代币）"><a href="#Minting-Tokens（铸造代币）" class="headerlink" title="Minting Tokens（铸造代币）"></a>Minting Tokens（铸造代币）</h3><p>铸造代币是生产新代币的行为。ERC-777 故意没有定义铸造代币的特定功能。这一意图来自于不限制 ERC-777 标准的使用的希望，因为铸造过程通常是针对每个代币的。</p>
+<p><strong>尽管如此，为收件人铸造时必须遵守以下规则：</strong></p>
+<ul>
+<li>可以为任何收件人(<code>0x0</code>地址除外)铸造代币</li>
+<li>总供应量必须增加铸造代币的数量</li>
+<li><code>0x0</code>的余额不得减少</li>
+<li>接收者的余额必须增加铸造代币的数量</li>
+<li>代币合约必触发<code>Minted</code>事件，并具有<code>Minted</code>事件中定义的正确值</li>
+<li>如果接收者通过 ERC-1820 注册了 <code>ERC777TokenReceipent</code> 实现，则代币合约必须调用接收者的 <code>tokensReceived</code> 钩子(hook)</li>
+<li>数据<code>data</code>和<code>operatorData</code>在整个铸造过程中必须时不可变的——因此必须使用相同的数据和<code>operatorData</code>来调用<code>tokensReceived</code>钩子(hook)并触发<code>Minted</code>事件</li>
+</ul>
+<p><strong>在以下任何情况中，代币合约在铸造时必须 <code>revert</code></strong></p>
+<ul>
+<li>铸币后产生的接收者余额不是代币合约定义的颗粒度(<code>granularity</code>)的倍数</li>
+<li>接收者是一个合约，它不通过 ERC-1820 实现 <code>ERC777TokensReceived</code> 接口</li>
+<li>接收者的地址为<code>0x0</code></li>
+<li>接收者的<code>tokensReceived</code>钩子(hook) <code>revert</code></li>
+</ul>
+<p><em>注意：</em>创建 Token 合约时的初始代币供应量，必须被视为铸造到接收初始供应量的地址的初始供应量。这意味着必须发出一个或多个<code>Minted</code>事件，并且必须调用接收者的<code>tokenReceived</code>钩子(hook)</p>
+<p><strong>ERC-20 兼容性要求：</strong></p>
+<p>虽然铸造时不得发出 <code>Sent</code> 事件，但如果代币合约向后兼容 ERC-20 ，则应按照 ERC-20 标准中的定义触发<code>from</code> 参数设置为<code>0x0</code>的<code>Transfer</code>事件。</p>
+<p><strong>代币合约可以同时为多个接收者铸造代币，在这种情况下：</strong></p>
+<ul>
+<li>之前的铸币规则必须适用于所有收件人</li>
+<li>所有增加的余额的总和必须等于铸造总量</li>
+<li>必须为每个接收者触发<code>Minted</code>事件，并为每个接收者发出相应的金额</li>
+<li>铸造事件中所有金额的总和必须等于铸造总量</li>
+</ul>
+<p><em>注意：</em>铸造零(<code>0</code>)个代币时有效的，并且必须被视为常规铸造</p>
+<p><em>注意：</em>在发送或销毁期间，数据由持有者提供，但不适用于铸币厂。在这种情况下，数据可以由代币合约或运营商提供，例如，以确保成功铸造给期望特定数据的持有者。</p>
+<p><em>注意：</em><code>operatorData</code>字段包含运营商提供的信息，类似于常规以太坊发送交易中的数据字段。<code>tokensReceived()</code>挂钩可以使用该信息来决定是否希望拒绝交易。</p>
+<p><strong><code>Minted</code>事件</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">event Minted(</span><br><span class="line">	address indexed operator,</span><br><span class="line">	address indexed to,</span><br><span class="line">	uint256 amount,</span><br><span class="line">	bytes data,</span><br><span class="line">	bytes operatorData</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>由运营商地址指示<code>to</code>地址铸造的代币数量</p>
+<p><em>注意：</em>此事件不得在铸币过程之外发出。</p>
+<blockquote>
+<p><em>parameters:</em></p>
+<p><em><code>operaotr</code>：触发铸币厂的地址</em></p>
+<p><em><code>to</code>：Token 的接收者</em></p>
+<p><em><code>amount</code>：铸造的代币数量</em></p>
+<p><em><code>data</code>：为接收者提供的信息</em></p>
+<p><em><code>OperatorData</code>：运营商提供的信息</em></p>
+</blockquote>
+<h3 id="Burning-Tokens（销毁代币）"><a href="#Burning-Tokens（销毁代币）" class="headerlink" title="Burning Tokens（销毁代币）"></a>Burning Tokens（销毁代币）</h3><p>销毁代币是销毁现有代币的行为。ERC-777 明确定义了两个销毁代币的函数（<code>burn</code>和<code>operatorBuen</code>）。这些功能有助于将销毁过程集中到钱包和 dapp 中。然而，代币合约可能会阻止部分或所有持有者以任何理由销毁代币。代币合约还可以定义其他函数来销毁代币。</p>
+<p><strong>销毁持有者的代币时必须遵循以下规则：</strong></p>
+<ul>
+<li>代币可以从任何持有者地址(<code>0x0</code>除外)销毁</li>
+<li>总供应量(<code>totalSupply</code>)必须减少代币销毁量</li>
+<li><code>0x0</code>的余额不得增加</li>
+<li>持有者的余额必须减去销毁的代币数量</li>
+<li>代币合约必须触发一个<code>Burned</code> 事件，并具有<code>Burned</code>事件中定义的正确值</li>
+<li>如果持有者通过 ERC-1820 注册了 <code>ERC777TokenSender</code> 实现，则代币合约必须调用持有者的 <code>tokensToSend</code> 钩子(hook)</li>
+<li>在整个销毁过程中，<code>operatorData</code>必须时不可变的，因此必须使用相同的<code>operatorData</code>来调用<code>tokensToSend</code>钩子(hook) 并触发<code>Burned</code>事件</li>
+</ul>
+<p><strong>在以下任何情况下销毁时，代币合约必须 revert</strong></p>
+<ul>
+<li>该运营商地址不是持有人的授权运营商</li>
+<li>销毁后产生的持有者余额不是代币合约定义的颗粒度(<code>granularity</code>)的倍数</li>
+<li>持有者的余额小于要销毁的代币数量（即导致持有者的余额为负）</li>
+<li>持有者的地址是<code>0x0</code></li>
+<li>持有者的<code>tokensToSend</code>钩子(hook) <code>revert</code></li>
+</ul>
+<p><strong>ERC-20 兼容性要求</strong>：</p>
+<p>在销毁的过程中不得触发<code>Sent</code>事件；如果代币合约启用了<code>ERC-20</code>，则应该发出 <code>to</code>  参数设置为 <code>0x0</code> 的 Transfer 事件。ERC-20 标准没有定义销毁代币的概念，但这是一种普遍接受的做法。</p>
+<p><strong>代币合约可以同时为多个持有者销毁代币，在这种情况下：</strong></p>
+<ul>
+<li>之前的销毁规则必须适用于每个持有者</li>
+<li>所有减少的余额之和必须等于销毁总量</li>
+<li>必须为每个持有者触发<code>Burn</code>事件，并为每个持有者发出相应的金额</li>
+<li><code>Burned</code>事件的所有金额之和必须等于销毁总量(<code>amount</code>)</li>
+</ul>
+<p><em>注意：</em>销毁零(<code>0</code>)个代币是有效的，并且必须被视为正常销毁</p>
+<p><em>注意：</em>数据字段必须包含持有者提供的信息，类似于常规以太发送交易中的数据字段。<code>tokensToSend()</code>钩子(hook)，<code>tokensReceived()</code>或者二者都可以使用该信息来决定是否希望拒绝交易。</p>
+<p><em>注意：</em><code>operatorData</code>字段类似于 <code>data</code> 字段，只不过它应由操作员提供。</p>
+<p><strong><code>Burned</code> 事件</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">event Burned(</span><br><span class="line">	address indexed operator,</span><br><span class="line">	address indexed from,</span><br><span class="line">	uint256 amount,</span><br><span class="line">	bytes data,</span><br><span class="line">	bytes operatorData</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>表示运营商地址从 <code>from</code> 地址销毁的代币数量</p>
+<p><em>注意：</em>此事件不得在销毁过程之外发出</p>
+<blockquote>
+<p>parameters:</p>
+<p><code>operator</code>：触发销毁的地址</p>
+<p><code>from</code>：被销毁的代币的持有者</p>
+<p><code>amount</code>：销毁的代币数量</p>
+<p><code>data</code>：持有者提供的信息</p>
+<p><code>operatorData</code>：运营商提供的信息</p>
+</blockquote>
+<p>必须实现下面描述的<code>burn</code>和<code>operatorBurn</code>函数来销毁代币。代币合约可以实现其他功能来销毁代币。</p>
+<p><strong><code>burn</code> 函数</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function burn(uint256 amount, bytes calldata data) external</span><br></pre></td></tr></table></figure>
+
+<p>从地址<code>msg.sender</code>销毁一定数量的代币。</p>
+<p>操作者和持有者都必须是 <code>msg.sender</code>。</p>
+<blockquote>
+<p>identifier:<code>fe9f9303</code></p>
+<p>parameters</p>
+<p><code>amount</code>：要销毁的代币数量</p>
+<p><code>data</code>：持有者提供的信息</p>
+</blockquote>
+<p><strong><code>operatorData</code>函数</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">function operatorData(</span><br><span class="line">	address from, </span><br><span class="line">	uint amount, </span><br><span class="line">	bytes calldata date, </span><br><span class="line">	bytes calldata operatorData</span><br><span class="line">) external </span><br></pre></td></tr></table></figure>
+
+<p>销毁地址<code>from</code>的<code>amount</code>数量的代币。</p>
+<p><em>提醒：</em>如果操作员地址不是收件人地址的授权操作员，则销毁过程必须 <code>revert</code></p>
+<blockquote>
+<p>identifier:<code>fc673c4f</code></p>
+<p>parameters</p>
+<p><code>from</code>：被销毁的代币的持有者</p>
+<p><code>amount</code>：销毁的代币金额</p>
+<p><code>data</code>：持有者提供的信息</p>
+<p><code>operatorData</code>：运营商提供的信息。</p>
+</blockquote>
+<p><em>注意：</em>操作员可以通过<code>operatorData</code>传递任何信息。<code>operatorData</code>必须仅由操作员提供</p>
+<p><em>注意：</em><code>from</code> 和 <code>msg.sender</code> 可能是相同的地址。即一个地址可以为自己调用 <code>operatorBurn</code>。此调用必须与 <code>burn</code> 等效，此外操作符还可以为 <code>operatorData</code> 指定显式值（这不能通过<code>burn</code>函数完成）。</p>
+<h3 id="ERC777TokensSender和tokenToSend钩子-hook"><a href="#ERC777TokensSender和tokenToSend钩子-hook" class="headerlink" title="ERC777TokensSender和tokenToSend钩子(hook)"></a><code>ERC777TokensSender</code>和<code>tokenToSend</code>钩子(hook)</h3><p><code>tokensToSend</code>挂钩通常会通知任何减少给定持有者余额（发送或销毁）的请求。任何希望从其地址收到代币借机通知的地址（常规地址或账户地址）可以通过注册 ERC-1820 实现下面描述的 <code>ERC777TokensSender</code> 接口的合约地址</p>
+<blockquote>
+<p>这是通过调用 ERC-1820 注册表上的 <code>setInterfaceImplementer</code> 函数来完成的，其中持有者地址为：地址<code>ERC777TokenSender(0x29ddb589b1fb5fc7cf394961c1adf5f8c6454761adf795e67fe149f658abe895)</code>的<code>keccak256</code>哈希作为接口哈希，地址为以 <code>ERC777TokensSender</code> 作为实施者的合约</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">interface ERC777TokensSender &#123;</span><br><span class="line">	function tokenToSend(</span><br><span class="line">	address operator,</span><br><span class="line">	address from,</span><br><span class="line">	address to,</span><br><span class="line">	uint256 amount,</span><br><span class="line">	bytes calldata userData,</span><br><span class="line">	bytes calldata operatorData</span><br><span class="line">	) external;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意：常规地址可以注册一个不用的地址（合约的地址），代表其实现接口。合约可以注册其他地址或另一个合约的地址，但所述地址必须代表其实现接口。</p>
+<p><code>tokensToSend</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">function tokensToSend(</span><br><span class="line">	address operator,</span><br><span class="line">	address from,</span><br><span class="line">	address to,</span><br><span class="line">	uint256 amount,</span><br><span class="line">	bytes calldata userData,</span><br><span class="line">	bytes calldata operatorData</span><br><span class="line">) external</span><br></pre></td></tr></table></figure>
+
+<p>通知操作员地址 从<code>from</code>地址到<code>to</code>地址发送或销毁(如果<code>to</code>为<code>0x0</code>)一定量代币的请求。</p>
+<p><em>注意：</em>不得在销毁，发送或 ERC-20 传输过程之外调用此函数</p>
+<blockquote>
+<p>identifier:<code>75ab9782</code></p>
+<p>parameters:</p>
+<p><code>from</code>：发送代币的持有者</p>
+<p><code>to</code>：发送代币的接收者(销毁为<code>0x0</code>)</p>
+<p><code>amount</code>：持有者余额减少的代币数量</p>
+<p><code>data</code>：持有者提供的信息</p>
+<p><code>OperatorData</code>：运营商提供的信息</p>
+</blockquote>
+<p><strong>调用<code>tokensToSend</code>挂钩(hook)时适用以下规则</strong>：</p>
+<ul>
+<li>每个发送和销毁过程都必须调用<code>tokensToSend</code>挂钩</li>
+<li><code>tokensToSend</code>挂钩必须在状态更新之前调用，即在余额减少之前</li>
+<li><code>operator</code>必须时触发发送或销毁过程的地址</li>
+<li><code>from</code>必须时发送或销毁代币的持有者的地址</li>
+<li><code>to</code>必须时接收发送 Tokens 的持有者的地址</li>
+<li>销毁时<code>to</code>必须为<code>0x0</code></li>
+<li><code>amount</code>必须是持有者发送或销毁的代币数量</li>
+<li><code>data</code>必须包含提供给发送或销毁过程的额外信息（如果有）。</li>
+<li><code>operatorData</code>必须包含触发余额减少的地址提供的额外信息（如果有）。</li>
+<li>持有者可以通过 <code>revert</code> 来阻止转账或者销毁过程（即拒绝从其账户中提取代币）</li>
+</ul>
+<p><em>注意：</em>多个持有者可以使用 <code>ERC777TokensSender</code> 的相同实现</p>
+<p><em>注意：</em>一个地址在任何给定时间最多可以为所有 ERC-777 代币注册一个实现，因此，<code>ERC777TokensSender</code> 必须期望被不同的代币合约调用。<code>tokensToSend</code>调用的<code>msg.sender</code>预计是代币合约的地址。</p>
+<p><strong>ERC-20 兼容性要求：</strong></p>
+<p>该钩子优先于 ERC-20，并且在调用 ERC-20 的 <code>transfer</code> 和 <code>transferFrom</code> 事件时必须调用（如果已经注册）。当从传输中调用时，操作符必须与 <code>from</code> 的值相同。当从传输中调用时，操作符必须与 <code>from</code> 的值相同。当从<code>transferFrom</code> 调用时，<code>operator</code>必须是发出<code>transferFrom</code>调用的地址</p>
+<h3 id="ERC777TokensRecipient和tokensReceived钩子"><a href="#ERC777TokensRecipient和tokensReceived钩子" class="headerlink" title="ERC777TokensRecipient和tokensReceived钩子"></a><code>ERC777TokensRecipient</code>和<code>tokensReceived</code>钩子</h3><p><code>tokensReceived</code> 挂钩通知给定收件人的余额（发送和铸造）的任何增量。任何希望收到代币信用通知的地址（常规地址或合约地址）都可以通过 ERC-1820 注册实现下面描述的 <code>ERC777TokensRecipient</code> 接口合约的地址。</p>
+<blockquote>
+<p>这是通过调用 ERC-1820 注册表上的 <code>setInterfaceImplement</code> 函数来完成的，其中接收者地址为地址，以 <code>ERC777TokensRecipient(0xb281fc8c12954d22544db45de3159a39272895b169a852b314f9cc762e44c53b)</code>  的 <code>keccak256</code> 哈希作为接口哈希，以及作为实现者实现 <code>ERC777TokensRecipient</code> 的合约的地址</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">interface ERC777TokensRecipient &#123;</span><br><span class="line">	function tokensReceived(</span><br><span class="line">		address operator,</span><br><span class="line">		address from,</span><br><span class="line">		address to,</span><br><span class="line">		uint256 amount,</span><br><span class="line">		bytes calldata data,</span><br><span class="line">		bytes calldata operatorData</span><br><span class="line">	) external;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果接收者是合约，尚未注册<code>ERC777TokensPecipient</code> 实现，那么代币合约：</p>
+<ul>
+<li>如果从 <code>mint</code> 或 <code>send</code> 调用 <code>tokensReceived</code> 挂钩，则必须 <code>revert</code></li>
+<li>如果从 ERC20 <code>transfer</code> 或 <code>transferFrom</code> 调用中调用 <code>tokensReceived</code> 挂钩，则应继续处理交易</li>
+</ul>
+<p><em>注意：</em> 常规地址可以注册一个不同的地址（合约地址），代表其实现接口。合约必须注册其地址或另一个合约的地址，但所述地址必须代表其实现接口。</p>
+<p><code>tokensReceived</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">function tokensReceived(</span><br><span class="line">	address operator,</span><br><span class="line">    address from,</span><br><span class="line">    address to,</span><br><span class="line">    uint256 amount,</span><br><span class="line">    bytes calldata data,</span><br><span class="line">    bytes calldata operatorData</span><br><span class="line">) external</span><br></pre></td></tr></table></figure>
+
+<p>通过<code>operator</code>地址通知发送或者铸造（如果<code>from</code>为<code>0x0</code>）从<code>from</code>地址到<code>to</code>地址的代币数量<code>amount</code>。</p>
+<p><em>注意：</em>不得在铸币、发送或 ERC-20 传输过程之外调用此函数</p>
+<blockquote>
+<p>identifier:<code>0023de29</code></p>
+<p>parameters:</p>
+<p><code>operator</code>：触发余额增加的地址（通过发送或铸造）</p>
+<p><code>from</code>：发送代币的持有者（对铸币厂来说是<code>0x0</code>）</p>
+<p><code>to</code>：Token 的接收者</p>
+<p><code>amount</code>：接收者余额增加的代币数量</p>
+</blockquote>
+<p><strong>调用 <code>tokensReceived</code> 挂钩时，适用以下规则：</strong></p>
+<ul>
+<li>每个发送和铸造过程都必须调用 <code>tokensReceived</code>挂钩</li>
+<li><code>tokensReceived</code> 挂钩必须在状态更新后调用，即余额增加后</li>
+<li><code>operator</code>必须是触发发送或铸造过程的地址</li>
+<li><code>from</code>必须是其代币被发送的持有者地址</li>
+<li>对于铸造来说，<code>from</code>必须是<code>0x0</code></li>
+<li><code>to</code>必须是接收 Token 的接收者地址</li>
+<li><code>amount</code>必须是接收者发送或铸造的代币数量</li>
+<li><code>data</code>数据必须包含提供发送或铸造进程的额外信息（如果有）</li>
+<li><code>operatorData</code>必须包含触发余额增加的地址提供的额外信息(如果有)。</li>
+<li>持有者可以通过<code>revert</code>来阻止发送或铸造过程（即拒接接收 Token）</li>
+</ul>
+<p><em>注意：</em>对个持有者可以使用相同的 <code>ERC777TokensRecipient</code> 实现</p>
+<p><em>注意：</em>一个地址在任何给定时间最多可以为所有 ERC-777 代币注册一个实现。因此，<code>ERC777TokensRecipient</code>必须期望被不同的代币合约调用。<code>tokensReceived</code>调用的<code>msg.sender</code>预计是代币合约的地址。</p>
+<p><strong>ERC-20 兼容要求：</strong></p>
+<p>该钩子优先于 ERC-20，并且在调用 ERC-20 的 <code>transfer</code>和 <code>transferFrom</code>事件时必须触发（如果已注册）。当从传输中调用时，操作符必须与 <code>from</code> 的值相同。当从<code>transferFrom</code> 调用时，<code>operator</code>必须是发出<code>transferFrom</code>调用的地址。</p>
+<h2 id="Gas-消耗注意事项"><a href="#Gas-消耗注意事项" class="headerlink" title="Gas 消耗注意事项"></a>Gas 消耗注意事项</h2><p>Dapp 和 钱包应该首先使用 <code>eth_estimateGas</code> 估计发送、铸造或消耗代币时所需的 Gas 量，以避免在交易过程中耗尽 Gas。</p>
+<h2 id="Logo"><a href="#Logo" class="headerlink" title="Logo"></a>Logo</h2><table>
+<thead>
+<tr>
+<th>image</th>
+<th><img src="/../images/EIP777%EF%BC%9AERC777%E4%BB%A3%E5%B8%81%E6%A0%87%E5%87%86/image-20231112171857503-16997807429141.png" alt="image-20231112171857503"></th>
+<th><img src="/../images/EIP777%EF%BC%9AERC777%E4%BB%A3%E5%B8%81%E6%A0%87%E5%87%86/image-20231112172242665.png" alt="image-20231112172242665"></th>
+<th><img src="/../images/EIP777%EF%BC%9AERC777%E4%BB%A3%E5%B8%81%E6%A0%87%E5%87%86/image-20231112172250126.png" alt="image-20231112172250126"></th>
+<th><img src="/../images/EIP777%EF%BC%9AERC777%E4%BB%A3%E5%B8%81%E6%A0%87%E5%87%86/image-20231112172004849.png" alt="image-20231112172004849"></th>
+<th><img src="/../images/EIP777%EF%BC%9AERC777%E4%BB%A3%E5%B8%81%E6%A0%87%E5%87%86/image-20231112172021198.png" alt="image-20231112172021198"></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Color</td>
+<td>beige米色</td>
+<td>white白色</td>
+<td>light浅灰</td>
+<td>dark grey 深灰</td>
+<td>dark 黑色</td>
+</tr>
+<tr>
+<td>Hex</td>
+<td>#C99D66</td>
+<td>#FFFFFF</td>
+<td>#EBEFF0</td>
+<td>#3C3C3D</td>
+<td>#000000</td>
+</tr>
+</tbody></table>
+<p>这个 Logo 可以使用、修改、挑战，以促进有效的 ERC-777 代币实施和 ERC-777 兼容技术，例如钱包和 dapps。</p>
+<p>ERC-777 代币合约作者可以根据此 Logo 为其代币创建特定 Logo</p>
+<p>该 Logo 不得用于广告、促销或以任何形式关联不符合 ERC-777 的技术（例如 Token）</p>
+<p>该标准的 Logo 可以在 <code>/assets/eip-777/logo</code> 文件夹中找到 <code>SVG</code> 和 <code>PNG</code> 格式。 <code>PNG</code> 版本的徽标提供了几种以像素为单位的尺寸。 如果需要，可以通过从 <code>SVG</code> 转换为 <code>PNG</code> 来创建其他尺寸。</p>
+<h2 id="理由"><a href="#理由" class="headerlink" title="理由"></a>理由</h2><p>该标准的主要目的是解决 ERC-20 的一些缺点，同时保持与 ERC-20 的向后兼容性，并避免 EIP-223 的问题和漏洞。</p>
+<p>下面是有关该标准主要方面的决定的理由。</p>
+<p><em>注意：</em>该标准的作者之一 Jacques Dafflon(<a target="_blank" rel="noopener" href="https://github.com/0xjac">0xjac</a>)共同撰写了有关该标准的硕士论文，该论文的详细内容超出了标准的直接合理范围，并且可以提供有关某些方面或决策的进一步说明。</p>
+<h3 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h3><p>ERC-777 不仅仅是发送代币，他还定义了代币的整个生命周期，从铸造过程开始，然后是发送过程，最后是销毁过程。</p>
+<p>明确定义生命周期对于一致性和标准性非常重要，尤其是当价值源自稀缺性时。相比之下，在查看某些 ERC-20 代币时，可以观察到 <code>totalSupply</code>返回的值与实际流通供应量之间存在差异，因为该标准没有明确定义创建和销毁代币的过程</p>
+<h3 id="数据"><a href="#数据" class="headerlink" title="数据"></a>数据</h3><p>铸造、发送和销毁过程都可以利用传递到任何动作（铸造、发送、销毁）的<code>Data</code>和<code>operatorData</code>字段。对于简单的用例，这些字段可能为空，或者他们可能包含与代币转移相关的有价值的信息，类似于发送者或银行本身附加到银行转账的信息。</p>
+<p>数据字段(<code>data</code>)的使用同样存在于其他标准天（例如 ERI-223）中，并且是审查该标准的多个社区成员要求的。</p>
+<h3 id="挂钩（钩子、Hook）"><a href="#挂钩（钩子、Hook）" class="headerlink" title="挂钩（钩子、Hook）"></a>挂钩（钩子、Hook）</h3><p>在大多数情况下，ERC-20 需要两次调用才能安全地将大量代币转移到合约而不锁定它们。发送人使用<code>approve</code>函数进行调用，收件人使用<code>transferFrom</code>进行调用。此外，这需要各方之间进行额外的沟通，而这种沟通并没有明确定义。最后持有者可能会对<code>transfer</code>和<code>approve</code>&#x2F;<code>transferFrom</code>感到困惑。使用前者将代币转移到合约很可能会导致代币被锁定。</p>
+<p>挂钩（hooks）可以简化发送过程，并提供单一方式将 Token 发送给任何收件人。由于<code>tokensReceived</code>钩子，合约能够做出反应并防止在接受时锁定代币。</p>
+<h3 id="持有者更好的控制"><a href="#持有者更好的控制" class="headerlink" title="持有者更好的控制"></a>持有者更好的控制</h3><p><code>tokensReceived</code>挂钩还允许持有者拒绝接受某些代币。这为持有者提供了更大的控制权，他们可以通过某些参数（例如位于<code>data</code>或<code>operatorData</code>字段中的参数）接受或拒绝传入代币。</p>
+<p>遵循相同的意图并根据社区的建议，添加了<code>tokenToSend</code>挂钩来控制和阻止传出代币的移动。</p>
+<h3 id="ERC-1820-注册表"><a href="#ERC-1820-注册表" class="headerlink" title="ERC-1820 注册表"></a>ERC-1820 注册表</h3><p>ERC-1820 注册表允许持有者注册它们的钩子，事先检查了连接钩子和持有人的其他替代方案</p>
+<p>第一个是在发件人或收件人的地址定义挂钩。这种方法类似于 EIP-223，EIP-223 提出了在接受代币时在接收者合约上调用 tokenFallback 函数，但通过依赖 ERC-165 进行接口检测对齐进行了改进。虽然实施起来很简单，但这种方法有一些限制。特别是，发送者和接收者必须是合约才能提供钩子的实现。EOA 账户无法从中受益。现有合约很可能不兼容，因为他们无疑不知道并且没有定义新的钩子。因此现有的智能合约基础设施（例如可能持有大量以太币和代币的多重签名钱包）需要迁移到新的更新合同。</p>
+<p>考虑的第二种方法时使用 ERC-672，它为使用反向 ENS 的地址提供伪内省。然而，这种方法严重依赖 ENS，在此基础上还需要实现反向查找。对这种方法的分析立即揭示了一定程度的复杂性和安全问题，这将超越该方法的好处。</p>
+<p>本标准中使用的第三种解决方案是以来一个唯一的注册表，其中任何地址都可以注册代表其实现挂钩合约的地址。这种方法的优点是 EOA 账户和合约都可以从钩子中受益，包括可以依赖于代理合约上部署的钩子的现有合约。</p>
+<p>我们决定将该注册表保留在单独的 EIP 中，以免使该标准过于复杂。更重要的是，注册表以灵活的方式设计，以便其他 EIP 和智能合约基础设施可以在 ERC-777 和代币领域之外的自身用例中受益。该注册表的第一个提案是 ERC-20.不幸的是，Solidity 语言升级到 0.5 及更高版本时出现的问题导致注册表的一个单独部分出现错误，需要进行更改。这是在最后一次通话结束后发现的。避免创建单独的 EIP （例如 ERC820a）的尝试遭到拒绝。因此，用于 ERC-777 的注册表标准变成了 ERC-1820。ERC-1820 和 ERC-820 在功能上时等效的。ERC-1820 仅包含对新版本 Solidity 的修复。</p>
+<h3 id="运营商（Operator）"><a href="#运营商（Operator）" class="headerlink" title="运营商（Operator）"></a>运营商（Operator）</h3><p>该标准<code>Operator</code>的概念定义为移动代币的任何地址。虽然直观上每个地址都会移动自己的代币，<strong>但将持有者和运营商的概念分开可以提供更大的灵活性。</strong>这主要源于该标准定义了一种机制，让持有者可以让其他地址成为它们的运营者。此外，与 ERC-20 中未明确定义已批准地址的作用的批准调用不同，ERC-777 详细说明了运营商的意图以及与运营商的互动，包括运营商获得批准的义务以及任何持有人的不可撤销的权力撤销操作员</p>
+<h3 id="默认运营商（Default-Operator）"><a href="#默认运营商（Default-Operator）" class="headerlink" title="默认运营商（Default Operator）"></a>默认运营商（Default Operator）</h3><p>根据社区对预先批准的运营商的要求添加了默认运营商(<code>Default Operator</code>)。即默认情况下为所有持有者批准的运营商。出于明显的安全原因，Default Operator 列表是在代币合约创建时定义的，并且无法更改。任何持有者仍然有权撤销 Default Operator 。Default Operator 的明显优势之一就是允许代币的无以太移动。默认运营商还提供其他可用性优势，例如允许代币提供商以模块化方式提供功能，并降低持有者使用运营商提供的功能的复杂性，</p>
+<h2 id="向后兼容性"><a href="#向后兼容性" class="headerlink" title="向后兼容性"></a>向后兼容性</h2><p>该 EIP 不会引入向后不兼容性，并且向后兼容较久的 ERC-20 代币标准。</p>
+<p>该 EIP 不使用<code>transfer</code>和<code>transferFrom</code>，而是使用<code>send</code>和<code>operatorSend</code>，以避免在编译所使用的代币标准时出现混乱和错误。</p>
+<p>该标准允许同时实现 ERC-20 功能<code>transfer</code>、<code>transferFrom</code>、<code>approve</code>、<code>allowance</code>，使代币与 ERC-20 完全兼容。</p>
+<p>Token 可以实现 <code>decimals()</code> 以向后兼容 ERC-20.如果实现，它必须始终返回 18。</p>
+<p>因此，代币合约可以并行实施 ERC-20 和 ERC-777.<code>view</code>函数的规范(eg.<code>name</code>、<code>symbol</code>、<code>balanceOf</code>、<code>totalSupply</code>)和内部数据（例如余额的映射）重叠，不会出现问题。但请注意，以下函数在 ERC-777 中式强制性的，并且必须实现：<code>name</code>、<code>symnol</code>、<code>balanceOf</code>和<code>totalSupply</code>（<code>decimals</code>不是 ERC-777 标准的一部分）</p>
+<p>两个标准的状态修改功能是解耦的，并且可以彼此独立运行。 请注意，ERC-20 函数应仅限于从旧合约中调用。</p>
+<p>如果代币实现了 ERC-20，他必须通过  ERC-1820 使用自己的地址注册 <code>ERC20Token </code>接口。这是通过调用 ERC1820 注册表上的 <code>setInterfaceImplementer </code>函数来完成的，其中代币合约地址作为地址和实现者，<code>ERC20Token </code>的 <code>keccak256 </code>哈希值(<code>0xaea199e31a596269b42cdafd93407f14436db6e4cad65417994c2eb37381e05a</code>)作为接口哈希值。</p>
+<p>如果合约由启用和禁止 ERC20 功能的开关，则每次触发该开关时，代币必须通过 ERC1820 相应地为自己的地址注册或取消注册 ERC20Token 接口。取消注册意味着调用<code>setInterfaceImplementer</code>，以代币合约地址为地址，以<code>ERC20Token</code>的<code>keccak256</code>哈希为接口哈希，以<code>0x0</code>为实现者。（有关更多详细信息，请参阅为 ERC-1820 中的地址设置接口。）</p>
+<p>实施 ERC-20 的新合约的区别在于 <code>tokensToSend</code> 和 <code>tokensReceived</code> 挂钩优先于 ERC-20。即使使用 ERC-20 <code>transfer</code> 和 <code>transferFrom</code> 调用，代币合约也必须通过 ERC-1820 检查 <code>from</code> 和 <code>to</code> 地址是否分别实现 <code>tokensToSend</code> 和 <code>tokensReceived</code> 挂钩。如果实现了任何钩子，则必须调用它。请注意，在合约上调用 ERC-20 转账时，如果合约未实现 <code>tokensReceived</code>，则转账调用仍应被接受，即使这意味着代币可能会被锁定。</p>
+<p>下表总结了代币合约在通过 ERC-777 和 ERC-20 发送，铸造和转移代币时必须采取的不同操作：</p>
+<table>
+<thead>
+<tr>
+<th>ERC1820</th>
+<th><code>to</code>地址</th>
+<th>ERC777发送和铸造</th>
+<th>ERC20<code>transfer</code>&#x2F;<code>transferFrom</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ERC777TokensRecipient</code> registered</td>
+<td>regular<br />contract</td>
+<td>MUST call <code>tokensReceived</code></td>
+<td>MUST call <code>tokensReceived</code></td>
+</tr>
+<tr>
+<td><code>ERC777TokensRecipient</code> not registered</td>
+<td>regular<br />contract</td>
+<td>continue<br />MUST <code>revert</code></td>
+<td>continue<br />SHOULD continue[^1]</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>[^1]: 为了清晰可见，交易应该继续，因为 ERC20 不知道挂钩</p>
+<p>但是，这可能会导致 Token 意外锁定。如何避免意外锁定 Token 至关重要，则交易可能会 revert</p>
+</blockquote>
+<p>如果未实现<code>tokensToSend</code>，则无需采取任何特定操作。该转移必须继续进行，并且只有在不满足其他条件（例如缺乏资金或收到的代币 <code>revert</code>（如果存在））时才能取消。</p>
+<p>在发送、铸造、销毁期间，必须触发相应的<code>Send</code>、<code>Minted</code>、<code>Burned</code>事件。此外，如果代币合约声明它通过 ERC-1820 实现 <code>ERC20Token</code>，则代币合约必须发出用于铸造和销毁的<code>Transfer</code>事件，并且必须发出用于发送的 <code>Transfer</code> 事件（如 ERC-20 标准中指定的）。在 ERC-20 传输或传输功能期间，必须发出有效的发送事件。</p>
+<p>因此，对于代币的任何移动，都可能会发出两个事件：ERC-20 <code>Transfer</code> 和 ERC-777 <code>Send</code>、<code>Minted</code>、<code>Burned</code>（取决于移动类型）。第三方开发人员必须小心，不要将这两个事件视为单独的动作。作为一般规则，如果应用程序将代币视为 ERC20 Token，则仅必须考虑 <code>Transfer</code> 事件。如果应用程序将代币视为 ERC777 Token，则仅必须考虑 <code>Send</code>、<code>Minted</code>、<code>Burned</code>事件。</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Q1ngying
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2023/11/12/EIP777%EF%BC%9AERC777%E4%BB%A3%E5%B8%81%E6%A0%87%E5%87%86/" title="EIP777：ERC777代币标准">http://example.com/2023/11/12/EIP777：ERC777代币标准/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Solidity/" rel="tag"># Solidity</a>
+              <a href="/tags/EIPs/" rel="tag"># EIPs</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/11/12/EIP721%EF%BC%9AERC721%E9%9D%9E%E5%90%8C%E8%B4%A8%E5%8C%96%E4%BB%A3%E5%B8%81%E6%A0%87%E5%87%86/" rel="prev" title="EIP721：ERC721非同质化代币标准">
+      <i class="fa fa-chevron-left"></i> EIP721：ERC721非同质化代币标准
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ERC777-%E4%BB%A3%E5%B8%81%E6%A0%87%E5%87%86"><span class="nav-number">1.</span> <span class="nav-text">ERC777 代币标准</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%91%98%E8%A6%81"><span class="nav-number">1.1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%9C%BA"><span class="nav-number">1.2.</span> <span class="nav-text">动机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%84%E8%8C%83"><span class="nav-number">1.3.</span> <span class="nav-text">规范</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ERC777Token%EF%BC%88Token-Contract%EF%BC%89"><span class="nav-number">1.3.1.</span> <span class="nav-text">ERC777Token（Token Contract）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#View-%E5%87%BD%E6%95%B0"><span class="nav-number">1.3.2.</span> <span class="nav-text">View 函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Operators%EF%BC%88%E8%BF%90%E8%90%A5%E5%95%86%EF%BC%89"><span class="nav-number">1.3.3.</span> <span class="nav-text">Operators（运营商）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%91%E9%80%81%E4%BB%A3%E5%B8%81"><span class="nav-number">1.3.4.</span> <span class="nav-text">发送代币</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Minting-Tokens%EF%BC%88%E9%93%B8%E9%80%A0%E4%BB%A3%E5%B8%81%EF%BC%89"><span class="nav-number">1.3.5.</span> <span class="nav-text">Minting Tokens（铸造代币）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Burning-Tokens%EF%BC%88%E9%94%80%E6%AF%81%E4%BB%A3%E5%B8%81%EF%BC%89"><span class="nav-number">1.3.6.</span> <span class="nav-text">Burning Tokens（销毁代币）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ERC777TokensSender%E5%92%8CtokenToSend%E9%92%A9%E5%AD%90-hook"><span class="nav-number">1.3.7.</span> <span class="nav-text">ERC777TokensSender和tokenToSend钩子(hook)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ERC777TokensRecipient%E5%92%8CtokensReceived%E9%92%A9%E5%AD%90"><span class="nav-number">1.3.8.</span> <span class="nav-text">ERC777TokensRecipient和tokensReceived钩子</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Gas-%E6%B6%88%E8%80%97%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-number">1.4.</span> <span class="nav-text">Gas 消耗注意事项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Logo"><span class="nav-number">1.5.</span> <span class="nav-text">Logo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%90%86%E7%94%B1"><span class="nav-number">1.6.</span> <span class="nav-text">理由</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="nav-number">1.6.1.</span> <span class="nav-text">生命周期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE"><span class="nav-number">1.6.2.</span> <span class="nav-text">数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%82%E9%92%A9%EF%BC%88%E9%92%A9%E5%AD%90%E3%80%81Hook%EF%BC%89"><span class="nav-number">1.6.3.</span> <span class="nav-text">挂钩（钩子、Hook）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%81%E6%9C%89%E8%80%85%E6%9B%B4%E5%A5%BD%E7%9A%84%E6%8E%A7%E5%88%B6"><span class="nav-number">1.6.4.</span> <span class="nav-text">持有者更好的控制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ERC-1820-%E6%B3%A8%E5%86%8C%E8%A1%A8"><span class="nav-number">1.6.5.</span> <span class="nav-text">ERC-1820 注册表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E8%90%A5%E5%95%86%EF%BC%88Operator%EF%BC%89"><span class="nav-number">1.6.6.</span> <span class="nav-text">运营商（Operator）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%BB%98%E8%AE%A4%E8%BF%90%E8%90%A5%E5%95%86%EF%BC%88Default-Operator%EF%BC%89"><span class="nav-number">1.6.7.</span> <span class="nav-text">默认运营商（Default Operator）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%91%E5%90%8E%E5%85%BC%E5%AE%B9%E6%80%A7"><span class="nav-number">1.7.</span> <span class="nav-text">向后兼容性</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Q1ngying"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Q1ngying</p>
+  <div class="site-description" itemprop="description">今朝梦醒与君别，遥盼春风寄相思</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">28</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/q1ngying" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;q1ngying" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:q1ngying@163.com" title="E-Mail → mailto:q1ngying@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-09 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Q1ngying</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">86k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">4:46</span>
+</div>
+
+<div class="powered-by">
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <i class="fa fa-user-md"></i>
+    <span id="busuanzi_container_site_uv">
+        本站访客数:<span id="busuanzi_value_site_uv"></span>人
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_pv">
+        本站访问量<span id="busuanzi_value_site_pv"></span>人次
+    </span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,255,255' opacity='1' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
