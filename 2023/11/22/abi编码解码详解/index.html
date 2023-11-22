@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icons8-autumn-material-filled-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icons8-autumn-material-filled-16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="abi 编码解码详解来源：https:&#x2F;&#x2F;www.wtf.academy&#x2F;solidity-advanced&#x2F;ABIEncode&#x2F; ABI(Application Binary Interface，应用二进制接口)是与以太坊智能合约交互的标准。数据基于他们的类型编码，并且由于编码后不包含类型信息，解码时需要注明它们的类型 Solidity中，ABI编码有 4 个函数：abi.encode，abi.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="abi编码解码详解">
+<meta property="og:url" content="http://example.com/2023/11/22/abi%E7%BC%96%E7%A0%81%E8%A7%A3%E7%A0%81%E8%AF%A6%E8%A7%A3/index.html">
+<meta property="og:site_name" content="Q1ngying">
+<meta property="og:description" content="abi 编码解码详解来源：https:&#x2F;&#x2F;www.wtf.academy&#x2F;solidity-advanced&#x2F;ABIEncode&#x2F; ABI(Application Binary Interface，应用二进制接口)是与以太坊智能合约交互的标准。数据基于他们的类型编码，并且由于编码后不包含类型信息，解码时需要注明它们的类型 Solidity中，ABI编码有 4 个函数：abi.encode，abi.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/abi%E7%BC%96%E7%A0%81%E8%A7%A3%E7%A0%81%E8%AF%A6%E8%A7%A3/jboRaaq0U57qVYjmsOgbv.png">
+<meta property="og:image" content="http://example.com/images/abi%E7%BC%96%E7%A0%81%E8%A7%A3%E7%A0%81%E8%AF%A6%E8%A7%A3/27-1-5c958984759bdbbc1769eb68741619bb.png">
+<meta property="og:image" content="http://example.com/images/abi%E7%BC%96%E7%A0%81%E8%A7%A3%E7%A0%81%E8%AF%A6%E8%A7%A3/27-2-35f3b3d1e509829aaf8ee0f1a417124e.png">
+<meta property="og:image" content="http://example.com/images/abi%E7%BC%96%E7%A0%81%E8%A7%A3%E7%A0%81%E8%AF%A6%E8%A7%A3/27-3-55465b86340661b3e6fce60abc8b8c0a.png">
+<meta property="og:image" content="http://example.com/images/abi%E7%BC%96%E7%A0%81%E8%A7%A3%E7%A0%81%E8%AF%A6%E8%A7%A3/27-4-44125ad122d74749a18973a2d540a629.png">
+<meta property="og:image" content="http://example.com/images/abi%E7%BC%96%E7%A0%81%E8%A7%A3%E7%A0%81%E8%AF%A6%E8%A7%A3/27-5-a3fde61a9c64764247c116c66921da9a.png">
+<meta property="og:image" content="http://example.com/images/abi%E7%BC%96%E7%A0%81%E8%A7%A3%E7%A0%81%E8%AF%A6%E8%A7%A3/27-6-b572fe57168b496f61448b04f2e77e19.png">
+<meta property="article:published_time" content="2023-11-22T08:35:05.000Z">
+<meta property="article:modified_time" content="2023-11-22T09:41:51.794Z">
+<meta property="article:author" content="Q1ngying">
+<meta property="article:tag" content="Solidity">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/abi%E7%BC%96%E7%A0%81%E8%A7%A3%E7%A0%81%E8%AF%A6%E8%A7%A3/jboRaaq0U57qVYjmsOgbv.png">
+
+<link rel="canonical" href="http://example.com/2023/11/22/abi%E7%BC%96%E7%A0%81%E8%A7%A3%E7%A0%81%E8%AF%A6%E8%A7%A3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>abi编码解码详解 | Q1ngying</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Q1ngying</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">清影的个人站</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/11/22/abi%E7%BC%96%E7%A0%81%E8%A7%A3%E7%A0%81%E8%AF%A6%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Q1ngying">
+      <meta itemprop="description" content="今朝梦醒与君别，遥盼春风寄相思">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Q1ngying">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          abi编码解码详解
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-11-22 16:35:05 / 修改时间：17:41:51" itemprop="dateCreated datePublished" datetime="2023-11-22T16:35:05+08:00">2023-11-22</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/learn/" itemprop="url" rel="index"><span itemprop="name">learn</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Solidity/" itemprop="url" rel="index"><span itemprop="name">Solidity</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>931</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="abi-编码解码详解"><a href="#abi-编码解码详解" class="headerlink" title="abi 编码解码详解"></a>abi 编码解码详解</h1><p>来源：<a target="_blank" rel="noopener" href="https://www.wtf.academy/solidity-advanced/ABIEncode/">https://www.wtf.academy/solidity-advanced/ABIEncode/</a></p>
+<p><strong><code>ABI</code>(Application Binary Interface，应用二进制接口)是与以太坊智能合约交互的标准</strong>。数据基于他们的类型编码，并且<strong>由于编码后不包含类型信息，解码时需要注明它们的类型</strong></p>
+<p><code>Solidity</code>中，<code>ABI编码</code>有 4 个函数：<code>abi.encode</code>，<code>abi.encodePacked</code>，<code>abi.encodeWithSignature</code>，<code>abi.encodeWithSelector</code>。而<code>abi解码</code>有一个函数：<code>abi.decode</code>，用于解码<code>abi.encode</code>的数据。</p>
+<h2 id="ABI-编码"><a href="#ABI-编码" class="headerlink" title="ABI 编码"></a>ABI 编码</h2><p>这里将用编码 4 个变量，他们的类型分别是 <code>uint256</code>，<code>address</code>，<code>string</code>，<code>uint256[2]</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">uint x = 10;</span><br><span class="line">address addr = 0x7A58c0Be72BE218B41C608b7Fe7C5bB630736C71;</span><br><span class="line">string name = &quot;0xAA&quot;;</span><br><span class="line">uint[2] array = [5, 6]; </span><br></pre></td></tr></table></figure>
+
+<h3 id="abi-encode"><a href="#abi-encode" class="headerlink" title="abi.encode"></a><code>abi.encode</code></h3><p>将给定参数利用<a target="_blank" rel="noopener" href="https://learnblockchain.cn/docs/solidity/abi-spec.html">ABI规则</a>进行编码。<code>ABI</code>被设计出来跟智能合约交互，<strong>他将每个参数填充为 32 字节的数据，并拼接在一起</strong>。如果想和合约交互，就需要<code>abi.encode</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">function encode() public view returns(bytes memory result) &#123;</span><br><span class="line">    result = abi.encode(x, addr, name, array);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编码结果为：</p>
+<p><code>0x000000000000000000000000000000000000000000000000000000000000000a0000000000000000000000007a58c0be72be218b41c608b7fe7c5bb630736c7100000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000005000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000043078414100000000000000000000000000000000000000000000000000000000</code>，由于<code>abi.encode</code>将每个数据都填充为32字节，中间有很多<code>0</code>。</p>
+<h3 id="abi-encodePacked"><a href="#abi-encodePacked" class="headerlink" title="abi.encodePacked"></a><code>abi.encodePacked</code></h3><p><strong>将给定参数根据其所需最低空间编码</strong>。它<strong>类似 <code>abi.encode</code>，但是会把其中填充的很多<code>0</code>省略</strong>。比如，只用1字节来编码<code>uint</code>类型。<strong>当你想省空间，并且不与合约交互的时候</strong>，可以使用<code>abi.encodePacked</code>，例如算一些数据的<code>hash</code>时。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">function encodePacked() public view returns(bytes memory result) &#123;</span><br><span class="line">    result = abi.encodePacked(x, addr, name, array);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编码的结果为：</p>
+<p><code>0x000000000000000000000000000000000000000000000000000000000000000a7a58c0be72be218b41c608b7fe7c5bb630736c713078414100000000000000000000000000000000000000000000000000000000000000050000000000000000000000000000000000000000000000000000000000000006</code>，<strong>由于<code>abi.encodePacked</code>对编码进行了压缩，长度比<code>abi.encode</code>短很多</strong>。</p>
+<h3 id="abi-encodeWithSignature"><a href="#abi-encodeWithSignature" class="headerlink" title="abi.encodeWithSignature"></a><code>abi.encodeWithSignature</code></h3><p><strong>与<code>abi.encode</code>功能类似，只不过第一个参数为<code>函数签名</code><strong>，比如<code>&quot;foo(uint256,address)&quot;</code>。</strong>当调用其他合约的时候可以使用</strong>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">function encodeWithSignature() public view returns(bytes memory result) &#123;</span><br><span class="line">    result = abi.encodeWithSignature(&quot;foo(uint256,address,string,uint256[2])&quot;, x, addr, name, array);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编码的结果为：</p>
+<p><code>0xe87082f1000000000000000000000000000000000000000000000000000000000000000a0000000000000000000000007a58c0be72be218b41c608b7fe7c5bb630736c7100000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000005000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000043078414100000000000000000000000000000000000000000000000000000000</code>，等同于在<code>abi.encode</code>编码结果前加上了4字节的<code>函数选择器</code>（<strong>函数选择器</strong>：函数选择器就是通过函数名和参数进行签名处理(Keccak–Sha3)来标识函数，可以用于不同合约之间的函数调用） </p>
+<h3 id="abi-encodeWithSelector"><a href="#abi-encodeWithSelector" class="headerlink" title="abi.encodeWithSelector"></a><code>abi.encodeWithSelector</code></h3><p>与<code>abi.encodeWithSignature</code>功能类似，只不过第一个参数为<code>函数选择器</code>，为<code>函数签名</code>Keccak哈希的前4个字节。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">function encodeWithSelector() public view returns(bytes memory result) &#123;</span><br><span class="line">    result = abi.encodeWithSelector(bytes4(keccak256(&quot;foo(uint256,address,string,uint256[2])&quot;)), x, addr, name, array);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编码的结果为：</p>
+<p><code>0xe87082f1000000000000000000000000000000000000000000000000000000000000000a0000000000000000000000007a58c0be72be218b41c608b7fe7c5bb630736c7100000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000005000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000043078414100000000000000000000000000000000000000000000000000000000</code>，与<code>abi.encodeWithSignature</code>结果一样。</p>
+<h2 id="ABI-解码"><a href="#ABI-解码" class="headerlink" title="ABI 解码"></a>ABI 解码</h2><h3 id="abi-decode"><a href="#abi-decode" class="headerlink" title="abi.decode"></a><code>abi.decode</code></h3><p><code>abi.decode</code>用于解码<code>abi.encode</code>生成的二进制编码，将它还原成原本的参数。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">function decode(bytes memory data) public pure returns(uint dx, address daddr, string memory dname, uint[2] memory darray) &#123;</span><br><span class="line">    (dx, daddr, dname, darray) = abi.decode(data, (uint, address, string, uint[2]));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>我们将<code>abi.encode</code>的二进制编码输入给<code>decode</code>，将解码出原来的参数：</p>
+<p><img src="/../images/abi%E7%BC%96%E7%A0%81%E8%A7%A3%E7%A0%81%E8%AF%A6%E8%A7%A3/jboRaaq0U57qVYjmsOgbv.png" alt="img"></p>
+<h2 id="在remix上验证"><a href="#在remix上验证" class="headerlink" title="在remix上验证"></a>在remix上验证</h2><ul>
+<li><p>部署合约查看abi.encode方法的编码结果</p>
+<p><img src="/../images/abi%E7%BC%96%E7%A0%81%E8%A7%A3%E7%A0%81%E8%AF%A6%E8%A7%A3/27-1-5c958984759bdbbc1769eb68741619bb.png" alt="img"></p>
+</li>
+<li><p>对比验证四种编码方法的异同点</p>
+<p><img src="/../images/abi%E7%BC%96%E7%A0%81%E8%A7%A3%E7%A0%81%E8%AF%A6%E8%A7%A3/27-2-35f3b3d1e509829aaf8ee0f1a417124e.png" alt="img"></p>
+</li>
+<li><p>查看abi.decode方法的解码结果</p>
+<p><img src="/../images/abi%E7%BC%96%E7%A0%81%E8%A7%A3%E7%A0%81%E8%AF%A6%E8%A7%A3/27-3-55465b86340661b3e6fce60abc8b8c0a.png" alt="img"></p>
+</li>
+</ul>
+<h2 id="ABI的使用场景"><a href="#ABI的使用场景" class="headerlink" title="ABI的使用场景"></a>ABI的使用场景</h2><ol>
+<li>在合约开发中，ABI常配合call来实现对合约的底层调用。</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">bytes4 selector = contract.getValue.selector;</span><br><span class="line"></span><br><span class="line">bytes memory data = abi.encodeWithSelector(selector, _x);</span><br><span class="line">(bool success, bytes memory returnedData) = address(contract).staticcall(data);</span><br><span class="line">require(success);</span><br><span class="line"></span><br><span class="line">return abi.decode(returnedData, (uint256));</span><br></pre></td></tr></table></figure>
+
+
+
+<ol>
+<li>ethers.js中常用ABI实现合约的导入和函数调用。</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">const wavePortalContract = new ethers.Contract(contractAddress, contractABI, signer);</span><br><span class="line">/*</span><br><span class="line">    * Call the getAllWaves method from your Smart Contract</span><br><span class="line">    */</span><br><span class="line">const waves = await wavePortalContract.getAllWaves();</span><br></pre></td></tr></table></figure>
+
+
+
+<ol>
+<li>对不开源合约进行反编译后，某些函数无法查到函数签名，可通过ABI进行调用。</li>
+</ol>
+<ul>
+<li><p>0x533ba33a() 是一个反编译后显示的函数，只有函数编码后的结果，并且无法查到函数签名</p>
+<p><img src="/../images/abi%E7%BC%96%E7%A0%81%E8%A7%A3%E7%A0%81%E8%AF%A6%E8%A7%A3/27-4-44125ad122d74749a18973a2d540a629.png" alt="img"></p>
+<p><img src="/../images/abi%E7%BC%96%E7%A0%81%E8%A7%A3%E7%A0%81%E8%AF%A6%E8%A7%A3/27-5-a3fde61a9c64764247c116c66921da9a.png" alt="img"></p>
+</li>
+<li><p>这种情况无法通过构造interface接口或contract来进行调用</p>
+<p><img src="/../images/abi%E7%BC%96%E7%A0%81%E8%A7%A3%E7%A0%81%E8%AF%A6%E8%A7%A3/27-6-b572fe57168b496f61448b04f2e77e19.png" alt="img"></p>
+</li>
+</ul>
+<p>这种情况下，就可以通过ABI函数选择器来调用</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">bytes memory data = abi.encodeWithSelector(bytes4(0x533ba33a));</span><br><span class="line"></span><br><span class="line">(bool success, bytes memory returnedData) = address(contract).staticcall(data);</span><br><span class="line">require(success);</span><br><span class="line"></span><br><span class="line">return abi.decode(returnedData, (uint256));</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Q1ngying
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2023/11/22/abi%E7%BC%96%E7%A0%81%E8%A7%A3%E7%A0%81%E8%AF%A6%E8%A7%A3/" title="abi编码解码详解">http://example.com/2023/11/22/abi编码解码详解/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Solidity/" rel="tag"># Solidity</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/11/22/%E5%BA%95%E5%B1%82%E8%B0%83%E7%94%A8%EF%BC%8Cabi%E7%BC%96%E7%A0%81%EF%BC%8C%E8%BF%9B%E5%88%B6%E8%BD%AC%E6%8D%A2%E7%9B%B8%E5%85%B3/" rel="prev" title="底层调用，函数选择器生成">
+      <i class="fa fa-chevron-left"></i> 底层调用，函数选择器生成
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#abi-%E7%BC%96%E7%A0%81%E8%A7%A3%E7%A0%81%E8%AF%A6%E8%A7%A3"><span class="nav-number">1.</span> <span class="nav-text">abi 编码解码详解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ABI-%E7%BC%96%E7%A0%81"><span class="nav-number">1.1.</span> <span class="nav-text">ABI 编码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#abi-encode"><span class="nav-number">1.1.1.</span> <span class="nav-text">abi.encode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#abi-encodePacked"><span class="nav-number">1.1.2.</span> <span class="nav-text">abi.encodePacked</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#abi-encodeWithSignature"><span class="nav-number">1.1.3.</span> <span class="nav-text">abi.encodeWithSignature</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#abi-encodeWithSelector"><span class="nav-number">1.1.4.</span> <span class="nav-text">abi.encodeWithSelector</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ABI-%E8%A7%A3%E7%A0%81"><span class="nav-number">1.2.</span> <span class="nav-text">ABI 解码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#abi-decode"><span class="nav-number">1.2.1.</span> <span class="nav-text">abi.decode</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8remix%E4%B8%8A%E9%AA%8C%E8%AF%81"><span class="nav-number">1.3.</span> <span class="nav-text">在remix上验证</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ABI%E7%9A%84%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">1.4.</span> <span class="nav-text">ABI的使用场景</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Q1ngying"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Q1ngying</p>
+  <div class="site-description" itemprop="description">今朝梦醒与君别，遥盼春风寄相思</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/q1ngying" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;q1ngying" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:q1ngying@163.com" title="E-Mail → mailto:q1ngying@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-09 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Q1ngying</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">87k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">4:51</span>
+</div>
+
+<div class="powered-by">
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <i class="fa fa-user-md"></i>
+    <span id="busuanzi_container_site_uv">
+        本站访客数:<span id="busuanzi_value_site_uv"></span>人
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_pv">
+        本站访问量<span id="busuanzi_value_site_pv"></span>人次
+    </span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,255,255' opacity='1' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

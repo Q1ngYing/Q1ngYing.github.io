@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icons8-autumn-material-filled-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icons8-autumn-material-filled-16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="底层调用，函数选择器生成底层调用在 Solidity 中底层调用分为三个：call, delegatecall, staticcall，在 Solidity 中，使用这些底层调用都需要传递函数选择器，而函数选择器是函数签名的keccak256哈希值的前4个字节，要生成函数选择器，这时候就需要使用到abi编码和进制转换。 函数选择器生成主要应用 abi 编码中的 abi.encodeWithSign">
+<meta property="og:type" content="article">
+<meta property="og:title" content="底层调用，函数选择器生成">
+<meta property="og:url" content="http://example.com/2023/11/22/%E5%BA%95%E5%B1%82%E8%B0%83%E7%94%A8%EF%BC%8Cabi%E7%BC%96%E7%A0%81%EF%BC%8C%E8%BF%9B%E5%88%B6%E8%BD%AC%E6%8D%A2%E7%9B%B8%E5%85%B3/index.html">
+<meta property="og:site_name" content="Q1ngying">
+<meta property="og:description" content="底层调用，函数选择器生成底层调用在 Solidity 中底层调用分为三个：call, delegatecall, staticcall，在 Solidity 中，使用这些底层调用都需要传递函数选择器，而函数选择器是函数签名的keccak256哈希值的前4个字节，要生成函数选择器，这时候就需要使用到abi编码和进制转换。 函数选择器生成主要应用 abi 编码中的 abi.encodeWithSign">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/%E5%BA%95%E5%B1%82%E8%B0%83%E7%94%A8%EF%BC%8Cabi%E7%BC%96%E7%A0%81%EF%BC%8C%E8%BF%9B%E5%88%B6%E8%BD%AC%E6%8D%A2%E7%9B%B8%E5%85%B3/image-20231122181457680.png">
+<meta property="og:image" content="http://example.com/images/%E5%BA%95%E5%B1%82%E8%B0%83%E7%94%A8%EF%BC%8Cabi%E7%BC%96%E7%A0%81%EF%BC%8C%E8%BF%9B%E5%88%B6%E8%BD%AC%E6%8D%A2%E7%9B%B8%E5%85%B3/image-20231122181550816.png">
+<meta property="article:published_time" content="2023-11-22T08:35:05.000Z">
+<meta property="article:modified_time" content="2023-11-22T10:26:53.277Z">
+<meta property="article:author" content="Q1ngying">
+<meta property="article:tag" content="Solidity">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/%E5%BA%95%E5%B1%82%E8%B0%83%E7%94%A8%EF%BC%8Cabi%E7%BC%96%E7%A0%81%EF%BC%8C%E8%BF%9B%E5%88%B6%E8%BD%AC%E6%8D%A2%E7%9B%B8%E5%85%B3/image-20231122181457680.png">
+
+<link rel="canonical" href="http://example.com/2023/11/22/%E5%BA%95%E5%B1%82%E8%B0%83%E7%94%A8%EF%BC%8Cabi%E7%BC%96%E7%A0%81%EF%BC%8C%E8%BF%9B%E5%88%B6%E8%BD%AC%E6%8D%A2%E7%9B%B8%E5%85%B3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>底层调用，函数选择器生成 | Q1ngying</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Q1ngying</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">清影的个人站</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/11/22/%E5%BA%95%E5%B1%82%E8%B0%83%E7%94%A8%EF%BC%8Cabi%E7%BC%96%E7%A0%81%EF%BC%8C%E8%BF%9B%E5%88%B6%E8%BD%AC%E6%8D%A2%E7%9B%B8%E5%85%B3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Q1ngying">
+      <meta itemprop="description" content="今朝梦醒与君别，遥盼春风寄相思">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Q1ngying">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          底层调用，函数选择器生成
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-11-22 16:35:05 / 修改时间：18:26:53" itemprop="dateCreated datePublished" datetime="2023-11-22T16:35:05+08:00">2023-11-22</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/learn/" itemprop="url" rel="index"><span itemprop="name">learn</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Solidity/" itemprop="url" rel="index"><span itemprop="name">Solidity</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>476</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="底层调用，函数选择器生成"><a href="#底层调用，函数选择器生成" class="headerlink" title="底层调用，函数选择器生成"></a>底层调用，函数选择器生成</h1><h2 id="底层调用"><a href="#底层调用" class="headerlink" title="底层调用"></a>底层调用</h2><p>在 Solidity 中底层调用分为三个：<code>call</code>, <code>delegatecall</code>,<code> staticcall</code>，在 Solidity 中，使用这些底层调用都需要传递<strong>函数选择器</strong>，而函数选择器是<strong>函数签名的<code>keccak256</code>哈希值的前4个字节</strong>，要生成函数选择器，这时候就需要使用到<strong>abi编码</strong>和<strong>进制转换</strong>。</p>
+<h2 id="函数选择器生成"><a href="#函数选择器生成" class="headerlink" title="函数选择器生成"></a>函数选择器生成</h2><p>主要<strong>应用 <code>abi</code> 编码中的 <code>abi.encodeWithSignature()</code> 和<code>bytes4</code>强制类型转换，来生成函数选择器</strong></p>
+<p>详细的 abi 编码请看文章<a target="_blank" rel="noopener" href="https://q1ngying.cn/2023/11/22/abi%E7%BC%96%E7%A0%81%E8%A7%A3%E7%A0%81%E8%AF%A6%E8%A7%A3">abi编码解码详解</a></p>
+<p>关于进制转换：</p>
+<p><strong>高位整数转换到低位整数舍弃高位（eg：uint32 a &#x3D; 0x12345678 &#x3D;&gt; uint16 b &#x3D; uint16(a) &#x3D;&gt; b &#x3D;&#x3D; 0x5678）</strong></p>
+<p><strong>低位整数转换到高位整数高位补零（eg：uint16 a &#x3D; 0x1234 &#x3D;&gt; uint32 b &#x3D; uint32(a) &#x3D;&gt; a &#x3D;&#x3D; 0x00001234 ，并且 a &#x3D;&#x3D; b）</strong></p>
+<p><strong>高位字节转换到低位字节舍弃低位（eg：bytes2 a &#x3D; 0x1234 &#x3D;&gt; bytes1 b &#x3D; bytes1(a) &#x3D;&gt; b &#x3D;&#x3D; 0x12）</strong></p>
+<p><strong>低位字节转换到高位字节低位补零（eg：bytes1 a &#x3D; 0x12 &#x3D;&gt; bytes2 b &#x3D; bytes2(a) &#x3D;&gt; b &#x3D;&#x3D; 0x1200，并且 a[0] &#x3D;&#x3D;b[0] ）</strong></p>
+<p>详细的进制转换请看文章：<a target="_blank" rel="noopener" href="https://q1ngying.cn/2023/10/08/solidity%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2%E7%9B%B8%E5%85%B3/">Solidity类型转换相关</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// create selector</span><br><span class="line">bytes4 selectorA = bytes4(abi.encodeWithSignature(&quot;getValue(address,uint256)&quot;))</span><br><span class="line">bytes4 selectorB = bytes4(abi.encodeWithSignature(&quot;getValue()&quot;))</span><br></pre></td></tr></table></figure>
+
+<p>使用<code>abi.encodeWithSignature()</code>和<code>bytes4()</code><strong>生成函数选择器时要注意</strong>：</p>
+<ul>
+<li>如果函数签名没有参数，也依然要写<code>()</code></li>
+<li>传递函数签名时，两个参数只用<code>,</code>隔开，不要在两个参数中间添加空格，这样生成的函数选择器与实际的函数选择器不一样</li>
+</ul>
+<p>使用 Foundry 内置的 chisel 试验一下计算函数选择器：</p>
+<p><img src="/../images/%E5%BA%95%E5%B1%82%E8%B0%83%E7%94%A8%EF%BC%8Cabi%E7%BC%96%E7%A0%81%EF%BC%8C%E8%BF%9B%E5%88%B6%E8%BD%AC%E6%8D%A2%E7%9B%B8%E5%85%B3/image-20231122181457680.png" alt="image-20231122181457680"></p>
+<p>上图中，下面的是真实的函数选择器，可以发现，生成函数选择器时，两个参数之间不能加上空格</p>
+<p><img src="/../images/%E5%BA%95%E5%B1%82%E8%B0%83%E7%94%A8%EF%BC%8Cabi%E7%BC%96%E7%A0%81%EF%BC%8C%E8%BF%9B%E5%88%B6%E8%BD%AC%E6%8D%A2%E7%9B%B8%E5%85%B3/image-20231122181550816.png" alt="image-20231122181550816"></p>
+<p>上图中，上面的是真实的函数选择器，可以发现，生成函数选择器时，如果函数没有参数，也是需要传递<code>()</code>的</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Q1ngying
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2023/11/22/%E5%BA%95%E5%B1%82%E8%B0%83%E7%94%A8%EF%BC%8Cabi%E7%BC%96%E7%A0%81%EF%BC%8C%E8%BF%9B%E5%88%B6%E8%BD%AC%E6%8D%A2%E7%9B%B8%E5%85%B3/" title="底层调用，函数选择器生成">http://example.com/2023/11/22/底层调用，abi编码，进制转换相关/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Solidity/" rel="tag"># Solidity</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/11/12/EIP777%EF%BC%9AERC777%E4%BB%A3%E5%B8%81%E6%A0%87%E5%87%86/" rel="prev" title="EIP777：ERC777代币标准">
+      <i class="fa fa-chevron-left"></i> EIP777：ERC777代币标准
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/11/22/abi%E7%BC%96%E7%A0%81%E8%A7%A3%E7%A0%81%E8%AF%A6%E8%A7%A3/" rel="next" title="abi编码解码详解">
+      abi编码解码详解 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BA%95%E5%B1%82%E8%B0%83%E7%94%A8%EF%BC%8C%E5%87%BD%E6%95%B0%E9%80%89%E6%8B%A9%E5%99%A8%E7%94%9F%E6%88%90"><span class="nav-number">1.</span> <span class="nav-text">底层调用，函数选择器生成</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%95%E5%B1%82%E8%B0%83%E7%94%A8"><span class="nav-number">1.1.</span> <span class="nav-text">底层调用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E9%80%89%E6%8B%A9%E5%99%A8%E7%94%9F%E6%88%90"><span class="nav-number">1.2.</span> <span class="nav-text">函数选择器生成</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Q1ngying"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Q1ngying</p>
+  <div class="site-description" itemprop="description">今朝梦醒与君别，遥盼春风寄相思</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/q1ngying" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;q1ngying" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:q1ngying@163.com" title="E-Mail → mailto:q1ngying@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-09 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Q1ngying</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">87k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">4:51</span>
+</div>
+
+<div class="powered-by">
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <i class="fa fa-user-md"></i>
+    <span id="busuanzi_container_site_uv">
+        本站访客数:<span id="busuanzi_value_site_uv"></span>人
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_pv">
+        本站访问量<span id="busuanzi_value_site_pv"></span>人次
+    </span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,255,255' opacity='1' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
