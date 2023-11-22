@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icons8-autumn-material-filled-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icons8-autumn-material-filled-16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Yul 入门参考来源：https:&#x2F;&#x2F;learnblockchain.cn&#x2F;article&#x2F;6064 Yul概述Yul 是一种中间编程语言，可以用来在智能合约中编写汇编语言。了解 Yul 可以提高智能合约的水平。了解Solidity底层发生的事情，帮助节省 Gas 费用。可以使用assembly代码块来在智能合约中标识 Yul： 123assembly &amp;#123;	&#x2F;&#x2F; do stuff&amp;#12">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Yul内联汇编入门">
+<meta property="og:url" content="http://example.com/2023/11/22/Yul%E5%86%85%E8%81%94%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/index.html">
+<meta property="og:site_name" content="Q1ngying">
+<meta property="og:description" content="Yul 入门参考来源：https:&#x2F;&#x2F;learnblockchain.cn&#x2F;article&#x2F;6064 Yul概述Yul 是一种中间编程语言，可以用来在智能合约中编写汇编语言。了解 Yul 可以提高智能合约的水平。了解Solidity底层发生的事情，帮助节省 Gas 费用。可以使用assembly代码块来在智能合约中标识 Yul： 123assembly &amp;#123;	&#x2F;&#x2F; do stuff&amp;#12">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/Yul%E5%86%85%E8%81%94%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/28025.png">
+<meta property="og:image" content="http://example.com/images/Yul%E5%86%85%E8%81%94%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/20165.png">
+<meta property="og:image" content="http://example.com/images/Yul%E5%86%85%E8%81%94%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/92085.png">
+<meta property="article:published_time" content="2023-11-22T12:33:33.000Z">
+<meta property="article:modified_time" content="2023-11-22T12:35:25.991Z">
+<meta property="article:author" content="Q1ngying">
+<meta property="article:tag" content="Solidity">
+<meta property="article:tag" content="EVM">
+<meta property="article:tag" content="Yul">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/Yul%E5%86%85%E8%81%94%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/28025.png">
+
+<link rel="canonical" href="http://example.com/2023/11/22/Yul%E5%86%85%E8%81%94%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Yul内联汇编入门 | Q1ngying</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Q1ngying</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">清影的个人站</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/11/22/Yul%E5%86%85%E8%81%94%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Q1ngying">
+      <meta itemprop="description" content="今朝梦醒与君别，遥盼春风寄相思">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Q1ngying">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Yul内联汇编入门
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-11-22 20:33:33 / 修改时间：20:35:25" itemprop="dateCreated datePublished" datetime="2023-11-22T20:33:33+08:00">2023-11-22</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/learn/" itemprop="url" rel="index"><span itemprop="name">learn</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Solidity/" itemprop="url" rel="index"><span itemprop="name">Solidity</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/EVM/" itemprop="url" rel="index"><span itemprop="name">EVM</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Yul/" itemprop="url" rel="index"><span itemprop="name">Yul</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>5.9k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>20 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Yul-入门"><a href="#Yul-入门" class="headerlink" title="Yul 入门"></a>Yul 入门</h1><p>参考来源：<a target="_blank" rel="noopener" href="https://learnblockchain.cn/article/6064">https://learnblockchain.cn/article/6064</a></p>
+<h2 id="Yul概述"><a href="#Yul概述" class="headerlink" title="Yul概述"></a>Yul概述</h2><p><strong>Yul 是一种中间编程语言，可以用来在智能合约中编写汇编语言</strong>。了解 Yul 可以提高智能合约的水平。了解<code>Solidity</code>底层发生的事情，帮助节省 Gas 费用。可以使用<code>assembly</code>代码块来在智能合约中标识 Yul：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">assembly &#123;</span><br><span class="line">	// do stuff</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="变量赋值、运算、评估"><a href="#变量赋值、运算、评估" class="headerlink" title="变量赋值、运算、评估"></a>变量赋值、运算、评估</h2><p>简单操作，Yul 中有：<code>+ - * / % ** &lt; &gt; =</code>。在 Yul 中不存在<code>&gt;= 和 &lt;=</code>。此外，评估不是等于真或假，而是分别等于 1 或 0。</p>
+<table>
+<thead>
+<tr>
+<th>操作说明</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>let</td>
+<td>这是在定义变量之前需要的，因为所有值都是字节，所以不需要分配值类型</td>
+</tr>
+<tr>
+<td>:&#x3D;</td>
+<td>等价于 Solidity 中的 x &#x3D; y</td>
+</tr>
+<tr>
+<td>add(x,y)</td>
+<td>等价于 Solidity 中的 x + y</td>
+</tr>
+<tr>
+<td>sub(x,y)</td>
+<td>等价于 Solidity 中的 x - y</td>
+</tr>
+<tr>
+<td>mul(x,y)</td>
+<td>等价于 Solidity 中的 x * y</td>
+</tr>
+<tr>
+<td>div(x,y)</td>
+<td>等价于 Solidity 中的 x &#x2F; y (或 0 如果 y 等于 0)</td>
+</tr>
+<tr>
+<td>mod(x,y)</td>
+<td>等价于 Solidity 中的 x % y (或 0 如果 y 等于0)</td>
+</tr>
+<tr>
+<td>lt(x,y)</td>
+<td>等价于 Solidity 中的 x &lt; y</td>
+</tr>
+<tr>
+<td>gt(x,y)</td>
+<td>等价于 Solidity 中的 x &gt; y</td>
+</tr>
+<tr>
+<td>eq(x,y)</td>
+<td>等价于 Solidity 中的 x &#x3D;&#x3D; y</td>
+</tr>
+<tr>
+<td>iszero(x)</td>
+<td>等价于 Solidity 中的 x &#x3D;&#x3D; 0</td>
+</tr>
+</tbody></table>
+<p>一个简单的例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">function addOneAndTwo() external pure returns(uint256) &#123;</span><br><span class="line">	uint256 ans;</span><br><span class="line">	</span><br><span class="line">	assembly&#123;</span><br><span class="line">		// Yul 中为变量赋值</span><br><span class="line">		let one := 1</span><br><span class="line">		let two := 2</span><br><span class="line">		// 加法</span><br><span class="line">		ans := add(one, two)</span><br><span class="line">	&#125;</span><br><span class="line">	return ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="For-循环和-if-语句"><a href="#For-循环和-if-语句" class="headerlink" title="For 循环和 if 语句"></a>For 循环和 if 语句</h2><p>例子：计算一个系列中多少个数字是偶数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">function howManyEvens(uint256 startNum, uint256 endNum) external pure returns(uint256) &#123;</span><br><span class="line">	uint256 ans;</span><br><span class="line">	</span><br><span class="line">	// for 循环的语法</span><br><span class="line">	assembly &#123;</span><br><span class="line">		for &#123; let i := startNum &#125; lt(i, add(endNum, 1) ) &#123; i := add(i,1) &#125;</span><br><span class="line">		&#123;</span><br><span class="line">			// if i == 0,跳过此处迭代</span><br><span class="line">			if iszero(i) &#123;</span><br><span class="line">				continue</span><br><span class="line">			&#125;</span><br><span class="line">			</span><br><span class="line">			// 检查是否 i % 2 == 0</span><br><span class="line">			// 可以使用 iszero，但是接下来展示 eq()</span><br><span class="line">			if eq( mod( i, 2), 0) &#123;</span><br><span class="line">				ans := add(ans, 1)</span><br><span class="line">			&#125;	</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	return ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>if</code>语句的语法和 Solidity 非常相似，但是，我们<strong>不需要用圆括号来包裹条件</strong>。对于 <code>for</code> 循环，注意我们在<strong>声明<code>i</code>和增加<code>i</code>时使用了括号</strong>，但在评估条件时没有使用括号。此外，我们使用了<code>continue</code>来跳过循环的一次迭代。我们也可以在 Yul 中使用 <code>break</code>语句。</p>
+<h2 id="存储"><a href="#存储" class="headerlink" title="存储"></a>存储</h2><p>在深入了解 Yul 的工作原理之前，我们需要了解智能合约中的存储工作原理。<strong>存储是由一系列的槽组成的。一个智能合约有2²⁵⁶个槽位。在声明变量时，我们从槽0开始，然后从那里递增。每个槽的长度为256 比特（32字节），这就是<code>uint256</code>和<code>bytes32</code>的名字由来。</strong>所有的变量都会被转换为十六进制。如果一个变量，例如 <code>uint128</code> 使用时，不会用整个槽来存储该变量。相反，它的左边是用 0 填充的。</p>
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">// slot 0</span><br><span class="line">uint256 var1 = 256;</span><br><span class="line"></span><br><span class="line">// slot 1</span><br><span class="line">address var2 = 0x9ACc1d6Aa9b846083E8a497A661853aaE07F0F00;</span><br><span class="line"></span><br><span class="line">// slot 2 </span><br><span class="line">bytes32 var3 = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;</span><br><span class="line"></span><br><span class="line">// slot 3</span><br><span class="line">uint128 var4 = 1;</span><br><span class="line">uint128 var5 = 2;</span><br></pre></td></tr></table></figure>
+
+<p><code>var1</code>：由于<code>uint256</code>变量等于32字节，<code>var1</code>占据了整个0槽。下面是0号槽中存储的内容： <code>0x00000000000000000000000000000000000000000000000000000000000000000000000000000100</code>。</p>
+<p><code>var2</code>：地址稍微复杂一些。由于它们只占用20个字节的存储空间，地址的左边被填充了0。下面是存储在槽1中的内容： <code>0x00000000000000009acc1d6aa9b846083e8a497a661853aae07f0f00</code>。</p>
+<p><code>var3</code>：这个看起来很简单，槽位2被<code>bytes32</code>变量的全部内容所消耗。</p>
+<p><code>var4</code> &amp; <code>var5</code>：还记得我提到的<code>uint128</code>被填充了0吗？那么，如果我们对变量进行排序，使它们的存储量之和小于32字节，我们就可以把它们一起放入一个槽中！这叫做变量打包！这就是所谓的变量打包，它可以为你节省Gas。让我们来看看3号槽中存储的内容： <code>0x0000000000000000000000000000000200000000000000000000000000000001</code>。 请注意，<code>0x000000000000000000000000000002</code> 和 <code>0x000000000000000000000000000001</code> 完全吻合同一个槽。这是因为它们都占用了16个字节（一半的槽）。</p>
+<p><strong>更多关于 Yul 的内容：</strong></p>
+<table>
+<thead>
+<tr>
+<th>操作说明</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>sload(p)</td>
+<td>从 storage 中加载槽 p 中的变量</td>
+</tr>
+<tr>
+<td>sstore(p,v)</td>
+<td>分配给 Storage 槽 p 一个 v 值</td>
+</tr>
+<tr>
+<td>v.slot</td>
+<td>返回变量 v 的存储槽</td>
+</tr>
+<tr>
+<td>v.offset</td>
+<td>返回变量 v 在存储槽中开始位置的序列（以字节为单位）。变量从右到左排列</td>
+</tr>
+</tbody></table>
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">function readAndWriteToStorage() external returns (uint256, uint256, uint256) &#123;</span><br><span class="line"></span><br><span class="line">	uint256 x;</span><br><span class="line">	uint256 y;</span><br><span class="line">	uint256 z;</span><br><span class="line">	</span><br><span class="line">	assembly &#123;</span><br><span class="line">		// 获得 var5 的槽位置</span><br><span class="line">		let slot := var5.slot</span><br><span class="line">		</span><br><span class="line">		// 获得 var5 的槽偏移</span><br><span class="line">		let offset := var5.offset</span><br><span class="line">		</span><br><span class="line">		// 赋值给 Solidity 中的变量</span><br><span class="line">		x := slot</span><br><span class="line">		y := offset</span><br><span class="line">		</span><br><span class="line">		// 在槽 0 上保存 1</span><br><span class="line">		sstore(0,1)</span><br><span class="line">		</span><br><span class="line">		// 加载槽 0 的值赋值给 z</span><br><span class="line">		z := sload(0)</span><br><span class="line">	&#125;</span><br><span class="line">	return (x, y, z);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>x</code> &#x3D; 3. 这是有道理的，因为我们知道 var5 被装入槽3。<br><code>y</code> &#x3D; 16. 这也是合理的，因为我们知道<code>var4</code>占据了3号槽的一半。由于变量是从右到左打包的，我们得到字节16作为<code>var5</code>的起始索引。<br><code>z</code> &#x3D; 1. <code>sstore()</code>是将0号槽的值赋给1。然后，我们用 <code>sload() </code>将0号槽的值分配给z。</p>
+<p>下面这个函数可以<strong>帮助我们查看每个插槽正在存储的内容</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">function getValInHex(uint256 y) external view returns (bytes32) &#123;</span><br><span class="line">	bytes32 x;</span><br><span class="line">	</span><br><span class="line">	assembly &#123;</span><br><span class="line">		x := sload(y)</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	return x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="读取动态数组的值"><a href="#读取动态数组的值" class="headerlink" title="读取动态数组的值"></a>读取动态数组的值</h3><p>接下来是一些更复杂的数据结构：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uint128[4] var6 = [0,1,2,3];</span><br></pre></td></tr></table></figure>
+
+<p>当使用静态数组时，EVM 知道要为我们的数据分配多少个槽位。特别是这个数组，我们在每个槽中打包2个元素。所以如果你调用 <code>getValInHex(4)</code>，它将返回 <code>0x0000000000000000000000000000000100000000000000000000000000000000</code>。正如我们所期望的，从右到左读，我们看到的是值0和值1。槽5包含<code>0x0000000000000000000000000000000300000000000000000000000000000002</code>。</p>
+<p>接下来我们要看一下动态数组。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// slot 6</span><br><span class="line">uint256[] var7;</span><br></pre></td></tr></table></figure>
+
+<p>尝试调用<code>getValInHex(6)</code>。你会看到它返回 <code>0x00</code>。由于 EVM 不知道需要分配多少个存储槽，我们不能在这里存储数组。相反，当前存储槽（槽6）的keccak256 哈希值被用来作为数组的起始索引。从这里开始，我们需要做的就是添加所需元素的索引来检索值。</p>
+<p>接下来是的例子，演示<strong>如何查找一个动态数组的第一个元素：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">function getValFromDynamicArray(uint256 targetIndex) external view returns (uint256) &#123;</span><br><span class="line">	</span><br><span class="line">	uint256 slot;</span><br><span class="line">	</span><br><span class="line">	assembly &#123;</span><br><span class="line">		slot := var7.slot</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	bytes32 startIndex = keccak256(abi.encode(slot));</span><br><span class="line">	</span><br><span class="line">	uint256 ans;</span><br><span class="line">	</span><br><span class="line">	assembly &#123;</span><br><span class="line">		ans := sload( add(startIndex, targetIndex) )</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	return ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里我们检索数组的槽，然后执行<code>add()</code>操作和<code>sload()</code>来获得我们想要的数组元素的值。</p>
+<p>你可能会问，如何防止我们与另一个变量的槽发生碰撞？这是完全可能的，但是，由于2²⁵⁶是一个非常大的数字，所以可能性极小。</p>
+<h3 id="读取-Map-值"><a href="#读取-Map-值" class="headerlink" title="读取 Map 值"></a>读取 Map 值</h3><p><strong>映射的行为类似于动态数组，只是我们将槽和键一起散列。</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// slot7</span><br><span class="line">mapping(uint256 =&gt; uint256) var8;</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">function getMappedValue(uint256 key) external view returns(uint256) &#123;</span><br><span class="line">	</span><br><span class="line">	uint256 slot;</span><br><span class="line">	</span><br><span class="line">	assembly &#123;</span><br><span class="line">		slot := var8.slot</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	// hashs the key and uint256 value of slot</span><br><span class="line">	bytes32 location = keccak256(abi.encode(key, slot));</span><br><span class="line">	</span><br><span class="line">	uint256 ans;</span><br><span class="line">	</span><br><span class="line">	assembly &#123;</span><br><span class="line">		ans := sload(location)</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	return ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="读取一个嵌套的-Map-值："><a href="#读取一个嵌套的-Map-值：" class="headerlink" title="读取一个嵌套的 Map 值："></a>读取一个嵌套的 Map 值：</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// slot 8</span><br><span class="line">mapping(uint256 =&gt; mapping(uint256 =&gt; uint256)) var9;</span><br></pre></td></tr></table></figure>
+
+<p>这个例子中，设置了映射值<code>var9[0][1]=2</code>。下面是代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">function getMappedValue(uint256 key1, uint256 key2) external view returns(uint256) &#123;</span><br><span class="line">	</span><br><span class="line">	// get the slot of the mapping</span><br><span class="line">	uint256 slot;</span><br><span class="line">	assembly &#123;</span><br><span class="line">		slot := var9.slot</span><br><span class="line">	&#125;</span><br><span class="line">	// hashs the key and uint256 value of slot</span><br><span class="line">	bytes32 locationOfParentValue = keccak256(abi.encode(key1, slot));</span><br><span class="line">	// hashs the parent key with the nested key</span><br><span class="line">	bytes32 locationOfNestedValue = keccak256(abi.encode(key2, locationOfParentValue));</span><br><span class="line">	</span><br><span class="line">	uint256 ans;</span><br><span class="line">	// loads storage slot of location and returns ans</span><br><span class="line">	assembly &#123;</span><br><span class="line">		ans := sload(locationOfNestedValue)</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	return ans;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们首先得到第一个键（0）的哈希值。然后我们用第二个键的哈希值（1）来计算。最后，我们从存储空间加载槽，得到我们的值。</p>
+<h2 id="读取和写入打包的变量"><a href="#读取和写入打包的变量" class="headerlink" title="读取和写入打包的变量"></a>读取和写入打包的变量</h2><p>假如想要将 <code>var5</code>改为 4，我们知道 <code>var5</code>位于 slot 3，所以可以尝试这样做：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">function writeVar5(uint256 newVal) external &#123;</span><br><span class="line">	</span><br><span class="line">	assembly &#123;</span><br><span class="line">		sstore(3, newVal)</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接下来使用<code>getValInHex(3)</code>，我们可以看到 slot 3 被改写为 <code>0x0000000000000000000000000000000000000000000000000000000000000004</code>。这是一个问题，因为现在 <code>var4</code> 被已经被修改为了0。<strong>这一部分将讨论如何读写打包的变量。首先学习更多的 Yul 语法</strong></p>
+<table>
+<thead>
+<tr>
+<th>操作说明</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>and(x, y)</td>
+<td>x 和 y 的按位“与”</td>
+</tr>
+<tr>
+<td>or(x, y)</td>
+<td>x 和 y 的按位“或”</td>
+</tr>
+<tr>
+<td>xor(x, y)</td>
+<td>x 和 y 的按位“异或”</td>
+</tr>
+<tr>
+<td>shl(x, y)</td>
+<td>y 逻辑左移 x 位</td>
+</tr>
+<tr>
+<td>shr(x, y)</td>
+<td>y 逻辑右移 x 位</td>
+</tr>
+</tbody></table>
+<h3 id="and"><a href="#and" class="headerlink" title="and()"></a><code>and()</code></h3><p>取两个<code>bytes32</code>类型的值尝试<code>and()</code>操作：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">function getAnd() external pure returns(bytes32) &#123;</span><br><span class="line"></span><br><span class="line">	bytes32 randVar = 0x0000000000000000000000009acc1d6aa9b846083e8a497a661853aae07f0f00;</span><br><span class="line">	bytes32 mask = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;</span><br><span class="line">	bytes32 ans;</span><br><span class="line">	</span><br><span class="line">	assembly &#123;</span><br><span class="line">		ans := and(mask, randVar)</span><br><span class="line">	&#125;</span><br><span class="line">	return ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>查看输出结果，得到：<code>0x000000000000000000009acc1d6aa9b846083e8a497a661853aae07f0f00</code>。这是因为<code>and()</code>所做的是看两个输入的每一个位，并比较它们的值。如果两个位都是 1 （二进制方式考虑），那么保存这个位的状态，否则将其设置位 0。</p>
+<h3 id="or"><a href="#or" class="headerlink" title="or()"></a><code>or()</code></h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">function getOr() external pure returns (bytes32) &#123;</span><br><span class="line">	</span><br><span class="line">	bytes32 randVar = 0x000000000000000000000000ffffffffffffffffffffffffffffffffffffffff;</span><br><span class="line">	bytes32 mask = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;</span><br><span class="line">	</span><br><span class="line">	bytes32 ans;</span><br><span class="line">	assembly &#123;</span><br><span class="line">		ans := or(mask, randVar)</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	return ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这一次的输出是 <code>0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff</code>， 这是因为它看的是否有一个位处于1 状态（（激活态））。让我们看看如果我们把掩码变量改为 <code>0x00ffffffffffffffffffffff0000000000000000000000000000000000000000 </code>会怎样。你可以看到输出变为 <code>0x00ffffffffffffffffffffff9acc1d6aa9b846083e8a497a661853aae07f0f00</code>。 注意第一个字节是<code>0x00</code>，因为两个输入第一个字节都没有 1 。</p>
+<h3 id="xor"><a href="#xor" class="headerlink" title="xor()"></a><code>xor()</code></h3><p><code>xor()</code>有一些不同。他要求一个位是 1 （激活态），另一个位是 0（非激活态）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">function getXor() external pure returns(bytes32) &#123;</span><br><span class="line">	</span><br><span class="line">	bytes32 randVar = 0x00000000000000000000000000000000000000000000000000000000000000ff;</span><br><span class="line">	bytes32 mask = 0xffffffffffffffffffffffff00000000000000000000000000000000000000ff;</span><br><span class="line">	</span><br><span class="line">	bytes32 ans;</span><br><span class="line">	</span><br><span class="line">	assembly &#123;</span><br><span class="line">		ans := xor(mask, randVar)</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	return ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出是 <code>0xffffffffffffffffffffffff0000000000000000000000000000000000000000</code>。当<code>0x00</code>和<code>0xff</code>对齐时，我们才能看到输出 1 ，区别还是很明显的。</p>
+<h3 id="shl-和shr"><a href="#shl-和shr" class="headerlink" title="shl()和shr()"></a><code>shl()</code>和<code>shr()</code></h3><p><code>shl()</code>和<code>shr()</code>的操作非常类似，二者都是讲输入按位移位。<code>shl()</code>按左移位，<code>shr()</code>按右移位。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">function shlAndShr() external pure returns(bytes32, bytes32) &#123;</span><br><span class="line"></span><br><span class="line">	bytes32 randVar = 0xffff00000000000000000000000000000000000000000000000000000000ffff;</span><br><span class="line">	</span><br><span class="line">	bytes32 ans1;</span><br><span class="line">	bytes32 ans2;</span><br><span class="line">	</span><br><span class="line">	assembly &#123;</span><br><span class="line">		ans1 := shr(16, randVar)</span><br><span class="line">		ans2 := shl(16, randVar)</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	return (ans1, ans2);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>输出：</strong></p>
+<p><code>ans1</code>：<code>0x0000ffff00000000000000000000000000000000000000000000000000000000</code></p>
+<p><code>ans2</code>：<code>0x00000000000000000000000000000000000000000000000000000000ffff0000</code></p>
+<p>首先先看以下<code>ans1</code>。我们按位 16 位（2 个字节）执行 <code>shr()</code> 可以看到最后两个字节从<code>0xffff</code>变为<code>0x0000</code>，前两个字节向右移了两个字节。<code>ans2</code>所发生的就是比特位移到左边而不是右边。</p>
+<h3 id="读取var4和var5的值"><a href="#读取var4和var5的值" class="headerlink" title="读取var4和var5的值"></a>读取<code>var4</code>和<code>var5</code>的值</h3><p>在我们写到 <code>var5</code>之前，我们先写一个函数，<strong>先读<code>var4</code>和<code>var5</code></strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">function readVar4AndVar5() external view returns (uint128, uint128) &#123;</span><br><span class="line"></span><br><span class="line">	uint128 readVar4;</span><br><span class="line">	uint128 readVar5;</span><br><span class="line">	</span><br><span class="line">	bytes32 mask = 0x00000000000000000000000000000000ffffffffffffffffffffffffffffffff;</span><br><span class="line">	// 用于掩码操作，保留变量的低 128 位，将高 128 位置零。</span><br><span class="line">	</span><br><span class="line">	assembly &#123;</span><br><span class="line">		let slot3 := sload(3)</span><br><span class="line">		</span><br><span class="line">		// the and() operation sets var5 to 0x00</span><br><span class="line">		readVar4 := and(slot3, mask)</span><br><span class="line">		// 将 slot3 和 mask 进行按位与操作，即保留 slot3 的低 128 位，将其余位置零，结果存储在 readVar4 中。</span><br><span class="line">		</span><br><span class="line">		// we shift var5 to var4 to 0x00</span><br><span class="line">		// var5&#x27;s old position becomes 0x00</span><br><span class="line">		readVar5 := shr( mul( var5.offset, 8), slot3)</span><br><span class="line">		// mul(var5.offset, 8) 的作用是将偏移量转换为实际的位移数值（每个存储槽的大小是 32 字节，所以乘以 8 将槽位数转换为字节）</span><br><span class="line">		// 然后使用 shr（右移）指令来根据计算出的位移数值，从 slot3 中获取相应的数据并存储在 readVar5 中。</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	return (readVar4, readVar5);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出结果是1和2，符合预期。对于检索<code>var4</code>，我们只需要使用一个掩码，将其值设置为<code>0x0000000000000000000000000000000000000000000000000000000000000001</code>。然后我们返回一个设置为1的<code>uint128</code>。当读取<code>var5</code>时，我们需要将<code>var4</code>向右移位。这样我们就有了<code>0x0000000000000000000000000000000000000000000000000000000000000002</code>，用来返回。需要注意的是，有时你必须将移位和掩码结合起来，以读取一个有2个以上变量的存储槽的值。</p>
+<h3 id="修改var5的值："><a href="#修改var5的值：" class="headerlink" title="修改var5的值："></a>修改<code>var5</code>的值：</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">function writeVar5(uint256 newVal) external &#123;</span><br><span class="line">	</span><br><span class="line">	assembly &#123;</span><br><span class="line">		</span><br><span class="line">		// load slot3</span><br><span class="line">		let slot3 := sload(3)</span><br><span class="line">		</span><br><span class="line">		// mask for clearing var5</span><br><span class="line">		let mask := 0x00000000000000000000000000000000ffffffffffffffffffffffffffffffff</span><br><span class="line">		</span><br><span class="line">		// isolate var4</span><br><span class="line">		let clearedVar5 := and(slot3, mask)</span><br><span class="line">		</span><br><span class="line">		// format new value into var5 position</span><br><span class="line">		let shiftedVal := shl( mul( var5.offset, 8), newVal)</span><br><span class="line">		</span><br><span class="line">		// combine new value with isolated var4</span><br><span class="line">		let newSlot3 := or(shiftedVal, clearedVar5)</span><br><span class="line">		</span><br><span class="line">		// store new value to slot3</span><br><span class="line">		sstore(3, newSlot3)</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>第一步是加载存储槽3。接下来，我们需要创建一个掩码。与我们读取<code>var4</code>时类似，我们要将数值隔离为 <code>0x0000000000000000000000000000000000000000000000000000000000000001</code>。下一步是格式化我们的新值，使其在<code>var5</code>的槽位上，所以它看起来像这样的<code>0x0000000000000000000000000000000400000000000000000000000000000000</code>。与我们读取<code>var5</code>时不同，这次我们要将我们的值向左移动。最后，我们将使用<code>or()</code>将我们的值合并成32字节的十六进制，并将该值存储到槽3。我们可以通过调用<code>getValInHex(3)</code>来检查我们的工作。这将返回<code>0x0000000000000000000000000000000400000000000000000000000000000001</code>，这就是我们期望看到的。</p>
+<h2 id="内存"><a href="#内存" class="headerlink" title="内存"></a>内存</h2><p>内存的行为与 Storage 不同。内存是不持久的，这意味着一旦函数执行完毕，所有的变量都会被清除。<strong>内存与其它语言中的堆相当，但没有垃圾收集器</strong>。<strong>内存（memory）比存储（storage）要便宜</strong>得多，<strong>前 22 个字的内存成本是线性计算的</strong>，但要小心，<strong>因为之后的内存成本会变成二次方的</strong>。内存是以32个字节的序列排布的。</p>
+<p>之后我们会对此有更好的理解，但现在要理解**<code>0x00</code>-<code>0x22</code>是一个序列**。Solidity 分配<code>0x00</code>-<code>0x40</code>作为<code>scratch空间</code>。这个区域的内存不保证是空的，它被用于某些操作。<code>0x40</code>-<code>0x60</code>存储的是所谓的<code>free memory pointer(自由空闲指针)</code>的位置，用于向内存写入新的东西。<code>0x60</code>-<code>0x80</code>是空的，作为一个间隙(gap)。<code>0x80</code>是我们开始工作的地方。内存不合并打包数值。从存储器中获取的值将被存储现在他们自己的 32 字节序列中（即<code>0x80</code>-<code>0xa0</code>）。</p>
+<p>内存被用于以下操作：</p>
+<ul>
+<li>外部调用的返回值</li>
+<li>为外部调用设置函数值</li>
+<li>从外部调用获取值</li>
+<li>用一个错误字符串进行还原</li>
+<li>Log 信息（事件）</li>
+<li>用<code>keccak256()</code>进行哈希运算</li>
+<li>创建其他智能合约</li>
+</ul>
+<p>一些关于内存的 Yul 指令：</p>
+<table>
+<thead>
+<tr>
+<th>操作说明</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>mload(p)</td>
+<td>类似于<code>sload()</code>，但是是加载 p 之后接下来的 32 个字节</td>
+</tr>
+<tr>
+<td>mstore(p, v)</td>
+<td>类似于<code>sstore()</code>，但是是将值 v 存储在 p 中加上 32 个字节</td>
+</tr>
+<tr>
+<td>mstore8(p, v)</td>
+<td>类似于<code>mmstore()</code>，但是仅适用于访问单个字节</td>
+</tr>
+<tr>
+<td>msize()</td>
+<td>返回最大访问的内存索引</td>
+</tr>
+<tr>
+<td>pop(x)</td>
+<td>丢弃值 x</td>
+</tr>
+<tr>
+<td>return(p, s)</td>
+<td>结束执行，并从内存位置 p -v 返回数据</td>
+</tr>
+<tr>
+<td>revert(p, s)</td>
+<td>结束执行，不保存状态更改，并从内存位置 p -v 返回数据</td>
+</tr>
+</tbody></table>
+<p>接下来我们来看一些更多的数据结构：</p>
+<p><strong>结构体和固定长度数组的行为实际上是一样的</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">struct Var10 &#123;</span><br><span class="line">	uint256 subVar1;</span><br><span class="line">	uint256 subVar2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这没什么不一样的地方，只是一个简单的数据结构。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">function getStructValue() external pure returns (uint256, uint256) &#123;</span><br><span class="line">	</span><br><span class="line">	// initialize struct</span><br><span class="line">	Var10 memory s;</span><br><span class="line">	</span><br><span class="line">	s.subVar1 = 32;</span><br><span class="line">	s.subVar2 = 64;</span><br><span class="line">	</span><br><span class="line">	assembly &#123;</span><br><span class="line">		return(0x80, 0xc0)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里我们将<code>s.subVar1</code>设置为内存位置<code>0x80</code>-<code>0xa0</code>，<code>s.subVar2</code>设置为内存位置<code>0xa0</code>-<code>0xc0</code>。这就是为什么我们要返回<code>0x80</code> - <code>0xc0</code>。下面是一个交易结束前的内存布局表：</p>
+<p><img src="/../images/Yul%E5%86%85%E8%81%94%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/28025.png" alt="img"></p>
+<p>从中我们可以看到：</p>
+<ul>
+<li><code>0x00</code> - <code>0x40</code> 是空的 scratch 空间</li>
+<li><code>0x40</code> 给了我们空闲的内存指针</li>
+<li>Solidity 为 <code>0x60</code> 留了一个空隙（gas）</li>
+<li><code>0x80</code>和<code>0xa0</code>用于存储结构的值</li>
+<li><code>0xc0</code>是新的空闲内存指针</li>
+</ul>
+<h3 id="动态数组在内存（memory）中工作"><a href="#动态数组在内存（memory）中工作" class="headerlink" title="动态数组在内存（memory）中工作"></a>动态数组在内存（memory）中工作</h3><p>接下来展示动态数组是如何下内存中工作的。在这个例子中，把<code>[0, 1, 2, 3]</code>作为参数<code>arr</code>传递。这个例子，我们将向数组中添加一个额外元素。<strong>在实际中要注意，因为可能会覆盖一个不同的内存变量</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">function getDynamicArray(uint256[] memory arr) external view returns (uint256[] memory) &#123;</span><br><span class="line">	</span><br><span class="line">	assembly &#123;</span><br><span class="line">		</span><br><span class="line">		// where array is stored in memory (0x80)</span><br><span class="line">		let location := arr</span><br><span class="line">		</span><br><span class="line">		// length of array is stored at arr (4)</span><br><span class="line">		let length := mload(arr)</span><br><span class="line">		</span><br><span class="line">		// gets next available memory location</span><br><span class="line">		let nextMemoryLocation := add( add( location, 0x20), mul( length, 0x20) )</span><br><span class="line">		// stores new value to memory</span><br><span class="line">		mstore(nextMemoryLocation, 4)</span><br><span class="line">		</span><br><span class="line">		// increment length by 1</span><br><span class="line">		length := add( length, 1)</span><br><span class="line">		</span><br><span class="line">		// store new length valur</span><br><span class="line">		mstore(location, length)</span><br><span class="line">		</span><br><span class="line">		// update free memory pointer</span><br><span class="line">		mstore(0x40, 0x140)</span><br><span class="line">		</span><br><span class="line">		return ( add( location, 0x20), mul (length, 0x20))</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们在这里所做的是获得数组在内存中的存储位置。然后，我们得到数组的长度，它被存储在数组的第一个内存位置。为了看到下一个可用的位置，我们在该位置上添加32个字节（跳过数组的长度），并将数组的长度乘以32个字节。这将使我们前进到数组后的下一个内存位置。在这里，我们将存储我们的新值（4）。接下来，我们将数组的长度增加1。之后，我们要更新空闲内存指针。最后，我们返回数组。</p>
+<p>让我们再看一次内存布局。</p>
+<p><img src="/../images/Yul%E5%86%85%E8%81%94%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/20165.png" alt="img"></p>
+<h2 id="合约调用"><a href="#合约调用" class="headerlink" title="合约调用"></a>合约调用</h2><p>这里，我们将讨论<strong>合约调用在 Yul 中是如何工作的</strong></p>
+<table>
+<thead>
+<tr>
+<th>操作说明</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>gas()</td>
+<td>仍可用于执行的 Gas</td>
+</tr>
+<tr>
+<td>gasPrice()</td>
+<td>交易的 gas 价格</td>
+</tr>
+<tr>
+<td>address()</td>
+<td>当前合约的地址</td>
+</tr>
+<tr>
+<td>balance(a)</td>
+<td>地址 a 的以太币余额（以 wei 为单位）</td>
+</tr>
+<tr>
+<td>selfbalance()</td>
+<td>与调用<code>balance(address())</code>相同，但稍微便宜一些</td>
+</tr>
+<tr>
+<td>caller()</td>
+<td>调用合约的地址（msg.sender）</td>
+</tr>
+<tr>
+<td>origin()</td>
+<td>发起交易的地址（tx.origin）</td>
+</tr>
+<tr>
+<td>callvalue()</td>
+<td>在合约调用中发送的以太币数量（以 wei 为单位）（msg.sender）</td>
+</tr>
+<tr>
+<td>calldatasize()</td>
+<td>调用数据的大小，以字节为单位</td>
+</tr>
+<tr>
+<td>calldataload(p)</td>
+<td>从位置 p 开始的调用数据（仅 32 字节数据）</td>
+</tr>
+<tr>
+<td>calldatacopy(t, f, s)</td>
+<td>调用数据复制到内存位置 t 。从 calldata 中的位置 f 开始，复制 s 个字节的数据</td>
+</tr>
+<tr>
+<td>extcodesize(a)</td>
+<td>地址 a 处代码的大小</td>
+</tr>
+<tr>
+<td>returndatasize()</td>
+<td>最后返回数据的大小</td>
+</tr>
+<tr>
+<td>returndatacopy(t, f, s)</td>
+<td>将 s 个字节从位置 f 处的返回数据复制到位置 t 处的 memory</td>
+</tr>
+<tr>
+<td>timestamp()</td>
+<td>区块的当前时间戳（以秒为单位）</td>
+</tr>
+<tr>
+<td>number()</td>
+<td>当前区块号</td>
+</tr>
+<tr>
+<td>call(g, a, v, in, insize, out, outsize)</td>
+<td>使用 gas g 调用地址 a 处的合约，传递 v wei作为 msg.value，从内存位置 in - insize 传递 tx.data，并将返回数据存储在内存位置 out - outsize。如果调用成功，return 1，否则返回 0</td>
+</tr>
+<tr>
+<td>delegatecall(g, a, in, insize, out, outsize)</td>
+<td>与 <code>call()</code> 类似，主要区别在于 <code>delegatecall()</code> 更新调用合约中的状态变量。 通常用于代理合同。 需要注意的是，存储布局必须与您调用的合约相同，以避免覆盖意外的存储变量。请注意，参数 v 丢失。您无法使用<code>delegatecall()</code>发送以太币</td>
+</tr>
+<tr>
+<td>staticcall(g, a, in, insize, out, outsize)</td>
+<td>与 <code>call()</code> 类似。除了它不能用于调用改变区块链状态的合约（即标记为 <code>pure</code> 和 <code>view</code> 的函数）。注意参数 v 丢失。您不能使用 <code>staticcall()</code> 发送以太币</td>
+</tr>
+</tbody></table>
+<p>接下来，我们看一下我们将调用的合约：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity ^0.8.17;</span><br><span class="line"></span><br><span class="line">contract CallMe &#123;</span><br><span class="line"></span><br><span class="line">	uint256 public var1 = 1;</span><br><span class="line">	uint256 public var2 = 2;</span><br><span class="line">	</span><br><span class="line">	function a(uint256 _var1, uint256 _var2) external payable returns(uint256, uint256) &#123;</span><br><span class="line">	</span><br><span class="line">		// requires 1 ether was sent to contract</span><br><span class="line">		require(msg.value &gt;= 1 ether);</span><br><span class="line">		</span><br><span class="line">		// updates var1 &amp; var2</span><br><span class="line">		var1 = _var1;</span><br><span class="line">		var2 = _var2;</span><br><span class="line">		</span><br><span class="line">		// returns var1 &amp; var2</span><br><span class="line">		return (var1, var2);</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	function b() external view returns(uint256, uint256) &#123;</span><br><span class="line">			return (var1, var2);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个合约有两个存储变量<code>var1</code>和<code>var2</code>，分别存储在 slot 0 和 slot 1 中。函数<code>a()</code>要求用户至少发送 1 个以太币给合约，否则它就会回滚。接下来，函数<code>a()</code>更新<code>var1</code>和<code>var2</code>并返回他们。函数<code>b()</code>简单地读取<code>var1</code>和<code>var2</code>并返回。</p>
+<p>在我们调用<code>CallMe</code>合约之前，需要花一分钟时间来理解<strong>函数选择器</strong>。让我们看看下面这个交易<code>0x773d45e000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000002</code> 的调用数据。Calldata的<strong>前4个字节</strong>是所谓的<strong>函数选择器</strong>（<code>0x773d45e0</code>）。这就是EVM如何知道你想调用什么函数。<strong>我们通过获取函数签名的字符串哈希值的前4个字节来得出函数选择器</strong>。所以函数<code>a()</code>的签名是<code>a(uint256,uint256)</code>。从这个字符串的哈希值可以得到<code>0x773d45e097aa76a22159880d254a5f1db8365bc2d0f0987a82bda7dfd3b9c8aa</code>。看一下前4个字节，我们看到它等于<code>0x773d45e0</code><strong>。注意签名中没有空格。这很重要</strong>，因为<strong>添加空格会给我们一个完全不同的哈希值</strong></p>
+<p>我们先看一下存储布局：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">uint256 public var1;</span><br><span class="line">uint256 public var2;</span><br><span class="line">bytes4 selectorA = 0x773d45e0;</span><br><span class="line">bytes4 selectorB = 0x4df7e3d0;</span><br></pre></td></tr></table></figure>
+
+<p>注意<code>var1</code>和<code>var2</code>的布局与合约<code>CallMe</code>相同。这样才能使<code>delegatecall()</code>正常工作。我们满足了这些需求，并且能够拥有其他的变量（<code>selectorA</code>和<code>selectorB</code>），只要我们的新变量被附加到最后。这可以防止任何存储碰撞。</p>
+<h3 id="staticcall"><a href="#staticcall" class="headerlink" title="staticcall()"></a><code>staticcall()</code></h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">function getVars(address _callMe) external view returns(uint256, uint256) &#123;</span><br><span class="line"></span><br><span class="line">	assembly &#123;</span><br><span class="line">		</span><br><span class="line">		// load slot 2 from memory</span><br><span class="line">		let slot2 := sload(2)</span><br><span class="line">		</span><br><span class="line">		// shift selectorA off 右移位隔离 A</span><br><span class="line">		let funcSelector := shr( 32, slot2)</span><br><span class="line">		</span><br><span class="line">		// store selectorB to memory location 0x80</span><br><span class="line">		mstore(0x00, funcSelector)</span><br><span class="line">		</span><br><span class="line">		// static call CallMe</span><br><span class="line">		let result := staticcall(gas(), _callMe, 0x1c, 0x20, 0x80, 0xc0)</span><br><span class="line">		</span><br><span class="line">		// check if call was successful, else revert</span><br><span class="line">		if iszero(result) &#123;</span><br><span class="line">			revert(0,0)</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		// return values from memory</span><br><span class="line">		return (0x80, 0xc0)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>首先从存储空间中获取<code>b()</code>的函数选择器。通过加载 <code>slot2</code> 来获取，但是由于两个函数选择器都存储在 <code>slot2</code>，接下来我们可以<strong>右移 4 个字节（32 位）来提取<code>selectorB</code><strong>。接下来把函数选择器</strong>存储在内存的<code>scratch</code>空间内。</strong>现在我们就可以进行静态调用了。在这些例子中，我们传入了<code>gas()</code>，当然可以指定 Gas 的数量。我们传入参数<code>_callMe</code>为合约地址。<code>0x1c</code>和<code>0x20</code>说的是我们要把存储的最后 4 个字节传到 scratch 空间。因为函数选择器是 4 个字节，但内存是以 32 个字节为一个系列工作的（同样，记住我们是从右往左存储的）。<code>staticcall()</code>的最后两个参数指定我们要将返回数据存储在内存位置<code>0x80</code> - <code>0xc0</code>。接下来，我们检查函数调用是否成功，否则 revert。记住，成功的调用将返回 1。最后，从内存中返回数据，并得到数值 1 和 2。</p>
+<h3 id="call"><a href="#call" class="headerlink" title="call()"></a><code>call()</code></h3><p>从 <code>CallMe</code> 中调用函数<code>a()</code>。调用该函数需要向合约发送一个 Ether。在这个例子中，将 3 和 4 作为<code>_var1</code>和<code>_var2</code>传入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">function callA(address _callMe, uint256 _var1, uint256 _var2) external payable returns (bytes memory) &#123;</span><br><span class="line"></span><br><span class="line">	assembly &#123;</span><br><span class="line">		</span><br><span class="line">		// load slot 2</span><br><span class="line">		let slot2 := sload(2)</span><br><span class="line">		</span><br><span class="line">		// isolate selectorA</span><br><span class="line">		let mask := 0x00000000000000000000000000000000000000000000000000000000ffffffff</span><br><span class="line">		let funcSelector := and(mask, slot2)</span><br><span class="line">		</span><br><span class="line">0x00000000000000000000000000000000000000000000000000000000ffffffff</span><br><span class="line">0x00000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000</span><br><span class="line">		</span><br><span class="line">		// store function selectorA</span><br><span class="line">		mstore(0x80, funcSelector)</span><br><span class="line">		</span><br><span class="line">		// copies calldata to memory location 0xa0</span><br><span class="line">		// leaves out function selector and _callMe</span><br><span class="line">		calldatacopy(0xa0, 0x24, sub( calldatasize(), 0x24) )</span><br><span class="line">		</span><br><span class="line">		// call contract</span><br><span class="line">		let result := call(gas(), _callMe, callvalue(), 0x9c, 0xe0, 0x100, 0x140)</span><br><span class="line">		</span><br><span class="line">		// check if call was successful, else revert</span><br><span class="line">		if iszero(result) &#123;</span><br><span class="line">			revert(0,0)</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		// return values from memory</span><br><span class="line">		return (0x100, 0x140)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>好的，与我们上一个例子类似，我们必须加载slot2。但是这一次，我们将屏蔽<code>selectorB</code>以隔离<code>selectorA</code>。现在我们将把选择器存储在<code>0x80</code>。<strong>由于我们需要来自calldata的参数，我们将使用<code>calldatacopy()</code><strong>。</strong>我们告诉<code>calldatacopy()</code>在内存位置<code>0xa0</code>存储我们的calldata</strong>。我们还告诉<code>calldatacopy()</code>跳过前36个字节。前4个字节是<code>callA()</code>的函数选择器，接下来的32个字节是<code>callMe</code>的地址（我们将在一分钟内使用它）。我们告诉<code>calldatacopy()</code>的最后一件事是存储calldata的大小减去36字节。</p>
+<p>现在我们已经准备好进行合约调用。像上次一样，我们传入<code>gas()</code>和<code>_callMe</code>。然而，这次我们从<code>0x9c</code>（<code>0x80</code>内存系列的最后4个字节）-<code>0xe0</code>传入我们的调用数据，并将数据存储在内存位置<code>0x100</code>-<code>0x120</code>。再次，检查调用是否成功并返回我们的输出。如果我们检查合约<code>CallMe</code>，我们看到值被成功更新为3和4。</p>
+<p>为了进一步说明正在发生的事情，这里是我们返回之前的内存布局。</p>
+<p><img src="/../images/Yul%E5%86%85%E8%81%94%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/92085.png" alt="img"></p>
+<h3 id="delegatecall"><a href="#delegatecall" class="headerlink" title="delegatecall()"></a><code>delegatecall()</code></h3><p>最后来看 <code>delegatecall()</code> 合约代码看起来几乎是一样的，只有一个变化：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">function delegatecall(address _callMe, uint256 _val1, uint256 _val2) external payable returns (bytes memory) &#123;</span><br><span class="line">	</span><br><span class="line">	assembly &#123;</span><br><span class="line">		</span><br><span class="line">		// load slot2</span><br><span class="line">		slot2 := sload(2);</span><br><span class="line">		</span><br><span class="line">		// isolate selectorA</span><br><span class="line">		let mask := 0x00000000000000000000000000000000000000000000000000000000ffffffff</span><br><span class="line">		let funcSelector := and(mask, slot2)</span><br><span class="line">		</span><br><span class="line">		// store function selectorA</span><br><span class="line">		mstore(0x80, funcSelector)</span><br><span class="line">		</span><br><span class="line">		// copies calldata to memory location 0xa0</span><br><span class="line">		// leaves out function selector and _callMe</span><br><span class="line">		calldatacopy(0xa0, 0x24, sub( calldatasize(), 0x24 ) )</span><br><span class="line">		</span><br><span class="line">		// call contract</span><br><span class="line">		let result := delegatecall(gas(), _callMe, 0x9c, 0xe0, 0x100, 0x120)</span><br><span class="line">		</span><br><span class="line">		// check if call was successful, else revert</span><br><span class="line">		if iszero(result) &#123;</span><br><span class="line">			revert(0,0)</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		// return values from memory</span><br><span class="line">		return (0x100, 0x120)</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们所做的唯一改变是将<code>call()</code>改为<code>delegatecall()</code>并删除<code>callvalue()</code>。我们不需要<code>callvalue()</code>，因为委托调用是在它自己的状态中执行<code>CallMe</code>的代码。因此，<code>a()</code>中的<code>require()</code>语句是在检查以太币是否被发送到我们的<code>Caller</code>合约。如果我们检查<code>CallMe</code>中的<code>var1</code>和<code>var2</code>，我们看到没有变化。然而，我们的<code>Caller</code>合约中的<code>var1</code>和<code>var2</code>被成功更新。</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Q1ngying
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2023/11/22/Yul%E5%86%85%E8%81%94%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/" title="Yul内联汇编入门">http://example.com/2023/11/22/Yul内联汇编入门/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Solidity/" rel="tag"># Solidity</a>
+              <a href="/tags/EVM/" rel="tag"># EVM</a>
+              <a href="/tags/Yul/" rel="tag"># Yul</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/11/22/abi%E7%BC%96%E7%A0%81%E8%A7%A3%E7%A0%81%E8%AF%A6%E8%A7%A3/" rel="prev" title="abi编码解码详解">
+      <i class="fa fa-chevron-left"></i> abi编码解码详解
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Yul-%E5%85%A5%E9%97%A8"><span class="nav-number">1.</span> <span class="nav-text">Yul 入门</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Yul%E6%A6%82%E8%BF%B0"><span class="nav-number">1.1.</span> <span class="nav-text">Yul概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%98%E9%87%8F%E8%B5%8B%E5%80%BC%E3%80%81%E8%BF%90%E7%AE%97%E3%80%81%E8%AF%84%E4%BC%B0"><span class="nav-number">1.2.</span> <span class="nav-text">变量赋值、运算、评估</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#For-%E5%BE%AA%E7%8E%AF%E5%92%8C-if-%E8%AF%AD%E5%8F%A5"><span class="nav-number">1.3.</span> <span class="nav-text">For 循环和 if 语句</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%98%E5%82%A8"><span class="nav-number">1.4.</span> <span class="nav-text">存储</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E5%8F%96%E5%8A%A8%E6%80%81%E6%95%B0%E7%BB%84%E7%9A%84%E5%80%BC"><span class="nav-number">1.4.1.</span> <span class="nav-text">读取动态数组的值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E5%8F%96-Map-%E5%80%BC"><span class="nav-number">1.4.2.</span> <span class="nav-text">读取 Map 值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E5%8F%96%E4%B8%80%E4%B8%AA%E5%B5%8C%E5%A5%97%E7%9A%84-Map-%E5%80%BC%EF%BC%9A"><span class="nav-number">1.4.3.</span> <span class="nav-text">读取一个嵌套的 Map 值：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%BB%E5%8F%96%E5%92%8C%E5%86%99%E5%85%A5%E6%89%93%E5%8C%85%E7%9A%84%E5%8F%98%E9%87%8F"><span class="nav-number">1.5.</span> <span class="nav-text">读取和写入打包的变量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#and"><span class="nav-number">1.5.1.</span> <span class="nav-text">and()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#or"><span class="nav-number">1.5.2.</span> <span class="nav-text">or()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#xor"><span class="nav-number">1.5.3.</span> <span class="nav-text">xor()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#shl-%E5%92%8Cshr"><span class="nav-number">1.5.4.</span> <span class="nav-text">shl()和shr()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E5%8F%96var4%E5%92%8Cvar5%E7%9A%84%E5%80%BC"><span class="nav-number">1.5.5.</span> <span class="nav-text">读取var4和var5的值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9var5%E7%9A%84%E5%80%BC%EF%BC%9A"><span class="nav-number">1.5.6.</span> <span class="nav-text">修改var5的值：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E5%AD%98"><span class="nav-number">1.6.</span> <span class="nav-text">内存</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E6%95%B0%E7%BB%84%E5%9C%A8%E5%86%85%E5%AD%98%EF%BC%88memory%EF%BC%89%E4%B8%AD%E5%B7%A5%E4%BD%9C"><span class="nav-number">1.6.1.</span> <span class="nav-text">动态数组在内存（memory）中工作</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%88%E7%BA%A6%E8%B0%83%E7%94%A8"><span class="nav-number">1.7.</span> <span class="nav-text">合约调用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#staticcall"><span class="nav-number">1.7.1.</span> <span class="nav-text">staticcall()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#call"><span class="nav-number">1.7.2.</span> <span class="nav-text">call()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#delegatecall"><span class="nav-number">1.7.3.</span> <span class="nav-text">delegatecall()</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Q1ngying"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Q1ngying</p>
+  <div class="site-description" itemprop="description">今朝梦醒与君别，遥盼春风寄相思</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/q1ngying" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;q1ngying" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:q1ngying@163.com" title="E-Mail → mailto:q1ngying@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-09 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Q1ngying</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">93k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">5:11</span>
+</div>
+
+<div class="powered-by">
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <i class="fa fa-user-md"></i>
+    <span id="busuanzi_container_site_uv">
+        本站访客数:<span id="busuanzi_value_site_uv"></span>人
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_pv">
+        本站访问量<span id="busuanzi_value_site_pv"></span>人次
+    </span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,255,255' opacity='1' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
