@@ -22,12 +22,12 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="EVM_Opcodes(1)来源：https:&#x2F;&#x2F;www.wtf.academy&#x2F;evm-opcodes-101&#x2F; Hello OpcodesOpcodes 简介Opcodes(操作码) 是以太坊智能合约的基本单元。大家写的 Solidity 智能合约会被编译为字节码（bytecode），然后才能在 EVM（以太坊虚拟机）上运行。而字节码就是由一系列 Opcodes 组成的。当用户在 EVM 调用">
+  <meta name="description" content="EVM_Opcodes(1)源文章：https:&#x2F;&#x2F;www.wtf.academy&#x2F;evm-opcodes-101&#x2F; Hello OpcodesOpcodes 简介Opcodes(操作码) 是以太坊智能合约的基本单元。大家写的 Solidity 智能合约会被编译为字节码（bytecode），然后才能在 EVM（以太坊虚拟机）上运行。而字节码就是由一系列 Opcodes 组成的。当用户在 EVM 调">
 <meta property="og:type" content="article">
 <meta property="og:title" content="EVM_Opcodes(1)">
 <meta property="og:url" content="http://example.com/2023/11/24/EVM-Opcodes-1/index.html">
 <meta property="og:site_name" content="Q1ngying">
-<meta property="og:description" content="EVM_Opcodes(1)来源：https:&#x2F;&#x2F;www.wtf.academy&#x2F;evm-opcodes-101&#x2F; Hello OpcodesOpcodes 简介Opcodes(操作码) 是以太坊智能合约的基本单元。大家写的 Solidity 智能合约会被编译为字节码（bytecode），然后才能在 EVM（以太坊虚拟机）上运行。而字节码就是由一系列 Opcodes 组成的。当用户在 EVM 调用">
+<meta property="og:description" content="EVM_Opcodes(1)源文章：https:&#x2F;&#x2F;www.wtf.academy&#x2F;evm-opcodes-101&#x2F; Hello OpcodesOpcodes 简介Opcodes(操作码) 是以太坊智能合约的基本单元。大家写的 Solidity 智能合约会被编译为字节码（bytecode），然后才能在 EVM（以太坊虚拟机）上运行。而字节码就是由一系列 Opcodes 组成的。当用户在 EVM 调">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/images/EVM-Opcodes-1/1-1-61fe45f03c38da6b8e70f57aa3bcdc1b.png">
 <meta property="og:image" content="http://example.com/images/EVM-Opcodes-1/1-2-3b6aabf2d8ef960b9e402b47d90b98aa.png">
@@ -37,11 +37,13 @@
 <meta property="og:image" content="http://example.com/images/EVM-Opcodes-1/1-6-b13d296bab49cf4cce6790c1a4f85e0f.png">
 <meta property="og:image" content="http://example.com/images/EVM-Opcodes-1/3-1-354716e5d43607b3f2f929dbe5ed0a61.png">
 <meta property="og:image" content="http://example.com/images/EVM-Opcodes-1/3-2-f335497e5080b8e84a3c73f5a3ee92cb.png">
+<meta property="og:image" content="http://example.com/images/EVM-Opcodes-1/image-20231125162905634.png">
+<meta property="og:image" content="http://example.com/images/EVM-Opcodes-1/image-20231125163631731.png">
 <meta property="og:image" content="http://example.com/images/EVM-Opcodes-1/image-20231123195853298.png">
 <meta property="og:image" content="http://example.com/images/EVM-Opcodes-1/image-20231123193312376.png">
 <meta property="og:image" content="http://example.com/images/EVM-Opcodes-1/image-20231123194315682.png">
 <meta property="article:published_time" content="2023-11-24T01:41:52.000Z">
-<meta property="article:modified_time" content="2023-11-24T01:43:58.286Z">
+<meta property="article:modified_time" content="2023-11-27T08:56:49.797Z">
 <meta property="article:author" content="Q1ngying">
 <meta property="article:tag" content="Solidity">
 <meta property="article:tag" content="EVM">
@@ -205,10 +207,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2023-11-24 09:41:52 / 修改时间：09:43:58" itemprop="dateCreated datePublished" datetime="2023-11-24T09:41:52+08:00">2023-11-24</time>
+              <time title="创建时间：2023-11-24 09:41:52" itemprop="dateCreated datePublished" datetime="2023-11-24T09:41:52+08:00">2023-11-24</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-11-27 16:56:49" itemprop="dateModified" datetime="2023-11-27T16:56:49+08:00">2023-11-27</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -237,14 +245,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>6k</span>
+              <span>6.3k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>20 分钟</span>
+              <span>21 分钟</span>
             </span>
 
         </div>
@@ -256,7 +264,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="EVM-Opcodes-1"><a href="#EVM-Opcodes-1" class="headerlink" title="EVM_Opcodes(1)"></a>EVM_Opcodes(1)</h1><p>来源：<a target="_blank" rel="noopener" href="https://www.wtf.academy/evm-opcodes-101/">https://www.wtf.academy/evm-opcodes-101/</a></p>
+        <h1 id="EVM-Opcodes-1"><a href="#EVM-Opcodes-1" class="headerlink" title="EVM_Opcodes(1)"></a>EVM_Opcodes(1)</h1><p>源文章：<a target="_blank" rel="noopener" href="https://www.wtf.academy/evm-opcodes-101/">https://www.wtf.academy/evm-opcodes-101/</a></p>
 <h2 id="Hello-Opcodes"><a href="#Hello-Opcodes" class="headerlink" title="Hello Opcodes"></a>Hello Opcodes</h2><h3 id="Opcodes-简介"><a href="#Opcodes-简介" class="headerlink" title="Opcodes 简介"></a>Opcodes 简介</h3><p><strong>Opcodes(操作码) 是以太坊智能合约的基本单元</strong>。大家写的 Solidity 智能合约会被编译为字节码（bytecode），然后才能在 EVM（以太坊虚拟机）上运行。而字节码就是由一系列 Opcodes 组成的。当用户在 EVM 调用这个智能合约的函数时，EVM 会解析并执行这些 Opcodes。实现合约逻辑。</p>
 <p>首先先看几个常见的 Opcodes：</p>
 <ul>
@@ -349,6 +357,22 @@
 
 <p>在 evm.codes 上验证：</p>
 <p><img src="/../images/EVM-Opcodes-1/3-2-f335497e5080b8e84a3c73f5a3ee92cb.png" alt="img"></p>
+<h4 id="DUP"><a href="#DUP" class="headerlink" title="DUP"></a>DUP</h4><ul>
+<li><strong>操作码：<code>0x80</code>- <code>0x8F</code></strong></li>
+<li><strong>gas 消耗：<code>3</code></strong></li>
+</ul>
+<p><strong><code>DUP</code>是一系列指令</strong>，总共 16 个，从<code>DUP1</code> 到 <code>DUP16</code>。这些指令<strong>用于复制（Duplicate）堆栈上的指定元素（根据指令的序号）。</strong>例如，<code>DUP1</code>复制栈顶元素，<code>DUP2</code>复制距离栈顶的第二个元素，以此类推。</p>
+<p><strong>示例：</strong></p>
+<p><code>6001600280</code>（PUSH1 1 PUSH1 2 DUP1）。这个字节码将<code>1</code>和<code>2</code>推入堆栈，然后进行<code>DUP1</code>复制栈顶的元素(2)，堆栈最后变为[1,2,2]。</p>
+<p><img src="/../images/EVM-Opcodes-1/image-20231125162905634.png" alt="image-20231125162905634"></p>
+<h4 id="SWAP"><a href="#SWAP" class="headerlink" title="SWAP"></a>SWAP</h4><ul>
+<li><strong>操作码：<code>0x90</code> - <code>0x9F</code></strong></li>
+<li><strong>gas 消耗：<code>3</code></strong></li>
+</ul>
+<p><code>SWAP</code>指令用于<strong>交换堆栈顶的两个元素。</strong>与<code>DUP</code>类型，<code>SWAP</code>也是一系列的指令，从<code>SWAP1</code>到<code>SWAP16</code>共 16 个。**<code>SWAP1</code>交换堆栈的顶部和次顶部的元素，<code>SWAP2</code>交换顶部和第三个元素，以此类推**。</p>
+<p><strong>示例：</strong></p>
+<p><code>0x6001600290</code>（PUSH1 1 PUSH1 2 SWAP）。这个字节码将<code>1</code>和<code>2</code>推入堆栈，然后进行<code>SWAP1</code>交换这两个元素，堆栈最后变为[2 , 1]</p>
+<p><img src="/../images/EVM-Opcodes-1/image-20231125163631731.png" alt="image-20231125163631731"></p>
 <h2 id="算术指令"><a href="#算术指令" class="headerlink" title="算术指令"></a>算术指令</h2><p>这里将介绍 EVM 中用于<strong>基础算术运算</strong>的11个指令，包括<code>ADD</code>（加法），<code>MUL</code>（乘法），<code>SUB</code>（减法），<code>DIV</code>（除法）。</p>
 <h3 id="ADD（加法）"><a href="#ADD（加法）" class="headerlink" title="ADD（加法）"></a><code>ADD</code>（加法）</h3><ul>
 <li><p><strong>操作码：<code>0x01</code></strong></p>
@@ -560,7 +584,10 @@
     <a href="/2023/11/22/Yul%E5%86%85%E8%81%94%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/" rel="prev" title="Yul内联汇编入门">
       <i class="fa fa-chevron-left"></i> Yul内联汇编入门
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2023/11/25/EIP-2929%EF%BC%9A%E7%8A%B6%E6%80%81%E8%AE%BF%E9%97%AE%E6%93%8D%E4%BD%9C%E7%A0%81%E7%9A%84Gas%E6%88%90%E6%9C%AC%E5%A2%9E%E5%8A%A0/" rel="next" title="EIP-2929：状态访问操作码的Gas成本增加">
+      EIP-2929：状态访问操作码的Gas成本增加 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -619,7 +646,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#EVM-Opcodes-1"><span class="nav-number">1.</span> <span class="nav-text">EVM_Opcodes(1)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Hello-Opcodes"><span class="nav-number">1.1.</span> <span class="nav-text">Hello Opcodes</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Opcodes-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.1.1.</span> <span class="nav-text">Opcodes 简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EVM-%E5%9F%BA%E7%A1%80"><span class="nav-number">1.1.2.</span> <span class="nav-text">EVM 基础</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A0%86%E6%A0%88-Stack"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">堆栈 Stack</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%85%E5%AD%98-Memory"><span class="nav-number">1.1.2.2.</span> <span class="nav-text">内存 Memory</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%98%E5%82%A8-Storage"><span class="nav-number">1.1.2.3.</span> <span class="nav-text">存储 Storage</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#EVM-%E5%AD%97%E8%8A%82%E7%A0%81"><span class="nav-number">1.1.2.4.</span> <span class="nav-text">EVM 字节码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Gas"><span class="nav-number">1.1.2.5.</span> <span class="nav-text">Gas</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.1.2.6.</span> <span class="nav-text">执行模型</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Opcodes-%E5%88%86%E7%B1%BB"><span class="nav-number">1.2.</span> <span class="nav-text">Opcodes 分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A0%86%E6%A0%88%E6%8C%87%E4%BB%A4"><span class="nav-number">1.3.</span> <span class="nav-text">堆栈指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A8%8B%E5%BA%8F%E8%AE%A1%E6%95%B0%E5%99%A8"><span class="nav-number">1.3.1.</span> <span class="nav-text">程序计数器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A0%86%E6%A0%88%E6%8C%87%E4%BB%A4-1"><span class="nav-number">1.3.2.</span> <span class="nav-text">堆栈指令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#PUSH"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">PUSH</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#POP"><span class="nav-number">1.3.2.2.</span> <span class="nav-text">POP</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%97%E6%9C%AF%E6%8C%87%E4%BB%A4"><span class="nav-number">1.4.</span> <span class="nav-text">算术指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ADD%EF%BC%88%E5%8A%A0%E6%B3%95%EF%BC%89"><span class="nav-number">1.4.1.</span> <span class="nav-text">ADD（加法）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MUL%EF%BC%88%E4%B9%98%E6%B3%95%EF%BC%89"><span class="nav-number">1.4.2.</span> <span class="nav-text">MUL（乘法）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SUB%EF%BC%88%E5%87%8F%E6%B3%95%EF%BC%89"><span class="nav-number">1.4.3.</span> <span class="nav-text">SUB（减法）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DIV%EF%BC%88%E9%99%A4%E6%B3%95%EF%BC%89"><span class="nav-number">1.4.4.</span> <span class="nav-text">DIV（除法）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E7%AE%97%E6%9C%AF%E6%8C%87%E4%BB%A4"><span class="nav-number">1.4.5.</span> <span class="nav-text">其他算术指令</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AF%94%E8%BE%83%E6%8C%87%E4%BB%A4"><span class="nav-number">1.5.</span> <span class="nav-text">比较指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#LT%EF%BC%88%E5%B0%8F%E4%BA%8E%EF%BC%89"><span class="nav-number">1.5.1.</span> <span class="nav-text">LT（小于）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GT%EF%BC%88%E5%A4%A7%E4%BA%8E%EF%BC%89"><span class="nav-number">1.5.2.</span> <span class="nav-text">GT（大于）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EQ%EF%BC%88%E7%AD%89%E4%BA%8E%EF%BC%89"><span class="nav-number">1.5.3.</span> <span class="nav-text">EQ（等于）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ISZERO%EF%BC%88%E6%98%AF%E5%90%A6%E4%B8%BA%E9%9B%B6%EF%BC%89"><span class="nav-number">1.5.4.</span> <span class="nav-text">ISZERO（是否为零）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E6%AF%94%E8%BE%83%E6%8C%87%E4%BB%A4"><span class="nav-number">1.5.5.</span> <span class="nav-text">其他比较指令</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%8D%E7%BA%A7%E6%8C%87%E4%BB%A4"><span class="nav-number">1.6.</span> <span class="nav-text">位级指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AND%EF%BC%88%E4%B8%8E%EF%BC%89"><span class="nav-number">1.6.1.</span> <span class="nav-text">AND（与）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OR%EF%BC%88%E6%88%96%EF%BC%89"><span class="nav-number">1.6.2.</span> <span class="nav-text">OR（或）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#XOR%EF%BC%88%E5%BC%82%E6%88%96%EF%BC%89"><span class="nav-number">1.6.3.</span> <span class="nav-text">XOR（异或）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NOT%EF%BC%88%E9%9D%9E%EF%BC%89"><span class="nav-number">1.6.4.</span> <span class="nav-text">NOT（非）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SHL%EF%BC%88%E5%B7%A6%E7%A7%BB%E4%BD%8D%EF%BC%89"><span class="nav-number">1.6.5.</span> <span class="nav-text">SHL（左移位）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SHR%EF%BC%88%E5%8F%B3%E7%A7%BB%E4%BD%8D%EF%BC%89"><span class="nav-number">1.6.6.</span> <span class="nav-text">SHR（右移位）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E4%BD%8D%E7%BA%A7%E6%8C%87%E4%BB%A4"><span class="nav-number">1.6.7.</span> <span class="nav-text">其他位级指令</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E6%8C%87%E4%BB%A4"><span class="nav-number">1.7.</span> <span class="nav-text">内存指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#EVM-%E4%B8%AD%E7%9A%84%E5%86%85%E5%AD%98"><span class="nav-number">1.7.1.</span> <span class="nav-text">EVM 中的内存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MLOAD%EF%BC%88%E5%86%85%E5%AD%98%E8%AF%BB%EF%BC%89"><span class="nav-number">1.7.2.</span> <span class="nav-text">MLOAD（内存读）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MSTORE%EF%BC%88%E5%86%85%E5%AD%98%E5%86%99%EF%BC%89"><span class="nav-number">1.7.3.</span> <span class="nav-text">MSTORE（内存写）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MSTORE8%EF%BC%88%E5%86%85%E5%AD%98-8-%E4%BD%8D%E5%86%99%EF%BC%89"><span class="nav-number">1.7.4.</span> <span class="nav-text">MSTORE8（内存 8 位写）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MSIZE%EF%BC%88%E5%86%85%E5%AD%98%E5%A4%A7%E5%B0%8F%EF%BC%89"><span class="nav-number">1.7.5.</span> <span class="nav-text">MSIZE（内存大小）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E6%8C%87%E4%BB%A4"><span class="nav-number">1.8.</span> <span class="nav-text">存储指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#EVM-%E4%B8%AD%E7%9A%84%E5%AD%98%E5%82%A8"><span class="nav-number">1.8.1.</span> <span class="nav-text">EVM 中的存储</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SLOAD%EF%BC%88%E5%AD%98%E5%82%A8%E8%AF%BB%EF%BC%89"><span class="nav-number">1.8.2.</span> <span class="nav-text">SLOAD（存储读）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SSTORE%EF%BC%88%E5%AD%98%E5%82%A8%E5%86%99"><span class="nav-number">1.8.3.</span> <span class="nav-text">SSTORE（存储写)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BF%E9%97%AE%E9%9B%86-EIP-2929"><span class="nav-number">1.8.4.</span> <span class="nav-text">访问集 EIP-2929</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Gas-Cost"><span class="nav-number">1.8.5.</span> <span class="nav-text">Gas Cost</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#EVM-Opcodes-1"><span class="nav-number">1.</span> <span class="nav-text">EVM_Opcodes(1)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Hello-Opcodes"><span class="nav-number">1.1.</span> <span class="nav-text">Hello Opcodes</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Opcodes-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.1.1.</span> <span class="nav-text">Opcodes 简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EVM-%E5%9F%BA%E7%A1%80"><span class="nav-number">1.1.2.</span> <span class="nav-text">EVM 基础</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A0%86%E6%A0%88-Stack"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">堆栈 Stack</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%85%E5%AD%98-Memory"><span class="nav-number">1.1.2.2.</span> <span class="nav-text">内存 Memory</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%98%E5%82%A8-Storage"><span class="nav-number">1.1.2.3.</span> <span class="nav-text">存储 Storage</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#EVM-%E5%AD%97%E8%8A%82%E7%A0%81"><span class="nav-number">1.1.2.4.</span> <span class="nav-text">EVM 字节码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Gas"><span class="nav-number">1.1.2.5.</span> <span class="nav-text">Gas</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.1.2.6.</span> <span class="nav-text">执行模型</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Opcodes-%E5%88%86%E7%B1%BB"><span class="nav-number">1.2.</span> <span class="nav-text">Opcodes 分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A0%86%E6%A0%88%E6%8C%87%E4%BB%A4"><span class="nav-number">1.3.</span> <span class="nav-text">堆栈指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A8%8B%E5%BA%8F%E8%AE%A1%E6%95%B0%E5%99%A8"><span class="nav-number">1.3.1.</span> <span class="nav-text">程序计数器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A0%86%E6%A0%88%E6%8C%87%E4%BB%A4-1"><span class="nav-number">1.3.2.</span> <span class="nav-text">堆栈指令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#PUSH"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">PUSH</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#POP"><span class="nav-number">1.3.2.2.</span> <span class="nav-text">POP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DUP"><span class="nav-number">1.3.2.3.</span> <span class="nav-text">DUP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SWAP"><span class="nav-number">1.3.2.4.</span> <span class="nav-text">SWAP</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%97%E6%9C%AF%E6%8C%87%E4%BB%A4"><span class="nav-number">1.4.</span> <span class="nav-text">算术指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ADD%EF%BC%88%E5%8A%A0%E6%B3%95%EF%BC%89"><span class="nav-number">1.4.1.</span> <span class="nav-text">ADD（加法）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MUL%EF%BC%88%E4%B9%98%E6%B3%95%EF%BC%89"><span class="nav-number">1.4.2.</span> <span class="nav-text">MUL（乘法）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SUB%EF%BC%88%E5%87%8F%E6%B3%95%EF%BC%89"><span class="nav-number">1.4.3.</span> <span class="nav-text">SUB（减法）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DIV%EF%BC%88%E9%99%A4%E6%B3%95%EF%BC%89"><span class="nav-number">1.4.4.</span> <span class="nav-text">DIV（除法）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E7%AE%97%E6%9C%AF%E6%8C%87%E4%BB%A4"><span class="nav-number">1.4.5.</span> <span class="nav-text">其他算术指令</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AF%94%E8%BE%83%E6%8C%87%E4%BB%A4"><span class="nav-number">1.5.</span> <span class="nav-text">比较指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#LT%EF%BC%88%E5%B0%8F%E4%BA%8E%EF%BC%89"><span class="nav-number">1.5.1.</span> <span class="nav-text">LT（小于）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GT%EF%BC%88%E5%A4%A7%E4%BA%8E%EF%BC%89"><span class="nav-number">1.5.2.</span> <span class="nav-text">GT（大于）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EQ%EF%BC%88%E7%AD%89%E4%BA%8E%EF%BC%89"><span class="nav-number">1.5.3.</span> <span class="nav-text">EQ（等于）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ISZERO%EF%BC%88%E6%98%AF%E5%90%A6%E4%B8%BA%E9%9B%B6%EF%BC%89"><span class="nav-number">1.5.4.</span> <span class="nav-text">ISZERO（是否为零）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E6%AF%94%E8%BE%83%E6%8C%87%E4%BB%A4"><span class="nav-number">1.5.5.</span> <span class="nav-text">其他比较指令</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%8D%E7%BA%A7%E6%8C%87%E4%BB%A4"><span class="nav-number">1.6.</span> <span class="nav-text">位级指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AND%EF%BC%88%E4%B8%8E%EF%BC%89"><span class="nav-number">1.6.1.</span> <span class="nav-text">AND（与）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OR%EF%BC%88%E6%88%96%EF%BC%89"><span class="nav-number">1.6.2.</span> <span class="nav-text">OR（或）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#XOR%EF%BC%88%E5%BC%82%E6%88%96%EF%BC%89"><span class="nav-number">1.6.3.</span> <span class="nav-text">XOR（异或）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NOT%EF%BC%88%E9%9D%9E%EF%BC%89"><span class="nav-number">1.6.4.</span> <span class="nav-text">NOT（非）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SHL%EF%BC%88%E5%B7%A6%E7%A7%BB%E4%BD%8D%EF%BC%89"><span class="nav-number">1.6.5.</span> <span class="nav-text">SHL（左移位）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SHR%EF%BC%88%E5%8F%B3%E7%A7%BB%E4%BD%8D%EF%BC%89"><span class="nav-number">1.6.6.</span> <span class="nav-text">SHR（右移位）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E4%BD%8D%E7%BA%A7%E6%8C%87%E4%BB%A4"><span class="nav-number">1.6.7.</span> <span class="nav-text">其他位级指令</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E6%8C%87%E4%BB%A4"><span class="nav-number">1.7.</span> <span class="nav-text">内存指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#EVM-%E4%B8%AD%E7%9A%84%E5%86%85%E5%AD%98"><span class="nav-number">1.7.1.</span> <span class="nav-text">EVM 中的内存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MLOAD%EF%BC%88%E5%86%85%E5%AD%98%E8%AF%BB%EF%BC%89"><span class="nav-number">1.7.2.</span> <span class="nav-text">MLOAD（内存读）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MSTORE%EF%BC%88%E5%86%85%E5%AD%98%E5%86%99%EF%BC%89"><span class="nav-number">1.7.3.</span> <span class="nav-text">MSTORE（内存写）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MSTORE8%EF%BC%88%E5%86%85%E5%AD%98-8-%E4%BD%8D%E5%86%99%EF%BC%89"><span class="nav-number">1.7.4.</span> <span class="nav-text">MSTORE8（内存 8 位写）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MSIZE%EF%BC%88%E5%86%85%E5%AD%98%E5%A4%A7%E5%B0%8F%EF%BC%89"><span class="nav-number">1.7.5.</span> <span class="nav-text">MSIZE（内存大小）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E6%8C%87%E4%BB%A4"><span class="nav-number">1.8.</span> <span class="nav-text">存储指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#EVM-%E4%B8%AD%E7%9A%84%E5%AD%98%E5%82%A8"><span class="nav-number">1.8.1.</span> <span class="nav-text">EVM 中的存储</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SLOAD%EF%BC%88%E5%AD%98%E5%82%A8%E8%AF%BB%EF%BC%89"><span class="nav-number">1.8.2.</span> <span class="nav-text">SLOAD（存储读）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SSTORE%EF%BC%88%E5%AD%98%E5%82%A8%E5%86%99"><span class="nav-number">1.8.3.</span> <span class="nav-text">SSTORE（存储写)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BF%E9%97%AE%E9%9B%86-EIP-2929"><span class="nav-number">1.8.4.</span> <span class="nav-text">访问集 EIP-2929</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Gas-Cost"><span class="nav-number">1.8.5.</span> <span class="nav-text">Gas Cost</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -635,7 +662,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-count">35</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -693,13 +720,13 @@
       <i class="fa fa-chart-area"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">99k</span>
+    <span title="站点总字数">110k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">5:31</span>
+    <span title="站点阅读时长">6:06</span>
 </div>
 
 <div class="powered-by">

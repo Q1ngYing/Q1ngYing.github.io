@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icons8-autumn-material-filled-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icons8-autumn-material-filled-16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="EIP-2929：状态访问操作码的 Gas 成本增加简要总结： 当操作员第一次在交易中使用 SLOAD、CALL、BALANCE、EXT*和SELFDESTRUCT时，增加了这些操作的 gas 成本。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="EIP-2929：状态访问操作码的Gas成本增加">
+<meta property="og:url" content="http://example.com/2023/11/25/EIP-2929%EF%BC%9A%E7%8A%B6%E6%80%81%E8%AE%BF%E9%97%AE%E6%93%8D%E4%BD%9C%E7%A0%81%E7%9A%84Gas%E6%88%90%E6%9C%AC%E5%A2%9E%E5%8A%A0/index.html">
+<meta property="og:site_name" content="Q1ngying">
+<meta property="og:description" content="EIP-2929：状态访问操作码的 Gas 成本增加简要总结： 当操作员第一次在交易中使用 SLOAD、CALL、BALANCE、EXT*和SELFDESTRUCT时，增加了这些操作的 gas 成本。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-11-25T06:28:38.000Z">
+<meta property="article:modified_time" content="2023-11-25T06:29:16.238Z">
+<meta property="article:author" content="Q1ngying">
+<meta property="article:tag" content="Solidity">
+<meta property="article:tag" content="EIPs">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2023/11/25/EIP-2929%EF%BC%9A%E7%8A%B6%E6%80%81%E8%AE%BF%E9%97%AE%E6%93%8D%E4%BD%9C%E7%A0%81%E7%9A%84Gas%E6%88%90%E6%9C%AC%E5%A2%9E%E5%8A%A0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>EIP-2929：状态访问操作码的Gas成本增加 | Q1ngying</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Q1ngying</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">清影的个人站</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/11/25/EIP-2929%EF%BC%9A%E7%8A%B6%E6%80%81%E8%AE%BF%E9%97%AE%E6%93%8D%E4%BD%9C%E7%A0%81%E7%9A%84Gas%E6%88%90%E6%9C%AC%E5%A2%9E%E5%8A%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Q1ngying">
+      <meta itemprop="description" content="今朝梦醒与君别，遥盼春风寄相思">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Q1ngying">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          EIP-2929：状态访问操作码的Gas成本增加
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-11-25 14:28:38 / 修改时间：14:29:16" itemprop="dateCreated datePublished" datetime="2023-11-25T14:28:38+08:00">2023-11-25</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/EIPs/" itemprop="url" rel="index"><span itemprop="name">EIPs</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>12 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="EIP-2929：状态访问操作码的-Gas-成本增加"><a href="#EIP-2929：状态访问操作码的-Gas-成本增加" class="headerlink" title="EIP-2929：状态访问操作码的 Gas 成本增加"></a>EIP-2929：状态访问操作码的 Gas 成本增加</h1><p><strong>简要总结：</strong></p>
+<p>当操作员第一次在交易中使用 <code>SLOAD</code>、<code>CALL</code>、<code>BALANCE</code>、<code>EXT*</code>和<code>SELFDESTRUCT</code>时，增加了这些操作的 gas 成本。</p>
+<span id="more"></span>
+
+<p>原文链接：<a target="_blank" rel="noopener" href="https://eips.ethereum.org/EIPS/eip-2929">https://eips.ethereum.org/EIPS/eip-2929</a></p>
+<h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>将<code>SLOAD</code>（0x54）的 Gas 成本增加到 2100，并将<code>*CALL</code>操作码系列（0xf1、0xf2、0xf3、0xfa)、<code>BALANCE</code>（0x31）和<code>EXT*</code>操作码系列（0x3b、0x3c、0x3f）的 Gas 成本增加到 2600。免除(i)预编译，以及(ii)已在同一事务中访问地址和存储槽，从而降低了 Gas 成本。此外，还改革了 <code>SSTORE</code>计量和<code>SELFDESTRUCT</code>，以确保这些操作码中固有的“实际存储负载”定价正确。</p>
+<h2 id="动机"><a href="#动机" class="headerlink" title="动机"></a>动机</h2><p>一般来说，<strong>操作码的 Gas 成本的主要功能是估计处理该操作码所需的时间</strong>，目标是<strong>让 Gas 限制与处理块所需的时间限制相对应。</strong>然而，存储访问操作码（<code>SLOAD</code>，以及<code>*CALL</code>、<code>BALANCE</code>和<code>EXT*</code>操作码）历来被低估。在 2016 年上海 Dos 攻击中，一旦修复了最严重的客户端错误，攻击者使用的更持久成功的策略之一就是简单地发送访问或调用大量账户的交易。</p>
+<p>为了缓解这一问题，Gas 成本有所增加，但最近的数据表名，Gas 成本的增加还不够。引用： <a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1909.07220.pdf">https://arxiv.org/pdf/1909.07220.pdf</a> :</p>
+<blockquote>
+<p>虽然这个问题本身看起来可能是良性的，但 EXTCODESIZE 会强制客户端在磁盘上搜索合约，从而导致 IO 大量事务。在我们的硬件上重播以太坊历史记录时，恶意交易的执行时间大约为 20 到 80 秒，而平均的交易只需几毫秒。</p>
+</blockquote>
+<p>这项提议的 EIP 将这些操作码的成本增加约 3 倍，将最坏情况的处理时间减少到约 7-27 秒。改进数据库布局，重设计客户端以直接读取存储而不是通过 Merkle 树跳跃，将进一步减少这个时间。不过，这些技术可能需要很长时间才能完全推出，即使使用了这些技术，访问存储的 IO 开销仍将非常大。</p>
+<p>该 EIP 的第二个好处是，它还执行使以太坊中的<a target="_blank" rel="noopener" href="https://ethereum-magicians.org/t/protocol-changes-to-bound-witness-size/3885">无状态见证大小</a>可接受所需的大部分工作。 假设<a target="_blank" rel="noopener" href="https://ethresear.ch/t/binary-trie-format/7621">切换到二进制尝试</a>，不包括代码大小的理论最大见证大小（因此是“大部分工作”而不是“全部”）将从<code>（12500000 Gas limit）/（700 Gas per BALANCE）*（800 witness bytes per BALANCE) ~= 14.3M bytes</code>到 <code>12500000 / 2600 * 800 ~= 3.85M Bytes</code>。 实施代码默克尔化时，代码访问的定价可能会发生变化。</p>
+<p>在更远的将来，SNARK&#x2F;STARK 见证人的情况也会有类似的好处。 Starkware 的最新数据表明，他们能够在消费者桌面上每秒证明 10000 个 Rescue 哈希值； 假设每个 Merkle 分支有 25 个哈希值，以及一个充满状态访问的块，目前这意味着见证人需要 <code>12500000 / 700 * 25 / 10000 ~= 44.64</code> 秒才能生成，但在此 EIP 之后将减少到 <code>12500000 / 2500 * 25 / 10000 ~= 12.5</code> 秒，这意味着一台台式计算机在任何条件下都能够按时生成见证人。 STARK 证明的未来收益可以用于 (i) 使用更昂贵但更强大的哈希函数，或 (ii) 进一步减少证明时间，减少延迟，从而改善依赖此类见证的无状态客户端的用户体验。</p>
+<h2 id="规范"><a href="#规范" class="headerlink" title="规范"></a>规范</h2><h3 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h3><table>
+<thead>
+<tr>
+<th>Constant</th>
+<th>恒定值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>FORK_BLOCK</code></td>
+<td>12244000</td>
+</tr>
+<tr>
+<td><code>COLD_SLOAD_COST</code></td>
+<td>2100</td>
+</tr>
+<tr>
+<td><code>COLD_ACCOUNT_ACCESS_COST</code></td>
+<td>2600</td>
+</tr>
+<tr>
+<td><code>WARM_STORAGE_READ_COST</code></td>
+<td>100</td>
+</tr>
+</tbody></table>
+<p>对于<code>block.number &gt;= FORK_BLOCK</code>的块，以下更改适用：</p>
+<p>执行交易时，维持一组<code>accessed_addresses:Set[Address]</code>和<code>accessed_storage_keys:Set[Tuple[Address,Bytes]]</code>。</p>
+<p>这些集合是交易上下文范围内的，与其他交易范围的结构（例如自销毁列表和全局退款计数器）的实现方式不同。特别是，如果范围回滚，访问列表应该进入该范围之前的状态。</p>
+<p>当交易开始执行时：</p>
+<ul>
+<li><code>accessed_storage_key</code>是初始化为空的，并且</li>
+<li><code>accessed_addresses</code>被初始化包括<ul>
+<li><code>tx.sender</code>、<code>tx.to</code>（如果是部署合约，则为合约要部署到的地址）</li>
+<li>以及所有预编译的集合</li>
+</ul>
+</li>
+</ul>
+<h3 id="存储读取变化"><a href="#存储读取变化" class="headerlink" title="存储读取变化"></a>存储读取变化</h3><p>当地址是操作码（<code>EXTCODESIZE</code>(<code>0x3B</code>)、<code>EXTCODECOPY</code>(<code>0x31</code>)、<code>EXTCODEHASH</code>(<code>0x3F</code>)和<code>BALANCE</code>(<code>0x31</code>)）的目标或者是操作码（<code>CALL</code>(<code>0xF1</code>)、<code>CALLCODE</code>(<code>0xF2</code>)、<code>DELEGATECALL</code>(<code>0xF4</code>)、<code>STATICCALL</code>(<code>0xFA</code>)）的目标时，gas 成本计算如下：</p>
+<ul>
+<li>如果目标不在<code>accessed_addresses</code>中，则收取<code>COLD_ACCOUNT_ACCESS_COST</code> gas，并将该地址添加到<code>accessed_addressed</code>中</li>
+<li>否则，消耗<code>WARM_STORAGE_READ_COST</code> gas</li>
+</ul>
+<p>在所有情况下，都会收取 Gas  成本，并在调用操作码时更新映射。当调用 <code>CREATE</code>或者<code>CREATE2</code>操作码时，立即（即在检查以确保这个地址是未被使用的地址之前）将正在创建的地址添加到<code>accessed_addresses</code>，但<code>CREATE</code>和<code>CREATE2</code>的 Gas 成本保持不变。<strong>澄清：</strong>如果<code>CREATE</code>和<code>CREATE2</code>操作后续失败，例如在执行 initcode 期间或没有足够的 Gas 来将代码存储在状态中，则合约本身的地址仍保留在 access_addresses 中（但在内部范围内进行的任何添加都将被还原）</p>
+<p>对于<code>SLOAD</code>，如果<code>(addres, storage_key)</code>对（其中address是正在读取起存储的合约的地址）尚未在<code>accessed_storage_keys</code>中，则收取<code>COLD_SLOAD_COST</code> gas，并将其添加到<code>addressed_storage_keys</code>中。如果该对已经在<code>addressed_storage_key</code>中，则收取<code>WARM_STORAGE_READ_COST</code> gas。</p>
+<p>注意：对于呼叫变体，100&#x2F;2600 成本立即应用（与此 EIP 之前如何收取 700 完全一样），即：在计算可用于进入呼叫的 63&#x2F;64 之前。</p>
+<p>注 2：目前无法在“冷帐户”上执行“冷加载读&#x2F;写”，因为为了读&#x2F;写<code>slot</code>，执行必须已经在<code>account</code>(帐户)内部。 因此，从本 EIP 开始，冷账户上的冷存储读&#x2F;写行为尚未定义。 任何未来提议添加“远程读&#x2F;写”的 EIP 都需要定义该更改的定价行为。</p>
+<h3 id="SSTORE-的变化"><a href="#SSTORE-的变化" class="headerlink" title="SSTORE 的变化"></a>SSTORE 的变化</h3><p>调用 <code>SSTORE</code> 时，检查<code>(address, storage_key)</code>对是否在<code>accessed_storage_keys</code>中，如果不在，则收取额外的<code>COLD_SLOAD_COST</code> gas，并将该对添加到<code>accessed_storage_keys</code>。另外，修改 EIP-2200 中定义的参数如下：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>旧值</th>
+<th>新值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>SLOAD_GAS</code></td>
+<td>800</td>
+<td><code>= WARM_STORAGE_READ_COST</code></td>
+</tr>
+<tr>
+<td><code>SSTORE_RESET_GAS</code></td>
+<td>5000</td>
+<td><code>5000 - COLD_SLOAD_COST</code></td>
+</tr>
+</tbody></table>
+<p>EIP 2200中定义的其他参数不变。 注意：EIP 2200 中的多个地方使用了常量 <code>SLOAD_GAS</code>，例如 <code>SSTORE_SET_GAS - SLOAD_GAS</code>。 使用复合定义的实现也必须确保更新这些定义。</p>
+<h3 id="自毁变化"><a href="#自毁变化" class="headerlink" title="自毁变化"></a>自毁变化</h3><p>如果<code>SELFDESTRUCT</code>的ETH接收者不在<code>accessed_addressed</code>中（无论发送的金额是否非0），则在现有的 gas 成本之上收取额外的<code>COLD_ACCOUNT_ACCESS_COST</code>，并将 ETH 接收者添加到集合中。</p>
+<p>注意：如果接收者已经处于热状态，<code>SELFDESTRUCT </code>不会收取 <code>WARM_STORAGE_READ_COST</code>，这与其他调用变体的工作方式不同。 其背后的原因是为了保持较小的更改，<code>SELFDESTRUCT </code>已经花费了 <code>5K</code>，并且如果调用多次则无操作。</p>
+<h2 id="基本原理"><a href="#基本原理" class="headerlink" title="基本原理"></a>基本原理</h2><h3 id="操作码成本与每字节见证数据的收费"><a href="#操作码成本与每字节见证数据的收费" class="headerlink" title="操作码成本与每字节见证数据的收费"></a>操作码成本与每字节见证数据的收费</h3><p>改变 Gas 成本以反映见证人大小的自然替代途径是按见证人数据的字节收费。 然而，这将需要更长的时间来实施，从而阻碍了提供短期安全救济的目标。 此外，忠实地遵循这一路径将导致涉及合约代码的交易产生极高的 Gas 成本，因为需要对所有 24576 个合约代码字节进行收费； 这对开发商来说将是一个难以接受的沉重负担。 最好等待代码 Merklization 开始尝试正确考虑访问各个代码块的 Gas 成本； 从短期 DoS 防护的角度来看，从磁盘访问 24 kB 并不比从磁盘访问 32 字节昂贵多少，因此不必担心代码大小。</p>
+<h3 id="添加-accessed-addresses-accessed-storage-keys集合"><a href="#添加-accessed-addresses-accessed-storage-keys集合" class="headerlink" title="添加 accessed_addresses/accessed_storage_keys集合"></a>添加 <code>accessed_addresses/accessed_storage_keys</code>集合</h3><p>添加已访问的帐户和存储槽的集合是为了避免对可缓存的内容进行不必要的收费（并且在所有高性能实现中都已缓存）。 此外，它消除了当前不良的现状，即不必要地无法负担进行自调用或调用预编译的费用，并实现了合约破坏缓解措施，其中包括预取一些存储密钥，允许未来的执行仍然需要预期的 Gas 量。</p>
+<h3 id="SSTORE-Gas-成本变化"><a href="#SSTORE-Gas-成本变化" class="headerlink" title="SSTORE Gas 成本变化"></a>SSTORE Gas 成本变化</h3><p>需要对 SSTORE 进行更改，以避免 DoS 攻击的可能性，这种攻击会“戳”随机选择的零存储槽，将其从 0 更改为 0，成本为 800 Gas，但需要实际的存储负载。 <code>SSTORE_RESET_GAS </code>减少可确保 SSTORE 的总成本（现在需要支付 <code>COLD_SLOAD_COST</code>）保持不变。 另外，请注意，先执行 <code>SLOAD </code>后执行 <code>SSTORE </code>的应用程序（例如 <code>storage_variable += x</code>）实际上会变得更便宜！</p>
+<h3 id="仅最小程度地更改-SSTORE-会计"><a href="#仅最小程度地更改-SSTORE-会计" class="headerlink" title="仅最小程度地更改 SSTORE 会计"></a>仅最小程度地更改 SSTORE 会计</h3><p>SSTORE Gas 成本继续使用 Wei Tang 的原始&#x2F;当前&#x2F;新方法，而不是重新设计为使用脏映射，因为 Wei Tang 的方法正确地考虑了更改存储的实际成本，只关心当前值与最终值而不关心 中间值</p>
+<h2 id="根据该提案，平均应用程序的-Gas-消耗量将如何增加？"><a href="#根据该提案，平均应用程序的-Gas-消耗量将如何增加？" class="headerlink" title="根据该提案，平均应用程序的 Gas 消耗量将如何增加？"></a>根据该提案，平均应用程序的 Gas 消耗量将如何增加？</h2><h3 id="从见证人规模进行粗略分析"><a href="#从见证人规模进行粗略分析" class="headerlink" title="从见证人规模进行粗略分析"></a>从见证人规模进行粗略分析</h3><p>我们可以看看 <a target="_blank" rel="noopener" href="https://medium.com/@akhounov/data-from-the-ethereum-stateless-prototype-8c69479c8abc">Alexey Akhunov 早期关于平均情况块数据的工作</a>。 总之，平均区块的见证大小约为 1000 kB，其中约 750 kB 是 Merkle 证明而不是代码。 假设每个 Merkle 分支保守为 2000 字节，这意味着每个块约有 375 次访问（SLOAD 具有类似的气体增加与字节的比率，因此无需单独分析它们）。</p>
+<p>来自 Etherscan 的<a target="_blank" rel="noopener" href="https://etherscan.io/chart/tx">每日交易</a>和<a target="_blank" rel="noopener" href="https://etherscan.io/chart/blocks">每日区块</a>数据显示每个区块约 160 笔交易（参考日期：7 月 1 日），这意味着这些访问的很大一部分只是 <code>tx.sender</code> 和 <code>tx.to</code>，它们不包括在 Gas 成本增加中， 但由于地址重复，可能少于 320。</p>
+<p>因此，这意味着每个区块有约 50-375 次收费访问，每次访问的 Gas 成本增加 1900；<code>50 * 1900 = 95000</code> 和 <code>375 * 1900 = 712500</code>，这意味着 Gas 限制需要提高约 1-6% 来补偿。 然而，这种分析可能会在任一方向上进一步复杂化，因为（i）在多个交易中访问账户&#x2F;存储密钥，这将在见证人中出现一次，但在天然气成本增加中出现两次，以及（ii）账户&#x2F;存储密钥被多次访问 同一笔交易中的次数，这导致天然气成本降低。</p>
+<h2 id="向后兼容性"><a href="#向后兼容性" class="headerlink" title="向后兼容性"></a>向后兼容性</h2><p>这些天然气成本的增加可能会破坏依赖固定天然气成本的合同； 请参阅安全注意事项部分，了解为什么我们预计总风险较低以及如何在需要时进一步降低风险的详细信息和论据。</p>
+<h2 id="测试用例："><a href="#测试用例：" class="headerlink" title="测试用例："></a>测试用例：</h2><p>参考原文章</p>
+<h2 id="安全考虑"><a href="#安全考虑" class="headerlink" title="安全考虑"></a>安全考虑</h2><p>与任何增加 Gas 成本的 EIP 一样，在三种可能的情况下可能会导致应用程序崩溃：</p>
+<ol>
+<li>修复了合约中子调用的 Gas 限制</li>
+<li>依赖于消耗接近完全 Gas 限制的合约调用的应用程序</li>
+<li>ETH 转账调用给被叫方的 2300 基础限制</li>
+</ol>
+<p>这些风险之前已在早期天然气成本增加 EIP-1884 的背景下进行过研究。 请参阅 <a target="_blank" rel="noopener" href="https://github.com/holiman/eip-1884-security">Martin Swende 的早期报告</a>和 <a target="_blank" rel="noopener" href="https://gist.github.com/ritzdorf/1c6bd72955391e831f8a397d3152b4e0/">Hubert Ritzdorf 的分析</a>，重点关注 (1) 和 (3)。 (2) 得到的分析较少，但人们可能会认为这种情况不太可能发生，因为应用程序很少在交易中使用接近全部的 Gas 限制，而且最近 Gas 限制从 1000 万提高到 1250 万。 EIP-1884在实践中<a target="_blank" rel="noopener" href="https://www.coindesk.com/ethereums-istanbul-upgrade-will-break-680-smart-contracts-on-aragon">确实导致了少数合同因此破裂</a>。</p>
+<p>有两种方法可以看待这些风险。 首先，我们可以注意到，迄今为止，开发人员已经收到了多年的警告； 存储访问操作码的 Gas 成本增加已经被讨论了很长时间，并就此类变化的可能性向主要 dapp 开发人员发表了多种声明。 EIP-1884 本身敲响了重要的警钟。 因此，我们可以说这次的风险将明显低于 EIP-1884。</p>
+<h2 id="合约损坏缓解措施"><a href="#合约损坏缓解措施" class="headerlink" title="合约损坏缓解措施"></a>合约损坏缓解措施</h2><p>查看风险的第二种方法是探索缓解措施。 首先，<code>accessed_addresses </code>和<code>accessed_storage_keys </code>映射的存在（存在于本EIP 中，不存在于EIP-1884 中）已经使某些情况变得可恢复：在任何情况下，合约A 需要将资金发送到某个地址B，该地址接受 资金来自任何来源，但会留下依赖于存储的日志，可以通过首先向 B 发送单独的调用将其拉入缓存，然后调用 A 来恢复，因为知道 A 触发的 B 的执行每次只会收取 100 Gas SLOAD。 这一事实并不能解决所有情况，但它确实可以显着降低风险。</p>
+<p>但有一些方法可以进一步扩展这种模式的可用性。 一种可能性是添加 POKE 预编译，它将地址和存储密钥作为输入，并允许交易尝试通过预戳将访问的所有存储槽来“拯救”卡住的合约。 即使该地址只接受来自合约的交易，这种方法也有效，并且在当前气体限制的许多其他情况下也有效。 唯一不起作用的情况是交易调用必须从 EOA 直接进入特定合约，然后再子调用另一个合约。</p>
+<p>另一种选择是 EIP-2930，它与 POKE 具有类似的效果，但更通用：它也适用于 EOA -&gt; 合约 -&gt; 合约案例，并且通常应该适用于所有已知的由于 Gas 成本增加而导致损坏的案例。 此选项更为复杂，尽管它可以说是用于其他用例（再生、帐户抽象、SSA 所有需求访问列表）的访问列表的垫脚石。</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Q1ngying
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2023/11/25/EIP-2929%EF%BC%9A%E7%8A%B6%E6%80%81%E8%AE%BF%E9%97%AE%E6%93%8D%E4%BD%9C%E7%A0%81%E7%9A%84Gas%E6%88%90%E6%9C%AC%E5%A2%9E%E5%8A%A0/" title="EIP-2929：状态访问操作码的Gas成本增加">http://example.com/2023/11/25/EIP-2929：状态访问操作码的Gas成本增加/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Solidity/" rel="tag"># Solidity</a>
+              <a href="/tags/EIPs/" rel="tag"># EIPs</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/11/24/EVM-Opcodes-1/" rel="prev" title="EVM_Opcodes(1)">
+      <i class="fa fa-chevron-left"></i> EVM_Opcodes(1)
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/11/27/EVM-Opcodes-2/" rel="next" title="EVM_Opcodes(2)">
+      EVM_Opcodes(2) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#EIP-2929%EF%BC%9A%E7%8A%B6%E6%80%81%E8%AE%BF%E9%97%AE%E6%93%8D%E4%BD%9C%E7%A0%81%E7%9A%84-Gas-%E6%88%90%E6%9C%AC%E5%A2%9E%E5%8A%A0"><span class="nav-number">1.</span> <span class="nav-text">EIP-2929：状态访问操作码的 Gas 成本增加</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%91%98%E8%A6%81"><span class="nav-number">1.1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%9C%BA"><span class="nav-number">1.2.</span> <span class="nav-text">动机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%84%E8%8C%83"><span class="nav-number">1.3.</span> <span class="nav-text">规范</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E6%95%B0"><span class="nav-number">1.3.1.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E8%AF%BB%E5%8F%96%E5%8F%98%E5%8C%96"><span class="nav-number">1.3.2.</span> <span class="nav-text">存储读取变化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SSTORE-%E7%9A%84%E5%8F%98%E5%8C%96"><span class="nav-number">1.3.3.</span> <span class="nav-text">SSTORE 的变化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E6%AF%81%E5%8F%98%E5%8C%96"><span class="nav-number">1.3.4.</span> <span class="nav-text">自毁变化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86"><span class="nav-number">1.4.</span> <span class="nav-text">基本原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E7%A0%81%E6%88%90%E6%9C%AC%E4%B8%8E%E6%AF%8F%E5%AD%97%E8%8A%82%E8%A7%81%E8%AF%81%E6%95%B0%E6%8D%AE%E7%9A%84%E6%94%B6%E8%B4%B9"><span class="nav-number">1.4.1.</span> <span class="nav-text">操作码成本与每字节见证数据的收费</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0-accessed-addresses-accessed-storage-keys%E9%9B%86%E5%90%88"><span class="nav-number">1.4.2.</span> <span class="nav-text">添加 accessed_addresses&#x2F;accessed_storage_keys集合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SSTORE-Gas-%E6%88%90%E6%9C%AC%E5%8F%98%E5%8C%96"><span class="nav-number">1.4.3.</span> <span class="nav-text">SSTORE Gas 成本变化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%85%E6%9C%80%E5%B0%8F%E7%A8%8B%E5%BA%A6%E5%9C%B0%E6%9B%B4%E6%94%B9-SSTORE-%E4%BC%9A%E8%AE%A1"><span class="nav-number">1.4.4.</span> <span class="nav-text">仅最小程度地更改 SSTORE 会计</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B9%E6%8D%AE%E8%AF%A5%E6%8F%90%E6%A1%88%EF%BC%8C%E5%B9%B3%E5%9D%87%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E7%9A%84-Gas-%E6%B6%88%E8%80%97%E9%87%8F%E5%B0%86%E5%A6%82%E4%BD%95%E5%A2%9E%E5%8A%A0%EF%BC%9F"><span class="nav-number">1.5.</span> <span class="nav-text">根据该提案，平均应用程序的 Gas 消耗量将如何增加？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%8E%E8%A7%81%E8%AF%81%E4%BA%BA%E8%A7%84%E6%A8%A1%E8%BF%9B%E8%A1%8C%E7%B2%97%E7%95%A5%E5%88%86%E6%9E%90"><span class="nav-number">1.5.1.</span> <span class="nav-text">从见证人规模进行粗略分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%91%E5%90%8E%E5%85%BC%E5%AE%B9%E6%80%A7"><span class="nav-number">1.6.</span> <span class="nav-text">向后兼容性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E7%94%A8%E4%BE%8B%EF%BC%9A"><span class="nav-number">1.7.</span> <span class="nav-text">测试用例：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E8%80%83%E8%99%91"><span class="nav-number">1.8.</span> <span class="nav-text">安全考虑</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%88%E7%BA%A6%E6%8D%9F%E5%9D%8F%E7%BC%93%E8%A7%A3%E6%8E%AA%E6%96%BD"><span class="nav-number">1.9.</span> <span class="nav-text">合约损坏缓解措施</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Q1ngying"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Q1ngying</p>
+  <div class="site-description" itemprop="description">今朝梦醒与君别，遥盼春风寄相思</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/q1ngying" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;q1ngying" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:q1ngying@163.com" title="E-Mail → mailto:q1ngying@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-09 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Q1ngying</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">110k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">6:06</span>
+</div>
+
+<div class="powered-by">
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <i class="fa fa-user-md"></i>
+    <span id="busuanzi_container_site_uv">
+        本站访客数:<span id="busuanzi_value_site_uv"></span>人
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_pv">
+        本站访问量<span id="busuanzi_value_site_pv"></span>人次
+    </span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,255,255' opacity='1' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

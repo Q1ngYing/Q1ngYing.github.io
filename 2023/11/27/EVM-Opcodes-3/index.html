@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icons8-autumn-material-filled-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icons8-autumn-material-filled-16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="EVM Opcodes(3)原文章：https:&#x2F;&#x2F;www.wtf.academy&#x2F;evm-opcodes-102 在接下来的部分将引入一些较为复杂的操作码。 Return 指令这一部分会介绍与返回数据（return）相关的 3 个指令：RETURN、RETURNDATASIZE和RETURNDATACOPY。他们是 Solidity 中return关键字的基础。 返回数据EVM的返回数据，通常称">
+<meta property="og:type" content="article">
+<meta property="og:title" content="EVM_Opcodes(3)">
+<meta property="og:url" content="http://example.com/2023/11/27/EVM-Opcodes-3/index.html">
+<meta property="og:site_name" content="Q1ngying">
+<meta property="og:description" content="EVM Opcodes(3)原文章：https:&#x2F;&#x2F;www.wtf.academy&#x2F;evm-opcodes-102 在接下来的部分将引入一些较为复杂的操作码。 Return 指令这一部分会介绍与返回数据（return）相关的 3 个指令：RETURN、RETURNDATASIZE和RETURNDATACOPY。他们是 Solidity 中return关键字的基础。 返回数据EVM的返回数据，通常称">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/EVM-Opcodes-3/image-20231127154708677.png">
+<meta property="og:image" content="http://example.com/images/EVM-Opcodes-3/image-20231127155345682.png">
+<meta property="article:published_time" content="2023-11-27T08:56:15.000Z">
+<meta property="article:modified_time" content="2023-11-27T08:58:07.203Z">
+<meta property="article:author" content="Q1ngying">
+<meta property="article:tag" content="Solidity">
+<meta property="article:tag" content="EVM">
+<meta property="article:tag" content="Opcode">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/EVM-Opcodes-3/image-20231127154708677.png">
+
+<link rel="canonical" href="http://example.com/2023/11/27/EVM-Opcodes-3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>EVM_Opcodes(3) | Q1ngying</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Q1ngying</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">清影的个人站</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/11/27/EVM-Opcodes-3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Q1ngying">
+      <meta itemprop="description" content="今朝梦醒与君别，遥盼春风寄相思">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Q1ngying">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          EVM_Opcodes(3)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-11-27 16:56:15 / 修改时间：16:58:07" itemprop="dateCreated datePublished" datetime="2023-11-27T16:56:15+08:00">2023-11-27</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/learn/" itemprop="url" rel="index"><span itemprop="name">learn</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Solidity/" itemprop="url" rel="index"><span itemprop="name">Solidity</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/EVM/" itemprop="url" rel="index"><span itemprop="name">EVM</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Opcode/" itemprop="url" rel="index"><span itemprop="name">Opcode</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>12 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="EVM-Opcodes-3"><a href="#EVM-Opcodes-3" class="headerlink" title="EVM Opcodes(3)"></a>EVM Opcodes(3)</h1><p><strong>原文章：</strong><a target="_blank" rel="noopener" href="https://www.wtf.academy/evm-opcodes-102">https://www.wtf.academy/evm-opcodes-102</a></p>
+<p>在接下来的部分将引入一些较为复杂的操作码。</p>
+<h2 id="Return-指令"><a href="#Return-指令" class="headerlink" title="Return 指令"></a>Return 指令</h2><p>这一部分会介绍与<strong>返回数据（return）</strong>相关的 3 个指令：<code>RETURN</code>、<code>RETURNDATASIZE</code>和<code>RETURNDATACOPY</code>。他们是 Solidity 中<code>return</code>关键字的基础。</p>
+<h3 id="返回数据"><a href="#返回数据" class="headerlink" title="返回数据"></a>返回数据</h3><p>EVM的返回数据，通常称为<code>returnDara</code>，本质上是一个<strong>字节数组</strong>。他不遵循固定的数据结构，而是<strong>简单地表示为连续的字节</strong>。当合约函数需要<strong>返回复杂数据类型（如结构体或数组）时，这些数据将按照 ABI 规范被编码为字节</strong>，并存储在<code>returnData</code>中，供其他函数或合约访问。</p>
+<h4 id="RETURN"><a href="#RETURN" class="headerlink" title="RETURN"></a>RETURN</h4><ul>
+<li><strong>操作码：<code>0xF3</code></strong></li>
+<li><strong>gas 消耗：内存拓展成本</strong></li>
+<li><strong>功能</strong>：从指定的内存位置提取数据。存储在<code>returnData</code>中，并终止当前的操作。此指令需要从堆栈中取出两个参数：内存的起始位置<code>mem_offset</code>和数据的长度<code>length</code>。</li>
+<li><strong>使用场景：</strong>当需要将数据返回给外部函数或交易时</li>
+</ul>
+<p><strong>示例：</strong></p>
+<p><code>60a26000526001601ff3</code>（PUSH1 a2 PUSH1 00 MSTORE PUSH1 1 PUSH1 1f RETURN）。这个字节码将<code>a2</code>存在内存中，然后使用<code>RETURN</code>指令将<code>a2</code>复制到<code>returnData</code>中。</p>
+<p><img src="/../images/EVM-Opcodes-3/image-20231127154708677.png" alt="image-20231127154708677"></p>
+<h4 id="RETURNDATASIZE"><a href="#RETURNDATASIZE" class="headerlink" title="RETURNDATASIZE"></a>RETURNDATASIZE</h4><ul>
+<li><strong>操作码：<code>0x3D</code></strong></li>
+<li><strong>gas 消耗：<code>2</code></strong></li>
+<li><strong>功能</strong>：将<code>returnData</code>的大小推入堆栈。</li>
+<li><strong>使用场景</strong>：使用上一个调用返回的数据</li>
+</ul>
+<h4 id="RETURNDATACOPY"><a href="#RETURNDATACOPY" class="headerlink" title="RETURNDATACOPY"></a>RETURNDATACOPY</h4><ul>
+<li><strong>操作码：<code>0x3E</code></strong></li>
+<li><strong>gas 消耗：<code>3 + 3 * 数据长度 + 内存拓展成本</code></strong></li>
+<li><strong>功能：</strong>将<code>returnData</code>中的某段数据复制到内存中。此指令需要从堆栈中取出三个参数：内存的起始位置<code>mem_offset</code>，返回数据的起始位置<code>return_offset</code>，和数据的长度<code>length</code>。</li>
+<li><strong>使用场景：</strong>使用上一个调用返回的部分数据</li>
+</ul>
+<h2 id="Revert-指令"><a href="#Revert-指令" class="headerlink" title="Revert 指令"></a>Revert 指令</h2><h3 id="REVERT"><a href="#REVERT" class="headerlink" title="REVERT"></a>REVERT</h3><ul>
+<li><strong>操作码：<code>0xFD</code></strong></li>
+<li><strong>gas 消耗：内存拓展消耗</strong></li>
+</ul>
+<p>当合约运行出错，或者达到了某种条件需要终止执行并返回错误信息时，可以使用<code>REVERT</code>指令。**<code>REVERT</code>指令会终止交易的执行，返回一个错误信息，并且所有状态更改都不会生效**。他从堆栈中弹出两个参数：内存中错误信息的起始位置<code>mem_offset</code>和错误信息的长度<code>length</code>。</p>
+<p><strong>示例：</strong></p>
+<p><code>60aa6000526001601ffd</code>（PUSH1 aa PUSH1 0 MSTORE PUSH1 1 PUSH1 1f REVERT），这个字节码将<code>aa</code>存在内存中，然后使用<code>REVERT</code>指令进行回滚，并将<code>aa</code>复制到<code>returnData</code>中。</p>
+<p><img src="/../images/EVM-Opcodes-3/image-20231127155345682.png" alt="image-20231127155345682"></p>
+<h3 id="INVALID"><a href="#INVALID" class="headerlink" title="INVALID"></a>INVALID</h3><ul>
+<li><strong>操作码：<code>0xFE</code></strong></li>
+<li><strong>gas 消耗：所有剩余的 gas</strong></li>
+</ul>
+<p><code>INVALID</code>是 EVM 中用来表示无效操作的指令。当 EVM 遇到无法识别的操作码时，或者在故意触发异常的情境下，会执行<code>INVALID</code>指令，导致所有状态更改都不会生效，并且消耗掉所有的 gas。他确保了当合约试图执行未定义的操作时，不会无所作为或产生不可预期的行为，而是会安全地停止执行，对 EVM 的安全至关重要。</p>
+<h2 id="调用系列指令"><a href="#调用系列指令" class="headerlink" title="调用系列指令"></a>调用系列指令</h2><h3 id="CALL"><a href="#CALL" class="headerlink" title="CALL"></a>CALL</h3><ul>
+<li><strong>操作码：<code>0xF1</code></strong></li>
+<li><strong>gas 消耗：比较复杂，包含内存拓展和代码执行等成本</strong></li>
+</ul>
+<p><code>CALL</code>指令会创建一个子环境来执行其他合约的部分代码，发送<code>ETH</code>，并返回数据。返回数据可以使用<code>RETURNDATASIZE</code>和<code>RETURNDATACOPY</code>获取。若执行成功，会将<code>1</code>压入堆栈；否则，则压入<code>0</code>。如果目标合约没有代码，仍将<code>1</code>压入堆栈（视为成功）。如果账户<code>ETH</code>余额小于要发送的<code>ETH</code>数量，调用失败，但当前交易不会回滚。</p>
+<p>它从堆栈中弹出7个参数，依次为：</p>
+<ul>
+<li><code>gas</code>：为这次调用分配的gas量。</li>
+<li><code>to</code>：被调用合约的地址。</li>
+<li><code>value</code>：要发送的以太币数量，单位为<code>wei</code>。</li>
+<li><code>mem_in_start</code>：输入数据（calldata）在内存的起始位置。</li>
+<li><code>mem_in_size</code>：输入数据的长度。</li>
+<li><code>mem_out_start</code>：返回数据（returnData）在内存的起始位置。</li>
+<li><code>mem_out_size</code>：返回数据的长度。</li>
+</ul>
+<p>关于 CALL 的例子，参考原文章。</p>
+<h3 id="DELEGATECALL"><a href="#DELEGATECALL" class="headerlink" title="DELEGATECALL"></a>DELEGATECALL</h3><ul>
+<li><strong>操作码：<code>0xF4</code></strong></li>
+<li><strong>gas 消耗：比较复杂，包含内存拓展和代码执行等成本</strong></li>
+</ul>
+<p><code>DELEGATECALL</code>指令与<code>CALL</code>有许多相似之处，但关键的<strong>区别在于调用的上下文不同，它在代理合约和可升级合约中被广泛应用</strong>。它的设计目的是<strong>允许一个合约借用其他合约的代码</strong>，但代码是在原始合约的上下文中执行。这使得一份代码可以被多个合约重复使用，而无需重新部署。使用<code>DELEGATECALL</code>时<code>msg.sender</code>和<code>msg.value</code>保持不变，修改的存储变量也是原始合约的。</p>
+<p>它从堆栈中弹出6个参数，<strong>与<code>CALL</code>不同，它不包括<code>value</code>，因为ETH不会被发送</strong>：</p>
+<ul>
+<li><code>gas</code>：为这次调用分配的gas量。</li>
+<li><code>to</code>：被调用合约的地址。</li>
+<li><code>mem_in_start</code>：输入数据（calldata）在内存的起始位置。</li>
+<li><code>mem_in_size</code>：输入数据的长度。</li>
+<li><code>mem_out_start</code>：返回数据（returnData）在内存的起始位置。</li>
+<li><code>mem_out_size</code>：返回数据的长度。</li>
+</ul>
+<p>有两个关键点需要注意：</p>
+<ol>
+<li><code>DELEGATECALL</code>不会更改<code>msg.sender</code>和<code>msg.value</code>。</li>
+<li><code>DELEGATECALL</code>改变的存储（storage）是原始合约的存储。</li>
+<li>与<code>CALL</code>不同，<code>DELEGATECALL</code>不会传递ETH值，因此少一个<code>value</code>参数。</li>
+</ol>
+<h3 id="CALLCODE"><a href="#CALLCODE" class="headerlink" title="CALLCODE"></a><del>CALLCODE</del></h3><ul>
+<li><strong>操作码：<code>0xF2</code></strong></li>
+</ul>
+<p><code>CALLCODE</code>与<code>DELEGATECALL</code>非常相似，但当修改状态变量时，它会更改调用者的合约状态而不是被调用者的合约状态。由于这个原因，<code>CALLCODE</code>在某些情况下可能会引起意料之外的行为，目前被视为已弃用。建议大家使用<code>DELEGATECALL</code>，而不是<code>CALLCODE</code>。</p>
+<p>我们根据<a target="_blank" rel="noopener" href="https://eips.ethereum.org/EIPS/eip-2488">EIP-2488</a>，将<code>CALLCODE</code>视为已弃用：每次调用在堆栈中压入<code>0</code>（视为调用失败）。</p>
+<h3 id="STATICCALL"><a href="#STATICCALL" class="headerlink" title="STATICCALL"></a>STATICCALL</h3><ul>
+<li><strong>操作码：<code>0xFA</code></strong></li>
+<li><strong>gas 消耗：内存拓展成本 + 地址操作成本</strong></li>
+</ul>
+<p><code>STATICCALL</code>指令会<strong>创建一个子环境来执行其他合约的部分代码，并返回数据</strong>。返回数据可以使用<code>RETURNDATASIZE</code>和<code>RETURNDATACOPY</code>获取。若执行成功，会将<code>1</code>压入堆栈；否则，则压入<code>0</code>。<strong>如果目标合约没有代码</strong>，仍将<code>1</code>压入堆栈（<strong>视为成功</strong>）。</p>
+<p>和<code>CALL</code>指令的不同，**<code>STATICCALL</code>不能发送<code>ETH</code>，也不能改变合约的状态<strong>。它</strong>不允许<strong>子环境执行的代码中包含</strong>以下指令**：</p>
+<ul>
+<li><code>CREATE</code>, <code>CREATE2</code>, <code>SELFDESTRUCT</code></li>
+<li><code>LOG0</code> - <code>LOG4</code></li>
+<li><code>SSTORE</code></li>
+<li><code>value</code>不为0的<code>CALL</code></li>
+</ul>
+<p>它从堆栈中弹出6个参数，依次为：</p>
+<ul>
+<li><code>gas</code>：为这次调用分配的gas量。</li>
+<li><code>to</code>：被调用合约的地址。</li>
+<li><code>mem_in_start</code>：输入数据（calldata）在内存的起始位置。</li>
+<li><code>mem_in_size</code>：输入数据的长度。</li>
+<li><code>mem_out_start</code>：返回数据（returnData）在内存的起始位置。</li>
+<li><code>mem_out_size</code>：返回数据的长度。</li>
+</ul>
+<h2 id="CREATE-指令"><a href="#CREATE-指令" class="headerlink" title="CREATE 指令"></a>CREATE 指令</h2><h3 id="initcode（初始代码）"><a href="#initcode（初始代码）" class="headerlink" title="initcode（初始代码）"></a>initcode（初始代码）</h3><p>以太坊有两种交易，一种是合约调用，一种是合约创建。在合约创建的交易中，<code>to</code>字段设为空，而<code>data</code>字段应填写为合约的初始代码（<code>initcode</code>）。<code>initcode</code>也是字节码，但他只在合约创建时执行一次，目的是为新合约设置必要的状态和返回最终的<strong>合约字节码</strong>（<code>contract code</code>）。</p>
+<p>下面，我么来看一个简单的<code>initcode</code>：<code>63ffffffff6000526004601cf3</code>。它的指令形式为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">PUSH4 ffffffff</span><br><span class="line">PUSH1 00</span><br><span class="line">MSTORE</span><br><span class="line">PUSH1 04</span><br><span class="line">PUSH1 1c</span><br><span class="line">RETURN</span><br></pre></td></tr></table></figure>
+
+<p>它先用<code>MSTORE</code>指令把<code>ffffffff</code>拷贝到内存中，然后用<code>RETURN</code>指令将它们拷贝到返回数据中。这段<code>initcode</code>会把新合约的字节码设置为<code>ffffffff</code>。</p>
+<h3 id="CREATE"><a href="#CREATE" class="headerlink" title="CREATE"></a>CREATE</h3><ul>
+<li><strong>操作码：<code>F0</code></strong></li>
+<li><strong>gas 消耗：内存扩展成本 + 部署代码执行成本 + 代码存款成本</strong></li>
+</ul>
+<p>在EVM中，当一个合约想要创建一个新的合约时，会使用<code>CREATE</code>指令。它的简化流程：</p>
+<ol>
+<li><p>从堆栈中弹出<code>value</code>（向新合约发送的ETH）、<code>mem_offset</code>和<code>length</code>（新合约的<code>initcode</code>在内存中的初始位置和长度）。</p>
+</li>
+<li><p>计算新合约的地址，计算方法为:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">address = keccak256(rlp([sender_address,sender_nonce]))[<span class="number">12</span>:]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>更新ETH余额。</p>
+</li>
+<li><p>初始化新的EVM上下文<code>evm_create</code>，用于执行<code>initcode</code>。</p>
+</li>
+<li><p>在<code>evm_create</code>中执行<code>initcode</code>。</p>
+</li>
+<li><p>如果执行成功，则更新创建的账户状态：更新<code>balance</code>，将<code>nonce</code>初始化为<code>0</code>，将<code>code</code>字段设为<code>evm_create</code>的返回数据，将<code>storage</code>字段设置为<code>evm_create</code>的<code>storage</code>。</p>
+</li>
+<li><p>如果成功，则将新合约地址推入堆栈；若失败，将<code>0</code>推入堆栈。</p>
+</li>
+</ol>
+<h2 id="CREATE2-指令"><a href="#CREATE2-指令" class="headerlink" title="CREATE2 指令"></a>CREATE2 指令</h2><h3 id="CREATE-vs-CREATE2"><a href="#CREATE-vs-CREATE2" class="headerlink" title="CREATE vs CREATE2"></a>CREATE vs CREATE2</h3><p>传统的<code>CREATE</code>指令通过调用者的地址和nonce来确定新合约的地址，而<code>CREATE2</code>则提供了一种新的计算方法，使我们可以在合约部署之前预知它的地址。</p>
+<p>与<code>CREATE</code>不同，**<code>CREATE2</code>使用调用者地址、盐（一个自定义的256位的值）以及<code>initcode</code>的哈希来确定新合约的地址**，计算方法如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">address = keccak256( <span class="number">0xff</span> + sender_address + salt + keccak256(init_code))[<span class="number">12</span>:]</span><br></pre></td></tr></table></figure>
+
+<p>这样的好处是，<strong>只要你知道<code>initcode</code>，盐值和发送者的地址，就可以预先知道新合约的地址，而不需要现在部署它</strong>。而<code>CREATE</code>计算的地址取决于部署账户的<code>nonce</code>，也就是说，在<code>nonce</code>不确定的情况下（合约还未部署，nonce可能会增加），没法确定新合约的地址。</p>
+<h3 id="CREATE2"><a href="#CREATE2" class="headerlink" title="CREATE2"></a>CREATE2</h3><ul>
+<li><strong>操作码：<code>F5</code></strong></li>
+<li><strong>gas 消耗：十分复杂。。详见<a target="_blank" rel="noopener" href="https://www.evm.codes/">EVMCODE</a></strong></li>
+</ul>
+<p>在EVM中，<code>CREATE2</code>指令的简化流程如下：</p>
+<ol>
+<li>从堆栈中弹出<code>value</code>（向新合约发送的ETH）、<code>mem_offset</code>、<code>length</code>（新合约的<code>initcode</code>在内存中的初始位置和长度）以及<code>salt</code>。</li>
+<li>使用上面的公式计算新合约的地址。</li>
+<li>之后的步骤同<code>CREATE</code>指令：初始化新的EVM上下文、执行<code>initcode</code>、更新创建的账户状态、返回新合约地址或<code>0</code>（如果失败）。</li>
+</ol>
+<h2 id="Selfdestruct-指令"><a href="#Selfdestruct-指令" class="headerlink" title="Selfdestruct 指令"></a>Selfdestruct 指令</h2><p>它可以让合约自毁。这个指令可能在未来会被弃用，见<a target="_blank" rel="noopener" href="https://eips.ethereum.org/EIPS/eip-4758">EIP-4758</a>和<a target="_blank" rel="noopener" href="https://eips.ethereum.org/EIPS/eip-6049">EIP-6049</a>。</p>
+<h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><p>EVM中的<code>SELFDESTRUCT</code>指令可以让合约自行销毁，并将账户中的ETH余额发送到指定地址。这个指令一些特殊的地方：</p>
+<ol>
+<li>使用<code>SELFDESTRUCT</code>指令时，当前合约会被标记为待销毁。但<strong>实际的销毁操作会在整个交易完成后进行</strong>。</li>
+<li>合约的<code>ETH</code>余额会被发送到指定的地址，并且<strong>这一过程保证会成功</strong>的。</li>
+<li><strong>如果指定的地址是一个合约，那么该合约的代码不会被执行</strong>，即不会像平常的<code>ETH</code>转账执行目标地址的<code>fallback</code>方法。</li>
+<li><strong>如果指定的地址不存在，则会为其创建一个新的账户</strong>，并存储这些ETH。</li>
+<li><strong>一旦合约被销毁，其代码和数据都会永久地从链上删除，无法恢复。销毁合约可能会影响到与它互动的其他合约或服务</strong>。</li>
+</ol>
+<h3 id="SELFDESTRUCT-指令"><a href="#SELFDESTRUCT-指令" class="headerlink" title="SELFDESTRUCT 指令"></a>SELFDESTRUCT 指令</h3><ul>
+<li><strong>操作码：<code>0xFF</code></strong></li>
+<li><strong>gas 消耗</strong>：静态气体为5000。如果将正余额发送到空帐户，则动态气体为25000。如果一个账户的余额为0，其nonce为0且没有代码，则该账户为空。此外，如果地址是冷钱包，则还有额外的动态费用2600。请参阅访问集部分。否则没有其他附加费用。</li>
+</ul>
+<p><code>SELFDESTRUCT</code>指令的工作流程如下：</p>
+<ol>
+<li>从堆栈中弹出接收<code>ETH</code>的指定地址。</li>
+<li>将当前合约的余额转移到指定地址。</li>
+<li>销毁合约。</li>
+</ol>
+<h2 id="Gas-指令"><a href="#Gas-指令" class="headerlink" title="Gas 指令"></a>Gas 指令</h2><h3 id="什么是-Gas"><a href="#什么是-Gas" class="headerlink" title="什么是 Gas"></a>什么是 Gas</h3><p>在EVM中，交易和执行智能合约需要消耗计算资源。为了防止用户恶意的滥用网络资源和补偿验证者所消耗的计算能源，以太坊引入了一种称为Gas的计费机制，使每一笔交易都有一个关联的成本。</p>
+<p>在发起交易时，用户设定一个<strong>最大Gas数量</strong>（<code>gasLimit</code>）和<strong>每单位Gas的价格</strong>（<code>gasPrice</code>）。<strong>如果交易执行超出了<code>gasLimit</code>，交易会回滚，但已消耗的Gas不会退还。</strong></p>
+<h3 id="Gas-规则"><a href="#Gas-规则" class="headerlink" title="Gas 规则"></a>Gas 规则</h3><p>以太坊上的Gas用<code>gwei</code>衡量，它是<code>ETH</code>的子单位，<code>1 ETH = 10^9 gwei</code>。一笔交易的Gas成本等于每单位gas价格乘以交易的gas消耗，即<code>gasPrice * gasUsed</code>。gas价格会随着时间的推移而变化，具体取决于当前对区块空间的需求。gas消耗由很多因素决定，并且每个以太坊版本都会有所改动，下面总结下：</p>
+<ol>
+<li><code>calldata</code>大小：<code>calldata</code>中的每个字节都需要花费gas，交易数据的大小越大，gas消耗就越高。<code>calldata</code>每个零字节花费<code>4</code> Gas，每个非零字节花费<code>16</code> Gas（伊斯坦布尔硬分叉之前为 64 个）。</li>
+<li>内在gas：每笔交易的内在成本为21000 Gas。除了交易成本之外，创建合约还需要 32000 Gas。该成本是在任何操作码执行之前从交易中支付的。</li>
+<li><code>opcode</code>固定成本：每个操作码在执行时都有固定的成本，以Gas为单位。对于所有执行，该成本都是相同的。比如每个<code>ADD</code>指令消耗<code>3</code> Gas。</li>
+<li><code>opcode</code>动态成本：一些指令消耗更多的计算资源取决于其参数。因此，除了固定成本之外，这些指令还具有动态成本。比如<code>SHA3</code>指令消耗的Gas随参数长度增长。</li>
+<li>内存拓展成本：在EVM中，合约可以使用操作码访问内存。当首次访问特定偏移量的内存（读取或写入）时，内存可能会触发扩展，产生gas消耗。比如<code>MLOAD</code>或<code>RETURN</code>。</li>
+<li>访问集成本：对于每个外部交易，EVM会定义一个访问集，记录交易过程中访问过的合约地址和存储槽（slot）。访问成本根据数据是否已经被访问过（热）或是首次被访问（冷）而有所不同。</li>
+<li>Gas退款：<code>SSTORE</code>的一些操作（比如清除存储）可以触发Gas退款。退款会在交易结束时执行，上限为总Gas消耗的20%（从伦敦硬分叉开始）。</li>
+</ol>
+<p>更详细的Gas消耗信息可以参考<a target="_blank" rel="noopener" href="https://www.evm.codes/">evm.codes</a>。</p>
+<h3 id="GAS-指令"><a href="#GAS-指令" class="headerlink" title="GAS 指令"></a>GAS 指令</h3><ul>
+<li><strong>操作码：<code>0x5A</code></strong></li>
+<li><strong>gas 消耗：<code>2</code></strong></li>
+</ul>
+<p>通过<code>GAS</code>指令，智能合约可以实时地查询还剩下多少Gas，从而做出相应的决策。</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Q1ngying
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2023/11/27/EVM-Opcodes-3/" title="EVM_Opcodes(3)">http://example.com/2023/11/27/EVM-Opcodes-3/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Solidity/" rel="tag"># Solidity</a>
+              <a href="/tags/EVM/" rel="tag"># EVM</a>
+              <a href="/tags/Opcode/" rel="tag"># Opcode</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/11/27/EVM-Opcodes-2/" rel="prev" title="EVM_Opcodes(2)">
+      <i class="fa fa-chevron-left"></i> EVM_Opcodes(2)
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#EVM-Opcodes-3"><span class="nav-number">1.</span> <span class="nav-text">EVM Opcodes(3)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Return-%E6%8C%87%E4%BB%A4"><span class="nav-number">1.1.</span> <span class="nav-text">Return 指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%94%E5%9B%9E%E6%95%B0%E6%8D%AE"><span class="nav-number">1.1.1.</span> <span class="nav-text">返回数据</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#RETURN"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">RETURN</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RETURNDATASIZE"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">RETURNDATASIZE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RETURNDATACOPY"><span class="nav-number">1.1.1.3.</span> <span class="nav-text">RETURNDATACOPY</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Revert-%E6%8C%87%E4%BB%A4"><span class="nav-number">1.2.</span> <span class="nav-text">Revert 指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#REVERT"><span class="nav-number">1.2.1.</span> <span class="nav-text">REVERT</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#INVALID"><span class="nav-number">1.2.2.</span> <span class="nav-text">INVALID</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B0%83%E7%94%A8%E7%B3%BB%E5%88%97%E6%8C%87%E4%BB%A4"><span class="nav-number">1.3.</span> <span class="nav-text">调用系列指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CALL"><span class="nav-number">1.3.1.</span> <span class="nav-text">CALL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DELEGATECALL"><span class="nav-number">1.3.2.</span> <span class="nav-text">DELEGATECALL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CALLCODE"><span class="nav-number">1.3.3.</span> <span class="nav-text">CALLCODE</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#STATICCALL"><span class="nav-number">1.3.4.</span> <span class="nav-text">STATICCALL</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CREATE-%E6%8C%87%E4%BB%A4"><span class="nav-number">1.4.</span> <span class="nav-text">CREATE 指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#initcode%EF%BC%88%E5%88%9D%E5%A7%8B%E4%BB%A3%E7%A0%81%EF%BC%89"><span class="nav-number">1.4.1.</span> <span class="nav-text">initcode（初始代码）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CREATE"><span class="nav-number">1.4.2.</span> <span class="nav-text">CREATE</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CREATE2-%E6%8C%87%E4%BB%A4"><span class="nav-number">1.5.</span> <span class="nav-text">CREATE2 指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CREATE-vs-CREATE2"><span class="nav-number">1.5.1.</span> <span class="nav-text">CREATE vs CREATE2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CREATE2"><span class="nav-number">1.5.2.</span> <span class="nav-text">CREATE2</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Selfdestruct-%E6%8C%87%E4%BB%A4"><span class="nav-number">1.6.</span> <span class="nav-text">Selfdestruct 指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">1.6.1.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SELFDESTRUCT-%E6%8C%87%E4%BB%A4"><span class="nav-number">1.6.2.</span> <span class="nav-text">SELFDESTRUCT 指令</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Gas-%E6%8C%87%E4%BB%A4"><span class="nav-number">1.7.</span> <span class="nav-text">Gas 指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-Gas"><span class="nav-number">1.7.1.</span> <span class="nav-text">什么是 Gas</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Gas-%E8%A7%84%E5%88%99"><span class="nav-number">1.7.2.</span> <span class="nav-text">Gas 规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GAS-%E6%8C%87%E4%BB%A4"><span class="nav-number">1.7.3.</span> <span class="nav-text">GAS 指令</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Q1ngying"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Q1ngying</p>
+  <div class="site-description" itemprop="description">今朝梦醒与君别，遥盼春风寄相思</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/q1ngying" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;q1ngying" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:q1ngying@163.com" title="E-Mail → mailto:q1ngying@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-09 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Q1ngying</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">110k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">6:06</span>
+</div>
+
+<div class="powered-by">
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <i class="fa fa-user-md"></i>
+    <span id="busuanzi_container_site_uv">
+        本站访客数:<span id="busuanzi_value_site_uv"></span>人
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_pv">
+        本站访问量<span id="busuanzi_value_site_pv"></span>人次
+    </span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,255,255' opacity='1' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
