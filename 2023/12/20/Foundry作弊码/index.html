@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icons8-autumn-material-filled-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icons8-autumn-material-filled-16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Foundry 作弊码大多数时候，仅仅测试您的智能合约输出是不够的。 为了操纵区块链的状态，以及测试特定的 reverts 和事件 Events，Foundry 附带了一组作弊码（Cheatcodes)。 在使用 Foundry 对合约进行调试的过程中，可以使用 Foundry 内置的强大的作弊码（CheatCodes）功能。 可以通过使用 Forge 标准库里面的 Test 合约中提供的 vm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Foundry作弊码">
+<meta property="og:url" content="http://example.com/2023/12/20/Foundry%E4%BD%9C%E5%BC%8A%E7%A0%81/index.html">
+<meta property="og:site_name" content="Q1ngying">
+<meta property="og:description" content="Foundry 作弊码大多数时候，仅仅测试您的智能合约输出是不够的。 为了操纵区块链的状态，以及测试特定的 reverts 和事件 Events，Foundry 附带了一组作弊码（Cheatcodes)。 在使用 Foundry 对合约进行调试的过程中，可以使用 Foundry 内置的强大的作弊码（CheatCodes）功能。 可以通过使用 Forge 标准库里面的 Test 合约中提供的 vm">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-12-20T12:09:43.000Z">
+<meta property="article:modified_time" content="2023-12-20T12:10:31.557Z">
+<meta property="article:author" content="Q1ngying">
+<meta property="article:tag" content="learn">
+<meta property="article:tag" content="Solidity">
+<meta property="article:tag" content="Foundry">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2023/12/20/Foundry%E4%BD%9C%E5%BC%8A%E7%A0%81/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Foundry作弊码 | Q1ngying</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Q1ngying</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">清影的个人站</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/12/20/Foundry%E4%BD%9C%E5%BC%8A%E7%A0%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Q1ngying">
+      <meta itemprop="description" content="今朝梦醒与君别，遥盼春风寄相思">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Q1ngying">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Foundry作弊码
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-12-20 20:09:43 / 修改时间：20:10:31" itemprop="dateCreated datePublished" datetime="2023-12-20T20:09:43+08:00">2023-12-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Solidity/" itemprop="url" rel="index"><span itemprop="name">Solidity</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Foundry/" itemprop="url" rel="index"><span itemprop="name">Foundry</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>9 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Foundry-作弊码"><a href="#Foundry-作弊码" class="headerlink" title="Foundry 作弊码"></a>Foundry 作弊码</h1><p><strong>大多数时候，仅仅测试您的智能合约输出是不够的。 为了操纵区块链的状态，以及测试特定的 reverts 和事件 Events，Foundry 附带了一组作弊码（Cheatcodes)。</strong></p>
+<p>在使用 Foundry 对合约进行调试的过程中，可以使用 Foundry 内置的强大的作弊码（CheatCodes）功能。</p>
+<p>可以通过使用 <code>Forge</code> 标准库里面的 <code>Test</code> 合约中提供的 <code>vm</code> 示例来使用操作码。</p>
+<h2 id="断言部分（Assertions）"><a href="#断言部分（Assertions）" class="headerlink" title="断言部分（Assertions）"></a>断言部分（Assertions）</h2><h3 id="expectRevert-下面的一行代码必须回滚"><a href="#expectRevert-下面的一行代码必须回滚" class="headerlink" title="expectRevert(下面的一行代码必须回滚)"></a>expectRevert(下面的一行代码必须回滚)</h3><p><strong>使用 Foundry 对合约进行调试时，有些时候要检验不满足设定条件时，交易是否能正确回滚<code>revert</code>，这个时候，就可以使用 <code>expectRevert</code> 作弊码</strong></p>
+<p><code>expectRevert</code>作弊码要求其下一行的代码**必须发生<code>revert</code>**（忽略<code>vm</code>(虚拟机)里面的代码<a href="%E4%B8%BE%E4%BE%8B">^2</a>），否则，在终端进行调试时，调试报错。</p>
+<p><strong>Signature</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">function expectRevert() external;</span><br><span class="line">// 没有参数，断言下一次调用会回滚，无论消息如何</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">function expectRevert(bytes4 message) external;</span><br><span class="line">// 带有 `bytes4`: 断言下一次调用将以指定的 4 字节回滚</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">function expectRevert(bytes calldata message) external;</span><br><span class="line">// 带有 `bytes`: 断言下一次调用将以指定的字节回滚</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>使用方法举例：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function testRevert() public&#123;</span><br><span class="line">	vm.expectRevert(); // 下面的代码必须回滚，否则 forge test 报错</span><br><span class="line">	// assret(This tx fails/reverts)</span><br><span class="line">	target.fun();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>可以使用在命令行使用下面的命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">forge <span class="built_in">test</span> --mt testRevert</span><br></pre></td></tr></table></figure>
+
+<p>上面的 <code>-mt</code> 是 <code>--match-test</code> 的简写，详情参考[FoundryTest调试](.&#x2F;FoundryTest调试.md##forge test 参数)</p>
+<p><strong>对于使用后面两种方法较为复杂：</strong></p>
+<p><strong>举例：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function testLowLevelCallRevert() public &#123;</span><br><span class="line">    vm.expectRevert(bytes(&quot;error message&quot;)); // 第三种</span><br><span class="line">    (bool status, ) = address(myContract).call(myCalldata);</span><br><span class="line">    assertTrue(status, &quot;expectRevert: call did not revert&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>要使用<code>expectRevert</code>和字符串，将其转换为字节数组。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vm.expectRevert(bytes(&quot;error message&quot;));</span><br></pre></td></tr></table></figure>
+
+<p>要使用<code>expectRevert</code>和没有参数的自定义错误类型，使用其选择器。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vm.expectRevert(MyContract.CustomError.selector);</span><br></pre></td></tr></table></figure>
+
+<p>要使用<code>expectRevert</code>和带有参数的自定义错误类型，请对错误类型进行ABI编码。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vm.expectRevert(</span><br><span class="line">    abi.encodeWithSelector(MyContract.CustomError.selector, 1, 2)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>如果需要断言函数在没有消息的情况下回滚，可以使用<code>expectRevert(bytes(&quot;&quot;))</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function testExpectRevertNoReason() public &#123;</span><br><span class="line">    Reverter reverter = new Reverter();</span><br><span class="line">    vm.expectRevert(bytes(&quot;&quot;));</span><br><span class="line">    reverter.revertWithoutReason();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果需要断言函数回滚了一个四字符的消息，例如<code>AAAA</code>，可以这样做：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">function testFourLetterMessage() public &#123;</span><br><span class="line">    vm.expectRevert(bytes(&quot;AAAA&quot;));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果使用<code>expectRevert(&quot;AAAA&quot;)</code>，则使用了<code>expectRevert(bytes4 msg)</code>的重载，导致行为不同。</p>
+<p>您还可以在单个测试中有多个<code>expectRevert()</code>检查。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">function testMultipleExpectReverts() public &#123;</span><br><span class="line">    vm.expectRevert(abi.encodePacked(&quot;INVALID_AMOUNT&quot;));</span><br><span class="line">    vault.send(user, 0);</span><br><span class="line"></span><br><span class="line">    vm.expectRevert(abi.encodePacked(&quot;INVALID_ADDRESS&quot;));</span><br><span class="line">    vault.send(address(0), 200);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function testTest() public &#123;</span><br><span class="line">	vm.expectRevert();</span><br><span class="line">	vm.prank(USER); // vm(虚拟机)，expectRevert 会进行忽略</span><br><span class="line">	fundMe.withdrow; // 上面的 expectRevert 检测的是该行 是否会滚</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="expectEmit-测试事件是否触发"><a href="#expectEmit-测试事件是否触发" class="headerlink" title="expectEmit(测试事件是否触发)"></a>expectEmit(测试事件是否触发)</h3><p><strong>签名：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">function expectEmit (</span><br><span class="line">	bool checkTopic1,</span><br><span class="line">	bool checkTopic2,</span><br><span class="line">	bool checkTopic3,</span><br><span class="line">	bool checkData</span><br><span class="line">) external;</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">function expectEmit(</span><br><span class="line">	bool checkTopic1,</span><br><span class="line">	bool checkTopic2,</span><br><span class="line">	bool checkTopic3,</span><br><span class="line">	bool checkData,</span><br><span class="line">	address emitter</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<p><strong>在当前函数结束之前，断言特定的日志(<code>event</code>)被触发(<code>emit</code>)</strong></p>
+<ol>
+<li>调用作弊码时，指定我们应该检查第一个、第二个、第三个主题(<code>topic</code>)以及日志数据(<code>log data1</code>)。作弊码失踪检查<code>topic0</code></li>
+<li>在当前函数执行结束之前，触发我们应该触发的事件</li>
+<li>执行调用</li>
+</ol>
+<p>如果<strong>事件在当前范围内不可用</strong>（例如，我们使用接口或外部合约），可以<strong>使用相同的事件签名自定义事件</strong>。</p>
+<p>这里由两种签名：</p>
+<ul>
+<li><strong>不检查发送者地址：</strong>断言主题是否匹配，但是不检查触发地址</li>
+<li><strong>带有地址</strong>：断言主题匹配并断言地址匹配</li>
+</ul>
+<blockquote>
+<p><strong>顺序很重要：</strong></p>
+<p>如果我们调用<code>expectEmit</code>并触发了一个事件，那么下一个被触发的事件必须与我们的预期一致</p>
+</blockquote>
+<p><strong>示例：</strong></p>
+<ul>
+<li><p>没有地址的签名：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">event Transfer(address indexed from, address indexed to, uint256 ammount);</span><br><span class="line"></span><br><span class="line">function testERC20EmitsTransfer() public &#123;</span><br><span class="line">    // 只有`from`和`to`在ERC20的“Transfer”事件中是 inded，</span><br><span class="line">    // 所以我们专门检查topics 1和2（默认情况下总是检查topic 0），</span><br><span class="line">    // 以及数据（`amount`）。</span><br><span class="line">	vm.expectEmit(true, true, false, true);</span><br><span class="line">	</span><br><span class="line">	// 我们出发的事件：我们预期触发的的事件：</span><br><span class="line">	emit MyToken.Transfer(address(this), address(1), 10);</span><br><span class="line">	</span><br><span class="line">	// 执行调用</span><br><span class="line">	myToken.transfer(address(1). 10);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>有签名的地址：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">event Transfer(address indexed from, address indexed to, uint256 amount);</span><br><span class="line"></span><br><span class="line">function testERC20EmitsTransfer() public &#123;</span><br><span class="line">	// 通过将地址作为第五个参数传递来检测时间的触发者是否为预期的触发者</span><br><span class="line">	vm.expectEmit(true, true, false, true, address(myToken));</span><br><span class="line">	emit myToken.Transfer(address(this), address(1), 10);</span><br><span class="line">	</span><br><span class="line">	myToken.transfer(address(1), 10);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>断言在单次调用中触发多个事件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">function testERC20EmitsBatchTransfer() public &#123;</span><br><span class="line">	// 声明多个预期的转账事件</span><br><span class="line">	for (uint256 i = 0; i&lt; users.length; i++) &#123;</span><br><span class="line">		vm.expectEmit(true, true, true, true);</span><br><span class="line">		emit Transfer(address(this), users[i], 10);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	// 我们还预期一个自定义的 `BatchTransfer(uint256 numverOfTransfers)` event。</span><br><span class="line">	vm.expectEmit(false, false, false, false);</span><br><span class="line">	emit BatchTransfer(users.length);</span><br><span class="line">	</span><br><span class="line">	// 执行调用</span><br><span class="line">	myToken.batchTransfer(users, 10);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="Environment（环境）"><a href="#Environment（环境）" class="headerlink" title="Environment（环境）"></a>Environment（环境）</h2><h3 id="prank"><a href="#prank" class="headerlink" title="prank"></a>prank</h3><p>可以将<code>msg.sender</code>设置为指定地址，用于下一次调用。<strong>所以在使用 <code>Foundry</code> 调试合约的时候，可以通过<code>prank</code>来明确知道是谁发起了交易</strong></p>
+<p><strong>Signature</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">function prank(address) external;</span><br><span class="line">function prank(address sender, address origin) external;</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意：这只有在调试中生效，并且只适用于 foundry</strong></p>
+<p>需要设置<code>origin</code>的时候，也可以使用上面的<code>prank</code>（传入两个地址，第一个是<code>msg.sender</code>，后一个为<code>tx.origin</code>）</p>
+<p>在下面有一个例子，联合<code>deal</code>、<code>makeAddr</code>使用[^1]</p>
+<p><strong>还存在类似于<code>startBroadcast()</code>和<code>stopBroadcast()</code>类似用法的<code>startPrank()</code>和<code>stopPrank()</code>一组函数，这组函数之间的交易，都会被视作是传入的虚假地址发起的交易：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function testTest() public &#123;</span><br><span class="line">	vm.startPrank(addr); // 想要指定作为 msg.sender 的地址</span><br><span class="line">	,,, // 要进行的操作</span><br><span class="line">	vm.stopPrank();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="warp"><a href="#warp" class="headerlink" title="warp"></a>warp</h3><p><strong>Signature</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function warp(uint256) external;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>描述</strong></p>
+<p>设置<code>block.timestamp</code></p>
+<p><strong>举例</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vm.warp(1641070800);</span><br><span class="line">emit log_uiint(block.timestamp); // 1641070800</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="rool"><a href="#rool" class="headerlink" title="rool"></a>rool</h3><p><strong>Signature</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function roll(uint256) external;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>描述</strong></p>
+<p>设置当前的区块高度</p>
+<p><strong>举例</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vm.roll(100);</span><br><span class="line">emit log_uint(block.number); // 100</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="deal-交易"><a href="#deal-交易" class="headerlink" title="deal(交易)"></a>deal(交易)</h3><p><strong>将一个地址的余额设置为一个新的余额</strong></p>
+<p><strong>signature</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function deal(address who, uint256 newBalance) external;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function deal(address token, address to, uint256 give) external; // 貌似弃用</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function deal(address token, address to, uint256 give, bool adjust) external; // 貌似弃用</span><br></pre></td></tr></table></figure>
+
+<p>同样可以联合 <code>prank</code>使用[^1]</p>
+<h3 id="recordLogs"><a href="#recordLogs" class="headerlink" title="recordLogs"></a>recordLogs</h3><p><strong>告诉虚拟机开始记录所有发出的事件。</strong>要访问它们，需要使用<a href="###getRecordedLogs">getRecordedLogs</a></p>
+<p><strong>signature</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function recordLogs() external;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>举例</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">/// event LogCompleted(</span><br><span class="line">///   uint256 indexed topic1,</span><br><span class="line">///   bytes data</span><br><span class="line">/// );</span><br><span class="line"></span><br><span class="line">vm.recordLogs();</span><br><span class="line"></span><br><span class="line">emit LogCompleted(10, &quot;operation completed&quot;);</span><br><span class="line"></span><br><span class="line">Vm.Log[] memory entries = vm.getRecordedLogs();</span><br><span class="line"></span><br><span class="line">assertEq(entries.length, 1);</span><br><span class="line">assertEq(entries[0].topics[0], keccak256(&quot;LogCompleted(uint256,bytes)&quot;));</span><br><span class="line">assertEq(entries[0].topics[1], bytes32(uint256(10)));</span><br><span class="line">assertEq(abi.decode(entries[0].data, (string)), &quot;operation completed&quot;);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="getRecordedLogs"><a href="#getRecordedLogs" class="headerlink" title="getRecordedLogs"></a>getRecordedLogs</h3><p><strong>Signature</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">struct Log &#123;</span><br><span class="line">	bytes32[] topics;</span><br><span class="line">	bytes data;</span><br><span class="line">	address emitter;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function getRecordedLogs() external returns(Log[] memory);</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>描述</strong></p>
+<p>获取<code>recordLogs</code>记录的触发的事件。该函数在调用时会消耗记录的日志。</p>
+<p><strong>例子</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">/// event LogTopic1(</span><br><span class="line">///   uint256 indexed topic1,</span><br><span class="line">///   bytes data</span><br><span class="line">/// );</span><br><span class="line"></span><br><span class="line">/// event LogTopic12(</span><br><span class="line">///   uint256 indexed topic1,</span><br><span class="line">///   uint256 indexed topic2,</span><br><span class="line">///   bytes data</span><br><span class="line">/// );</span><br><span class="line"></span><br><span class="line">/// bytes memory testData0 = &quot;Some data&quot;;</span><br><span class="line">/// bytes memory testData1 = &quot;Other data&quot;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// Start the recorder</span><br><span class="line">vm.recordLogs();</span><br><span class="line"></span><br><span class="line">emit LogTopic1(10, testData0);</span><br><span class="line">emit LogTopic12(20, 30, testData1);</span><br><span class="line"></span><br><span class="line">// Notice that your entries are &lt;Interface&gt;.Log[]</span><br><span class="line">// as opposed to &lt;instance&gt;.Log[]</span><br><span class="line">Vm.Log[] memory entries = vm.getRecordedLogs();</span><br><span class="line"></span><br><span class="line">assertEq(entries.length, 2);</span><br><span class="line"></span><br><span class="line">// Recall that topics[0] is the event signature</span><br><span class="line">assertEq(entries[0].topics.length, 2);</span><br><span class="line">assertEq(entries[0].topics[0], keccak256(&quot;LogTopic1(uint256,bytes)&quot;));</span><br><span class="line">assertEq(entries[0].topics[1], bytes32(uint256(10)));</span><br><span class="line">// assertEq won&#x27;t compare bytes variables. Try with strings instead.</span><br><span class="line">assertEq(abi.decode(entries[0].data, (string)), string(testData0));</span><br><span class="line"></span><br><span class="line">assertEq(entries[1].topics.length, 3);</span><br><span class="line">assertEq(entries[1].topics[0], keccak256(&quot;LogTopic12(uint256,uint256,bytes)&quot;));</span><br><span class="line">assertEq(entries[1].topics[1], bytes32(uint256(20)));</span><br><span class="line">assertEq(entries[1].topics[2], bytes32(uint256(30)));</span><br><span class="line">assertEq(abi.decode(entries[1].data, (string)), string(testData1));</span><br><span class="line"></span><br><span class="line">// Emit another event</span><br><span class="line">emit LogTopic1(40, testData0);</span><br><span class="line"></span><br><span class="line">// Your last read consumed the recorded logs,</span><br><span class="line">// you will only get the latest emitted even after that call</span><br><span class="line">entries = vm.getRecordedLogs();</span><br><span class="line"></span><br><span class="line">assertEq(entries.length, 1);</span><br><span class="line"></span><br><span class="line">assertEq(entries[0].topics.length, 2);</span><br><span class="line">assertEq(entries[0].topics[0], keccak256(&quot;LogTopic1(uint256,bytes)&quot;));</span><br><span class="line">assertEq(entries[0].topics[1], bytes32(uint256(40)));</span><br><span class="line">assertEq(abi.decode(entries[0].data, (string)), string(testData0));</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="txGasPrice"><a href="#txGasPrice" class="headerlink" title="txGasPrice"></a>txGasPrice</h3><p>设置 <code>tx.gasprice</code> 的值（实际交易中的 Gas 价格）</p>
+<p><strong>Signature</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function txGasPrice(uint256) external;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function txGasPrice(uint256 newGasPrice) external;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="External（外部）"><a href="#External（外部）" class="headerlink" title="External（外部）"></a>External（外部）</h2><h3 id="envUint"><a href="#envUint" class="headerlink" title="envUint"></a>envUint</h3><p>将环境变量读取为<code>uint256</code>或者<code>uint256[]</code></p>
+<p><strong>Signature</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function envUint(string calldata key) external returns (uint256 value);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function envUint(string calldata key, string calldata delimiter) external returns(uint256[] memory values);</span><br></pre></td></tr></table></figure>
+
+<p><strong>Tips:</strong></p>
+<ul>
+<li>如果值以<code>0x</code>开头，它将被解释为十六进制，否则，将其视为十六进制。</li>
+<li>对于数组，可以指定用于分割参数与值的分隔符<code>delimiter</code></li>
+</ul>
+<p><strong>例子：</strong></p>
+<ul>
+<li><p>单个值</p>
+<p>已拥有环境变量：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">UINT_VALUES=115792089237316195423570985008687907853269984665640564039457584007913129639935</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">strinf memory key = &quot;UINT_VALUE&quot;;</span><br><span class="line">uint256 expected = type(uint256).max;</span><br><span class="line">uint256 output = vm.envUint(key);</span><br><span class="line">assert(output == expected);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>数组</p>
+<p>已拥有环境变量：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">UINT_VALUES=0,0x0000000000000000000000000000000000000000000000000000000000000000</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">string memory key = &quot;UINT_VALUES&quot;;</span><br><span class="line">string memory delimiter = &quot;,&quot;;</span><br><span class="line">uint256[2] memory expected = [type(uint256).min, type(uint256).min];</span><br><span class="line">uint256[] memory output = cheats.envUint(key, delimiter);</span><br><span class="line">assert(keccak256(abi.encodePacked((output))) == keccak256(abi.encodePacked((expected))));</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="Files（文件）"><a href="#Files（文件）" class="headerlink" title="Files（文件）"></a>Files（文件）</h2><p><strong>描述：</strong></p>
+<p><code>forge-std</code>提供的作弊码可以用于访问系统文件。</p>
+<p>注意：默认情况下，不允许访问文件系统，需要设置<code>foundry.toml</code>:</p>
+<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">fs_permission</span> = [&#123;access = <span class="string">&quot;read&quot;</span>, path = <span class="string">&quot;./images/&quot;</span>&#125;]</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>来自Foundry官方文档：</strong></p>
+<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 配置允许触及文件系统的作弊码的权限，例如 `vm.writeFile`</span></span><br><span class="line"><span class="comment"># `access` 限制了通过作弊码可以访问 `path` 的方式</span></span><br><span class="line"><span class="comment">#    `read-write` | `true`   =&gt; 允许读取和写入访问（`vm.readFile` + `vm.writeFile`)</span></span><br><span class="line"><span class="comment">#    `none`| `false` =&gt; 没有访问权限</span></span><br><span class="line"><span class="comment">#    `read` =&gt; 只允许读取访问（`vm.readFile`)</span></span><br><span class="line"><span class="comment">#    `write` =&gt; 只允许写入访问 (`vm.writeFile`)</span></span><br><span class="line"><span class="comment"># 通过列表列出了被认为是路径的路径，例如：&#x27;./&#x27; 表示项目根目录</span></span><br><span class="line"><span class="comment"># 默认情况下，不授予任何文件系统访问权限，并且不允许任何路径</span></span><br><span class="line">以下示例仅启用对项目目录的读取权限：</span><br><span class="line">    &#x27;<span class="attr">fs_permissions</span> = [&#123; access = <span class="string">&quot;read&quot;</span>, path = <span class="string">&quot;./&quot;</span>&#125;]<span class="string">&#x27;</span></span><br><span class="line"><span class="string">fs_permissions = [] # 默认值：禁用所有文件作弊码</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<p><strong>Signature</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">// 将文件的整个内容读取为字符串，(路径) =&gt; (数据) </span><br><span class="line">function readFile(string calldata) external returns (string memory); </span><br><span class="line">// 读取文件的下一行并将其作为字符串返回，(路径) =&gt; (行) </span><br><span class="line">function readLine(string calldata) external returns (string memory); </span><br><span class="line">// 将数据写入文件，如果文件不存在则创建新文件，并完全替换其内容。 // (路径, 数据) =&gt; () </span><br><span class="line">function writeFile(string calldata, string calldata) external; </span><br><span class="line">// 将行写入文件，如果文件不存在则创建新文件。 </span><br><span class="line">// (路径, 数据) =&gt; () </span><br><span class="line">function writeLine(string calldata, string calldata) external; </span><br><span class="line">// 关闭正在读取的文件，重置偏移量，并允许使用 readLine 从头开始读取。 </span><br><span class="line">// (路径)=&gt;()</span><br><span class="line">function closeFile(string calldata )external;</span><br><span class="line">// 删除指定的 文件 。此作弊码在以下情况下会还原 ，但不仅限于这些情况：</span><br><span class="line">// - 路径指向一个目录。</span><br><span class="line">// - 文件不存在。</span><br><span class="line">//-  用户没有删除该文件的权限。</span><br><span class="line">//(path)=&gt;() </span><br><span class="line">function removeFile（string call data）external；</span><br><span class="line">// 如果给定的路径指向现有实体，则返回 true ，否则返回 false </span><br><span class="line">//(path)=&gt;(bool）</span><br><span class="line">function exists（string call data）external returns (bool);</span><br><span class="line">// 如果磁盘上存在该路径并且它指向常规 文件，则返回 true ，否则返回 false </span><br><span class="line">//(path)=&gt;(bool）</span><br><span class="line">function isFile（string call data）external returns (bool);</span><br><span class="line">// 如果磁盘上存在该路径并且它指向目录，则返回 true ，否则返回 false </span><br><span class="line">//(path)=&gt;(bool）</span><br><span class="line">function isDir（string call data）external returns (bool);</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Std-Cheats-非-cheatCode，可以独立使用"><a href="#Std-Cheats-非-cheatCode，可以独立使用" class="headerlink" title="Std Cheats(非 cheatCode，可以独立使用)"></a>Std Cheats(非 cheatCode，可以独立使用)</h2><h3 id="makeAddr"><a href="#makeAddr" class="headerlink" title="makeAddr"></a>makeAddr</h3><p>创造一个用户来发起交易，<strong>我们可以传入一个名称，他会返回一个地址</strong>，来自<code>forge-std</code>文件夹</p>
+<p><strong>Signature</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function makeAddr(string memory name) internal returns(address addr);</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>使用方法：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">address alice = makeAddr(&#x27;alice&#x27;);</span><br></pre></td></tr></table></figure>
+
+
+
+<p>[^1]: 可以配合上面的 <code>prank</code> 使用</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">address USER = makeAddr(&quot;user&quot;);</span><br><span class="line">uint256 constant STARTING_BALANCE = 10 ether;</span><br><span class="line"></span><br><span class="line">function setUp() external &#123;</span><br><span class="line">	DepolyTest depolyTest = new DepolyTest();</span><br><span class="line">	test = depolyTest.run();</span><br><span class="line">	// 上面两行是 Test 测试时都要写的</span><br><span class="line">	vm.deal(USER, STARTING_BALANCE); // 给 USER 设置新的余额</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function testTest() public &#123;</span><br><span class="line">	vm.prank(USER); // 下一笔交易的 msg.sender 为 USER</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="hoax"><a href="#hoax" class="headerlink" title="hoax"></a>hoax</h3><p>合并了 <code>prank</code> 和 <code>deal</code> 功能，<strong>将一个地址设置为<code>prank</code>然后<code>deal</code>赋予一些ETH</strong></p>
+<p><strong>Signature</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function hoax(address who) public;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function hoax(address who, uint256 give) public;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function hoax(address who, address origin) public;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function hoax(address who, address origin, uint256 give) public;</span><br></pre></td></tr></table></figure>
+
+<p><strong>–未完待续–</strong></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Q1ngying
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2023/12/20/Foundry%E4%BD%9C%E5%BC%8A%E7%A0%81/" title="Foundry作弊码">http://example.com/2023/12/20/Foundry作弊码/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/learn/" rel="tag"># learn</a>
+              <a href="/tags/Solidity/" rel="tag"># Solidity</a>
+              <a href="/tags/Foundry/" rel="tag"># Foundry</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/11/27/EIP-1167%EF%BC%9AERC-1167%E6%9C%80%E5%B0%8F%E4%BB%A3%E7%90%86%E5%90%88%E7%BA%A6/" rel="prev" title="EIP-1167：ERC-1167最小代理合约">
+      <i class="fa fa-chevron-left"></i> EIP-1167：ERC-1167最小代理合约
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/12/20/Foundry-Test%E8%B0%83%E8%AF%95/" rel="next" title="Foundry Test调试">
+      Foundry Test调试 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Foundry-%E4%BD%9C%E5%BC%8A%E7%A0%81"><span class="nav-number">1.</span> <span class="nav-text">Foundry 作弊码</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%AD%E8%A8%80%E9%83%A8%E5%88%86%EF%BC%88Assertions%EF%BC%89"><span class="nav-number">1.1.</span> <span class="nav-text">断言部分（Assertions）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#expectRevert-%E4%B8%8B%E9%9D%A2%E7%9A%84%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81%E5%BF%85%E9%A1%BB%E5%9B%9E%E6%BB%9A"><span class="nav-number">1.1.1.</span> <span class="nav-text">expectRevert(下面的一行代码必须回滚)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#expectEmit-%E6%B5%8B%E8%AF%95%E4%BA%8B%E4%BB%B6%E6%98%AF%E5%90%A6%E8%A7%A6%E5%8F%91"><span class="nav-number">1.1.2.</span> <span class="nav-text">expectEmit(测试事件是否触发)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Environment%EF%BC%88%E7%8E%AF%E5%A2%83%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">Environment（环境）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#prank"><span class="nav-number">1.2.1.</span> <span class="nav-text">prank</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#warp"><span class="nav-number">1.2.2.</span> <span class="nav-text">warp</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rool"><span class="nav-number">1.2.3.</span> <span class="nav-text">rool</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#deal-%E4%BA%A4%E6%98%93"><span class="nav-number">1.2.4.</span> <span class="nav-text">deal(交易)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#recordLogs"><span class="nav-number">1.2.5.</span> <span class="nav-text">recordLogs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#getRecordedLogs"><span class="nav-number">1.2.6.</span> <span class="nav-text">getRecordedLogs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#txGasPrice"><span class="nav-number">1.2.7.</span> <span class="nav-text">txGasPrice</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#External%EF%BC%88%E5%A4%96%E9%83%A8%EF%BC%89"><span class="nav-number">1.3.</span> <span class="nav-text">External（外部）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#envUint"><span class="nav-number">1.3.1.</span> <span class="nav-text">envUint</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Files%EF%BC%88%E6%96%87%E4%BB%B6%EF%BC%89"><span class="nav-number">1.4.</span> <span class="nav-text">Files（文件）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Std-Cheats-%E9%9D%9E-cheatCode%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%8B%AC%E7%AB%8B%E4%BD%BF%E7%94%A8"><span class="nav-number">1.5.</span> <span class="nav-text">Std Cheats(非 cheatCode，可以独立使用)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#makeAddr"><span class="nav-number">1.5.1.</span> <span class="nav-text">makeAddr</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hoax"><span class="nav-number">1.5.2.</span> <span class="nav-text">hoax</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Q1ngying"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Q1ngying</p>
+  <div class="site-description" itemprop="description">今朝梦醒与君别，遥盼春风寄相思</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/q1ngying" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;q1ngying" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:q1ngying@163.com" title="E-Mail → mailto:q1ngying@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-09 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Q1ngying</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">119k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">6:35</span>
+</div>
+
+<div class="powered-by">
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <i class="fa fa-user-md"></i>
+    <span id="busuanzi_container_site_uv">
+        本站访客数:<span id="busuanzi_value_site_uv"></span>人
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_pv">
+        本站访问量<span id="busuanzi_value_site_pv"></span>人次
+    </span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,255,255' opacity='1' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
