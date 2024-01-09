@@ -29,18 +29,20 @@
 <meta property="og:site_name" content="Q1ngying">
 <meta property="og:description" content="Foundry模糊测试入门关于模糊测试，需要首先考虑在我们的代码中系统的不变量&#x2F;属性 是什么，这样我们就可以编写一些有状态和无状态的模糊测试 定义： Fuzz 测试（模糊测试），是将随机数据提供给系统，以尝试破坏系统 举例：以下是一个要进行模糊测试的合约： 123456789101112131415161718&#x2F;&#x2F; SPDX-License-Identifier: MITpragma s">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/images/Foundry%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8/image-20240109162901764.png">
-<meta property="og:image" content="http://example.com/images/Foundry%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8/image-20240109162951480.png">
-<meta property="og:image" content="http://example.com/images/Foundry%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8/image-20240109164505195.png">
-<meta property="og:image" content="http://example.com/images/Foundry%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8/image-20240109164856186.png">
+<meta property="og:image" content="http://example.com/images/Foundry%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8/image-20240109162901764-17047929613125.png">
+<meta property="og:image" content="http://example.com/images/Foundry%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8/image-20240109162951480-17047929613126.png">
+<meta property="og:image" content="http://example.com/images/Foundry%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8/image-20240109164505195-17047929613127.png">
+<meta property="og:image" content="http://example.com/images/Foundry%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8/image-20240109164856186-17047929613128.png">
+<meta property="og:image" content="http://example.com/images/Foundry%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8/image-20240109170929760.png">
+<meta property="og:image" content="http://example.com/images/Foundry%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8/image-20240109171833818.png">
 <meta property="article:published_time" content="2024-01-09T08:51:40.000Z">
-<meta property="article:modified_time" content="2024-01-09T08:52:50.552Z">
+<meta property="article:modified_time" content="2024-01-09T09:36:36.306Z">
 <meta property="article:author" content="Q1ngying">
 <meta property="article:tag" content="Solidity">
 <meta property="article:tag" content="Foundry">
 <meta property="article:tag" content="Fuzz">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/images/Foundry%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8/image-20240109162901764.png">
+<meta name="twitter:image" content="http://example.com/images/Foundry%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8/image-20240109162901764-17047929613125.png">
 
 <link rel="canonical" href="http://example.com/2024/01/09/Foundry%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8/">
 
@@ -200,7 +202,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2024-01-09 16:51:40 / 修改时间：16:52:50" itemprop="dateCreated datePublished" datetime="2024-01-09T16:51:40+08:00">2024-01-09</time>
+              <time title="创建时间：2024-01-09 16:51:40 / 修改时间：17:36:36" itemprop="dateCreated datePublished" datetime="2024-01-09T16:51:40+08:00">2024-01-09</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -226,14 +228,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>800</span>
+              <span>1.7k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
+              <span>6 分钟</span>
             </span>
 
         </div>
@@ -265,23 +267,65 @@
 <p>对刚刚的函数进行简单的修改，现在这就是 <strong>模糊测试</strong> 了。接下来，我们在 Foundry 中分别运行刚刚的单元测试和模糊测试：</p>
 <ul>
 <li><p>单元测试——通过</p>
-<p><img src="/../images/Foundry%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8/image-20240109162901764.png" alt="image-20240109162901764"></p>
+<p><img src="/../images/Foundry%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8/image-20240109162901764-17047929613125.png" alt="image-20240109162901764"></p>
 </li>
-<li><p>模糊测试<br><img src="/../images/Foundry%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8/image-20240109162951480.png" alt="image-20240109162951480"></p>
+<li><p>模糊测试<br><img src="/../images/Foundry%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8/image-20240109162951480-17047929613126.png" alt="image-20240109162951480"></p>
 </li>
 </ul>
 <p>可以看到，成功找到了问题所在。</p>
 <p>接下来，将源码中的第一个 if 判断注释掉，即：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">contract MyContract &#123;</span><br><span class="line">    uint256 public shouldAlwaysBeZero = 0;</span><br><span class="line"></span><br><span class="line">    uint256 private hiddenValue = 0;</span><br><span class="line"></span><br><span class="line">    function doStuff(uint256 data) public &#123;</span><br><span class="line">        // if (data == 2) &#123;</span><br><span class="line">        //     shouldAlwaysBeZero = 1;</span><br><span class="line">        // &#125;</span><br><span class="line">        if (hiddenValue == 7) &#123;</span><br><span class="line">            shouldAlwaysBeZero = 1;</span><br><span class="line">        &#125;</span><br><span class="line">        hiddenValue = data;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<p>再次进行模糊测试，结果如下：<br><img src="/../images/Foundry%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8/image-20240109164505195.png" alt="image-20240109164505195"></p>
+<p>再次进行模糊测试，结果如下：<br><img src="/../images/Foundry%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8/image-20240109164505195-17047929613127.png" alt="image-20240109164505195"></p>
 <p>可以看到这次模糊测试成功，后面的括号中<code>runs: 256</code> <code>runs</code> 对应的数字就是运行的次数，这代表：<strong>在这里做了 256 种不同的随机输入</strong></p>
 <p>在 Foundry 种，可以在 <code>foundry.toml</code> 文件中添加如下一个部分来更改运行次数：</p>
 <figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[fuzz]</span></span><br><span class="line"><span class="attr">runs</span> = <span class="number">10000</span></span><br></pre></td></tr></table></figure>
 
 <p>进行上述修改后，我们再次运行模糊测试，结果如下：</p>
-<p><img src="/../images/Foundry%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8/image-20240109164856186.png" alt="image-20240109164856186"></p>
+<p><img src="/../images/Foundry%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8/image-20240109164856186-17047929613128.png" alt="image-20240109164856186"></p>
 <p>运行次数很重要，更多的运行次数意味着能进行更多的随机输入，更多的用例。以及更大的概率捕捉 Bug。</p>
+<h3 id="简单模糊测试回顾"><a href="#简单模糊测试回顾" class="headerlink" title="简单模糊测试回顾"></a>简单模糊测试回顾</h3><p>在进行 Fuzz 之前，首先要找到的就是<strong>系统中的不变量</strong>。这必须是始终不变的</p>
+<ul>
+<li>理解这个系统中的不变性</li>
+<li>编写一个 Fuzz 测试，通过随机输入来尝试打破这个不变性</li>
+</ul>
+<p>接下来接着看我们的源合约，当 hiddenValue &#x3D; 7 的时候，我们的不变量也发生了变化，而将 hiddenValue 设置为 7 需要首先调用 doStuff，按照我们刚刚写的模糊测试，我们是无法找到这个 Bug的，因为<strong>我们刚刚的模糊测试是<em>无状态的</em>模糊测试，其上一次的运行结果将被丢弃</strong></p>
+<p>针对上述情况，我们就可以进行<strong>有状态模糊测试</strong>。有状态模糊测试是上一次运行的结束状态时下一次的起始状态</p>
+<h3 id="有状态模糊测试"><a href="#有状态模糊测试" class="headerlink" title="有状态模糊测试"></a>有状态模糊测试</h3><p>当我们的单元测试写成下面的样子时，我们发现我们的源合约存在 Bug。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">function test1() public &#123;</span><br><span class="line">    uint256 data = 7;</span><br><span class="line">    exampleContract.doStuff(data);</span><br><span class="line">    assert(exampleContract.shouldAlwaysBeZero() == 0);</span><br><span class="line">    // Use the same contract</span><br><span class="line">    data = 0;</span><br><span class="line">    exampleContract.doStuff(data);</span><br><span class="line">    assert(exampleContract.shouldAlwaysBeZero() == 0);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试结果——发现了我们源合约中的 Bug：</p>
+<p><img src="/../images/Foundry%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8/image-20240109170929760.png" alt="image-20240109170929760"></p>
+<p>可见，对于复杂的代码，使用某个非常具体的场景是很容易被忽略的。</p>
+<p><strong>要在 Foundry 中编写有状态的模糊测试，需要使用 <code>invariant</code> 关键字，并且他需要一些安装</strong></p>
+<p>在 Foundry 中，我们首先要到导入这一部分，并在我们的测试合约中继承，接下来，我们要告诉 Foundry 要调用哪个合约的随机函数（由于我们只有一个合约和一个函数，我们将告诉 Foundry 我的合约应该被调用，它可以调用我的合约的任何函数）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: SEE LICENSE IN LICENSE</span><br><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">import &#123;MyContract&#125; from &quot;../src/MyContract.sol&quot;;</span><br><span class="line">import &#123;Test&#125; from &quot;forge-std/Test.sol&quot;;</span><br><span class="line">import &#123;StdInvariant&#125; from &quot;forge-std/StdInvariant.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract UnitTest is StdInvariant, Test &#123;</span><br><span class="line">    MyContract exampleContract;</span><br><span class="line"></span><br><span class="line">    function setUp() public &#123;</span><br><span class="line">        exampleContract = new MyContract();</span><br><span class="line">        targetContract(address(exampleContract));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function invariant_testAlwaysIsZero() public &#123;</span><br><span class="line">        assert(exampleContract.shouldAlwaysBeZero() == 0);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接下来，我们运行这个测试，发现 Foundry 已经找到了这个存在问题的序列：</p>
+<p><img src="/../images/Foundry%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8/image-20240109171833818.png" alt="image-20240109171833818"></p>
+<p>可以看到，在我们的合约中，使用参数 7 调用 doStuff，然后再次使用某个随机数调用我们的合约时（因为无论调用哪个数都会出现问题，所以后面的数据就不重要了）</p>
+<p><strong>说明</strong>：</p>
+<ul>
+<li>Foundry 使用不变量这个词来描述这种有状态的模糊测试</li>
+<li>无状态的模糊测试是将随机数据提供给函数的输入，以查看是否破坏了某种不变性</li>
+<li>有状态的模糊测试是将随机数据和随机函数调用提供给系统，以查看是否破坏了它们</li>
+</ul>
+<p>在 Foundry 中，模糊测试是无状态的模糊测试，不变量是有状态的模糊测试</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Foundry Fuzzing = Stateless fuzzing</span><br><span class="line">Foundry Invariant = Stateful fuzzing</span><br></pre></td></tr></table></figure>
+
+<p>所以当人们在讨论 Foundry 中的 Invariant 时，他们通常是在讨论有状态的模糊测试，如果他们在讨论 Foundry 中的 Fuzzing，那么它们是在讨论 无状态的模糊测试</p>
+<h3 id="实际项目中可能需要模糊测试的点"><a href="#实际项目中可能需要模糊测试的点" class="headerlink" title="实际项目中可能需要模糊测试的点"></a>实际项目中可能需要模糊测试的点</h3><ul>
+<li>新代币的发行少于通货膨胀率</li>
+<li>在随机抽奖中只能有一个赢家</li>
+<li>有人不应该从协议中拿出比他们投入更多的钱</li>
+</ul>
+<h3 id="清楚你的模糊器如何选择随机数据"><a href="#清楚你的模糊器如何选择随机数据" class="headerlink" title="清楚你的模糊器如何选择随机数据"></a>清楚你的模糊器如何选择随机数据</h3><p>他不会能够覆盖每一个可能的数据输入，所以了解<strong>所用的模糊器如何选择随机数据是一个很重要的点</strong></p>
+<p>目前比较好用的模糊器：</p>
+<ul>
+<li>Trailer Bits</li>
+<li>SlashOptic</li>
+</ul>
+<p>上述二者是比较好用的两个，当然还有 Rift Jesus</p>
 
     </div>
 
@@ -381,7 +425,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Foundry%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8"><span class="nav-number">1.</span> <span class="nav-text">Foundry模糊测试入门</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BE%E4%BE%8B%EF%BC%9A"><span class="nav-number">1.1.</span> <span class="nav-text">举例：</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Foundry%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8"><span class="nav-number">1.</span> <span class="nav-text">Foundry模糊测试入门</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BE%E4%BE%8B%EF%BC%9A"><span class="nav-number">1.1.</span> <span class="nav-text">举例：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%9B%9E%E9%A1%BE"><span class="nav-number">1.1.1.</span> <span class="nav-text">简单模糊测试回顾</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%89%E7%8A%B6%E6%80%81%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95"><span class="nav-number">1.1.2.</span> <span class="nav-text">有状态模糊测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E9%99%85%E9%A1%B9%E7%9B%AE%E4%B8%AD%E5%8F%AF%E8%83%BD%E9%9C%80%E8%A6%81%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E7%9A%84%E7%82%B9"><span class="nav-number">1.1.3.</span> <span class="nav-text">实际项目中可能需要模糊测试的点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B8%85%E6%A5%9A%E4%BD%A0%E7%9A%84%E6%A8%A1%E7%B3%8A%E5%99%A8%E5%A6%82%E4%BD%95%E9%80%89%E6%8B%A9%E9%9A%8F%E6%9C%BA%E6%95%B0%E6%8D%AE"><span class="nav-number">1.1.4.</span> <span class="nav-text">清楚你的模糊器如何选择随机数据</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -455,13 +499,13 @@
       <i class="fa fa-chart-area"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">120k</span>
+    <span title="站点总字数">121k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">6:39</span>
+    <span title="站点阅读时长">6:42</span>
 </div>
 
 <div class="powered-by">
