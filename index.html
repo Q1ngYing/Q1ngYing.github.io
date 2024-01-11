@@ -165,6 +165,139 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/01/11/%E9%80%9A%E7%94%A8%E5%8D%87%E7%BA%A7%E5%90%88%E7%BA%A6%EF%BC%88UUPS%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Q1ngying">
+      <meta itemprop="description" content="今朝梦醒与君别，遥盼春风寄相思">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Q1ngying">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/01/11/%E9%80%9A%E7%94%A8%E5%8D%87%E7%BA%A7%E5%90%88%E7%BA%A6%EF%BC%88UUPS%EF%BC%89/" class="post-title-link" itemprop="url">通用升级合约（UUPS）</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-01-11 20:07:46 / 修改时间：20:08:40" itemprop="dateCreated datePublished" datetime="2024-01-11T20:07:46+08:00">2024-01-11</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Solidity/" itemprop="url" rel="index"><span itemprop="name">Solidity</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Proxy/" itemprop="url" rel="index"><span itemprop="name">Proxy</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Upgrade/" itemprop="url" rel="index"><span itemprop="name">Upgrade</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="通用升级合约（UUPS）"><a href="#通用升级合约（UUPS）" class="headerlink" title="通用升级合约（UUPS）"></a>通用升级合约（UUPS）</h1><p>通用升级合约（UUPS）相比透明代理合约，UUPS 代理合约最终可以移出其升级能力，使代码真正不可变，而且 UUPS 在技术上部署成本稍低一些。</p>
+<p>OpenZeppelin 的文档中详细介绍了这两种代理的区别： <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/5.x/api/proxy#transparent-vs-uups">https://docs.openzeppelin.com/contracts/5.x/api/proxy#transparent-vs-uups</a> </p>
+<h2 id="构建一个可升级合约"><a href="#构建一个可升级合约" class="headerlink" title="构建一个可升级合约"></a>构建一个可升级合约</h2><h3 id="构建-V1-合约，V2-合约"><a href="#构建-V1-合约，V2-合约" class="headerlink" title="构建 V1 合约，V2 合约"></a>构建 V1 合约，V2 合约</h3><p>构建一个 UUPS 合约，可以引入 OpenZeppelin 的标准库，对于 Foundry 开发环境：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">forge install OpenZeppelin/openzeppelin-contracts-upgradeable --no-commit</span><br></pre></td></tr></table></figure>
+
+<p>即可安装 Foundry 到项目中，使用时，导入即可（记得 Foundry.toml 重映射）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import &#123;UUPSUpgradeable&#125; from &quot;@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol&quot;;</span><br></pre></td></tr></table></figure>
+
+<p><code>UUPSUpgradeable</code> 是一个抽象合约，需要我们在我们自己的合约中重写<code>_authorizeUpgrade</code>函数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function _authorizeUpgrade(address newImplementation) internal override &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>关于重写该函数的原因，在 OpenZeppelin 库中给出了原因：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line">* @dev Function that should revert when `msg.sender` is not authorized to upgrade the contract. Called by</span><br><span class="line">* &#123;upgradeToAndCall&#125;.</span><br><span class="line">*</span><br><span class="line">* Normally, this function will use an xref:access.adoc[access control] modifier such as &#123;Ownable-onlyOwner&#125;.</span><br><span class="line">*</span><br><span class="line">* ```solidity</span><br><span class="line">* function _authorizeUpgrade(address) internal onlyOwner &#123;&#125;</span><br><span class="line">* ```</span><br><span class="line">*/</span><br><span class="line">function _authorizeUpgrade(address newImplementation) internal virtual;</span><br></pre></td></tr></table></figure>
+
+<p>当需要需要构造函数的功能时（即在合约部署时的一些初始化操作时），就需要导入另一个库：<code>Initializable</code>。注意：<strong>在代理合约（Proxy）中不使用构造函数（<code>constructor</code>）</strong></p>
+<p>因为：状态变量存储在 Proxy 合约中，而不是 implementation （实现合约）中，Proxy 只是<strong>借用</strong>了 Implementation 中的一些函数，<strong>所以，代理合约或者打算通过代理使用的合约，不使用构造函数</strong>，满足下面的流程：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Proxy ---&gt; deploy implementation ---&gt; call some &quot;initializable&quot; function</span><br></pre></td></tr></table></figure>
+
+<p>所以，很多可升级合约做的第一步是调用这个已禁用的 <code>initializers</code> 函数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/// @custom:oz-upgrades-unsafe-allow constructor</span><br><span class="line">constructor() &#123;</span><br><span class="line">	_disableInitializers();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>而当我们确实需要使用构造函数时，我们之秀添加一个初始化器：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">function initialize() public initializer &#123;</span><br><span class="line">	__Ownable_init(msg.sender); // sets owner</span><br><span class="line">	__UUPSUpgradeable_init();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>完整的 V1 合约如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: SEE LICENSE IN LICENSE</span><br><span class="line">pragma solidity ^0.8.18;</span><br><span class="line"></span><br><span class="line">import &#123;UUPSUpgradeable&#125; from &quot;@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol&quot;;</span><br><span class="line">import &#123;Initializable&#125; from &quot;@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol&quot;;</span><br><span class="line">import &#123;OwnableUpgradeable&#125; from &quot;@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract BoxV1 is Initializable, UUPSUpgradeable, OwnableUpgradeable &#123;</span><br><span class="line">    uint256 internal number;</span><br><span class="line"></span><br><span class="line">    /// @custom:oz-upgrades-unsafe-allow constructor</span><br><span class="line">    constructor() &#123;</span><br><span class="line">        _disableInitializers();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function initialize() public initializer &#123;</span><br><span class="line">        __Ownable_init(msg.sender); // sets owner</span><br><span class="line">        __UUPSUpgradeable_init();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function getNumber() external view returns (uint256) &#123;</span><br><span class="line">        return number;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function version() external pure returns (uint256) &#123;</span><br><span class="line">        return 1;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function _authorizeUpgrade(address newImplementation) internal override &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>V2 合约：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: SEE LICENSE IN LICENSE</span><br><span class="line">pragma solidity ^0.8.18;</span><br><span class="line"></span><br><span class="line">import &#123;UUPSUpgradeable&#125; from &quot;@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol&quot;;</span><br><span class="line">import &#123;Initializable&#125; from &quot;@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol&quot;;</span><br><span class="line">import &#123;OwnableUpgradeable&#125; from &quot;@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract BoxV2 is Initializable, UUPSUpgradeable, OwnableUpgradeable &#123;</span><br><span class="line">    uint256 internal number;</span><br><span class="line"></span><br><span class="line">    /// @custom:oz-upgrades-unsafe-allow constructor</span><br><span class="line">    constructor() &#123;</span><br><span class="line">        _disableInitializers();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function initialize() public initializer &#123;</span><br><span class="line">        __Ownable_init(msg.sender); // sets owner</span><br><span class="line">        __UUPSUpgradeable_init();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function getNumber() external view returns (uint256) &#123;</span><br><span class="line">        return number;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function version() external pure returns (uint256) &#123;</span><br><span class="line">        return 2;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function setNumber(uint256 _number) external &#123;</span><br><span class="line">        number = _number;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function _authorizeUpgrade(address newImplementation) internal override &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="部署-V1-合约"><a href="#部署-V1-合约" class="headerlink" title="部署 V1 合约"></a>部署 V1 合约</h3><p>接下来完成部署 V1 合约的脚本。</p>
+<p>这里又回到了最开始的点，实现可升级（不改变合约地址），实际上不改变的是 Proxy 合约的地址，也就是说，部署 V1 合约实际上是部署了两个合约：<strong>一个是Implementation（Logic）合约，一个是 Proxy（代理合约）</strong>。而这里使用的代理合约是 ERC1967 代理合约（还是，从 OpenZeppelin 标准合约库中引用即可）。</p>
+<p>实际上部署完 V1 合约后，所有的交互都是和 <strong>Proxy</strong> 交互，Proxy 通过 Delegatecall 将 Implementation 合约中的逻辑引用过来，所有的状态变量也是存储在 Proxy 合约的 Storage 中。</p>
+<p>完整的部署 V1 合约的脚本合约如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: SEE LICENSE IN LICENSE</span><br><span class="line">pragma solidity ^0.8.18;</span><br><span class="line"></span><br><span class="line">import &#123;Script&#125; from &quot;forge-std/Script.sol&quot;;</span><br><span class="line">import &#123;BoxV1&#125; from &quot;../src/BoxV1.sol&quot;;</span><br><span class="line">import &#123;ERC1967Proxy&#125; from &quot;@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract DeployBox is Script &#123;</span><br><span class="line">    function run() external returns (address) &#123;</span><br><span class="line">        address proxy = deployBox();</span><br><span class="line">        return proxy;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function deployBox() public returns (address) &#123;</span><br><span class="line">        vm.startBroadcast();</span><br><span class="line">        BoxV1 box = new BoxV1(); // implementation (Logic)</span><br><span class="line">        // here we will use ERC1967 Proxy Contract</span><br><span class="line">        ERC1967Proxy proxy = new ERC1967Proxy(address(box), &quot;&quot;);</span><br><span class="line">        vm.stopBroadcast();</span><br><span class="line">        return address(proxy);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="将-V1-合约升级到-V2"><a href="#将-V1-合约升级到-V2" class="headerlink" title="将 V1 合约升级到 V2"></a>将 V1 合约升级到 V2</h3><p>对合约进行升级时，涉及到这么一个过程：</p>
+<p>deploy V2 -&gt; call function <code>upgradeToAndCall(V2address, &quot;&quot;)</code> (in Proxy) -&gt; 升级成功。</p>
+<p>完整脚本：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: SEE LICENSE IN LICENSE</span><br><span class="line">pragma solidity ^0.8.18;</span><br><span class="line"></span><br><span class="line">import &#123;Script&#125; from &quot;forge-std/Script.sol&quot;;</span><br><span class="line">import &#123;DevOpsTools&#125; from &quot;lib/foundry-devops/src/DevOpsTools.sol&quot;;</span><br><span class="line">import &#123;BoxV2&#125; from &quot;../src/BoxV2.sol&quot;;</span><br><span class="line">import &#123;BoxV1&#125; from &quot;../src/BoxV1.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract UpgradeBox is Script &#123;</span><br><span class="line">    function run() external returns (address) &#123;</span><br><span class="line">        address mostRecentlyDeployed = DevOpsTools.get_most_recent_deployment(&quot;ERC1967Proxy&quot;, block.chainid);</span><br><span class="line"></span><br><span class="line">        vm.startBroadcast();</span><br><span class="line">        BoxV2 newBox = new BoxV2();</span><br><span class="line">        vm.stopBroadcast();</span><br><span class="line">        address proxy = upgradeBox(mostRecentlyDeployed, address(newBox));</span><br><span class="line">        return proxy;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function upgradeBox(address proxyAddress, address newBox) public returns (address) &#123;</span><br><span class="line">        vm.startBroadcast();</span><br><span class="line">        BoxV1 proxy = BoxV1(proxyAddress);</span><br><span class="line">        proxy.upgradeToAndCall(address(newBox), &quot;&quot;);</span><br><span class="line">        vm.stopBroadcast();</span><br><span class="line">        return address(proxy);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="一些关于-UUPS-的测试："><a href="#一些关于-UUPS-的测试：" class="headerlink" title="一些关于 UUPS 的测试："></a>一些关于 UUPS 的测试：</h3><p>不多赘述，直接上源代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: SEE LICENSE IN LICENSE</span><br><span class="line">pragma solidity ^0.8.18;</span><br><span class="line"></span><br><span class="line">import &#123;Test&#125; from &quot;forge-std/Test.sol&quot;;</span><br><span class="line">import &#123;DeployBox&#125; from &quot;../script/DeployBox.s.sol&quot;;</span><br><span class="line">import &#123;UpgradeBox&#125; from &quot;../script/UpgradeBox.s.sol&quot;;</span><br><span class="line">import &#123;BoxV1&#125; from &quot;../src/BoxV1.sol&quot;;</span><br><span class="line">import &#123;BoxV2&#125; from &quot;../src/BoxV2.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract DeployAndUpgradeTest is Test &#123;</span><br><span class="line">    DeployBox public deployer;</span><br><span class="line">    UpgradeBox public upgrader;</span><br><span class="line">    address public OWNER = makeAddr(&quot;owner&quot;);</span><br><span class="line"></span><br><span class="line">    address public proxy;</span><br><span class="line"></span><br><span class="line">    function setUp() public &#123;</span><br><span class="line">        deployer = new DeployBox();</span><br><span class="line">        upgrader = new UpgradeBox();</span><br><span class="line">        proxy = deployer.run(); // right now, Proxy point to V1</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function testProxyStartAsBoxV1() public &#123;</span><br><span class="line">        vm.expectRevert();</span><br><span class="line">        BoxV2(proxy).setNumber(7);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function testUpgrades() public &#123;</span><br><span class="line">        BoxV2 box2 = new BoxV2();</span><br><span class="line"></span><br><span class="line">        upgrader.upgradeBox(proxy, address(box2));</span><br><span class="line"></span><br><span class="line">        uint256 expectValue = 2;</span><br><span class="line">        assertEq(expectValue, BoxV2(proxy).version());</span><br><span class="line"></span><br><span class="line">        BoxV2(proxy).setNumber(7);</span><br><span class="line">        assertEq(7, BoxV2(proxy).getNumber());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/01/10/%E5%8F%AF%E5%8D%87%E7%BA%A7%E5%90%88%E7%BA%A6-md/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -188,10 +321,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2024-01-10 18:01:23 / 修改时间：18:02:12" itemprop="dateCreated datePublished" datetime="2024-01-10T18:01:23+08:00">2024-01-10</time>
+              <time title="创建时间：2024-01-10 18:01:23" itemprop="dateCreated datePublished" datetime="2024-01-10T18:01:23+08:00">2024-01-10</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-01-11 20:08:54" itemprop="dateModified" datetime="2024-01-11T20:08:54+08:00">2024-01-11</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -203,6 +342,10 @@
                   ，
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/Proxy/" itemprop="url" rel="index"><span itemprop="name">Proxy</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Upgrade/" itemprop="url" rel="index"><span itemprop="name">Upgrade</span></a>
                 </span>
             </span>
 
@@ -838,20 +981,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-count">43</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-count">16</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -896,13 +1039,13 @@
       <i class="fa fa-chart-area"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">122k</span>
+    <span title="站点总字数">123k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">6:47</span>
+    <span title="站点阅读时长">6:51</span>
 </div>
 
 <div class="powered-by">
