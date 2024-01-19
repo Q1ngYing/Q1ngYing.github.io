@@ -22,21 +22,20 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="来源：https:&#x2F;&#x2F;learnblockchain.cn&#x2F;article&#x2F;3507 去中心化交易所（DEX）去中心化交易所是指使用智能合约，部署在区块链允许的非托管式交易所。目前的主流去中心化交易所，主要有三大特征：  去中心化允许：应用的允许不依赖于中心化服务器的服务；或者即使依赖的中心化服务器宕机，应用的核心数据和服务也不会收到影响 不托管用户资产：用户无需向应用本身或第三方托管资产，就可以">
+  <meta name="description" content="函数重载函数重载简单理解，一个合约中可以有多个同名的函数，但是这些函数的参数类型需要保证不同。  个人理解： 在 Solidity 的底层，调用函数其实并不是通过函数名来调用的，而是通过函数选择器，函数选择器是函数签名的哈希值的前4个字节。函数签名不同，得到的函数选择器就会不同。所以这不会引起冲突。(函数签名：函数名和函数的参数，不使用空格分隔，比如：func(uint256,uint8))">
 <meta property="og:type" content="article">
-<meta property="og:title" content="DeFi基础概念">
-<meta property="og:url" content="http://example.com/2023/11/06/DeFi%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/index.html">
+<meta property="og:title" content="函数重载">
+<meta property="og:url" content="http://example.com/2024/01/19/%E5%87%BD%E6%95%B0%E9%87%8D%E8%BD%BD/index.html">
 <meta property="og:site_name" content="Q1ngying">
-<meta property="og:description" content="来源：https:&#x2F;&#x2F;learnblockchain.cn&#x2F;article&#x2F;3507 去中心化交易所（DEX）去中心化交易所是指使用智能合约，部署在区块链允许的非托管式交易所。目前的主流去中心化交易所，主要有三大特征：  去中心化允许：应用的允许不依赖于中心化服务器的服务；或者即使依赖的中心化服务器宕机，应用的核心数据和服务也不会收到影响 不托管用户资产：用户无需向应用本身或第三方托管资产，就可以">
+<meta property="og:description" content="函数重载函数重载简单理解，一个合约中可以有多个同名的函数，但是这些函数的参数类型需要保证不同。  个人理解： 在 Solidity 的底层，调用函数其实并不是通过函数名来调用的，而是通过函数选择器，函数选择器是函数签名的哈希值的前4个字节。函数签名不同，得到的函数选择器就会不同。所以这不会引起冲突。(函数签名：函数名和函数的参数，不使用空格分隔，比如：func(uint256,uint8))">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-11-06T11:44:31.000Z">
-<meta property="article:modified_time" content="2023-11-06T11:46:13.376Z">
+<meta property="article:published_time" content="2024-01-19T08:36:20.000Z">
+<meta property="article:modified_time" content="2024-01-19T08:37:26.150Z">
 <meta property="article:author" content="Q1ngying">
 <meta property="article:tag" content="Solidity">
-<meta property="article:tag" content="DeFi">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://example.com/2023/11/06/DeFi%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/">
+<link rel="canonical" href="http://example.com/2024/01/19/%E5%87%BD%E6%95%B0%E9%87%8D%E8%BD%BD/">
 
 
 <script id="page-configurations">
@@ -49,7 +48,7 @@
   };
 </script>
 
-  <title>DeFi基础概念 | Q1ngying</title>
+  <title>函数重载 | Q1ngying</title>
   
 
 
@@ -170,7 +169,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/11/06/DeFi%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/01/19/%E5%87%BD%E6%95%B0%E9%87%8D%E8%BD%BD/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -183,7 +182,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          DeFi基础概念
+          函数重载
         </h1>
 
         <div class="post-meta">
@@ -194,21 +193,13 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2023-11-06 19:44:31 / 修改时间：19:46:13" itemprop="dateCreated datePublished" datetime="2023-11-06T19:44:31+08:00">2023-11-06</time>
+              <time title="创建时间：2024-01-19 16:36:20 / 修改时间：16:37:26" itemprop="dateCreated datePublished" datetime="2024-01-19T16:36:20+08:00">2024-01-19</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/DeFi/" itemprop="url" rel="index"><span itemprop="name">DeFi</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/learn/" itemprop="url" rel="index"><span itemprop="name">learn</span></a>
-                </span>
-                  ，
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/Solidity/" itemprop="url" rel="index"><span itemprop="name">Solidity</span></a>
                 </span>
@@ -220,14 +211,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.6k</span>
+              <span>808</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>5 分钟</span>
+              <span>3 分钟</span>
             </span>
 
         </div>
@@ -239,40 +230,56 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>来源：<a target="_blank" rel="noopener" href="https://learnblockchain.cn/article/3507">https://learnblockchain.cn/article/3507</a></p>
-<h2 id="去中心化交易所（DEX）"><a href="#去中心化交易所（DEX）" class="headerlink" title="去中心化交易所（DEX）"></a>去中心化交易所（DEX）</h2><p><strong>去中心化交易所是指使用智能合约，部署在区块链允许的非托管式交易所。</strong>目前的主流去中心化交易所，主要有三大特征：</p>
+        <h1 id="函数重载"><a href="#函数重载" class="headerlink" title="函数重载"></a>函数重载</h1><h2 id="函数重载-1"><a href="#函数重载-1" class="headerlink" title="函数重载"></a>函数重载</h2><p>简单理解，<strong>一个合约中可以有多个同名的函数，但是这些函数的参数类型需要保证不同</strong>。</p>
+<blockquote>
+<p><strong>个人理解：</strong></p>
+<p>在 Solidity 的底层，调用函数其实并不是通过函数名来调用的，而是通过<strong>函数选择器</strong>，函数选择器是<strong>函数签名的哈希值的前4个字节</strong>。函数签名不同，得到的函数选择器就会不同。所以这不会引起冲突。(<strong>函数签名：</strong>函数名和函数的参数，不使用空格分隔，比如：<code>func(uint256,uint8)</code>)</p>
+</blockquote>
+<span id="more"></span>
+
+<p>举例，在合约<code>A</code>范围内对函数<code>f</code>进行重载：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">contract A &#123;</span><br><span class="line">    function f(uint value) public pure returns (uint out)&#123;</span><br><span class="line">        out = value;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    function f(uint value, bool really) public pure returns(uint out)&#123;</span><br><span class="line">        if (really) </span><br><span class="line">            out = value;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>重载函数也存在于外部接口中。<strong>如果两个外部可见函数仅区别于 Solidity 内的类型而不是他们的外部类型则会导致错误</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// 这段代码编辑器会报错</span><br><span class="line">contract A &#123;</span><br><span class="line">    function f(B value) public pure returns (B out) &#123;</span><br><span class="line">        out = value;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function f(address value) public pure returns (address out) &#123;</span><br><span class="line">        out = value;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract B &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>报错原因：虽然上面的函数传入的类型是合约类型，但在 Solidity 的底层，其实他们都是地址，导致<strong>函数选择器冲突</strong>无法编译</p>
+<h2 id="重载解析和参数匹配"><a href="#重载解析和参数匹配" class="headerlink" title="重载解析和参数匹配"></a>重载解析和参数匹配</h2><p>通过将<strong>当前范围内的函数声明与函数调用中提供的参数相匹配，可以选择重载函数</strong>。 如果所有参数都可以隐式地转换为预期类型，则选择函数作为重载候选项。 如果一个候选都没有，解析失败。</p>
+<blockquote>
+<p>返回参数不作为重载解析的依据。</p>
+<p>上述情况指的是<strong>内部调用</strong>，外部调用直接通过函数选择器以和函数匹配，不会出现问题。</p>
+</blockquote>
+<p>重构解析的关键点：</p>
 <ul>
-<li><strong>去中心化允许：</strong>应用的允许不依赖于中心化服务器的服务；或者即使依赖的中心化服务器宕机，应用的核心数据和服务也不会收到影响</li>
-<li><strong>不托管用户资产：</strong>用户无需向应用本身或第三方托管资产，就可以获得完整的交易服务</li>
-<li><strong>无审核服务：</strong>应用不会对特定用户拒绝服务，也不会限制用户交易任何种类的资产</li>
+<li><strong>参数匹配：</strong><ul>
+<li>Solidity 会<strong>检查你在参数调用中提供的每个函数</strong>，看他们<strong>是否可以隐式转换为每个重载版本的对应参数类型</strong></li>
+<li>如果所有参数都可以隐式转换为某个重载版本的参数类型，那么这个版本就是一个<strong>重载候选</strong></li>
 </ul>
-<h2 id="自动化做市商（AMM）"><a href="#自动化做市商（AMM）" class="headerlink" title="自动化做市商（AMM）"></a>自动化做市商（AMM）</h2><p>在传统的中心化交易所当中，有专门的市商在交易所中挂买卖单，以提供资产流动性。同样，在去中心化交易所，也需要有人为资产提供流动性。然而，不同于中心化交易所挂单成本几乎为0，在区块链上进行频繁的挂单、撤单操作会消耗大量手续费，而且并不及时，这会导致市商的严重亏损。<strong>因此，去中心化交易所必须要开发出一套能在区块链上允许的自动化做市商系统，能够为提供流动性的市商自动地配置买卖双边资产，减少损失</strong></p>
-<h2 id="恒定乘积做市模型（CPMM）"><a href="#恒定乘积做市模型（CPMM）" class="headerlink" title="恒定乘积做市模型（CPMM）"></a>恒定乘积做市模型（CPMM）</h2><p>Uniswap-v2 使用了 <strong>恒定乘积做市模型</strong> 来实现自动化做市商。其计算步骤如下：</p>
-<ol>
-<li>甲在 Uniswap-v2 上提供了 1000 个 TokenA 和 100 个 TokenB 作为流动池，计乘数 Kab &#x3D; 1000 * 100 &#x3D; 100000</li>
-<li>乙想要在 Uniswap-v2 上使用 100 个 TokenA兑换 TokenB ，那么 Uniswap-v2 会首先计算交易后流动池会有 1000 + 100 &#x3D; 1100 个 TokenA；为了维持 Kab 的不变，就需要 TokenB 的数量减少为 100000&#x2F;1100 &#x3D; 90.909…。因此 Uniswap-v2会给乙兑换出 100 - 90.909 &#x3D; 9.091 个 TokenB。</li>
-<li>乙成功地使用 100 个 TokenA 在 Uniswap-v2 上兑换了 9.091 个 TokenB，可以预见的是，根据这套算法，乙需要兑换的 TokenA 越多，平均每个 TokenA 能兑换的 TokenB 就会越少。这就产生了<strong>滑点</strong>的概念。</li>
-</ol>
-<p><strong>简化公式：<code>（TokenA 余额 + 你出售的 TokenA）*（TokenB 余额 - 你获得的 TokenB）= 常熟 K </code></strong></p>
-<h2 id="滑点"><a href="#滑点" class="headerlink" title="滑点"></a>滑点</h2><p>在上面的例子中，甲在 Uniswap-v2 上提供了 1000 个 TokenA 和 100 个 TokenB 作为流动池，<strong>TokenA 和 TokenB 的标记比价为 10：1，即10个 TokenA 可以兑换 1 个 TokenB</strong>。然而在乙使用 1000 个 TokenA 在 Uniswap-v2 上兑换了 50 个 TokenB之后，其<strong>实际的交易比价约为 1000：50，实际上使用 10 个 TokenA 只能兑换 0.5 个 TokenB</strong>。这就是在 Uniswap-v2 上<strong>交易产生了滑点，滑点高达 50%</strong> 。</p>
-<h2 id="流动池"><a href="#流动池" class="headerlink" title="流动池"></a>流动池</h2><p>不同于传统中心化交易所的订单交易，可以理解为有一个和你博弈的对手，你需要买入他卖出的单子，或者等他吃掉你卖出的单子。不管是买入还是卖出，在 Uniswap-v2 上的所有交易都是对流动池的交易，没有对手会直接和你做交易</p>
-<h2 id="流动性凭证-（LP）"><a href="#流动性凭证-（LP）" class="headerlink" title="流动性凭证 （LP）"></a>流动性凭证 （LP）</h2><p>当你在 Uniswap-v2 上为代币提供流动性时，Uniswap-v2 会发送给你一个流动性凭证(LP)，这代表了你对你所提供流动性的所有权。<strong>要从流动池中提取资产时，必需要返回流动性凭证</strong>。因此<strong>千万不要随意转移LP到不受你控制的地址。</strong></p>
-<h2 id="无常损失"><a href="#无常损失" class="headerlink" title="无常损失"></a>无常损失</h2><p>当在 Uniswap-v2 上为代币提供流动性，赚取手续费时，会涉及到无常损失的计算：</p>
-<ol>
-<li>甲在 Uniswap-v2 上提供了 1000 个 TokenA 和 100 个 usdt 作为流动池，乙在 Uniswap-v2 上使用 1000 个 TokenA 兑换了 50 个 usdt，池子里剩下 2000 个 TokenA 和 50 个 usdt。</li>
-<li>原来甲在 Uniswap-v2 上提供的总资产价值为 1000 个 TokenA 和 100 个 usdt，TokenA 对 usdt 的兑换比例为 1000：100，可以换算为 200 个 usdt。乙兑换之后，甲在 Uniswap-v2 上提供的流动性资产价值为：2000 个 TokenA 和 50 个 usdt，TokenA 对 usdt 的兑换比例为 2000：50，总计为 100 个 usdt</li>
-<li>而如果甲本来就不提供流动性，TokenA 对 usdt 的兑换比率跌为 2000：50，则其资产为 1000 个 TokenA 和 100 个 usdt &#x3D; 125 usdt。可以看到，甲因为提供流动性多损失了 25 usdt，这就是资产下跌的无常损失。</li>
-<li>乙改为在 Uniswap-v2 上使用 100 个 usdt 兑换 500 个 TokenA。乙兑换之后，甲在 Uniswap-v2 上提供的流动性资产价值为：500 个 TokenA 和 200 个 usdt，TokenA 对 usdt 的兑换比例为 500：200，总计为 400 个 usdt。</li>
-<li>而如果甲本来就不提供流动性，TokenA 对 usdt 的兑换比例涨到 500：200，则其资产为 1000 个 TokenA 和 100 个usdt &#x3D; 500 usdt。</li>
-<li>可以看到，甲因为提供流动性少赚了100usdt，这就是资产上涨造成的无常损失。</li>
-</ol>
-<p><strong>简单总结：无常损失就是流动性提供者，在资产上涨过程中自动卖出，在资产下跌过程中自动买入所造成的损失。</strong></p>
-<h2 id="闪电贷"><a href="#闪电贷" class="headerlink" title="闪电贷"></a>闪电贷</h2><p>闪电贷是一种新型的无抵押贷款，目前只能在区块链上实现，Uniswap-v2 也完成了闪电贷的实现。其主要特点如下：</p>
+</li>
+<li><strong>选择重载候选：</strong><ul>
+<li>如果只有一个候选，那么就选择这个。 </li>
+<li>如果没有候选或有多个候选，解析就会失败，Solidity会报错。</li>
+</ul>
+</li>
+<li><strong>返回参数不影响重载解析</strong>：<ul>
+<li>函数的返回类型不参与重载解析。即使两个重载函数的参数类型相同，但返回类型不同，Solidity也不会认为它们是有效的重载。</li>
+</ul>
+</li>
+</ul>
+<p>代码示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">contract A &#123;</span><br><span class="line">    function f(uint8 val) public pure returns (uint8 out) &#123;</span><br><span class="line">        out = val;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function f(uint256 val) public pure returns (uint256 out) &#123;</span><br><span class="line">        out = val;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>首先在合约<code>A</code>中已经存在了<strong>重载函数</strong>，内部调用函数时：</p>
 <ul>
-<li><strong>使用闪电贷借出的资产无需任何抵押品，也不要任何身份认证，但必须在借出的同一个区块内完成还款并支付利息，否则借款就会失败并回滚交易数据</strong></li>
+<li>如果调用方式是<code>f(50)</code>，解释器会报错：<ul>
+<li>因为<code>50</code>可以被隐式转换为<code>uint8</code>，也可以被隐式转换为<code>uint256</code>，两个重载候选冲突</li>
 </ul>
-<p>目前来说，闪电贷的主要用途是借贷平仓、交易所搬砖、黑客攻击等。很多被黑客攻击的受害者认为闪电贷是一种危险的工具，不应该存在。但不管怎么说，它赋予了所有人用极小成本，使用极大资金的能力。</p>
-<h2 id="价格预言机"><a href="#价格预言机" class="headerlink" title="价格预言机"></a>价格预言机</h2><p>Uniswap-v2 所代表的去中心化交易所，提供去中心化的价格生成体系。以此为基础，可以打造出一个去中心化的价格生成和获取系统。这对于去中心化的借贷、杠杆等金融衍生品来说非常重要，虽然目前 Uniswap-v2 所代表的去中心化单一流动池价格预言机并不是完全安全的。</p>
+</li>
+<li>如果调用方式为<code>f(256)</code>则不会出现问题“<ul>
+<li>因为<code>uint8</code>的最大值为<code>255</code>，<code>256</code>不会被隐式转换为<code>uint8</code>，只有一个重载候选。</li>
+</ul>
+</li>
+</ul>
 
     </div>
 
@@ -288,7 +295,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://example.com/2023/11/06/DeFi%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/" title="DeFi基础概念">http://example.com/2023/11/06/DeFi基础概念/</a>
+    <a href="http://example.com/2024/01/19/%E5%87%BD%E6%95%B0%E9%87%8D%E8%BD%BD/" title="函数重载">http://example.com/2024/01/19/函数重载/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -300,7 +307,6 @@
       <footer class="post-footer">
           <div class="post-tags">
               <a href="/tags/Solidity/" rel="tag"># Solidity</a>
-              <a href="/tags/DeFi/" rel="tag"># DeFi</a>
           </div>
 
         
@@ -309,13 +315,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2023/11/06/%E7%99%BB%E9%93%BE-%E7%AC%AC%E4%BA%8C%E8%AF%BE/" rel="prev" title="登链-第二课">
-      <i class="fa fa-chevron-left"></i> 登链-第二课
+    <a href="/2024/01/16/AlienCodex-wp/" rel="prev" title="AlienCodex-wp">
+      <i class="fa fa-chevron-left"></i> AlienCodex-wp
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2023/11/12/EIP721%EF%BC%9AERC721%E9%9D%9E%E5%90%8C%E8%B4%A8%E5%8C%96%E4%BB%A3%E5%B8%81%E6%A0%87%E5%87%86/" rel="next" title="EIP721：ERC721非同质化代币标准">
-      EIP721：ERC721非同质化代币标准 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -374,7 +377,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%BB%E4%B8%AD%E5%BF%83%E5%8C%96%E4%BA%A4%E6%98%93%E6%89%80%EF%BC%88DEX%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">去中心化交易所（DEX）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E5%8C%96%E5%81%9A%E5%B8%82%E5%95%86%EF%BC%88AMM%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">自动化做市商（AMM）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%81%92%E5%AE%9A%E4%B9%98%E7%A7%AF%E5%81%9A%E5%B8%82%E6%A8%A1%E5%9E%8B%EF%BC%88CPMM%EF%BC%89"><span class="nav-number">3.</span> <span class="nav-text">恒定乘积做市模型（CPMM）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BB%91%E7%82%B9"><span class="nav-number">4.</span> <span class="nav-text">滑点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%81%E5%8A%A8%E6%B1%A0"><span class="nav-number">5.</span> <span class="nav-text">流动池</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%81%E5%8A%A8%E6%80%A7%E5%87%AD%E8%AF%81-%EF%BC%88LP%EF%BC%89"><span class="nav-number">6.</span> <span class="nav-text">流动性凭证 （LP）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%A0%E5%B8%B8%E6%8D%9F%E5%A4%B1"><span class="nav-number">7.</span> <span class="nav-text">无常损失</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AA%E7%94%B5%E8%B4%B7"><span class="nav-number">8.</span> <span class="nav-text">闪电贷</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%B7%E6%A0%BC%E9%A2%84%E8%A8%80%E6%9C%BA"><span class="nav-number">9.</span> <span class="nav-text">价格预言机</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E9%87%8D%E8%BD%BD"><span class="nav-number">1.</span> <span class="nav-text">函数重载</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E9%87%8D%E8%BD%BD-1"><span class="nav-number">1.1.</span> <span class="nav-text">函数重载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E8%BD%BD%E8%A7%A3%E6%9E%90%E5%92%8C%E5%8F%82%E6%95%B0%E5%8C%B9%E9%85%8D"><span class="nav-number">1.2.</span> <span class="nav-text">重载解析和参数匹配</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

@@ -165,6 +165,99 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/01/19/%E5%87%BD%E6%95%B0%E9%87%8D%E8%BD%BD/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Q1ngying">
+      <meta itemprop="description" content="今朝梦醒与君别，遥盼春风寄相思">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Q1ngying">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/01/19/%E5%87%BD%E6%95%B0%E9%87%8D%E8%BD%BD/" class="post-title-link" itemprop="url">函数重载</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-01-19 16:36:20 / 修改时间：16:37:26" itemprop="dateCreated datePublished" datetime="2024-01-19T16:36:20+08:00">2024-01-19</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Solidity/" itemprop="url" rel="index"><span itemprop="name">Solidity</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>808</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="函数重载"><a href="#函数重载" class="headerlink" title="函数重载"></a>函数重载</h1><h2 id="函数重载-1"><a href="#函数重载-1" class="headerlink" title="函数重载"></a>函数重载</h2><p>简单理解，<strong>一个合约中可以有多个同名的函数，但是这些函数的参数类型需要保证不同</strong>。</p>
+<blockquote>
+<p><strong>个人理解：</strong></p>
+<p>在 Solidity 的底层，调用函数其实并不是通过函数名来调用的，而是通过<strong>函数选择器</strong>，函数选择器是<strong>函数签名的哈希值的前4个字节</strong>。函数签名不同，得到的函数选择器就会不同。所以这不会引起冲突。(<strong>函数签名：</strong>函数名和函数的参数，不使用空格分隔，比如：<code>func(uint256,uint8)</code>)</p>
+</blockquote>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/01/19/%E5%87%BD%E6%95%B0%E9%87%8D%E8%BD%BD/" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/01/11/%E9%80%9A%E7%94%A8%E5%8D%87%E7%BA%A7%E5%90%88%E7%BA%A6%EF%BC%88UUPS%EF%BC%89/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -188,10 +281,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2024-01-11 20:07:46 / 修改时间：20:08:40" itemprop="dateCreated datePublished" datetime="2024-01-11T20:07:46+08:00">2024-01-11</time>
+              <time title="创建时间：2024-01-11 20:07:46" itemprop="dateCreated datePublished" datetime="2024-01-11T20:07:46+08:00">2024-01-11</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-01-19 16:38:25" itemprop="dateModified" datetime="2024-01-19T16:38:25+08:00">2024-01-19</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -237,49 +336,14 @@
       
           <h1 id="通用升级合约（UUPS）"><a href="#通用升级合约（UUPS）" class="headerlink" title="通用升级合约（UUPS）"></a>通用升级合约（UUPS）</h1><p>通用升级合约（UUPS）相比透明代理合约，UUPS 代理合约最终可以移出其升级能力，使代码真正不可变，而且 UUPS 在技术上部署成本稍低一些。</p>
 <p>OpenZeppelin 的文档中详细介绍了这两种代理的区别： <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/5.x/api/proxy#transparent-vs-uups">https://docs.openzeppelin.com/contracts/5.x/api/proxy#transparent-vs-uups</a> </p>
-<h2 id="构建一个可升级合约"><a href="#构建一个可升级合约" class="headerlink" title="构建一个可升级合约"></a>构建一个可升级合约</h2><h3 id="构建-V1-合约，V2-合约"><a href="#构建-V1-合约，V2-合约" class="headerlink" title="构建 V1 合约，V2 合约"></a>构建 V1 合约，V2 合约</h3><p>构建一个 UUPS 合约，可以引入 OpenZeppelin 的标准库，对于 Foundry 开发环境：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">forge install OpenZeppelin/openzeppelin-contracts-upgradeable --no-commit</span><br></pre></td></tr></table></figure>
-
-<p>即可安装 Foundry 到项目中，使用时，导入即可（记得 Foundry.toml 重映射）</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import &#123;UUPSUpgradeable&#125; from &quot;@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol&quot;;</span><br></pre></td></tr></table></figure>
-
-<p><code>UUPSUpgradeable</code> 是一个抽象合约，需要我们在我们自己的合约中重写<code>_authorizeUpgrade</code>函数：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function _authorizeUpgrade(address newImplementation) internal override &#123;&#125;</span><br></pre></td></tr></table></figure>
-
-<p>关于重写该函数的原因，在 OpenZeppelin 库中给出了原因：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line">* @dev Function that should revert when `msg.sender` is not authorized to upgrade the contract. Called by</span><br><span class="line">* &#123;upgradeToAndCall&#125;.</span><br><span class="line">*</span><br><span class="line">* Normally, this function will use an xref:access.adoc[access control] modifier such as &#123;Ownable-onlyOwner&#125;.</span><br><span class="line">*</span><br><span class="line">* ```solidity</span><br><span class="line">* function _authorizeUpgrade(address) internal onlyOwner &#123;&#125;</span><br><span class="line">* ```</span><br><span class="line">*/</span><br><span class="line">function _authorizeUpgrade(address newImplementation) internal virtual;</span><br></pre></td></tr></table></figure>
-
-<p>当需要需要构造函数的功能时（即在合约部署时的一些初始化操作时），就需要导入另一个库：<code>Initializable</code>。注意：<strong>在代理合约（Proxy）中不使用构造函数（<code>constructor</code>）</strong></p>
-<p>因为：状态变量存储在 Proxy 合约中，而不是 implementation （实现合约）中，Proxy 只是<strong>借用</strong>了 Implementation 中的一些函数，<strong>所以，代理合约或者打算通过代理使用的合约，不使用构造函数</strong>，满足下面的流程：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Proxy ---&gt; deploy implementation ---&gt; call some &quot;initializable&quot; function</span><br></pre></td></tr></table></figure>
-
-<p>所以，很多可升级合约做的第一步是调用这个已禁用的 <code>initializers</code> 函数：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/// @custom:oz-upgrades-unsafe-allow constructor</span><br><span class="line">constructor() &#123;</span><br><span class="line">	_disableInitializers();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>而当我们确实需要使用构造函数时，我们之秀添加一个初始化器：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">function initialize() public initializer &#123;</span><br><span class="line">	__Ownable_init(msg.sender); // sets owner</span><br><span class="line">	__UUPSUpgradeable_init();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>完整的 V1 合约如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: SEE LICENSE IN LICENSE</span><br><span class="line">pragma solidity ^0.8.18;</span><br><span class="line"></span><br><span class="line">import &#123;UUPSUpgradeable&#125; from &quot;@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol&quot;;</span><br><span class="line">import &#123;Initializable&#125; from &quot;@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol&quot;;</span><br><span class="line">import &#123;OwnableUpgradeable&#125; from &quot;@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract BoxV1 is Initializable, UUPSUpgradeable, OwnableUpgradeable &#123;</span><br><span class="line">    uint256 internal number;</span><br><span class="line"></span><br><span class="line">    /// @custom:oz-upgrades-unsafe-allow constructor</span><br><span class="line">    constructor() &#123;</span><br><span class="line">        _disableInitializers();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function initialize() public initializer &#123;</span><br><span class="line">        __Ownable_init(msg.sender); // sets owner</span><br><span class="line">        __UUPSUpgradeable_init();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function getNumber() external view returns (uint256) &#123;</span><br><span class="line">        return number;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function version() external pure returns (uint256) &#123;</span><br><span class="line">        return 1;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function _authorizeUpgrade(address newImplementation) internal override &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>V2 合约：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: SEE LICENSE IN LICENSE</span><br><span class="line">pragma solidity ^0.8.18;</span><br><span class="line"></span><br><span class="line">import &#123;UUPSUpgradeable&#125; from &quot;@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol&quot;;</span><br><span class="line">import &#123;Initializable&#125; from &quot;@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol&quot;;</span><br><span class="line">import &#123;OwnableUpgradeable&#125; from &quot;@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract BoxV2 is Initializable, UUPSUpgradeable, OwnableUpgradeable &#123;</span><br><span class="line">    uint256 internal number;</span><br><span class="line"></span><br><span class="line">    /// @custom:oz-upgrades-unsafe-allow constructor</span><br><span class="line">    constructor() &#123;</span><br><span class="line">        _disableInitializers();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function initialize() public initializer &#123;</span><br><span class="line">        __Ownable_init(msg.sender); // sets owner</span><br><span class="line">        __UUPSUpgradeable_init();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function getNumber() external view returns (uint256) &#123;</span><br><span class="line">        return number;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function version() external pure returns (uint256) &#123;</span><br><span class="line">        return 2;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function setNumber(uint256 _number) external &#123;</span><br><span class="line">        number = _number;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function _authorizeUpgrade(address newImplementation) internal override &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="部署-V1-合约"><a href="#部署-V1-合约" class="headerlink" title="部署 V1 合约"></a>部署 V1 合约</h3><p>接下来完成部署 V1 合约的脚本。</p>
-<p>这里又回到了最开始的点，实现可升级（不改变合约地址），实际上不改变的是 Proxy 合约的地址，也就是说，部署 V1 合约实际上是部署了两个合约：<strong>一个是Implementation（Logic）合约，一个是 Proxy（代理合约）</strong>。而这里使用的代理合约是 ERC1967 代理合约（还是，从 OpenZeppelin 标准合约库中引用即可）。</p>
-<p>实际上部署完 V1 合约后，所有的交互都是和 <strong>Proxy</strong> 交互，Proxy 通过 Delegatecall 将 Implementation 合约中的逻辑引用过来，所有的状态变量也是存储在 Proxy 合约的 Storage 中。</p>
-<p>完整的部署 V1 合约的脚本合约如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: SEE LICENSE IN LICENSE</span><br><span class="line">pragma solidity ^0.8.18;</span><br><span class="line"></span><br><span class="line">import &#123;Script&#125; from &quot;forge-std/Script.sol&quot;;</span><br><span class="line">import &#123;BoxV1&#125; from &quot;../src/BoxV1.sol&quot;;</span><br><span class="line">import &#123;ERC1967Proxy&#125; from &quot;@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract DeployBox is Script &#123;</span><br><span class="line">    function run() external returns (address) &#123;</span><br><span class="line">        address proxy = deployBox();</span><br><span class="line">        return proxy;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function deployBox() public returns (address) &#123;</span><br><span class="line">        vm.startBroadcast();</span><br><span class="line">        BoxV1 box = new BoxV1(); // implementation (Logic)</span><br><span class="line">        // here we will use ERC1967 Proxy Contract</span><br><span class="line">        ERC1967Proxy proxy = new ERC1967Proxy(address(box), &quot;&quot;);</span><br><span class="line">        vm.stopBroadcast();</span><br><span class="line">        return address(proxy);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="将-V1-合约升级到-V2"><a href="#将-V1-合约升级到-V2" class="headerlink" title="将 V1 合约升级到 V2"></a>将 V1 合约升级到 V2</h3><p>对合约进行升级时，涉及到这么一个过程：</p>
-<p>deploy V2 -&gt; call function <code>upgradeToAndCall(V2address, &quot;&quot;)</code> (in Proxy) -&gt; 升级成功。</p>
-<p>完整脚本：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: SEE LICENSE IN LICENSE</span><br><span class="line">pragma solidity ^0.8.18;</span><br><span class="line"></span><br><span class="line">import &#123;Script&#125; from &quot;forge-std/Script.sol&quot;;</span><br><span class="line">import &#123;DevOpsTools&#125; from &quot;lib/foundry-devops/src/DevOpsTools.sol&quot;;</span><br><span class="line">import &#123;BoxV2&#125; from &quot;../src/BoxV2.sol&quot;;</span><br><span class="line">import &#123;BoxV1&#125; from &quot;../src/BoxV1.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract UpgradeBox is Script &#123;</span><br><span class="line">    function run() external returns (address) &#123;</span><br><span class="line">        address mostRecentlyDeployed = DevOpsTools.get_most_recent_deployment(&quot;ERC1967Proxy&quot;, block.chainid);</span><br><span class="line"></span><br><span class="line">        vm.startBroadcast();</span><br><span class="line">        BoxV2 newBox = new BoxV2();</span><br><span class="line">        vm.stopBroadcast();</span><br><span class="line">        address proxy = upgradeBox(mostRecentlyDeployed, address(newBox));</span><br><span class="line">        return proxy;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function upgradeBox(address proxyAddress, address newBox) public returns (address) &#123;</span><br><span class="line">        vm.startBroadcast();</span><br><span class="line">        BoxV1 proxy = BoxV1(proxyAddress);</span><br><span class="line">        proxy.upgradeToAndCall(address(newBox), &quot;&quot;);</span><br><span class="line">        vm.stopBroadcast();</span><br><span class="line">        return address(proxy);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="一些关于-UUPS-的测试："><a href="#一些关于-UUPS-的测试：" class="headerlink" title="一些关于 UUPS 的测试："></a>一些关于 UUPS 的测试：</h3><p>不多赘述，直接上源代码：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: SEE LICENSE IN LICENSE</span><br><span class="line">pragma solidity ^0.8.18;</span><br><span class="line"></span><br><span class="line">import &#123;Test&#125; from &quot;forge-std/Test.sol&quot;;</span><br><span class="line">import &#123;DeployBox&#125; from &quot;../script/DeployBox.s.sol&quot;;</span><br><span class="line">import &#123;UpgradeBox&#125; from &quot;../script/UpgradeBox.s.sol&quot;;</span><br><span class="line">import &#123;BoxV1&#125; from &quot;../src/BoxV1.sol&quot;;</span><br><span class="line">import &#123;BoxV2&#125; from &quot;../src/BoxV2.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract DeployAndUpgradeTest is Test &#123;</span><br><span class="line">    DeployBox public deployer;</span><br><span class="line">    UpgradeBox public upgrader;</span><br><span class="line">    address public OWNER = makeAddr(&quot;owner&quot;);</span><br><span class="line"></span><br><span class="line">    address public proxy;</span><br><span class="line"></span><br><span class="line">    function setUp() public &#123;</span><br><span class="line">        deployer = new DeployBox();</span><br><span class="line">        upgrader = new UpgradeBox();</span><br><span class="line">        proxy = deployer.run(); // right now, Proxy point to V1</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function testProxyStartAsBoxV1() public &#123;</span><br><span class="line">        vm.expectRevert();</span><br><span class="line">        BoxV2(proxy).setNumber(7);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function testUpgrades() public &#123;</span><br><span class="line">        BoxV2 box2 = new BoxV2();</span><br><span class="line"></span><br><span class="line">        upgrader.upgradeBox(proxy, address(box2));</span><br><span class="line"></span><br><span class="line">        uint256 expectValue = 2;</span><br><span class="line">        assertEq(expectValue, BoxV2(proxy).version());</span><br><span class="line"></span><br><span class="line">        BoxV2(proxy).setNumber(7);</span><br><span class="line">        assertEq(7, BoxV2(proxy).getNumber());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/01/11/%E9%80%9A%E7%94%A8%E5%8D%87%E7%BA%A7%E5%90%88%E7%BA%A6%EF%BC%88UUPS%EF%BC%89/" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -329,7 +393,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-01-11 20:08:54" itemprop="dateModified" datetime="2024-01-11T20:08:54+08:00">2024-01-11</time>
+                <time title="修改时间：2024-01-19 16:38:09" itemprop="dateModified" datetime="2024-01-19T16:38:09+08:00">2024-01-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -376,48 +440,14 @@
       
           <h1 id="可升级合约"><a href="#可升级合约" class="headerlink" title="可升级合约"></a>可升级合约</h1><p>合约升级包括三种方式（目前）</p>
 <h2 id="参数化升级"><a href="#参数化升级" class="headerlink" title="参数化升级"></a>参数化升级</h2><p>这是升级智能合约最简单的方法，实际上，他并没有升级智能合约，因为我们不能真正的改变合约的逻辑。<strong>升级只是参数化一切</strong></p>
-<p>这种升级方法，是在合约部署之前，就在合约中实现了各种逻辑，当需要进行<strong>“升级”</strong>的时候，调用相关的函数即可，但是，<strong>如果在第一次部署智能合约时没有考虑到某些逻辑或功能，那将无法使用参数化来更新逻辑或更新任何内容</strong>。当然，这意味着要考虑很多事情：</p>
-<ul>
-<li>谁是管理员？</li>
-<li>谁可以访问这些函数？</li>
-</ul>
-<p>如果是一个人，那么则得到了一个<strong>中心化合约</strong>，违背了智能合约的基本思想，当然<strong>可以添加一个治理合约，让他成为你的协议的管理员合约，这将是一种去中心化的方式的来实现的</strong></p>
-<h2 id="社会迁移"><a href="#社会迁移" class="headerlink" title="社会迁移"></a>社会迁移</h2><p>通过建立一个新的合约（拥有了一个新的合约地址），然后通知之前所有在原合约上的人，迁移到新合约上（并且，mapping 中的一些值也要全部重新在新合约中再次记录）这<strong>十分复杂，需要进行很多社会惯例工作</strong></p>
-<p>Trail  of Bits写了一篇关于 <strong>如何从A-V1 升级到 A-V2 等的升级协议的博客</strong>，其中提供了许多<strong>将存储和状态变量迁移到新合约的步骤</strong>： <a target="_blank" rel="noopener" href="https://blog.trailofbits.com/2018/10/29/how-contract-migration-works/">https://blog.trailofbits.com/2018/10/29/how-contract-migration-works/</a> </p>
-<h2 id="Proxy（真正的升级）"><a href="#Proxy（真正的升级）" class="headerlink" title="Proxy（真正的升级）"></a>Proxy（真正的升级）</h2><p>最简单的合约用了许多低级功能，最主要的是委托调用（<strong>Delegatecall</strong>）</p>
-<p>在谈到代理时，有四个很重要的概念：</p>
-<ul>
-<li><p>The Implementation Contract（实施合约）</p>
-<p>具有我们所有的逻辑和协议的所有部分，每当我们<strong>升级</strong>时，会<strong>启动一个全新的实施合约</strong></p>
-</li>
-<li><p>The Proxy Contract （代理合约）<br>代理合约指向哪个实施是正确的，并将每个人的调用路由到正确的实施合约（可以认为，代理合约基于实际合约而实现）</p>
-</li>
-<li><p>The User<br>用户将通过代理合约进行合约函数调用</p>
-</li>
-<li><p>The admin</p>
-<p>admin 是决定什么时候升级和指向哪个合约的人</p>
-</li>
-</ul>
-<p>这个场景中，代理和Delegatecall 的优点是：<strong>所有我的存储变量将存储在 <em>代理合约</em> 中</strong>，而不是在实施合约中，<strong>当我们要升级到新的逻辑合约时，我们所有的数据将保留在<em>代理合约</em>中</strong>。这样，如果我们需要更新合约的逻辑，<strong>只需指向新的实施合约</strong>，如果我们要<strong>添加新的存储变量或新的存储类型</strong>，只需在我的逻辑合约中添加它，代理合约能够捕获。</p>
-<h3 id="代理合约存在的问题"><a href="#代理合约存在的问题" class="headerlink" title="代理合约存在的问题"></a>代理合约存在的问题</h3><p><strong>还是需要一个 DAO</strong></p>
-<p>如果还想满足合约的<strong>去中心化</strong>，那么就需要一个 DAO 了，否则，只由一个用户来决定什么去升级合约，那么就变成了一个<strong>中心化合约</strong>了。</p>
-<p>两个最大的问题：</p>
-<ul>
-<li>存储冲突（Storage Clashes）</li>
-<li>函数选择器冲突（Function Selector Clashes）</li>
-</ul>
-<h4 id="存储冲突"><a href="#存储冲突" class="headerlink" title="存储冲突"></a>存储冲突</h4><p>当逻辑合约中涉及到修改状态变量的操作时，代理合约修改状态变量是按照<strong>插槽位置修改状态变量</strong>，而不是通过变量名。这意味着：<strong>我们只能在逻辑合约中添加新的存储变量，而不能重新排序或者更改旧的存储变量</strong></p>
-<h4 id="函数选择器冲突"><a href="#函数选择器冲突" class="headerlink" title="函数选择器冲突"></a>函数选择器冲突</h4><p>当我们告诉我们的代理合约将 Delegatecall 一个实例的时候，它是使用<strong>函数选择器</strong>来查找函数的，函数选择器是函数名称和函数签名的哈希值来决定的。<strong>有可能逻辑合约中的函数具有和代理合约中管理函数相同的函数选择器</strong>，这将会导致发生一些意外操作</p>
-<p>这就引出了代理合约的三种实现中的第一种</p>
-<h3 id="代理合约的三种类型"><a href="#代理合约的三种类型" class="headerlink" title="代理合约的三种类型"></a>代理合约的三种类型</h3><h4 id="透明代理合约（Transparent-Proxy-Pattern）"><a href="#透明代理合约（Transparent-Proxy-Pattern）" class="headerlink" title="透明代理合约（Transparent Proxy Pattern）"></a>透明代理合约（Transparent Proxy Pattern）</h4><p>在这种方法中，只允许管理员调用管理函数，并且管理员不能调用逻辑合约中的任何函数。用户只能调用实施合约中的函数，而不能调用任何管理函数。<strong>这样就不会意外的交换二者地址，产生函数选择器冲突</strong></p>
-<h4 id="通用升级协议（Universal-Upgradeable-Proxies-UUPS）"><a href="#通用升级协议（Universal-Upgradeable-Proxies-UUPS）" class="headerlink" title="通用升级协议（Universal Upgradeable Proxies - UUPS）"></a>通用升级协议（Universal Upgradeable Proxies - UUPS）</h4><p>这种可升级合约的版本将所有升级逻辑放在实施合约本身，这样，Solidity 编译器会报错：你含有两个函数选择器相同的函数。</p>
-<p>这种升级方式是有利的，因为我们少了一次读取，节省了 Gas，我么不需要在代理合约中检查某人是否是管理员。并且由于这个原因，代理合约也会变小。问题在于，如果你部署了一个没有可升级功能的实施合约，那么将受阻，并且回到<strong>社会迁移</strong>（合约迁移）的过程。</p>
-<h4 id="钻石代理合约（Diamond-Proxy）"><a href="#钻石代理合约（Diamond-Proxy）" class="headerlink" title="钻石代理合约（Diamond Proxy）"></a>钻石代理合约（Diamond Proxy）</h4><p>它做了很多事情，最重点的是，它允许多个实施合约。这解决了几个不同的问题</p>
-<ul>
-<li>如果你的合约很大，无法适应一个合约的最大尺寸，你可以通过这种实施方法拥有多个合约</li>
-<li>它还允许你对合约进行更精细的升级（比如不必总是不是和升级整个合约）</li>
-</ul>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/01/10/%E5%8F%AF%E5%8D%87%E7%BA%A7%E5%90%88%E7%BA%A6-md/" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -459,10 +489,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2024-01-09 16:51:40 / 修改时间：17:36:36" itemprop="dateCreated datePublished" datetime="2024-01-09T16:51:40+08:00">2024-01-09</time>
+              <time title="创建时间：2024-01-09 16:51:40" itemprop="dateCreated datePublished" datetime="2024-01-09T16:51:40+08:00">2024-01-09</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-01-19 16:38:36" itemprop="dateModified" datetime="2024-01-19T16:38:36+08:00">2024-01-19</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -509,83 +545,14 @@
           <h1 id="Foundry模糊测试入门"><a href="#Foundry模糊测试入门" class="headerlink" title="Foundry模糊测试入门"></a>Foundry模糊测试入门</h1><p>关于模糊测试，需要首先考虑在我们的代码中<strong>系统的不变量&#x2F;属性</strong> 是什么，这样我们就可以编写一些<strong>有状态和无状态的模糊测试</strong></p>
 <p><strong>定义：</strong></p>
 <p>Fuzz 测试（模糊测试），是将随机数据提供给系统，以尝试破坏系统</p>
-<h2 id="举例："><a href="#举例：" class="headerlink" title="举例："></a>举例：</h2><p>以下是一个要进行模糊测试的合约：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">contract MyContract &#123;</span><br><span class="line">    uint256 public shouldAlwaysBeZero = 0;</span><br><span class="line"></span><br><span class="line">    uint256 private hiddenValue = 0;</span><br><span class="line"></span><br><span class="line">    function doStuff(uint256 data) public &#123;</span><br><span class="line">        if (data == 2) &#123;</span><br><span class="line">            shouldAlwaysBeZero = 1;</span><br><span class="line">        &#125;</span><br><span class="line">        if (hiddenValue == 7) &#123;</span><br><span class="line">            shouldAlwaysBeZero = 1;</span><br><span class="line">        &#125;</span><br><span class="line">        hiddenValue = data;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这段合约只是简单的模拟，在大型项目中可能出现的情况。其中的<code>shouldAlwaysBeZero</code>变量应始终为<code>0</code>。</p>
-<p>而现在的合约源码就是没有经过 Fuzz 测试，需要我们对齐进行 Debug（虽然一眼能看出来问题，实际中没那么容易看出来）</p>
-<p>接下来，我们就要通过调试，尝试破环我们的不可变变量（<code>shouldAlwaysBeZero</code>）</p>
-<p>现在。一个简单的单元测试常规来说是这样的：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: SEE LICENSE IN LICENSE</span><br><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">import &#123;MyContract&#125; from &quot;../src/MyContract.sol&quot;;</span><br><span class="line">import &#123;Test&#125; from &quot;forge-std/Test.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract UnitTest is Test &#123;</span><br><span class="line">    MyContract exampleContract;</span><br><span class="line"></span><br><span class="line">    function setUp() public &#123;</span><br><span class="line">        exampleContract = new MyContract();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function testIAlwaysGetZero() public &#123;</span><br><span class="line">        uint256 data = 0; // 传递一个数据点</span><br><span class="line">        exampleContract.doStuff(data); // 调用该函数</span><br><span class="line">        assert(exampleContract.shouldAlwaysBeZero() == 0); // 进行断言</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>通过这种方式，我们可能认为我们的代码已经覆盖了，但是，查看我们的源合约能够发现：当<code>data</code> 为 2 时，我们的不可变变量就发生了变化。<strong>对于这个源合约来说，这是显然易见的，但是对于一些逻辑比较复杂的合约，就没这么容易直接看出来了</strong>。</p>
-<p>那么，我们不能（闲的）手动将可能出现的情况手动一次次的进行单元测试，我们<strong>需要一种程序化的方法</strong>来找到这个场景，这个场景就是 Fuzz 模糊测试。</p>
-<p>在 Foundry 中书写一个模糊测测和单元测试很像：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function testIAlwaysGetZero(uint256 data) public &#123;</span><br><span class="line">    // uint256 data = 0; </span><br><span class="line">    exampleContract.doStuff(data); </span><br><span class="line">    assert(exampleContract.shouldAlwaysBeZero() == 0); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>对刚刚的函数进行简单的修改，现在这就是 <strong>模糊测试</strong> 了。接下来，我们在 Foundry 中分别运行刚刚的单元测试和模糊测试：</p>
-<ul>
-<li><p>单元测试——通过</p>
-<p><img src="/../images/Foundry%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8/image-20240109162901764-17047929613125.png" alt="image-20240109162901764"></p>
-</li>
-<li><p>模糊测试<br><img src="/../images/Foundry%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8/image-20240109162951480-17047929613126.png" alt="image-20240109162951480"></p>
-</li>
-</ul>
-<p>可以看到，成功找到了问题所在。</p>
-<p>接下来，将源码中的第一个 if 判断注释掉，即：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">contract MyContract &#123;</span><br><span class="line">    uint256 public shouldAlwaysBeZero = 0;</span><br><span class="line"></span><br><span class="line">    uint256 private hiddenValue = 0;</span><br><span class="line"></span><br><span class="line">    function doStuff(uint256 data) public &#123;</span><br><span class="line">        // if (data == 2) &#123;</span><br><span class="line">        //     shouldAlwaysBeZero = 1;</span><br><span class="line">        // &#125;</span><br><span class="line">        if (hiddenValue == 7) &#123;</span><br><span class="line">            shouldAlwaysBeZero = 1;</span><br><span class="line">        &#125;</span><br><span class="line">        hiddenValue = data;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>再次进行模糊测试，结果如下：<br><img src="/../images/Foundry%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8/image-20240109164505195-17047929613127.png" alt="image-20240109164505195"></p>
-<p>可以看到这次模糊测试成功，后面的括号中<code>runs: 256</code> <code>runs</code> 对应的数字就是运行的次数，这代表：<strong>在这里做了 256 种不同的随机输入</strong></p>
-<p>在 Foundry 种，可以在 <code>foundry.toml</code> 文件中添加如下一个部分来更改运行次数：</p>
-<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[fuzz]</span></span><br><span class="line"><span class="attr">runs</span> = <span class="number">10000</span></span><br></pre></td></tr></table></figure>
-
-<p>进行上述修改后，我们再次运行模糊测试，结果如下：</p>
-<p><img src="/../images/Foundry%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8/image-20240109164856186-17047929613128.png" alt="image-20240109164856186"></p>
-<p>运行次数很重要，更多的运行次数意味着能进行更多的随机输入，更多的用例。以及更大的概率捕捉 Bug。</p>
-<h3 id="简单模糊测试回顾"><a href="#简单模糊测试回顾" class="headerlink" title="简单模糊测试回顾"></a>简单模糊测试回顾</h3><p>在进行 Fuzz 之前，首先要找到的就是<strong>系统中的不变量</strong>。这必须是始终不变的</p>
-<ul>
-<li>理解这个系统中的不变性</li>
-<li>编写一个 Fuzz 测试，通过随机输入来尝试打破这个不变性</li>
-</ul>
-<p>接下来接着看我们的源合约，当 hiddenValue &#x3D; 7 的时候，我们的不变量也发生了变化，而将 hiddenValue 设置为 7 需要首先调用 doStuff，按照我们刚刚写的模糊测试，我们是无法找到这个 Bug的，因为<strong>我们刚刚的模糊测试是<em>无状态的</em>模糊测试，其上一次的运行结果将被丢弃</strong></p>
-<p>针对上述情况，我们就可以进行<strong>有状态模糊测试</strong>。有状态模糊测试是上一次运行的结束状态时下一次的起始状态</p>
-<h3 id="有状态模糊测试"><a href="#有状态模糊测试" class="headerlink" title="有状态模糊测试"></a>有状态模糊测试</h3><p>当我们的单元测试写成下面的样子时，我们发现我们的源合约存在 Bug。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">function test1() public &#123;</span><br><span class="line">    uint256 data = 7;</span><br><span class="line">    exampleContract.doStuff(data);</span><br><span class="line">    assert(exampleContract.shouldAlwaysBeZero() == 0);</span><br><span class="line">    // Use the same contract</span><br><span class="line">    data = 0;</span><br><span class="line">    exampleContract.doStuff(data);</span><br><span class="line">    assert(exampleContract.shouldAlwaysBeZero() == 0);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>测试结果——发现了我们源合约中的 Bug：</p>
-<p><img src="/../images/Foundry%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8/image-20240109170929760.png" alt="image-20240109170929760"></p>
-<p>可见，对于复杂的代码，使用某个非常具体的场景是很容易被忽略的。</p>
-<p><strong>要在 Foundry 中编写有状态的模糊测试，需要使用 <code>invariant</code> 关键字，并且他需要一些安装</strong></p>
-<p>在 Foundry 中，我们首先要到导入这一部分，并在我们的测试合约中继承，接下来，我们要告诉 Foundry 要调用哪个合约的随机函数（由于我们只有一个合约和一个函数，我们将告诉 Foundry 我的合约应该被调用，它可以调用我的合约的任何函数）：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: SEE LICENSE IN LICENSE</span><br><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">import &#123;MyContract&#125; from &quot;../src/MyContract.sol&quot;;</span><br><span class="line">import &#123;Test&#125; from &quot;forge-std/Test.sol&quot;;</span><br><span class="line">import &#123;StdInvariant&#125; from &quot;forge-std/StdInvariant.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract UnitTest is StdInvariant, Test &#123;</span><br><span class="line">    MyContract exampleContract;</span><br><span class="line"></span><br><span class="line">    function setUp() public &#123;</span><br><span class="line">        exampleContract = new MyContract();</span><br><span class="line">        targetContract(address(exampleContract));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function invariant_testAlwaysIsZero() public &#123;</span><br><span class="line">        assert(exampleContract.shouldAlwaysBeZero() == 0);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>接下来，我们运行这个测试，发现 Foundry 已经找到了这个存在问题的序列：</p>
-<p><img src="/../images/Foundry%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8/image-20240109171833818.png" alt="image-20240109171833818"></p>
-<p>可以看到，在我们的合约中，使用参数 7 调用 doStuff，然后再次使用某个随机数调用我们的合约时（因为无论调用哪个数都会出现问题，所以后面的数据就不重要了）</p>
-<p><strong>说明</strong>：</p>
-<ul>
-<li>Foundry 使用不变量这个词来描述这种有状态的模糊测试</li>
-<li>无状态的模糊测试是将随机数据提供给函数的输入，以查看是否破坏了某种不变性</li>
-<li>有状态的模糊测试是将随机数据和随机函数调用提供给系统，以查看是否破坏了它们</li>
-</ul>
-<p>在 Foundry 中，模糊测试是无状态的模糊测试，不变量是有状态的模糊测试</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Foundry Fuzzing = Stateless fuzzing</span><br><span class="line">Foundry Invariant = Stateful fuzzing</span><br></pre></td></tr></table></figure>
-
-<p>所以当人们在讨论 Foundry 中的 Invariant 时，他们通常是在讨论有状态的模糊测试，如果他们在讨论 Foundry 中的 Fuzzing，那么它们是在讨论 无状态的模糊测试</p>
-<h3 id="实际项目中可能需要模糊测试的点"><a href="#实际项目中可能需要模糊测试的点" class="headerlink" title="实际项目中可能需要模糊测试的点"></a>实际项目中可能需要模糊测试的点</h3><ul>
-<li>新代币的发行少于通货膨胀率</li>
-<li>在随机抽奖中只能有一个赢家</li>
-<li>有人不应该从协议中拿出比他们投入更多的钱</li>
-</ul>
-<h3 id="清楚你的模糊器如何选择随机数据"><a href="#清楚你的模糊器如何选择随机数据" class="headerlink" title="清楚你的模糊器如何选择随机数据"></a>清楚你的模糊器如何选择随机数据</h3><p>他不会能够覆盖每一个可能的数据输入，所以了解<strong>所用的模糊器如何选择随机数据是一个很重要的点</strong></p>
-<p>目前比较好用的模糊器：</p>
-<ul>
-<li>Trailer Bits</li>
-<li>SlashOptic</li>
-</ul>
-<p>上述二者是比较好用的两个，当然还有 Rift Jesus</p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/01/09/Foundry%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8/" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -635,7 +602,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-01-09 16:53:13" itemprop="dateModified" datetime="2024-01-09T16:53:13+08:00">2024-01-09</time>
+                <time title="修改时间：2024-01-19 16:38:46" itemprop="dateModified" datetime="2024-01-19T16:38:46+08:00">2024-01-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -657,7 +624,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>400</span>
+              <span>401</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -677,26 +644,14 @@
 
       
           <h2 id="精度问题"><a href="#精度问题" class="headerlink" title="精度问题"></a>精度问题</h2><p>在 Solidity 中（直观的说针对于 <strong>以太坊</strong> 来说）是<strong>没有真正意义上带小数点的小数</strong>的，而在 Solidity 中指的小数，是：<strong>还原成传统意义上的数字，他应该是具有几位小数点</strong></p>
-<p>以下来自网上的描述：</p>
-<blockquote>
-<p><strong>传统小数到以太坊小数</strong>：</p>
-<ul>
-<li>在传统金融中，美元金额可能表示为带有小数点的数值，例如 <code>$100.50</code>。</li>
-<li>在以太坊智能合约中，由于不支持小数点，这个金额需要转换为一个大整数。这就是为什么将其乘以 <code>1e18</code>（<code>PRECISION</code>），将美元金额转换为以太坊的标准精度格式。</li>
-</ul>
-</blockquote>
-<p>举例：</p>
-<p>以 Chainlink 预言机为例，其**”小数”**(即精度)是8位</p>
-<ul>
-<li>其返回值为 <code>1234567890 </code>时，对应现实意义中的”小数”实际上为：<code>12.34567890</code></li>
-</ul>
-<p>所以在 DeFi 领域中，设计到货币相关的计算时，就要严格的考虑精度问题了（即保证<strong>精度一致性</strong>）。</p>
-<p>比如，在抵押被清算的过程中：</p>
-<p>计算清算者需要多少 $ 来清算被清算者的抵押时，需要将 $ 转换为**”小数”**，即乘以以太坊精度（1e18），而从 chainlink 获取如今 $ 价格时，要统一精度，因为，chainlink 获得的价格为 8 位”小数”，为了统一精度，需要乘以 1e10。</p>
-<p>代码实例：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">uint256 private constant ADDITIONAL_FEED_PRECISION = 1e10;</span><br><span class="line">uint256 private constant PRECISION = 1e18;</span><br><span class="line">    function getTokenAmountFromUsd(address token, uint256 usdAmountInWei) public view returns (uint256) &#123;</span><br><span class="line">        AggregatorV3Interface priceFeed = AggregatorV3Interface(s_priceFeeds[token]);</span><br><span class="line">        (, int256 price,,,) = priceFeed.latestRoundData();</span><br><span class="line">        // 上面两行代码：从 chainlink 价格预言机中获取当前的美元价格</span><br><span class="line">        return (usdAmountInWei * PRECISION) / (uint256(price) * ADDITIONAL_FEED_PRECISION);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/01/02/DeFi%E4%B8%AD%E7%9A%84%E7%B2%BE%E5%BA%A6%E9%97%AE%E9%A2%98/" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -754,11 +709,11 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/learn/" itemprop="url" rel="index"><span itemprop="name">learn</span></a>
+                  <a href="/categories/%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">笔记</span></a>
                 </span>
                   ，
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">笔记</span></a>
+                  <a href="/categories/learn/" itemprop="url" rel="index"><span itemprop="name">learn</span></a>
                 </span>
                   ，
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -981,7 +936,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-count">45</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1039,13 +994,13 @@
       <i class="fa fa-chart-area"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">124k</span>
+    <span title="站点总字数">125k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">6:54</span>
+    <span title="站点阅读时长">6:57</span>
 </div>
 
 <div class="powered-by">
