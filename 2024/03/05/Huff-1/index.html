@@ -29,20 +29,20 @@
 <meta property="og:site_name" content="Q1ngying">
 <meta property="og:description" content="HuffHuff 安装官网：https:&#x2F;&#x2F;docs.huff.sh  Windows系统下，能够成功按照 rust 和 Foundry 的话，直接通过 cargo 命令一次就能成功的安装 Huff。如果没有成功安装 Rust 和 Foundry，大致解决方法：">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/images/Huff-1/image-20240304190428283.png">
-<meta property="og:image" content="http://example.com/images/Huff-1/image-20240304192101966.png">
-<meta property="og:image" content="http://example.com/images/Huff-1/image-20240305195047849.png">
-<meta property="og:image" content="http://example.com/images/Huff-1/image-20240305200602341.png">
-<meta property="og:image" content="http://example.com/images/Huff-1/image-20240305200645472.png">
+<meta property="og:image" content="http://example.com/images/Huff-1/image-20240304190428283-17097300625421.png">
+<meta property="og:image" content="http://example.com/images/Huff-1/image-20240304192101966-17097300625422.png">
+<meta property="og:image" content="http://example.com/images/Huff-1/image-20240305195047849-17097300625423.png">
+<meta property="og:image" content="http://example.com/images/Huff-1/image-20240305200602341-17097300625424.png">
+<meta property="og:image" content="http://example.com/images/Huff-1/image-20240305200645472-17097300625425.png">
 <meta property="article:published_time" content="2024-03-05T12:35:53.000Z">
-<meta property="article:modified_time" content="2024-03-05T12:44:20.767Z">
+<meta property="article:modified_time" content="2024-03-06T13:01:15.937Z">
 <meta property="article:author" content="Q1ngying">
 <meta property="article:tag" content="Solidity">
 <meta property="article:tag" content="EVM">
 <meta property="article:tag" content="Opcode">
 <meta property="article:tag" content="Huff">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/images/Huff-1/image-20240304190428283.png">
+<meta name="twitter:image" content="http://example.com/images/Huff-1/image-20240304190428283-17097300625421.png">
 
 <link rel="canonical" href="http://example.com/2024/03/05/Huff-1/">
 
@@ -200,10 +200,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2024-03-05 20:35:53 / 修改时间：20:44:20" itemprop="dateCreated datePublished" datetime="2024-03-05T20:35:53+08:00">2024-03-05</time>
+              <time title="创建时间：2024-03-05 20:35:53" itemprop="dateCreated datePublished" datetime="2024-03-05T20:35:53+08:00">2024-03-05</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-03-06 21:01:15" itemprop="dateModified" datetime="2024-03-06T21:01:15+08:00">2024-03-06</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -236,14 +242,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>2.4k</span>
+              <span>3.7k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>8 分钟</span>
+              <span>12 分钟</span>
             </span>
 
         </div>
@@ -265,7 +271,8 @@
 <li>rust 安装直接在 c++ 生成工具安装完毕后吗，直接通过 rustup 安装即可。</li>
 <li>foundry 安装通过 cargo 下载即可，Foundry 官方文档中有该命令</li>
 </ul>
-<h3 id="Huff-入门"><a href="#Huff-入门" class="headerlink" title="Huff 入门"></a>Huff 入门</h3><h4 id="基本构成："><a href="#基本构成：" class="headerlink" title="基本构成："></a>基本构成：</h4><p>Huff 需要主函数（main）函数，需要宏，注意，定义宏时，宏函数名需要全大写，然后加上<code>=</code>，<code>takes</code>，<code>returns</code>，takes 表示从堆栈上取的字节，returns 表示返回到堆栈上的字节。</p>
+<ol>
+<li><h3 id="Huff-入门"><a href="#Huff-入门" class="headerlink" title="Huff 入门"></a>Huff 入门</h3><h4 id="基本构成："><a href="#基本构成：" class="headerlink" title="基本构成："></a>基本构成：</h4><p>Huff 需要主函数（main）函数，需要宏，注意，定义宏时，宏函数名需要全大写，然后加上<code>=</code>，<code>takes</code>，<code>returns</code>，takes 表示从堆栈上取的字节，returns 表示返回到堆栈上的字节。</p>
 <figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define <span class="keyword">macro</span> <span class="title function_ invoke__">MAIN</span>() = <span class="title function_ invoke__">takes</span>(<span class="number">0</span>) <span class="title function_ invoke__">returns</span>(<span class="number">0</span>) &#123;&#125;</span><br></pre></td></tr></table></figure>
 
 <h4 id="编译-huff："><a href="#编译-huff：" class="headerlink" title="编译 huff："></a>编译 huff：</h4><h5 id="huffc-path-b"><a href="#huffc-path-b" class="headerlink" title="huffc path (-b)"></a>huffc path (-b)</h5><p>使用命令：<code>huffc &quot;路径.huff&quot;</code></p>
@@ -283,15 +290,30 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 60008060093d393df3</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> macro MAIN() = takes(0) returns(0) &#123;</span></span><br><span class="line">    <span class="comment">// 0x00             // [0]</span></span><br><span class="line">    <span class="comment">// // 0x02           // TOP [2, 0] BOTTOM</span></span><br><span class="line">    <span class="comment">// calldataload    // [calldata (32)] </span></span><br><span class="line">    <span class="comment">// // how do we cut down the calldata -&gt; func selector?</span></span><br><span class="line">    <span class="comment">// // right shift 28 bytes, 224 bits | 224 -&gt; 0xe0</span></span><br><span class="line">    <span class="comment">// 0xe0            // TOP [0xe0, calldata (32)] BOTTOM</span></span><br><span class="line">    <span class="comment">// shr             // [func selector]</span></span><br><span class="line">    <span class="number">0x00</span> calldataload <span class="number">0xe0</span> shr <span class="comment">// [function_selector]</span></span><br><span class="line">        </span><br><span class="line">    <span class="comment">// jump =&gt; function data associated with the selector</span></span><br><span class="line">    <span class="comment">// If f_select == updateHorseNumber -&gt; jump to that code</span></span><br><span class="line">    <span class="comment">// If f_select == readHorseNumber -&gt; jump to that code</span></span><br><span class="line">    <span class="comment">// 0xcdfead2e == update </span></span><br><span class="line">    <span class="comment">// 0xe026c017 == read </span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// updateHorseNumber selector</span></span><br><span class="line">    <span class="number">0xcdfead2e</span>          <span class="comment">// [0xcdfead2e. function_selector]</span></span><br><span class="line">    eq                  <span class="comment">// [true_if_func_selector_matches]</span></span><br><span class="line">    <span class="comment">// jump to updateHorseNumber code if true</span></span><br><span class="line">    updateJump          <span class="comment">// [updateHorseNumberProgramCounter, true/false]</span></span><br><span class="line">    jumpi</span><br><span class="line">    updateJump:</span><br><span class="line">        SET_NUMBER_OF_HORSE()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> macro SET_NUMBER_OF_HORSE() = takes(0) returns(0) &#123;&#125;</span></span><br></pre></td></tr></table></figure>
 
 <p>运行<code>huffc path --bin-runtime</code>的结果为：<code>5f3560e01c63cdfead2e1461000f575b</code></p>
-<h4 id="Huff-FUNC-SIG-Interface"><a href="#Huff-FUNC-SIG-Interface" class="headerlink" title="Huff __FUNC_SIG &amp; Interface"></a>Huff __FUNC_SIG &amp; Interface</h4><p>在 Huff 中，我们无需通过 <code>cast sig</code> 命令获取函数选择器（function selector），Huff 提供了一个语法可以使得我们无需计算函数选择器：<code>__FUNC_SIG()</code></p>
+<h4 id="Huff：-FUNC-SIG-Interface"><a href="#Huff：-FUNC-SIG-Interface" class="headerlink" title="Huff： __FUNC_SIG &amp; Interface"></a>Huff： __FUNC_SIG &amp; Interface</h4><p>在 Huff 中，我们无需通过 <code>cast sig</code> 命令获取函数选择器（function selector），Huff 提供了一个语法可以使得我们无需计算函数选择器：<code>__FUNC_SIG()</code></p>
 <p>同时，可以像在 Solidity 中一样定义一个接口 （Interface）</p>
+<p>注意：</p>
+<ul>
+<li>在 <code>huff</code> 中，必须标记函数是否为<code>payable</code></li>
+<li>并且，要加上 <code>returns()</code> 即使没有返回值</li>
+</ul>
 <p>代码如下：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Interface */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> function updateHorseNumber(uint256) nonpayable returns()</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> function readNumberOfHorses() view returns(uint256)</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> marco MAIN() = takes(0) returns(0) &#123;</span></span><br><span class="line">	...</span><br><span class="line">    __FUNC_SIG(readNumberOfHorses) <span class="comment">// 等价于手动通过命令 cast sig 计算得到的函数 `updateHorseNumber(uint256)` 的选择器</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
 
 <p>这个语法糖可以很好的帮助我们计算函数选择器</p>
-<h4 id="Huff-opcode"><a href="#Huff-opcode" class="headerlink" title="Huff opcode"></a>Huff opcode</h4><h5 id="push"><a href="#push" class="headerlink" title="push"></a><em>push</em></h5><p>在 Huff 中执行 <code>push</code> opcode 时，直接把需要 push 到堆栈中的数据写下来即可，因为 huff 编译器能够根据数据的大小，智能的选择对应的 push 系操作码</p>
+<h4 id="Huff：-FREE-STORAGE-POINTER"><a href="#Huff：-FREE-STORAGE-POINTER" class="headerlink" title="Huff： FREE_STORAGE_POINTER"></a>Huff： FREE_STORAGE_POINTER</h4><p>Huff 内置的一些语法使得我们能够更加轻松的处理内存，他们拥有抽象，有一个关键字称为<code>FREE_STORAGE_POINTER()</code>。<strong>其本质上只是一个计数器，用于显示那些存储插槽是打开的。</strong>我们可以在 huff 文件中<strong>通过<code>FREE_STORAGE_POINTER</code>为我们的 <code>slot</code> 值定义一个常量</strong>。当然我们可以硬编码，但是每个 slot 存储 <code>32</code> 字节，最好还是使用 Huff 的内置语法来实现 Storage 的存储。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> constant NUMBER_OF_HOURSES_STORAGE_SLOT = REFF_STORAGE_POINTER()</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="Huff：访问常量变量"><a href="#Huff：访问常量变量" class="headerlink" title="Huff：访问常量变量"></a>Huff：访问常量变量</h4><p>如上，定义了对应<code>slot</code>位置常量之后，就可以直接传入该常量，注意：<strong>使用时，要把常量名用<code>[]</code>包裹</strong>：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> constant NUMBER_OF_HOURSES_STORAGE_SLOT = FREE_STORAGE_POINTER()</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> macro SET_NUMBER_OF_HORSES() = takes(0) returns(0) &#123;</span></span><br><span class="line">    <span class="comment">// 1. Get the value to store from calldata</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 2. Give it a storage slot</span></span><br><span class="line">    [NUMBER_OF_HOURSES_STORAGE_SLOT]</span><br><span class="line">    <span class="comment">// 3. sstore opcode</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="从-calldata-访问函数参数"><a href="#从-calldata-访问函数参数" class="headerlink" title="从 calldata 访问函数参数"></a>从 calldata 访问函数参数</h4><h4 id="Huff-opcode"><a href="#Huff-opcode" class="headerlink" title="Huff opcode"></a>Huff opcode</h4><h5 id="push"><a href="#push" class="headerlink" title="push"></a><em>push</em></h5><p>在 Huff 中执行 <code>push</code> opcode 时，直接把需要 push 到堆栈中的数据写下来即可，因为 huff 编译器能够根据数据的大小，智能的选择对应的 push 系操作码</p>
 <p><strong>所以，在 Huff 中执行 push opcode，只需要输入实际的值即可</strong></p>
 <p>当有人向智能合约发送任何调用数据时，智能合约现在唯一要做的就是将 0 push 到堆栈上去。</p>
 <p>举例：</p>
@@ -308,7 +330,7 @@
 <p>从给定的 calldata 偏移量开始的 32 字节值。calldata 结束之后的所有字节都设置为 0。</p>
 <figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#define <span class="keyword">macro</span> <span class="title function_ invoke__">MAIN</span>() = <span class="title function_ invoke__">takes</span>(<span class="number">0</span>) <span class="title function_ invoke__">returns</span>(<span class="number">0</span>) &#123;</span><br><span class="line">    <span class="number">0x00</span>          <span class="comment">// [0]</span></span><br><span class="line">    <span class="comment">// 0x02         // TOP [2, 0] BOTTOM</span></span><br><span class="line">    calldataload  <span class="comment">// [calldata] (The first 32 bytes of calldata)</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p><img src="/../images/Huff-1/image-20240304190428283.png" alt="image-20240304190428283"></p>
+<p><img src="/../images/Huff-1/image-20240304190428283-17097300625421.png" alt="image-20240304190428283"></p>
 <p>最开始的calldata为：<code>0xcdfead2e0000000000000000000000000000000000000000000000000000000000000001</code></p>
 <p>因为 calldataload 只能获取32 个字节，所以此时堆栈中的 calldata 其实是：<code>0xcdfead2e00000000000000000000000000000000000000000000000000000000</code>（但其实不是我们想要的）</p>
 <h5 id="shr-Right-Shift-右移位"><a href="#shr-Right-Shift-右移位" class="headerlink" title="shr(Right Shift) 右移位"></a><em>shr(Right Shift) 右移位</em></h5><p>Shift the bits towards the least significant one. The bits moved before the first one are discarded, the new bits are set to 0.</p>
@@ -331,7 +353,7 @@
 
 
 <p>堆栈如下：</p>
-<p><img src="/../images/Huff-1/image-20240304192101966.png" alt="image-20240304192101966"></p>
+<p><img src="/../images/Huff-1/image-20240304192101966-17097300625422.png" alt="image-20240304192101966"></p>
 <p><em><strong>shr on calldata</strong></em></p>
 <p>对于calldata：<code>0xcdfead2e0000000000000000000000000000000000000000000000000000000000000001</code> 我们起初想要的其实是<code>0xcdfead2e</code>（函数选择器 selector）</p>
 <p>刚刚我们已经使用了<code>calldataload</code>，获得了 calldata(32bytes):<code>0xcdfead2e00000000000000000000000000000000000000000000000000000000</code>。但是接下来我们需要函数选择器，那么，借助 <code>shr</code> 右移位 224 即可（56 &#x2F; 2 &#x3D; 28 bytes 28 * 8 &#x3D; 224 bits | 224 -&gt; 0xe0)</p>
@@ -366,21 +388,80 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">    <span class="number">0xe026c017</span>          <span class="comment">// [0xe026c017, function_selector]</span></span><br><span class="line">    eq                  <span class="comment">// [true_if_func_selector_matches]</span></span><br><span class="line">    readJump            <span class="comment">// [readJump, true_if_func_selector_matches]</span></span><br><span class="line">    jumpi</span><br><span class="line"></span><br><span class="line">    readJump:</span><br><span class="line">        GET_NUMBER_OF_HORSES()</span><br><span class="line">        </span><br><span class="line"><span class="meta">#<span class="keyword">define</span> macro GET_NUMBER_OF_HORSES() = takes(0) returns(0) &#123;&#125;</span></span><br></pre></td></tr></table></figure>
 
 <p>堆栈图：</p>
-<p><img src="/../images/Huff-1/image-20240305195047849.png" alt="image-20240305195047849"></p>
-<h5 id="DUP"><a href="#DUP" class="headerlink" title="DUP"></a>DUP</h5><p>DUP 是一个大类的 opcode ，其范围为 1 ~ 16（即 DUP1 ~ DUP16，对应 0x80 ~ 0x8f），其功能是复制目前从栈顶开始的第 n 个值，并将复制得到的值压入堆栈</p>
+<p><img src="/../images/Huff-1/image-20240305195047849-17097300625423.png" alt="image-20240305195047849"></p>
+<h5 id="DUP"><a href="#DUP" class="headerlink" title="DUP"></a><em>DUP</em></h5><p>DUP 是一个大类的 opcode ，其范围为 1 ~ 16（即 DUP1 ~ DUP16，对应 0x80 ~ 0x8f），其功能是复制目前从栈顶开始的第 n 个值，并将复制得到的值压入堆栈</p>
 <p>DUP 代码举例：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dup1                // [function_selector, function_selector]</span><br><span class="line">0xcdfead2e          // [0xcdfead2e, function_selector, function_selector]</span><br><span class="line">eq                  // [true_if_func_selector_matches, function_selector]</span><br></pre></td></tr></table></figure>
 
 <p>堆栈图：</p>
-<p><img src="/../images/Huff-1/image-20240305200602341.png" alt="image-20240305200602341"></p>
+<p><img src="/../images/Huff-1/image-20240305200602341-17097300625424.png" alt="image-20240305200602341"></p>
 <p>接着以 DUP2 为其他的举例：</p>
-<p><img src="/../images/Huff-1/image-20240305200645472.png" alt="image-20240305200645472"></p>
-<h5 id="REVERT"><a href="#REVERT" class="headerlink" title="REVERT"></a>REVERT</h5><p>Stop the current context execution, revert the state changes (see <a target="_blank" rel="noopener" href="https://www.evm.codes/#FA">STATICCALL</a> for a list of state changing opcodes) and return the unused gas to the caller. It also reverts the gas refund to its value before the current context. If the execution is stopped with REVERT, the value 0 is put on the stack of the calling context, which continues to execute normally. The <a target="_blank" rel="noopener" href="https://www.evm.codes/about">return data</a> of the calling context is set as the given chunk of memory of this context.</p>
+<p><img src="/../images/Huff-1/image-20240305200645472-17097300625425.png" alt="image-20240305200645472"></p>
+<h5 id="REVERT"><a href="#REVERT" class="headerlink" title="REVERT"></a><em>REVERT</em></h5><p>Stop the current context execution, revert the state changes (see <a target="_blank" rel="noopener" href="https://www.evm.codes/#FA">STATICCALL</a> for a list of state changing opcodes) and return the unused gas to the caller. It also reverts the gas refund to its value before the current context. If the execution is stopped with REVERT, the value 0 is put on the stack of the calling context, which continues to execute normally. The <a target="_blank" rel="noopener" href="https://www.evm.codes/about">return data</a> of the calling context is set as the given chunk of memory of this context.</p>
 <p>停止当前上下文执行，恢复状态更改（有关状态更改操作码的列表，请参阅 STATICCALL），并将未使用的 gas 返回给调用方。它还会将 gas 退款恢复到当前上下文之前的值。如果使用 REVERT 停止执行，则值 0 将放在调用上下文的堆栈上，该堆栈将继续正常执行。调用上下文的返回数据设置为此上下文的给定内存块。</p>
 <p><strong>Stack input 堆栈输入</strong></p>
 <ol>
 <li><code>offset</code>: byte offset in the <a target="_blank" rel="noopener" href="https://www.evm.codes/about">memory</a> in bytes. The return data of the calling context.offset：内存中的字节偏移量（以字节为单位）。调用上下文的返回数据。</li>
 <li><code>size</code>: byte size to copy (size of the <a target="_blank" rel="noopener" href="https://www.evm.codes/about">return data</a>).size：要复制的字节大小（返回数据的大小）。</li>
+</ol>
+<h5 id="SSTORE"><a href="#SSTORE" class="headerlink" title="SSTORE"></a><em>SSTORE</em></h5><p>该操作码将堆栈中的数据存储到 Storage 中。</p>
+<p><strong>Stack input</strong></p>
+<ol>
+<li><code>key</code>: 32-byte key in <a target="_blank" rel="noopener" href="https://www.evm.codes/about">storage</a>.key：存储中的 32 字节密钥。</li>
+<li><code>value</code>: 32-byte value to store.value：要存储的 32 字节值。</li>
+</ol>
+<h5 id="STOP"><a href="#STOP" class="headerlink" title="STOP"></a><em>STOP</em></h5><p>Exits the current <a target="_blank" rel="noopener" href="https://www.evm.codes/about">context</a> successfully.</p>
+<p>成功退出当前上下文。</p>
+<p>When a call is executed on an address with no code and the EVM tries to read the code data, the default value is returned, 0, which corresponds to this instruction and halts the execution.</p>
+<p>在没有代码的地址上执行调用并且 EVM 尝试读取代码数据时，将返回默认值 0，该值对应于此指令并停止执行。</p>
+<p>当我们执行完我们想要的目的后，我们就需要加上 <code>STOP</code> 字节码，使用<code>STOP</code>程序会推出执行（不会回滚）。</p>
+<p>如果不使用 <code>STOP</code> 程序会继续执行，并且会浪费 gas。</p>
+<h5 id="SLOAD"><a href="#SLOAD" class="headerlink" title="SLOAD"></a><em>SLOAD</em></h5><p><strong>Stack input 堆栈输入</strong></p>
+<p><code>key</code>: 32-byte key in <a target="_blank" rel="noopener" href="https://www.evm.codes/about">storage</a></p>
+<p>存储的32字节密钥。</p>
+<p><strong>Stack output 堆栈输出</strong></p>
+<p><code>value</code>: 32-byte value corresponding to that key. 0 if that key was never written before.</p>
+<p>与该键对应的 32 字节值。如果该键以前从未写入过，则为 0。</p>
+<h5 id="MSTORE"><a href="#MSTORE" class="headerlink" title="MSTORE"></a><em>MSTORE</em></h5><p><strong>Stack input 堆栈输入</strong></p>
+<ol>
+<li><code>offset</code>: offset in the <a target="_blank" rel="noopener" href="https://www.evm.codes/about">memory</a> in bytes.<br>内存中的偏移量（以字节为单位）。</li>
+<li><code>value</code>: 32-byte value to write in the <a target="_blank" rel="noopener" href="https://www.evm.codes/about">memory</a>.<br>要写入内存的 32 字节值。</li>
+</ol>
+<h5 id="RETURN"><a href="#RETURN" class="headerlink" title="RETURN"></a><em>RETURN</em></h5><p>成功退出当前上下文。</p>
+<p><strong>Stack input</strong></p>
+<ol>
+<li><code>offset</code>: byte offset in the <a target="_blank" rel="noopener" href="https://www.evm.codes/about">memory</a> in bytes, to copy what will be the <a target="_blank" rel="noopener" href="https://www.evm.codes/about">return data</a> of this <a target="_blank" rel="noopener" href="https://www.evm.codes/about">context</a>.<br>内存中的字节偏移量（以字节为单位），以复制此上下文的返回数据。</li>
+<li><code>size</code>: byte size to copy (size of the <a target="_blank" rel="noopener" href="https://www.evm.codes/about">return data</a>).<br>要复制的字节大小（返回数据的大小）</li>
+</ol>
+<p>本质上和 Return 相同，只是它会返回一些数据。并且，他是从<strong>内存</strong>中返回数据，因此我们想返回一个值就需要把这个值写进内存中去。将数据写到内存中，需要使用<code>MSTORE</code>关键字</p>
+<h4 id="通过-huff-实现函数调用"><a href="#通过-huff-实现函数调用" class="headerlink" title="通过 huff 实现函数调用"></a>通过 huff 实现函数调用</h4><ol>
+<li>首先<code>PUSH</code>一个<code>0x00</code>，然后调用 <code>calldataload</code> 获取 <code>calldata</code> 的前32位数据（calldataload 使用时，从堆栈弹出一个值，这个值是读取 calldata 的偏移量（起始位置））</li>
+<li>然后 <code>PUSH</code> 要右移的位数，使用<code>SHR</code>右移</li>
+<li>复制此时栈顶的函数选择器</li>
+<li>压入合约中已有的函数选择器，<code>EQ</code> 判断，将判断结果压入堆栈</li>
+<li>压入 <code>JUMPDEST </code>的偏移量（可通过 huff 宏编程）</li>
+<li><code>JUMPI </code>判断刚刚 <code>EQ </code>结果是否为真，若真则跳转到对应 <code>JUMPDEST</code></li>
+<li>重复刚刚的过程</li>
+<li>最后压入两个 <code>0x00</code> 然后<code>REVERT</code>避免非预期输出</li>
+</ol>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 60008060093d393df3</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Interface */</span></span><br><span class="line">#define function <span class="title function_ invoke__">updateHorseNumber</span>(uint256) nonpayable <span class="title function_ invoke__">returns</span>()</span><br><span class="line">#define function <span class="title function_ invoke__">readNumberOfHorses</span>() view <span class="title function_ invoke__">returns</span>(uint256)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#define <span class="keyword">macro</span> <span class="title function_ invoke__">MAIN</span>() = <span class="title function_ invoke__">takes</span>(<span class="number">0</span>) <span class="title function_ invoke__">returns</span>(<span class="number">0</span>) &#123;</span><br><span class="line">    <span class="number">0x00</span> calldataload <span class="number">0xe0</span> shr               <span class="comment">// [function_selector]</span></span><br><span class="line">    dup1                                     <span class="comment">// [function_selector, function_selector]</span></span><br><span class="line">    __FUNC_SIG(updateHorseNumber)            <span class="comment">// [0xcdfead2e, function_selector, function_selector]</span></span><br><span class="line">    eq                                       <span class="comment">// [true_if_func_selector_matches, function_selector]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// jump to updateHorseNumber code if true</span></span><br><span class="line">    updateJump                               <span class="comment">// [updateHorseNumberProgramCounter, true/false, function_selector]</span></span><br><span class="line">    jumpi                                    <span class="comment">// [function_selector]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// readNumberOfHorses, 0xe026c017</span></span><br><span class="line">    __FUNC_SIG(readNumberOfHorses)           <span class="comment">// [0xe026c017, function_selector]</span></span><br><span class="line">    eq                                       <span class="comment">// [true_if_func_selector_matches]</span></span><br><span class="line">    readJump                                 <span class="comment">// [readJump, true_if_func_selector_matches]</span></span><br><span class="line">    jumpi</span><br><span class="line"></span><br><span class="line">    <span class="number">0x00</span> <span class="number">0x00</span> revert    </span><br><span class="line"></span><br><span class="line">    updateJump:</span><br><span class="line">        <span class="title function_ invoke__">SET_NUMBER_OF_HORSES</span>()</span><br><span class="line">    readJump:</span><br><span class="line">        <span class="title function_ invoke__">GET_NUMBER_OF_HORSES</span>()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#define <span class="keyword">macro</span> <span class="title function_ invoke__">SET_NUMBER_OF_HORSES</span>() = <span class="title function_ invoke__">takes</span>(<span class="number">0</span>) <span class="title function_ invoke__">returns</span>(<span class="number">0</span>) &#123;&#125;</span><br><span class="line"></span><br><span class="line">#define <span class="keyword">macro</span> <span class="title function_ invoke__">GET_NUMBER_OF_HORSES</span>() = <span class="title function_ invoke__">takes</span>(<span class="number">0</span>) <span class="title function_ invoke__">returns</span>(<span class="number">0</span>) &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="通过-Huff-向-Storage-中写入数据"><a href="#通过-Huff-向-Storage-中写入数据" class="headerlink" title="通过 Huff 向 Storage 中写入数据"></a>通过 Huff 向 Storage 中写入数据</h4><p>这里向 Storage 中写入的数据是 <strong>calldata 中的参数</strong>。</p>
+<ol>
+<li>首先<code>PUSH</code> 0x04作为 <code>CALLDATALOAD</code> 的偏移，这样得到的直接就是 <strong>calldata 中的参数</strong></li>
+<li>压入要写入的 slot 的值（这里使用了 Huff 的语法糖，利用<code>FREE_STORAGE_POINTER</code>空闲存储指针定义的常量）</li>
+<li>调用<code>SSTORE</code>写入Storage</li>
+<li>调用<code>STOP</code>终止上下文的执行（此时已经执行完成，使用 <code>STOP</code> 终止，防止后续还会继续消耗 gas）</li>
+</ol>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">#define constant NUMBER_OF_HOURSES_STORAGE_SLOT = <span class="title function_ invoke__">FREE_STORAGE_POINTER</span>()</span><br><span class="line"></span><br><span class="line">#define <span class="keyword">macro</span> <span class="title function_ invoke__">SET_NUMBER_OF_HORSES</span>() = <span class="title function_ invoke__">takes</span>(<span class="number">0</span>) <span class="title function_ invoke__">returns</span>(<span class="number">0</span>) &#123;</span><br><span class="line">    <span class="comment">// 1. Get the value to store from calldata</span></span><br><span class="line">    <span class="number">0x04</span>                                      <span class="comment">// [0x04]</span></span><br><span class="line">    calldataload                              <span class="comment">// [value]</span></span><br><span class="line">    <span class="comment">// 2. Give it a storage slot</span></span><br><span class="line">    [NUMBER_OF_HOURSES_STORAGE_SLOT]          <span class="comment">// [storage_slot, value]</span></span><br><span class="line">    sstore</span><br><span class="line">    stop</span><br><span class="line">    <span class="comment">// 3. sstore opcode</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="通过-Huff-读取-slot-中的值"><a href="#通过-Huff-读取-slot-中的值" class="headerlink" title="通过 Huff 读取 slot 中的值"></a>通过 Huff 读取 slot 中的值</h4><ol>
+<li>压入要写入的 slot 的值（这里使用了 Huff 的语法糖，利用<code>FREE_STORAGE_POINTER</code>空闲存储指针定义的常量）</li>
+<li><code>SLOAD</code>从堆栈中弹出要读取的 Storage 的 slot 的值</li>
+<li><code>PUSH</code> 0x00 ，然后调用 <code>MSTORE</code> 将 <code>SLOAD</code> 读取来的值存储到内存中。</li>
+<li><code>PUSH</code> 0x00， <code>PUSH</code> 0x00 然后<code>RETURN</code>把内存中的值返回</li>
+</ol>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">#define constant NUMBER_OF_HOURSES_STORAGE_SLOT = <span class="title function_ invoke__">FREE_STORAGE_POINTER</span>()</span><br><span class="line"></span><br><span class="line">#define <span class="keyword">macro</span> <span class="title function_ invoke__">GET_NUMBER_OF_HORSES</span>() = <span class="title function_ invoke__">takes</span>(<span class="number">0</span>) <span class="title function_ invoke__">returns</span>(<span class="number">0</span>) &#123;</span><br><span class="line">    <span class="comment">// 1. Get the storage slot</span></span><br><span class="line">    <span class="comment">// 2. Load the value of that slot into memory</span></span><br><span class="line">    <span class="comment">// 3. Return</span></span><br><span class="line">    [NUMBER_OF_HOURSES_STORAGE_SLOT]        <span class="comment">// [key]</span></span><br><span class="line">    sload                                   <span class="comment">// [value]</span></span><br><span class="line">    <span class="number">0x00</span>                                    <span class="comment">// [0, value]</span></span><br><span class="line">    mstore                                  <span class="comment">// []           // Memory: [value]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 0x20 == 32 bytes</span></span><br><span class="line">    <span class="number">0x20</span> <span class="number">0x00</span> <span class="keyword">return</span>                        <span class="comment">// []</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
 </ol>
 
     </div>
@@ -423,7 +504,10 @@
     <a href="/2024/01/22/rust-%E5%A4%8D%E5%90%88%E7%B1%BB%E5%9E%8B/" rel="prev" title="rust-复合类型">
       <i class="fa fa-chevron-left"></i> rust-复合类型
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2024/03/06/go%E8%AF%AD%E8%A8%80%E5%85%A5%E9%97%A8-1/" rel="next" title="go语言入门-1">
+      go语言入门-1 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -482,7 +566,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Huff"><span class="nav-number">1.</span> <span class="nav-text">Huff</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Huff-%E5%AE%89%E8%A3%85"><span class="nav-number">1.1.</span> <span class="nav-text">Huff 安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Huff-%E5%85%A5%E9%97%A8"><span class="nav-number">1.2.</span> <span class="nav-text">Huff 入门</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%9E%84%E6%88%90%EF%BC%9A"><span class="nav-number">1.2.1.</span> <span class="nav-text">基本构成：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%96%E8%AF%91-huff%EF%BC%9A"><span class="nav-number">1.2.2.</span> <span class="nav-text">编译 huff：</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#huffc-path-b"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">huffc path (-b)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#huffc-path-%E2%80%93bin-runtime"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">huffc path –bin-runtime</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Huff-FUNC-SIG-Interface"><span class="nav-number">1.2.3.</span> <span class="nav-text">Huff __FUNC_SIG &amp; Interface</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Huff-opcode"><span class="nav-number">1.2.4.</span> <span class="nav-text">Huff opcode</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#push"><span class="nav-number">1.2.4.1.</span> <span class="nav-text">push</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#calldataload"><span class="nav-number">1.2.4.2.</span> <span class="nav-text">calldataload</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#shr-Right-Shift-%E5%8F%B3%E7%A7%BB%E4%BD%8D"><span class="nav-number">1.2.4.3.</span> <span class="nav-text">shr(Right Shift) 右移位</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#EQ"><span class="nav-number">1.2.4.4.</span> <span class="nav-text">EQ</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#JUMP-JUMPI-JUMPDEST"><span class="nav-number">1.2.4.5.</span> <span class="nav-text">JUMP &amp;  JUMPI &amp; JUMPDEST</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#DUP"><span class="nav-number">1.2.4.6.</span> <span class="nav-text">DUP</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#REVERT"><span class="nav-number">1.2.4.7.</span> <span class="nav-text">REVERT</span></a></li></ol></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Huff"><span class="nav-number">1.</span> <span class="nav-text">Huff</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Huff-%E5%AE%89%E8%A3%85"><span class="nav-number">1.1.</span> <span class="nav-text">Huff 安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Huff-%E5%85%A5%E9%97%A8"><span class="nav-number">1.2.</span> <span class="nav-text">Huff 入门</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%9E%84%E6%88%90%EF%BC%9A"><span class="nav-number">1.2.1.</span> <span class="nav-text">基本构成：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%96%E8%AF%91-huff%EF%BC%9A"><span class="nav-number">1.2.2.</span> <span class="nav-text">编译 huff：</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#huffc-path-b"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">huffc path (-b)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#huffc-path-%E2%80%93bin-runtime"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">huffc path –bin-runtime</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Huff%EF%BC%9A-FUNC-SIG-Interface"><span class="nav-number">1.2.3.</span> <span class="nav-text">Huff： __FUNC_SIG &amp; Interface</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Huff%EF%BC%9A-FREE-STORAGE-POINTER"><span class="nav-number">1.2.4.</span> <span class="nav-text">Huff： FREE_STORAGE_POINTER</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Huff%EF%BC%9A%E8%AE%BF%E9%97%AE%E5%B8%B8%E9%87%8F%E5%8F%98%E9%87%8F"><span class="nav-number">1.2.5.</span> <span class="nav-text">Huff：访问常量变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%8E-calldata-%E8%AE%BF%E9%97%AE%E5%87%BD%E6%95%B0%E5%8F%82%E6%95%B0"><span class="nav-number">1.2.6.</span> <span class="nav-text">从 calldata 访问函数参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Huff-opcode"><span class="nav-number">1.2.7.</span> <span class="nav-text">Huff opcode</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#push"><span class="nav-number">1.2.7.1.</span> <span class="nav-text">push</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#calldataload"><span class="nav-number">1.2.7.2.</span> <span class="nav-text">calldataload</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#shr-Right-Shift-%E5%8F%B3%E7%A7%BB%E4%BD%8D"><span class="nav-number">1.2.7.3.</span> <span class="nav-text">shr(Right Shift) 右移位</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#EQ"><span class="nav-number">1.2.7.4.</span> <span class="nav-text">EQ</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#JUMP-JUMPI-JUMPDEST"><span class="nav-number">1.2.7.5.</span> <span class="nav-text">JUMP &amp;  JUMPI &amp; JUMPDEST</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#DUP"><span class="nav-number">1.2.7.6.</span> <span class="nav-text">DUP</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#REVERT"><span class="nav-number">1.2.7.7.</span> <span class="nav-text">REVERT</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#SSTORE"><span class="nav-number">1.2.7.8.</span> <span class="nav-text">SSTORE</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#STOP"><span class="nav-number">1.2.7.9.</span> <span class="nav-text">STOP</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#SLOAD"><span class="nav-number">1.2.7.10.</span> <span class="nav-text">SLOAD</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#MSTORE"><span class="nav-number">1.2.7.11.</span> <span class="nav-text">MSTORE</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#RETURN"><span class="nav-number">1.2.7.12.</span> <span class="nav-text">RETURN</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%9A%E8%BF%87-huff-%E5%AE%9E%E7%8E%B0%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8"><span class="nav-number">1.2.8.</span> <span class="nav-text">通过 huff 实现函数调用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%9A%E8%BF%87-Huff-%E5%90%91-Storage-%E4%B8%AD%E5%86%99%E5%85%A5%E6%95%B0%E6%8D%AE"><span class="nav-number">1.2.9.</span> <span class="nav-text">通过 Huff 向 Storage 中写入数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%9A%E8%BF%87-Huff-%E8%AF%BB%E5%8F%96-slot-%E4%B8%AD%E7%9A%84%E5%80%BC"><span class="nav-number">1.2.10.</span> <span class="nav-text">通过 Huff 读取 slot 中的值</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -498,20 +582,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">52</span>
+          <span class="site-state-item-count">53</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-count">20</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-count">21</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -556,13 +640,13 @@
       <i class="fa fa-chart-area"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">142k</span>
+    <span title="站点总字数">145k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">7:52</span>
+    <span title="站点阅读时长">8:02</span>
 </div>
 
 <div class="powered-by">
