@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icons8-autumn-material-filled-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icons8-autumn-material-filled-16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="根据德国 Christof Paar 的密码学基础教程学习了一些入门的密码学知识，本文对应其第二节内容，主要关于模运算（Modular Arithmetic），等价类（Equivalence Classes），环（Ring），凯撒密码（Caesar cipher），仿射密码（affine cipher）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="密码-1：模运算，凯撒密码，仿射密码">
+<meta property="og:url" content="http://example.com/2024/03/11/%E5%AF%86%E7%A0%81-1%EF%BC%9A%E6%A8%A1%E8%BF%90%E7%AE%97%EF%BC%8C%E5%87%AF%E6%92%92%E5%AF%86%E7%A0%81%EF%BC%8C%E4%BB%BF%E5%B0%84%E5%AF%86%E7%A0%81/index.html">
+<meta property="og:site_name" content="Q1ngying">
+<meta property="og:description" content="根据德国 Christof Paar 的密码学基础教程学习了一些入门的密码学知识，本文对应其第二节内容，主要关于模运算（Modular Arithmetic），等价类（Equivalence Classes），环（Ring），凯撒密码（Caesar cipher），仿射密码（affine cipher）">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/%E5%AF%86%E7%A0%81-1%EF%BC%9A%E6%A8%A1%E8%BF%90%E7%AE%97%EF%BC%8C%E5%87%AF%E6%92%92%E5%AF%86%E7%A0%81%EF%BC%8C%E4%BB%BF%E5%B0%84%E5%AF%86%E7%A0%81/image-20240310210424001.png">
+<meta property="og:image" content="http://example.com/images/%E5%AF%86%E7%A0%81-1%EF%BC%9A%E6%A8%A1%E8%BF%90%E7%AE%97%EF%BC%8C%E5%87%AF%E6%92%92%E5%AF%86%E7%A0%81%EF%BC%8C%E4%BB%BF%E5%B0%84%E5%AF%86%E7%A0%81/image-20240311180420436.png">
+<meta property="og:image" content="http://example.com/images/%E5%AF%86%E7%A0%81-1%EF%BC%9A%E6%A8%A1%E8%BF%90%E7%AE%97%EF%BC%8C%E5%87%AF%E6%92%92%E5%AF%86%E7%A0%81%EF%BC%8C%E4%BB%BF%E5%B0%84%E5%AF%86%E7%A0%81/image-20240311180548883.png">
+<meta property="og:image" content="http://example.com/images/%E5%AF%86%E7%A0%81-1%EF%BC%9A%E6%A8%A1%E8%BF%90%E7%AE%97%EF%BC%8C%E5%87%AF%E6%92%92%E5%AF%86%E7%A0%81%EF%BC%8C%E4%BB%BF%E5%B0%84%E5%AF%86%E7%A0%81/image-20240311181900443.png">
+<meta property="article:published_time" content="2024-03-11T12:20:57.000Z">
+<meta property="article:modified_time" content="2024-03-11T12:26:24.087Z">
+<meta property="article:author" content="Q1ngying">
+<meta property="article:tag" content="密码学">
+<meta property="article:tag" content="古典密码">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/%E5%AF%86%E7%A0%81-1%EF%BC%9A%E6%A8%A1%E8%BF%90%E7%AE%97%EF%BC%8C%E5%87%AF%E6%92%92%E5%AF%86%E7%A0%81%EF%BC%8C%E4%BB%BF%E5%B0%84%E5%AF%86%E7%A0%81/image-20240310210424001.png">
+
+<link rel="canonical" href="http://example.com/2024/03/11/%E5%AF%86%E7%A0%81-1%EF%BC%9A%E6%A8%A1%E8%BF%90%E7%AE%97%EF%BC%8C%E5%87%AF%E6%92%92%E5%AF%86%E7%A0%81%EF%BC%8C%E4%BB%BF%E5%B0%84%E5%AF%86%E7%A0%81/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>密码-1：模运算，凯撒密码，仿射密码 | Q1ngying</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Q1ngying</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">清影的个人站</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/03/11/%E5%AF%86%E7%A0%81-1%EF%BC%9A%E6%A8%A1%E8%BF%90%E7%AE%97%EF%BC%8C%E5%87%AF%E6%92%92%E5%AF%86%E7%A0%81%EF%BC%8C%E4%BB%BF%E5%B0%84%E5%AF%86%E7%A0%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Q1ngying">
+      <meta itemprop="description" content="今朝梦醒与君别，遥盼春风寄相思">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Q1ngying">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          密码-1：模运算，凯撒密码，仿射密码
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-03-11 20:20:57 / 修改时间：20:26:24" itemprop="dateCreated datePublished" datetime="2024-03-11T20:20:57+08:00">2024-03-11</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">密码学</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8F%A4%E5%85%B8%E5%AF%86%E7%A0%81/" itemprop="url" rel="index"><span itemprop="name">古典密码</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>5 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>根据德国 Christof Paar 的密码学基础教程学习了一些入门的密码学知识，本文对应其第二节内容，主要关于模运算（Modular Arithmetic），等价类（Equivalence Classes），环（Ring），凯撒密码（Caesar cipher），仿射密码（affine cipher）</p>
+<span id="more"></span>
+
+<h1 id="古典密码"><a href="#古典密码" class="headerlink" title="古典密码"></a>古典密码</h1><h2 id="Modular-Arithmetic-模运算"><a href="#Modular-Arithmetic-模运算" class="headerlink" title="Modular Arithmetic 模运算"></a>Modular Arithmetic 模运算</h2><h3 id="定义："><a href="#定义：" class="headerlink" title="定义："></a>定义：</h3><p>令 $$a,r,m\in Z,$$ 并且 $$m&gt;0$$ 我们记作 $a\equiv r\quad mod \quad m$如果中位数$(a-r)$最高的$m|(a-r)$（m除以 （a-r))</p>
+<p>$m|(a-r)$读作 <strong>m除以 （a-r)</strong></p>
+<p>r ：remainder 余</p>
+<p>m：modulus 模数</p>
+<p>举例：<br>$$<br>a &#x3D; 13, m&#x3D;9\quad r&#x3D;? \13 \equiv 4 \ mod \ 9 \ a  -r&#x3D;(13-4)&#x3D;9<br>$$</p>
+<h3 id="computation-of-the-remainder-余数的计算"><a href="#computation-of-the-remainder-余数的计算" class="headerlink" title="computation of the remainder 余数的计算"></a>computation of the remainder 余数的计算</h3><p>通常给出 $$ a,m \in Z，a &#x3D; q* m+r$$</p>
+<p>(q：quotient 商)</p>
+<p><strong>example：</strong><br>$$<br>a&#x3D;42,m&#x3D;9 \ 42&#x3D;4*9+6 \Rightarrow r&#x3D;6<br>$$<br>通过定义对刚刚的计算进行检测：<br>$$<br>(42-6) &#x3D; 36, 9\ |\ 36 满足<br>$$<br><strong>注意：余数不唯一</strong></p>
+<h3 id="Equivalence-Classes-等价类"><a href="#Equivalence-Classes-等价类" class="headerlink" title="Equivalence Classes 等价类"></a>Equivalence Classes 等价类</h3><p>example：<br>$$<br>a&#x3D;12,m&#x3D;5 \ 12 \equiv2 \ mod \ 5 \ check \ 5\ | \ (12-2) \ 12 \equiv 7 \ mod \ 5 \ check \ 5 \ | \ (12-7) \ 12 \equiv -3 \ mod \ 5 \ check \ 5 \ | \ (12 -(-3)) \<br>$$<br><strong>定义：</strong>该结合<code>&#123;...,-8,-3,2,7,12,15,...&#125;</code>形成一个“等价类”，这个集合中的所有元素在模5下具有相同的行为或特征。</p>
+<p>接下来查看所有以 5 为模的等值类：</p>
+<p><code>&#123;...,-15,-10,-5,0,5,10,15,...&#125;</code> ——  A</p>
+<p><code>&#123;...,-14,-9,-4,1,6,11,16,...&#125;</code> —— B</p>
+<p><code>&#123;...,-13,-8,-3,2,7,12,17,...&#125;</code> —— C</p>
+<p><code>&#123;...,-12,-7,-2,3,8,13,18,...&#125;</code> —— D</p>
+<p><code>&#123;...,-11,-6,-1,4,9,14,19,...&#125;</code> —— E</p>
+<p>计算 $$13<em>16-8&#x3D;208 -8&#x3D;200 \equiv 0 \ mod \ 5$$。我们可以将这个计算看为：<br>$$<br>D * B -D \<br>进一步代数：\ 3</em>1-3&#x3D;3-3 \equiv 0 \ mod \ 5<br>$$<br>这里就利用了刚刚等价类的定义：</p>
+<h4 id="Important-application-重要应用"><a href="#Important-application-重要应用" class="headerlink" title="Important application 重要应用"></a>Important application 重要应用</h4><p>大多数非对称密码加密是<strong>基于模运算</strong>的。</p>
+<p><strong>example：</strong>在公钥密码学中有一个非常经典的情况：在建立安全连接时（如 https）有很大的数据量，其中大多数用到了指数运算，对于特大的数据，直接通过计算机计算需要消耗大量的时间进行计算，所以有时候使用一些别的计算方法来减少我们的计算时间。<br>$$<br>3^8 \ mod \ 7 \equiv \ ?<br>$$<br><strong>1）</strong> $$3^8&#x3D;6567 \equiv \ 2 \ mod \ 7$$ </p>
+<p><strong>2)</strong> $$ 3^8&#x3D;3^4<em>3^4 &#x3D;81</em>81 \equiv \ 4*4&#x3D;16 \equiv 2 \ mod \ 7 $$</p>
+<p>上面的第一种方法，就是直接计算，然后进行模运算，能够看到，需要进行大量的计算。</p>
+<p>第二种方法使用了我们刚刚的<strong>等价类</strong>的性质，我们通过指数运算的性质，将其拆解为：$$ 3^8&#x3D;3^4<em>3^4$$ 这样我们得到了$$81 <em>81$$ 接着：<br>$$<br>81</em>81&#x3D;(11</em>7+4)<em>81&#x3D;4</em>4&#x3D;16 \equiv 2\ mod \ 7<br>$$<br>也可以继续抽象：<br>$$<br>3^8&#x3D;3^2<em>3^2</em>3^2<em>3^2&#x3D;9</em>9<em>9</em>9&#x3D;(1<em>7+2)<em>9</em>9</em>9&#x3D;2<em>2</em>2*2&#x3D;16 \equiv 2 \ mod \ 7<br>$$<br>在数学上，选择等价类中的某个数字都是成立的，但是<strong>我们通常选择最小的，正的等价类来进行运算</strong>，比如：</p>
+<p><img src="/../images/%E5%AF%86%E7%A0%81-1%EF%BC%9A%E6%A8%A1%E8%BF%90%E7%AE%97%EF%BC%8C%E5%87%AF%E6%92%92%E5%AF%86%E7%A0%81%EF%BC%8C%E4%BB%BF%E5%B0%84%E5%AF%86%E7%A0%81/image-20240310210424001.png" alt="image-20240310210424001"></p>
+<h4 id="Rings-An-algebraic-view-on-modular-arithmetic-环：模运算的代数观点"><a href="#Rings-An-algebraic-view-on-modular-arithmetic-环：模运算的代数观点" class="headerlink" title="Rings: An algebraic view on modular arithmetic 环：模运算的代数观点"></a>Rings: An algebraic view on modular arithmetic 环：模运算的代数观点</h4><p><strong>定义：</strong>“整数环”$$Z_m$$由 </p>
+<ol>
+<li>集合 $$Z_m &#x3D; {0,1,2, \ldots ,m-1 } $$ </li>
+<li>两个运算符$$+ \ <em>$$组成。 使得对于所有 $$a, b, c,d \in Z_m$$<br>i)  $$a+b \equiv c \ mod \ m$$<br>ii) $$a</em>b \equiv d \ mod \ m$$</li>
+</ol>
+<p>在后续的还会遇到很多的环，比如：多项式形成环矩阵环</p>
+<p><strong>性质：</strong></p>
+<ul>
+<li><p>我们可以对任意两个数字进行加法和乘法，结果总是在环中。环被称为<strong>闭合环</strong></p>
+</li>
+<li><p>加法和乘法都存在结合率，e.g.$$a+(b+c)&#x3D;(a+b)+c \ 且 a ·(b · c) &#x3D; (a · b)· c , all \ a,b,c \in Z_m$$</p>
+</li>
+<li><p>对于加法，存在中性元素 0，即，对于每个元素 $$a \in Z_m$$，它都满足 $$a+0 \equiv  a \ mod \ m$$。</p>
+</li>
+<li><p>对于环中的任意元素 a，总存在负元素 −a，使得$a+(−a) ≡ 0 \ mod \ m$，即加法逆元总是存在。</p>
+</li>
+<li><p>对于乘法，存在中性元素 1，即，对于每个元素 $$a ∈ Z_m$$，它都满足 $$a×1 \equiv a\ mod \ m$$。</p>
+</li>
+<li><p>乘法逆元仅适用于某些元素，但不适用于所有元素。 设 a ∈ Z，逆元 a^−1^ 定义为<br>$$<br>$$a·a^{-1} \equiv 1 \ mod\ m<br>$$<br>如果 a 存在逆元，我们可以除以该元素，因为 $$b&#x2F;a &#x3D;&#x3D; b · a<br>−1 \ mod \ m$$。</p>
+</li>
+<li><p>如果 a 存在逆元，我们可以除以该元素，因为 b&#x2F;a &#x3D;&#x3D; b · a −1 mod m。 找到逆矩阵需要付出一些努力（通常采用欧几里得算法，这在第 6.3 节中进行了介绍）。</p>
+</li>
+</ul>
+<p>然而，有一个简单的方法可以告诉你 给定元素 a 的逆是否存在： 元素 a ∈ Z 具有乘法逆元 a^−1^ 当且仅当 gcd(a,m) &#x3D; 1， 其中 gcd 是最大公约数，即整除的最大整数 两个数字 a 和 m。 两个数字的 gcd 为 1 的事实非常重要 在数论中很重要，并且有一个特殊的名称：<code>if gcd(a,m) = 1</code>, 那么 a 和 m 被称为互素或互质。</p>
+<p><strong>example：</strong> multiplicative inverses 乘法逆元</p>
+<p>$$<br>m&#x3D;9,Z_9&#x3D; {0,1,2,3,4,5,\ldots} \ a&#x3D;2\ a^{-1}&#x3D;?<br>$$<br>这里我们可以通过看看出，在 m &#x3D; 9 的情况下，2 的逆元是 5：<br>$$<br>2<em>2^-1 \equiv 1 \ mod \ 9<br>\ 2</em>5 \equiv 1 \ mod\ 9<br>$$<br>但是 6 的逆元，我们没办法向刚刚的方法直接看出来。我们在这里进行一步验证：<code>gcd(6,9)=3</code> （<code>gcd(a,b)</code>表示 a，b的最大公约数）。但是看我们刚刚的例子：<code>gcd(2,9)=1</code>。所以：</p>
+<p><strong>如果两个数的最大公约数不等于1(<code>gcd(a,b)!=1</code>)那么则不存在逆元</strong></p>
+<h2 id="shift-or-caesar-cipher-移位（凯撒）密码"><a href="#shift-or-caesar-cipher-移位（凯撒）密码" class="headerlink" title="shift (or caesar) cipher 移位（凯撒）密码"></a>shift (or caesar) cipher 移位（凯撒）密码</h2><p><strong>想法：在字母表中移动字母</strong></p>
+<p><strong>example：</strong> k &#x3D; 3 那么存在字母表对应关系：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">A -&gt; d</span><br><span class="line">B -&gt; e</span><br><span class="line">...</span><br><span class="line">W -&gt; z</span><br><span class="line">X -&gt; a</span><br><span class="line">Y -&gt; b</span><br><span class="line">Z -&gt; c</span><br></pre></td></tr></table></figure>
+
+<p>最后三个就是一个环绕回到了前三个没用的字母。</p>
+<p>实现上面的过程是通过一个非常漂亮的方式<code>modulo 26</code>自动完成的</p>
+<p><img src="/../images/%E5%AF%86%E7%A0%81-1%EF%BC%9A%E6%A8%A1%E8%BF%90%E7%AE%97%EF%BC%8C%E5%87%AF%E6%92%92%E5%AF%86%E7%A0%81%EF%BC%8C%E4%BB%BF%E5%B0%84%E5%AF%86%E7%A0%81/image-20240311180420436.png" alt="image-20240311180420436"></p>
+<p>上面的是通过手算，手写密码表来实现的，我们可以使用数学方法来实现加密，解密的过程：</p>
+<p><img src="/../images/%E5%AF%86%E7%A0%81-1%EF%BC%9A%E6%A8%A1%E8%BF%90%E7%AE%97%EF%BC%8C%E5%87%AF%E6%92%92%E5%AF%86%E7%A0%81%EF%BC%8C%E4%BB%BF%E5%B0%84%E5%AF%86%E7%A0%81/image-20240311180548883.png" alt="image-20240311180548883"></p>
+<p>攻击方法有两种：</p>
+<ul>
+<li>频率分析</li>
+<li>密钥搜索（暴力破解，蛮力攻击）</li>
+</ul>
+<h2 id="affine-cipher-仿射密码"><a href="#affine-cipher-仿射密码" class="headerlink" title="affine cipher 仿射密码"></a>affine cipher 仿射密码</h2><p><strong>example：</strong><code>key = (a, b)</code> 那么：<br>$$<br>enc: \ y \equiv a\cdot x+b \ mod\ 26\<br>y-b \equiv a \cdot x\ mod \ 26 \<br>a^{-1} \cdot(y-b) \equiv x \ mod \ 26 \<br>dec: \ x \equiv a^{-1}(y-b) \ mod\ 26<br>$$<br><img src="/../images/%E5%AF%86%E7%A0%81-1%EF%BC%9A%E6%A8%A1%E8%BF%90%E7%AE%97%EF%BC%8C%E5%87%AF%E6%92%92%E5%AF%86%E7%A0%81%EF%BC%8C%E4%BB%BF%E5%B0%84%E5%AF%86%E7%A0%81/image-20240311181900443.png" alt="image-20240311181900443"></p>
+<p>问题在于<code>#k = ?</code>（<code>#</code>代表空间，那么<code>#k</code> 代表密钥空间）即：密钥有多少个键，首先我们要知道系统中有多少个 <code>a</code> 和 多少个 <code>b</code> 从简单的开始：</p>
+<p><code>#b=26</code> 使用 a 的条件是<code>gcd(a, 26)=1</code>，满足条件的 a 有$(1, 3, 5, 7, 9 ,11,\ldots \Rightarrow # a&#x3D;12)$</p>
+<p>那么：<br>$$<br>#k&#x3D;(#a)\cdot(#b) \<br>&#x3D;12\cdot26 \ \ \<br>&#x3D; 312 \ \ \ \ \ \ <br>$$</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Q1ngying
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2024/03/11/%E5%AF%86%E7%A0%81-1%EF%BC%9A%E6%A8%A1%E8%BF%90%E7%AE%97%EF%BC%8C%E5%87%AF%E6%92%92%E5%AF%86%E7%A0%81%EF%BC%8C%E4%BB%BF%E5%B0%84%E5%AF%86%E7%A0%81/" title="密码-1：模运算，凯撒密码，仿射密码">http://example.com/2024/03/11/密码-1：模运算，凯撒密码，仿射密码/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="tag"># 密码学</a>
+              <a href="/tags/%E5%8F%A4%E5%85%B8%E5%AF%86%E7%A0%81/" rel="tag"># 古典密码</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/03/11/%E5%AF%86%E7%A0%81%E5%BC%95%E8%A8%80/" rel="prev" title="密码引言">
+      <i class="fa fa-chevron-left"></i> 密码引言
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%A4%E5%85%B8%E5%AF%86%E7%A0%81"><span class="nav-number">1.</span> <span class="nav-text">古典密码</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Modular-Arithmetic-%E6%A8%A1%E8%BF%90%E7%AE%97"><span class="nav-number">1.1.</span> <span class="nav-text">Modular Arithmetic 模运算</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A"><span class="nav-number">1.1.1.</span> <span class="nav-text">定义：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#computation-of-the-remainder-%E4%BD%99%E6%95%B0%E7%9A%84%E8%AE%A1%E7%AE%97"><span class="nav-number">1.1.2.</span> <span class="nav-text">computation of the remainder 余数的计算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Equivalence-Classes-%E7%AD%89%E4%BB%B7%E7%B1%BB"><span class="nav-number">1.1.3.</span> <span class="nav-text">Equivalence Classes 等价类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Important-application-%E9%87%8D%E8%A6%81%E5%BA%94%E7%94%A8"><span class="nav-number">1.1.3.1.</span> <span class="nav-text">Important application 重要应用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Rings-An-algebraic-view-on-modular-arithmetic-%E7%8E%AF%EF%BC%9A%E6%A8%A1%E8%BF%90%E7%AE%97%E7%9A%84%E4%BB%A3%E6%95%B0%E8%A7%82%E7%82%B9"><span class="nav-number">1.1.3.2.</span> <span class="nav-text">Rings: An algebraic view on modular arithmetic 环：模运算的代数观点</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#shift-or-caesar-cipher-%E7%A7%BB%E4%BD%8D%EF%BC%88%E5%87%AF%E6%92%92%EF%BC%89%E5%AF%86%E7%A0%81"><span class="nav-number">1.2.</span> <span class="nav-text">shift (or caesar) cipher 移位（凯撒）密码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#affine-cipher-%E4%BB%BF%E5%B0%84%E5%AF%86%E7%A0%81"><span class="nav-number">1.3.</span> <span class="nav-text">affine cipher 仿射密码</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Q1ngying"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Q1ngying</p>
+  <div class="site-description" itemprop="description">今朝梦醒与君别，遥盼春风寄相思</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">55</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/q1ngying" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;q1ngying" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:q1ngying@163.com" title="E-Mail → mailto:q1ngying@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-09 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Q1ngying</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">147k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">8:10</span>
+</div>
+
+<div class="powered-by">
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <i class="fa fa-user-md"></i>
+    <span id="busuanzi_container_site_uv">
+        本站访客数:<span id="busuanzi_value_site_uv"></span>人
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_pv">
+        本站访问量<span id="busuanzi_value_site_pv"></span>人次
+    </span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,255,255' opacity='1' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
