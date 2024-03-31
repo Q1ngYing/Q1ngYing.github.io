@@ -6,20 +6,20 @@
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 6.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/icons8-autumn-material-filled-32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/icons8-autumn-material-filled-16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icons8-clover-ios-16-glyph-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icons8-clover-ios-16-glyph-16.png">
   <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
 <link rel="stylesheet" href="/css/main.css">
 
-
+<link rel="stylesheet" href="//fonts.lug.ustc.edu.cn/css?family=Garamond:300,300italic,400,400italic,700,700italic|Courier New:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
 <link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
   <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
   <script src="/lib/pace/pace.min.js"></script>
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="根据德国 Christof Paar 的密码学基础教程学习了一些入门的密码学知识，本文对应其第二、三节内容，主要关于流密码，随机数生成器（RNG），一次性便签簿，线性同余生成器（LCG），线性反馈移位寄存器（LFSRs）以及针对LCG和LFSRs的攻击。">
@@ -29,55 +29,35 @@
 <meta property="og:site_name" content="Q1ngying">
 <meta property="og:description" content="根据德国 Christof Paar 的密码学基础教程学习了一些入门的密码学知识，本文对应其第二、三节内容，主要关于流密码，随机数生成器（RNG），一次性便签簿，线性同余生成器（LCG），线性反馈移位寄存器（LFSRs）以及针对LCG和LFSRs的攻击。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240311204616816.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329212439253.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240311210545513.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329212459755.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329212512034.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329212524775.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329212548986.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329212603238.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329212729864.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240320211248191.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329213202836.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240320212907748.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240327211346820.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240327211945817.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240327212634402.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240327213314749.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240327213546517.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240327214759550.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240327215204509.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240327215859186.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240327222112517.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329213235816.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240328084931631.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240328084844212.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329213328746.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240328092626056.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329213359856.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240328200424915.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329213423431.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240328200859073.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329213500936.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240328202240639.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240328213016717.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329213521054.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329103118183.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329213544332.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240328092626056.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329213606915.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329213630121.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329213649281.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329213705867.png">
-<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329213721971.png">
+<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240311204616816-171188855234910.png">
+<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240311210545513-171188855234911.png">
+<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240320211248191-171188855234912.png">
+<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240320212907748-171188855234913.png">
+<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240327211346820-171188855234914.png">
+<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240327211945817-171188855234915.png">
+<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240327212634402-171188855235017.png">
+<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240327213314749-171188855235020.png">
+<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240327213546517-171188855235016.png">
+<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240327214759550-171188855235018.png">
+<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240327215204509-171188855235019.png">
+<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240327215859186-171188855235127.png">
+<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240327222112517-171188855235024.png">
+<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240328084931631-171188855235021.png">
+<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240328084844212-171188855235022.png">
+<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240328092626056-171188855235023.png">
+<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240328200424915-171188855235125.png">
+<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240328200859073-171188855235126.png">
+<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240328202240639-171188855235128.png">
+<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240328213016717-171188855235129.png">
+<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329103118183-171188855235130.png">
+<meta property="og:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240328092626056-171188855235023.png">
 <meta property="article:published_time" content="2024-03-29T13:18:52.000Z">
-<meta property="article:modified_time" content="2024-03-29T13:37:31.555Z">
+<meta property="article:modified_time" content="2024-03-31T12:47:14.199Z">
 <meta property="article:author" content="Q1ngying">
 <meta property="article:tag" content="密码学">
 <meta property="article:tag" content="古典密码">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240311204616816.png">
+<meta name="twitter:image" content="http://example.com/images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240311204616816-171188855234910.png">
 
 <link rel="canonical" href="http://example.com/2024/03/29/%E6%B5%81%E5%AF%86%E7%A0%81/">
 
@@ -123,7 +103,11 @@
   </style>
 </noscript>
 
-</head>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
   <div class="container use-motion">
@@ -146,7 +130,7 @@
       <h1 class="site-title">Q1ngying</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
-      <p class="site-subtitle" itemprop="description">清影的个人站</p>
+      <p class="site-subtitle" itemprop="description">今朝梦醒与君别，遥盼春风寄相思</p>
   </div>
 
   <div class="site-nav-right">
@@ -199,6 +183,7 @@
     <i class="fa fa-arrow-up"></i>
     <span>0%</span>
   </div>
+  <div class="reading-progress-bar"></div>
 
 
     <main class="main">
@@ -218,7 +203,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
       <meta itemprop="name" content="Q1ngying">
-      <meta itemprop="description" content="今朝梦醒与君别，遥盼春风寄相思">
+      <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -235,10 +220,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2024-03-29 21:18:52 / 修改时间：21:37:31" itemprop="dateCreated datePublished" datetime="2024-03-29T21:18:52+08:00">2024-03-29</time>
+              <time title="创建时间：2024-03-29 21:18:52" itemprop="dateCreated datePublished" datetime="2024-03-29T21:18:52+08:00">2024-03-29</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-03-31 20:47:14" itemprop="dateModified" datetime="2024-03-31T20:47:14+08:00">2024-03-31</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -259,14 +250,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>3.9k</span>
+              <span>5.1k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>13 分钟</span>
+              <span>17 分钟</span>
             </span>
 
         </div>
@@ -293,19 +284,16 @@
 </ul>
 <p>motivation（动机）</p>
 <p>在我们传播一些信息时（如手机信号）我们需要对其进行加密：</p>
-<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240311204616816.png" alt="image-20240311204616816"></p>
-<p>这个<img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329212439253.png" alt="image-20240329212439253">表示 <strong>模2</strong> 计算</p>
-<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240311210545513.png" alt="image-20240311210545513"></p>
+<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240311204616816-171188855234910.png" alt="image-20240311204616816"></p>
+<p>这个$\bigoplus$表示 <strong>模2</strong> 计算</p>
+<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240311210545513-171188855234911.png" alt="image-20240311210545513"></p>
 <p>上述就是流密码的加密过程。</p>
 <p><strong>定义</strong></p>
 <p>什么是流密码？<strong>流密码对各个位进行单独加密</strong></p>
-<p>在流密码中，我们用 <strong>s<del>i</del></strong> 来代表密钥，而不是使用 <strong>k</strong> 。</p>
-<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329212459755.png" alt="image-20240329212459755"></p>
-<h3 id="问题一：为什么加密，解密都是使用的相同的运算符"><a href="#问题一：为什么加密，解密都是使用的相同的运算符" class="headerlink" title="问题一：为什么加密，解密都是使用的相同的运算符"></a>问题一：为什么加密，解密都是使用的相同的运算符</h3><p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329212512034.png" alt="image-20240329212512034"></p>
+<p>在流密码中，我们用 <strong>s<del>i</del></strong> 来代表密钥，而不是使用 <strong>k</strong> 。<br>$$<br>encrypts:\ y_i&#x3D;e(x_i) \equiv x_i+s_i \ mod \ 2 \<br>decrypts:\ x_i&#x3D;d(y_i) \equiv y_i+s_i \ mod \ 2<br>$$</p>
+<h3 id="问题一：为什么加密，解密都是使用的相同的运算符"><a href="#问题一：为什么加密，解密都是使用的相同的运算符" class="headerlink" title="问题一：为什么加密，解密都是使用的相同的运算符"></a>问题一：为什么加密，解密都是使用的相同的运算符</h3><p>$$<br>d(y_i) \equiv y_i+s_i \ mod \ 2 \<br>\equiv (x_i+s_i)+s_i \ mod \ 2 \<br>\equiv x_i+2 \ s_i \ mod \ 2 \ \ \ \ \ \  \ \ \<br>\equiv xi<br>$$</p>
 <p>上面的推导过程能够得到：<strong>mod 2 加法和减法是相同的运算</strong></p>
-<p>所以，加密和解密使用的相同的运算符</p>
-<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329212524775.png" alt="image-20240329212524775"></p>
-<p>上述三者在 2 的整数环中（比特 bits）</p>
+<p>所以，加密和解密使用的相同的运算符<br>$$<br>x_i,y_i,s_i \in Z_2 &#x3D; {0,1}<br>$$<br>上述三者在 2 的整数环中（比特 bits）</p>
 <p><strong>仔细观看 mod 2 情况下的相加：</strong></p>
 <table>
 <thead>
@@ -338,13 +326,29 @@
 </tbody></table>
 <p>从上面的真值表可以看出，在电气工程中，这个是<strong>异或门</strong>，所以<strong>mod2 与 异或（XOR）是相同的</strong></p>
 <p>继续观察，我们可以发现，当<code>key=0</code>时，明文的值<strong>没有变化</strong>，<code>key=1</code>时，明文的值发生了<strong>翻转</strong></p>
-<h3 id="举例：ASCII加密”A”"><a href="#举例：ASCII加密”A”" class="headerlink" title="举例：ASCII加密”A”"></a>举例：ASCII加密”A”</h3><p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329212548986.png" alt="image-20240329212548986"></p>
-<p>1101100对应的ASCII码时 <code>l</code> 也就是说，加密后的明文<code>A</code>在传输过程中被截获获取到的就变成了<code>l</code>。接下来对密文进行解密：</p>
-<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329212603238.png" alt="image-20240329212603238"></p>
-<p>得到原来的明文<code>A</code></p>
+<h3 id="举例：ASCII加密”A”"><a href="#举例：ASCII加密”A”" class="headerlink" title="举例：ASCII加密”A”"></a>举例：ASCII加密”A”</h3><p>$$<br>x_1 \ldots x_7&#x3D;1000001 \<br>S_1 \ldots s_7 &#x3D; 0101101 \<br>y_1 \ldots y_7 &#x3D; 1101100\<br>$$</p>
+<p>1101100对应的ASCII码时 <code>l</code> 也就是说，加密后的明文<code>A</code>在传输过程中被截获获取到的就变成了<code>l</code>。接下来对密文进行解密：<br>$$<br>1101100 \<br>0101101 \<br>1000001<br>$$<br>得到原来的明文<code>A</code></p>
 <p>流密码看起来加密解密过程很简单，但是对实际生活确实产生了很大的帮助和影响，其实最难的是下面的问题</p>
 <h3 id="问题：我们如何产生密钥Si的比特流？"><a href="#问题：我们如何产生密钥Si的比特流？" class="headerlink" title="问题：我们如何产生密钥Si的比特流？"></a><strong>问题：</strong>我们如何产生密钥S<del>i</del>的比特流？</h3><p><strong>某种程度上与随机性有关</strong></p>
-<h2 id="随机数生成器（Random-Number-Generators-RNG"><a href="#随机数生成器（Random-Number-Generators-RNG" class="headerlink" title="随机数生成器（Random Number Generators:RNG)"></a>随机数生成器（Random Number Generators:RNG)</h2><p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329212729864.png" alt="image-20240329212729864"></p>
+<h2 id="随机数生成器（Random-Number-Generators-RNG"><a href="#随机数生成器（Random-Number-Generators-RNG" class="headerlink" title="随机数生成器（Random Number Generators:RNG)"></a>随机数生成器（Random Number Generators:RNG)</h2><p>我们区分 3 种类型的 RNGs：</p>
+<ul>
+<li>a)：真随机数生成器（True Random Number Generator：<strong>TRNG</strong>）<ul>
+<li>真正的随机数源于随机物理过程，e.g. 抛硬币，彩票，噪音(热噪声)，鼠标移动，键盘输入时间间隔</li>
+</ul>
+</li>
+<li>b)：伪随机数生成器（Pseudo Random Number Generators：<strong>PRNG</strong>）<ul>
+<li>RNGs是计算来的，即他们是确定性的</li>
+<li>通常他们是通过下面的函数被计算出来的</li>
+<li>第一个随机数是种子值$s_0 &#x3D; seed$（可能从某些地方传来，有时候这是一个真正的随机数）</li>
+<li>然后接下来的随机数是通过递归计算来的$s_{i+1}&#x3D;F(s_i)$</li>
+</ul>
+</li>
+<li>c)：加密安全的伪随机数生成器（Cryptographically secure <strong>PRNGS</strong>：CPRNG）<ul>
+<li>CPRNG 是 PRNG 的附加属性：数字<strong>不可预测</strong>（CPRNGs are PRNGs when an additional property: the numbers unpredictable）</li>
+<li>非正式定义：<strong>给出 n 个输出位$S_1,S_{i+1}, \ldots ,S_{1+n-1}$计算上无法构建$S_{n}$</strong></li>
+</ul>
+</li>
+</ul>
 <h2 id="一次性便笺簿（One-Time-Pad）"><a href="#一次性便笺簿（One-Time-Pad）" class="headerlink" title="一次性便笺簿（One Time Pad）"></a>一次性便笺簿（One Time Pad）</h2><p>目标：构建一个”完美”的密码</p>
 <p><strong>定义（完美密码）：</strong>一个密码是”无条件安全”（或信息在理论上是安全的）如果<strong>无限</strong>计算资源也无法破解</p>
 <h3 id="定义："><a href="#定义：" class="headerlink" title="定义："></a>定义：</h3><p>One Time Pad（OTP）是一种流密码，其中</p>
@@ -355,61 +359,78 @@
 <p><strong>最大缺点：密钥要和明文一样长</strong></p>
 <p>举例：加密一个 400M 的文件 &#x3D;&gt; 8*400 MB &#x3D; 3.2 Gbit 的密钥</p>
 <h2 id="线性同余生成器（Linear-Congruential-Generator：LCG-）"><a href="#线性同余生成器（Linear-Congruential-Generator：LCG-）" class="headerlink" title="线性同余生成器（Linear Congruential Generator：LCG  ）"></a>线性同余生成器（Linear Congruential Generator：LCG  ）</h2><p>idea：用一个密钥流$S_i$从一个PRNG</p>
-<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240320211248191.png" alt="image-20240320211248191"></p>
+<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240320211248191-171188855234912.png" alt="image-20240320211248191"></p>
 <p>上图就是如今流密码加密实现足够安全的方法。（M的意思是，假设是三十位的数字，那么A，B都是30 bit 长</p>
 <p>虽然有一个很好的随机源（seed，A，B）但是在密码学上破解这个还是很容易的：</p>
-<h3 id="Attack："><a href="#Attack：" class="headerlink" title="Attack："></a>Attack：</h3><p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329213202836.png" alt="image-20240329213202836"></p>
+<h3 id="Attack："><a href="#Attack：" class="headerlink" title="Attack："></a>Attack：</h3><p>Oscar 知道 $X_1,X_2,X_3$（比如文件头信息或者在消息加密中，有时有某种协议头）</p>
+<ul>
+<li><p>1)：Oscar 计算$S_1,S_2,S_3$</p>
+</li>
+<li><p>2)：计算$S_i \equiv A \cdot S_i+B \ mod \ m$（一个有两个参数的线性方程，我们需要的是<strong>两个未知数的二元一次方程组</strong>）</p>
+<p>$S_3 \equiv A \cdot S_2 + B \ mod \ m$</p>
+</li>
+<li><p>当知道两个方程时，就能破解这个密码系统</p>
+</li>
+</ul>
 <p>解决方法：</p>
-<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240320212907748.png" alt="image-20240320212907748"></p>
+<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240320212907748-171188855234913.png" alt="image-20240320212907748"></p>
 <p>也就是说：如果你知道三个随机数，就能破解 L</p>
 <h2 id="线性反馈移位寄存器-Linear-Feedback-Shift-Registers-—-LFSRs-简介"><a href="#线性反馈移位寄存器-Linear-Feedback-Shift-Registers-—-LFSRs-简介" class="headerlink" title="线性反馈移位寄存器(Linear Feedback Shift Registers —- LFSRs)简介"></a>线性反馈移位寄存器(Linear Feedback Shift Registers —- LFSRs)简介</h2><p>Goal：流密码在硬件加密中是较小的（低功耗）</p>
 <p>原子元素（电器工程）：触发器(flip-flop)存储1位（1 bit）</p>
-<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240327211346820.png" alt="image-20240327211346820"></p>
+<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240327211346820-171188855234914.png" alt="image-20240327211346820"></p>
 <p>一比特的输入，一比特的输出，然后有了时钟输入，时钟输入决定了什么时候存储比特</p>
 <p>假设输入产生信号（下图<code>I</code>，但是时钟输入（clock input，下图<code>CLK</code>）没有输入，此时寄存器不会存储，直到时钟脉冲告诉寄存器，存储输入值（下图第一条虚线），此次存储器开始存储数据（对应的输入信号<code>I</code>是1，所以下图<code>O</code>上升），即使输入已经下降，输出元素保持不变，直到下次时钟脉冲，告诉寄存器存储输入值（这是刚好对应的输入是0），所以此时触发器的内容变成0</p>
-<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240327211945817.png" alt="image-20240327211945817"></p>
+<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240327211945817-171188855234915.png" alt="image-20240327211945817"></p>
 <p><strong>我们尝试去构建一个PRNG（通过触发器（flip-flop））：</strong></p>
 <p>选择三个触发器，将他们连接起来，便得到了<strong>移位寄存器</strong>，然后得到了我们的输出信号（实际上所有的系统都需要某种初始状态，必须需要大量的触发器，并为他们分配一些初始值（不能全为0））。现在我们可以看到在我们的输出得到了0</p>
-<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240327212634402.png" alt="image-20240327212634402"></p>
+<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240327212634402-171188855235017.png" alt="image-20240327212634402"></p>
 <p>我们现在要做一些事情，否则Si保持为零。<strong>所以我们开始计时</strong>，这意味着我们产生了<strong>第一个时钟脉冲</strong>。假设我们在上图第二个触发器位置产生了一个时钟脉冲，这个触发器的输入是1，这意味着输出值变成了1，发生了右移（从最左边的触发器到中间的触发器），假设第三个触发器的位置也有一个时钟脉冲，它的输入值是0，所以他又一次把0移动存储到了第三个触发器。</p>
-<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240327213314749.png" alt="image-20240327213314749"></p>
+<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240327213314749-171188855235020.png" alt="image-20240327213314749"></p>
 <p>接着，第三个触发器处有一个时钟脉冲（它的输入值从0变为了1，因为第二个触发器的值在上一步变成了1），最后第三位我们得到了1。</p>
-<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240327213546517.png" alt="image-20240327213546517"></p>
+<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240327213546517-171188855235016.png" alt="image-20240327213546517"></p>
 <p>注意，此时上面的第二个触发器发生了什么我们不知道，因为第一个寄存器的输入是空的。</p>
 <p><strong>所以，这是一个很愚蠢的随机数生成器，因为我们只能推出三位，我们用时钟脉冲打了三次，得到了三个输出位，game over，我们需要更聪明的随机数生成器，我们希望有一个长序列</strong></p>
 <p>现在到底基本想法是：这是一个<strong>移位寄存器</strong>，就LFSR而言，我们现在只有S和R（Shift Registers），所以我们想在想要一个 <strong>Feedback</strong>（反馈），<strong>其基本思想是在每个时钟周期，我们为最后一个触发器（最左边的）产生一个新的输入</strong>。我们为最左边的触发器从其他的触发器”计算”一个新的输入。第一种从第一个触发器（最右边的）的输出和中间的触发器的输入异或，得到的结果作为最左边的触发器的输入：</p>
-<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240327214759550.png" alt="image-20240327214759550"></p>
+<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240327214759550-171188855235018.png" alt="image-20240327214759550"></p>
 <p>按照上面的规则，根据三个时钟循环，得到下面的数据：</p>
-<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240327215204509.png" alt="image-20240327215204509"></p>
+<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240327215204509-171188855235019.png" alt="image-20240327215204509"></p>
 <p>七个时钟循环，结果：</p>
-<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240327215859186.png" alt="image-20240327215859186"></p>
+<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240327215859186-171188855235127.png" alt="image-20240327215859186"></p>
 <p>如果我们从三位序列来看（对于三位来说有八个不同的三位值）我们有所有的三位值（少了一个0 0 0），但是当我们计算第八个的时候我们发现，他和第一个是一样的（如下图）我们陷入了一个太近的循环，在第七个时钟周期之后，他回到了第一个，这意味着这是一个周期性的（长度为7的周期），然后开始循环。</p>
-<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240327222112517.png" alt="image-20240327222112517"></p>
+<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240327222112517-171188855235024.png" alt="image-20240327222112517"></p>
 <p>上述所有的东西看起来像是电气工程之类的东西，但是后面是有相关数学理论支撑的</p>
 <p><strong>数学公式表达</strong></p>
-<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329213235816.png" alt="image-20240329213235816"></p>
+<p>$$<br>s_3 \equiv s_1+s_0 \ mod \ 2 \<br>s_4 \equiv s_2 + s_1 \ mod \ 2 \<br>s_{i+3} \equiv  s_{i+1} + si \ mod \ 2\<br>$$</p>
 <h2 id="常见的LFSRs"><a href="#常见的LFSRs" class="headerlink" title="常见的LFSRs"></a>常见的LFSRs</h2><p>我们首先可以操纵的第一件事就是从三个触发器增加到我们想要的数量的触发器。从三个增加数量后，需要注意<strong>增加后的触发器中，每一个触发器都有很大的机会和最后的随机数输出异或称为最后一个触发器的输入</strong></p>
 <p>每个触发器都变成了一个开关，这些开关引入一个乘数（开关变量），我们将所有的触发器连接在一起（首先先构建成一个移位寄存器）然后再构建反馈网络（每次都是相同的，将输出结果和开关引入的乘数相乘得到X，所有的X来进行异或作为最后一个的输入）</p>
-<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240328084931631.png" alt="image-20240328084931631"></p>
+<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240328084931631-171188855235021.png" alt="image-20240328084931631"></p>
 <p>开关乘数的原理：</p>
-<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240328084844212.png" alt="image-20240328084844212"></p>
+<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240328084844212-171188855235022.png" alt="image-20240328084844212"></p>
 <p><strong>数学公式表达：</strong></p>
-<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329213328746.png" alt="image-20240329213328746"></p>
+<p>$$<br>S_m \equiv S_{m-1}P_{m-1} + S_{m-2}P_{m-2} + \dots + S_1P_1+S_0P_0 \ mod \ 2 \<br>S_{m+1} \equiv S_{m}P_{m-1} + S_{m-1}P_{m-2} + \dots + S_2P_1+S_1P_0 \ mod \ 2<br>$$<br>P<del>m</del>是不变的，但是S<del>m</del>总是递增的，这意味着<strong>现在得到了任何输出位的公式</strong></p>
+<div>
+$$
+S_{m+i} \equiv \sum^{m-1}_{j=0} S_{i+j} \cdot P_{j} \mod \ 2 ,\ i=0,1,2
+$$
+</div>
+
 <p>P 值是我们决定的（密码设计师决定的），不同的P值最后会得到很大区别的结果</p>
 <p>在某段时间后，他会出现一个周期（一段时间后他会开始重复），比如我们上面三个LSR，周期就为7：</p>
-<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240328092626056.png" alt="image-20240328092626056"></p>
-<p><strong>定理：m 次LFSR生成的最大周期（或序列长度）为2^m^-1</strong></p>
-<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329213359856.png" alt="image-20240329213359856"></p>
-<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240328200424915.png" alt="image-20240328200424915"></p>
-<p>它的最周期是 2^4^-1&#x3D;15</p>
-<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329213423431.png" alt="image-20240329213423431"></p>
-<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240328200859073.png" alt="image-20240328200859073"></p>
+<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240328092626056-171188855235023.png" alt="image-20240328092626056"></p>
+<p><strong>定理：m 次LFSR生成的最大周期（或序列长度）为$2^{m}-1$</strong></p>
+<p><strong>定理仅适用于某些反馈配置(反馈配置是P的集合($P_{m-1}, \dots ,P_0$)才能产生最大长度序列</strong></p>
+<p><strong>Example1：</strong>$m&#x3D;4,P_3&#x3D;P_2&#x3D;0，P_1&#x3D;P_0&#x3D;1$</p>
+<p>(P<del>0</del>是最左边的触发器，P<del>0</del>，P<del>1</del>&#x3D;1，所以开关闭合，其他的P值为0，不闭合)</p>
+<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240328200424915-171188855235125.png" alt="image-20240328200424915"></p>
+<p>它的最周期是 $2^4-1&#x3D;15$</p>
+<p><strong>Example2：</strong>$m&#x3D;4,P_3&#x3D;P_2&#x3D;P_1&#x3D;P_0&#x3D;1$</p>
+<p>凭直觉来说，这个例子看起来很复杂，但是从密码学上和统计学上，这种情况并不好，无论你的初值是多少，它实际的周期其实是 5 </p>
+<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240328200859073-171188855235126.png" alt="image-20240328200859073"></p>
 <p>在数学中，不会给出上面这样的图像，一般是采用一种特殊的<strong>多项式</strong>来表示</p>
-<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329213500936.png" alt="image-20240329213500936"></p>
-<p>当我们看到多项式时，如果告诉我们这是在讨论流密码和LFSRs，那么我们要想到刚刚两个例子的电路图，他们是一回事，是相同的。</p>
+<p><strong>符号表示</strong>：LFSRs 通常由如下多项式表示<br>$$<br>P(x)&#x3D;x^m+P_{m-1}x^{m-1}+ \dots +P_1x+P_0<br>$$<br>所以刚刚上面两个例子中的图，可以化为下面两个不同的多项式：<br>$$<br>Ex1:\ X^4+X+1 \<br>Ex2:\ X^4+X^3+X^2+X+1<br>$$<br>当我们看到多项式时，如果告诉我们这是在讨论流密码和LFSRs，那么我们要想到刚刚两个例子的电路图，他们是一回事，是相同的。</p>
 <p><strong>如果我们把他们当作多项式，我们可以通过多项式的性质，求出LFSRs何时具有最大长度</strong></p>
 <p>如图，下面这些是<strong>原始多项式</strong>（LFSRs 最大长度的原始多项式）：</p>
-<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240328202240639.png" alt="image-20240328202240639"></p>
+<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240328202240639-171188855235128.png" alt="image-20240328202240639"></p>
 <p>通过上图，我们可以看到<code>(0,1,4)</code>这个多项式，对应我们上面的第一个例子，上面第一个例子对应的多项式也是<code>(0,1,4)</code>这个多项式，也就是上面第一个例子，是m&#x3D;4的情况下，LFSRs最长的情况。</p>
 <p><strong>只有具有“原始多项式”的 LFSRs 才能产生最大长度序列</strong></p>
 <p>什么是原始多项式？粗略地说，他们和质数有关系</p>
@@ -427,32 +448,57 @@
 <p>就目前的算力而言，当触发器数量为100时，最长的随机数数量是$2^{100}-1$。这是一个很大的数字，我们无法触发这个LFSRs的循环。但实际上，100个连续触发器是很短的。<strong>这意味着，使用移位寄存器，我们拥有一个非常好的构造超长序列的工具（用很少的硬件资源）</strong></p>
 <p>上面是一个非常好的伪随机数生成器，但是在密码学上十分糟糕。</p>
 <h2 id="针对单个-LFSRs-攻击"><a href="#针对单个-LFSRs-攻击" class="headerlink" title="针对单个 LFSRs 攻击"></a>针对单个 LFSRs 攻击</h2><p>Oscar goal：</p>
-<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240328213016717.png" alt="image-20240328213016717"></p>
-<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329213521054.png" alt="image-20240329213521054"></p>
-<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329103118183.png" alt="image-20240329103118183"></p>
+<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240328213016717-171188855235129.png" alt="image-20240328213016717"></p>
+<p>已知条件：</p>
+<ul>
+<li>所有的密文</li>
+<li>m（如果不知道就需要猜，尝试所有的m的情况）</li>
+<li>$x_0, \dots ,x_{2m-1}$（通过文件头）</li>
+</ul>
+<p>开始攻击：</p>
+<p><strong>Step1：</strong></p>
+<p>$y_i \equiv x_i+s_i \ mod \ 2$</p>
+<p>$s_i \equiv y_i+x_i \ mod \ 2$</p>
+<p>$i&#x3D;0,1, \dots,2m-1 $</p>
+<p><strong>Step2：</strong></p>
+<p>Goal：恢复$S_{2m},S_{2m+1}, \dots$</p>
+<p>Q：如果他有m，他缺少的是$P_i$开关的值$P_0&#x3D;?,P_1&#x3D;?,\dots,P_{m-1}&#x3D;?$</p>
+<p>我们要回去上面，利用上面的公式</p>
+<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329103118183-171188855235130.png" alt="image-20240329103118183"></p>
 <p><strong>我们想要p的方程，这些都是未知数，我们想最终得到某种公式或算法来解决这个问题。</strong>我们首先要写下一个方程，$S_m$是如何计算，我们取和上面完全相同的方程：</p>
-<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329213544332.png" alt="image-20240329213544332"></p>
+<p>$S_m \equiv S_{m-1}P_{m-1}+ \dots + S_0P_0 \ mod \ 2$</p>
 <p>我们有了一个方程，这里的未知数有$P_{m-1},\dots,P_0$，好的一面是我们有了一个包含所有未知数的方程，坏的一面是我们只有一个方程，一个m个未知数的线性方程。我们可以利用上面的公式（如下)求出其他的未知数方程：</p>
-<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240328092626056.png" alt="image-20240328092626056"></p>
-<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329213606915.png" alt="image-20240329213606915"></p>
+<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240328092626056-171188855235023.png" alt="image-20240328092626056"></p>
+<p>$S_{m+1} \equiv S_{m-1}P_{m-1}+ \dots +S_0P_0 \ mod \ 2$（未知数不会发生变化）</p>
+<p>现在我们又得到了一个方程，虽然我们现在的方程还不够我们破解，但是我们可以继续一遍一遍的重复，直到能够解出未知数，直到：</p>
+<p>$S_{2m-1} \equiv S_{2m-2}P_{m-1}+ \dots + S_{m-1}P_0 \ mod \ 2$</p>
 <p><strong>m 个未知数的 m 个线性方程组可以通过高斯消去法（或矩阵求逆）轻松解决</strong></p>
 <p>以下回答来自ChatGPT-4</p>
 <blockquote>
 <p>在密码学和许多其他领域，高斯消元法是解决线性方程组的一种基础和有效的方法。当你有$m$个未知数和$m$个线性方程时，你可以通过构建一个增广矩阵并使用高斯消元法来求解这个方程组，或者在需要时求出系数矩阵的逆矩阵。这种方法特别适用于需要找到确切解的情况，比如在密码学的某些算法分析中。</p>
-<h3 id="步骤-1-构建增广矩阵"><a href="#步骤-1-构建增广矩阵" class="headerlink" title="步骤 1: 构建增广矩阵"></a>步骤 1: 构建增广矩阵</h3><p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329213630121.png" alt="image-20240329213630121"></p>
+<h3 id="步骤-1-构建增广矩阵"><a href="#步骤-1-构建增广矩阵" class="headerlink" title="步骤 1: 构建增广矩阵"></a>步骤 1: 构建增广矩阵</h3><p>假设你有以下$m$个线性方程组，其中包含$m$个未知数$x_1, x_2, …, x_m$：</p>
+<p>$$<br>\begin{align*}<br>a_{11}x_1 + a_{12}x_2 + \cdots + a_{1m}x_m &amp;&#x3D; b_1 \newline<br>a_{21}x_1 + a_{22}x_2 + \cdots + a_{2m}x_m &amp;&#x3D; b_2 \newline<br>\vdots \quad &amp; \vdots \newline<br>a_{m1}x_1 + a_{m2}x_2 + \cdots + a_{mm}x_m &amp;&#x3D; b_m<br>\end{align*}<br>$$<br>你首先构建一个增广矩阵$A|B$，其中$A$是系数矩阵，$B$是常数项列向量：</p>
+<p>$$<br>\begin{align*}<br>[A|B] &#x3D; \left[\begin{array}{cccc|c}<br>a_{11} &amp; a_{12} &amp; \cdots &amp; a_{1m} &amp; b_1 \newline<br>a_{21} &amp; a_{22} &amp; \cdots &amp; a_{2m} &amp; b_2 \newline<br>\vdots &amp; \vdots &amp; \ddots &amp; \vdots &amp; \vdots \newline<br>a_{m1} &amp; a_{m2} &amp; \cdots &amp; a_{mm} &amp; b_m<br>\end{array}\right]<br>\end{align*}<br>$$</p>
 <h3 id="步骤-2-使用高斯消元法"><a href="#步骤-2-使用高斯消元法" class="headerlink" title="步骤 2: 使用高斯消元法"></a>步骤 2: 使用高斯消元法</h3><p>通过一系列的行操作（行交换、行乘以非零常数、行加上另一行的非零常数倍），你可以将增广矩阵转化为行最简形（或阶梯形）。这个过程分为两个主要部分：前向消元和回代。</p>
 <ul>
 <li><strong>前向消元</strong>：目标是将矩阵转换为上三角形式。你逐行进行，确保每一行的主元（该行最左侧的非零元素）下方的所有元素都是0。</li>
 <li><strong>回代</strong>：一旦矩阵处于上三角形式，从最后一行开始向上回代，利用当前行的主元解出一个未知数，并将该值代回到上面的所有方程中，逐步解出所有未知数。</li>
 </ul>
-<h3 id="步骤-3-矩阵求逆（可选）"><a href="#步骤-3-矩阵求逆（可选）" class="headerlink" title="步骤 3: 矩阵求逆（可选）"></a>步骤 3: 矩阵求逆（可选）</h3><p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329213649281.png" alt="image-20240329213649281"></p>
-<h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329213705867.png" alt="image-20240329213705867"></p>
+<h3 id="步骤-3-矩阵求逆（可选）"><a href="#步骤-3-矩阵求逆（可选）" class="headerlink" title="步骤 3: 矩阵求逆（可选）"></a>步骤 3: 矩阵求逆（可选）</h3><p>如果目的是求解系数矩阵$A$的逆，这在密码学中用于某些加密算法（如希尔密码）的解密过程，你可以将系数矩阵$A$和单位矩阵$I$放在一起形成增广矩阵$[A|I]$，然后对这个增广矩阵应用高斯消元法。最终，如果$A$是可逆的，你会得到一个形式为$[I|A^{-1}]$的矩阵，其中$A^{-1}$就是$A$的逆矩阵。</p>
+<h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><ul>
+<li>不是所有矩阵都有逆矩阵。只有当矩阵$A$是方阵且行列式$\det(A) \neq 0$时，$A$才是可逆的。</li>
+<li>在密码学应用中，特别是在模运算下解线性方程组时，所有计算（包括求逆）都需要在给定模数下进行。</li>
+</ul>
 <p>通过这种方法，高斯消元法为密码学提供了一种在理论和实践中都非常重要的工具，用于解决线性方程组，以及在某些情况下，帮助破解或分析加密算法。</p>
 </blockquote>
 <p><strong>如果攻击者（至少）知道 LFSR 的 2m 个输出值，他可以恢复整个 LFSR 配置</strong></p>
 <p>当攻击者知道了$P_i$后，可以完全指定LFSR，即它可以自己构建LFSR，这里第三步是生成是生成所有</p>
 <p><strong>Step3：</strong></p>
-<p><img src="/../images/%E6%B5%81%E5%AF%86%E7%A0%81/image-20240329213721971.png" alt="image-20240329213721971"></p>
+<ul>
+<li>使用$P_{m-1},\dots,P_0$构建LFSR</li>
+<li>计算$S_0,\dots\ ,S_{2m-}, S_{2m},S_{2m+1}, \dots$以此类推，计算整个输出</li>
+<li>解码：$X_i\equiv Y_i+Si \ mod \ 2 \ \ \ \ i&#x3D;0,1,2,\dots$</li>
+</ul>
 <p>有很长的序列长度，虽然从数据上看起来它们很好，很容易构建，但是在数学上有一些奇怪的描述，他们实际上并不安全。</p>
 <p>但是可以用他们好几个，一起像积木一样堆叠起来来生成安全的密码</p>
 
@@ -565,7 +611,7 @@
     <img class="site-author-image" itemprop="image" alt="Q1ngying"
       src="/images/avatar.jpg">
   <p class="site-author-name" itemprop="name">Q1ngying</p>
-  <div class="site-description" itemprop="description">今朝梦醒与君别，遥盼春风寄相思</div>
+  <div class="site-description" itemprop="description"></div>
 </div>
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
@@ -596,6 +642,12 @@
       </span>
       <span class="links-of-author-item">
         <a href="mailto:q1ngying@163.com" title="E-Mail → mailto:q1ngying@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/QingYing_0523" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;QingYing_0523" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://instagram.com/" title="Instagram → https:&#x2F;&#x2F;instagram.com&#x2F;" rel="noopener" target="_blank"><i class="fab fa-instagram fa-fw"></i>Instagram</a>
       </span>
   </div>
 
@@ -630,13 +682,13 @@
       <i class="fa fa-chart-area"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">153k</span>
+    <span title="站点总字数">156k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">8:31</span>
+    <span title="站点阅读时长">8:38</span>
 </div>
 
 <div class="powered-by">
@@ -685,6 +737,31 @@
 
 
   
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
 
 
 
@@ -701,6 +778,63 @@
 
 
   
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
 
   
 
