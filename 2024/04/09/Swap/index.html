@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icons8-clover-ios-16-glyph-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icons8-clover-ios-16-glyph-16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.lug.ustc.edu.cn/css?family=Garamond:300,300italic,400,400italic,700,700italic|Courier New:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Flash SwapsUniswap flash swap 允许我们提取 Uniswap 上任何 ERC20 代币的全部储备，并无需预付费用即可执行任意逻辑，前提时在交易结束之前我们需要满足：  使用相应的配对代币支付提取的ERC20代币 返还提取的 ERC20 代币，并支付一部分的费用  Flash Swap 非常有用，因为它们消除了涉及 Uniswap 的多步骤交易的前期资本要求和不必要的操作">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UniswapV2-Flash Swap">
+<meta property="og:url" content="http://example.com/2024/04/09/Swap/index.html">
+<meta property="og:site_name" content="Q1ngying">
+<meta property="og:description" content="Flash SwapsUniswap flash swap 允许我们提取 Uniswap 上任何 ERC20 代币的全部储备，并无需预付费用即可执行任意逻辑，前提时在交易结束之前我们需要满足：  使用相应的配对代币支付提取的ERC20代币 返还提取的 ERC20 代币，并支付一部分的费用  Flash Swap 非常有用，因为它们消除了涉及 Uniswap 的多步骤交易的前期资本要求和不必要的操作">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-04-09T11:53:55.000Z">
+<meta property="article:modified_time" content="2024-04-09T11:54:50.424Z">
+<meta property="article:author" content="Q1ngying">
+<meta property="article:tag" content="Solidity">
+<meta property="article:tag" content="DeFi">
+<meta property="article:tag" content="Uniswap">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2024/04/09/Swap/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>UniswapV2-Flash Swap | Q1ngying</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Q1ngying</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">今朝梦醒与君别，遥盼春风寄相思</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/04/09/Swap/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Q1ngying">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Q1ngying">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          UniswapV2-Flash Swap
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-04-09 19:53:55 / 修改时间：19:54:50" itemprop="dateCreated datePublished" datetime="2024-04-09T19:53:55+08:00">2024-04-09</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/DeFi/" itemprop="url" rel="index"><span itemprop="name">DeFi</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Solidity/" itemprop="url" rel="index"><span itemprop="name">Solidity</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Uniswap/" itemprop="url" rel="index"><span itemprop="name">Uniswap</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Flash-Swaps"><a href="#Flash-Swaps" class="headerlink" title="Flash Swaps"></a>Flash Swaps</h1><p>Uniswap flash swap 允许我们提取 Uniswap 上任何 ERC20 代币的全部储备，并无需预付费用即可执行任意逻辑，前提时在交易结束之前我们需要满足：</p>
+<ul>
+<li>使用相应的配对代币支付提取的ERC20代币</li>
+<li>返还提取的 ERC20 代币，并支付一部分的费用</li>
+</ul>
+<p>Flash Swap 非常有用，因为它们消除了涉及 Uniswap 的多步骤交易的前期资本要求和不必要的操作顺序限制。</p>
+<span id="more"></span>
+
+<h2 id="Examples"><a href="#Examples" class="headerlink" title="Examples"></a>Examples</h2><h3 id="Capital-Free-Arbitrage（无资本套利）"><a href="#Capital-Free-Arbitrage（无资本套利）" class="headerlink" title="Capital Free Arbitrage（无资本套利）"></a>Capital Free Arbitrage（无资本套利）</h3><p>Flash Swap 一个很有趣的用例就是<strong>无资本套利</strong>。Uniswap 设计的一个组成部分是<strong>激励套利者维持 Uniswap 市场价格的”公平”。</strong>虽然从博弈论上来说是合理的，但这种策略只有那些拥有足够资本来利用套利机会的人才能使用。Flash swap 完全消除了这一障碍，有效地<strong>实现了套利民主化</strong>。</p>
+<p>比如下面的场景：在 Uniswap 上购买 1 ETH 的成本为 200 DAI（通过调用 getAmountIn 并指定 1 ETH 作为精确输出来计算），而在 Oasis（或任何其他交易场所）上，1 ETH 购买 220 DAI。对于任何拥有 200 DAI 可用的人来说，这种情况代表着 20 DAI 的无风险利润。但是，我没有 200 DAI。不过通过 Flash Swap 只要有能力支付 gas，任何人都可以获得无风险的利润。</p>
+<h3 id="从-Uniswap-提取-ETH"><a href="#从-Uniswap-提取-ETH" class="headerlink" title="从 Uniswap 提取 ETH"></a>从 Uniswap 提取 ETH</h3><p>第一步是乐观地通过 Flash Swap 提取 1 ETH。这将作为我们用来执行套利的资本，在这种情况下，我们假设：</p>
+<ul>
+<li>1 ETH 是预先计算的利润最大化交易</li>
+<li>自我们计算以来，Uniswap 或 Oasis 上的价格没有变化</li>
+</ul>
+<p>可能的情况是，我们希望计算执行时的链上利润最大化交易，这对价格变动具有鲁棒性。这可能有点复杂，具体取决于所执行的策略。然而，一种常见的策略是根据固定的外部价格进行尽可能有利的交易。（例如，该价格可能是 Oasis 上一个或多个订单的平均执行价格。）如果 Uniswap 市场价格高于或低于该外部价格，则下面示例包含计算 Uniswap 最大交易金额的代码<a target="_blank" rel="noopener" href="https://github.com/Uniswap/uniswap-v2-periphery/blob/master/contracts/examples/ExampleSwapToPrice.sol"><code>ExampleSwapToPrice.sol</code></a></p>
+<h3 id="Trade-at-External-Venue（在外部地点进行交易）"><a href="#Trade-at-External-Venue（在外部地点进行交易）" class="headerlink" title="Trade at External Venue（在外部地点进行交易）"></a>Trade at External Venue（在外部地点进行交易）</h3><p>一旦我们从 Uniswap 获得 1 ETH 的临时资本，我们现在就可以在 Oasis 上用它换取 220 DAI。一旦我们收到 DAI，我们就需要偿还 Uniswap。我们已经提到过，支付 1 ETH 所需的金额是 200 DAI。通过<code>getAmountIn</code>计算。因此，将 200 DAI发送回 Uniswap 对后，我们就获得了 20 DAI 利润。</p>
+<h3 id="Instant-Leverage（即时杠杆）"><a href="#Instant-Leverage（即时杠杆）" class="headerlink" title="Instant Leverage（即时杠杆）"></a>Instant Leverage（即时杠杆）</h3><p>Flash Swaps 可用于提高借贷协议和 Uniswap 杠杆化的效率。</p>
+<p>以最简单的形式考虑 Maker：一个接收 ETH 作为抵押品并允许以它为抵押铸造 DAI，同时确保 ETH 的价值永远不会低于 DAI 价值的 150% 的系统。</p>
+<p>假设我们使用该系统存入 3 ETH 的本金，并铸造最大数量的 DAI。以 1 ETH &#x2F; 200 DAI 的价格，我们收到 400 DAI。理论上，我们可以通过出售 DAI 换取更多的 ETH、存入这些 ETH、铸造最大数量的 DAI（这次会更少）来提高这个头寸，然后重复知道达到我们想要的杠杆水平。</p>
+<p>使用 Uniswap 作为过程中 DAI 到 ETH 部分的流动性来源非常简单。然而，以这种方式循环协议并不是特别好，并且可能会消耗大量气体。</p>
+<p>不过幸运的是，Flash Swap 是我们能够预先提取全部 ETH 金额。如果我们想要 3 ETH 本金获得 2 倍的杠杆，我们可以简单地在 Flash Swap 中请求 3 ETH，并将 6 ETH 存入 Marker。这使我们能够铸造 800 DAI。如果我们铸造了足够多的货币来覆盖我们的 Flash Swap（比如 605），那么剩余的货币就可以作为抵御价格波动的安全边际。</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Q1ngying
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2024/04/09/Swap/" title="UniswapV2-Flash Swap">http://example.com/2024/04/09/Swap/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Solidity/" rel="tag"># Solidity</a>
+              <a href="/tags/DeFi/" rel="tag"># DeFi</a>
+              <a href="/tags/Uniswap/" rel="tag"># Uniswap</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/04/09/UniswapV2-Rounter/" rel="prev" title="UniswapV2-Rounter">
+      <i class="fa fa-chevron-left"></i> UniswapV2-Rounter
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Flash-Swaps"><span class="nav-number">1.</span> <span class="nav-text">Flash Swaps</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Examples"><span class="nav-number">1.1.</span> <span class="nav-text">Examples</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Capital-Free-Arbitrage%EF%BC%88%E6%97%A0%E8%B5%84%E6%9C%AC%E5%A5%97%E5%88%A9%EF%BC%89"><span class="nav-number">1.1.1.</span> <span class="nav-text">Capital Free Arbitrage（无资本套利）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%8E-Uniswap-%E6%8F%90%E5%8F%96-ETH"><span class="nav-number">1.1.2.</span> <span class="nav-text">从 Uniswap 提取 ETH</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Trade-at-External-Venue%EF%BC%88%E5%9C%A8%E5%A4%96%E9%83%A8%E5%9C%B0%E7%82%B9%E8%BF%9B%E8%A1%8C%E4%BA%A4%E6%98%93%EF%BC%89"><span class="nav-number">1.1.3.</span> <span class="nav-text">Trade at External Venue（在外部地点进行交易）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Instant-Leverage%EF%BC%88%E5%8D%B3%E6%97%B6%E6%9D%A0%E6%9D%86%EF%BC%89"><span class="nav-number">1.1.4.</span> <span class="nav-text">Instant Leverage（即时杠杆）</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Q1ngying"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Q1ngying</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">63</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/q1ngying" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;q1ngying" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:q1ngying@163.com" title="E-Mail → mailto:q1ngying@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/QingYing_0523" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;QingYing_0523" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://instagram.com/" title="Instagram → https:&#x2F;&#x2F;instagram.com&#x2F;" rel="noopener" target="_blank"><i class="fab fa-instagram fa-fw"></i>Instagram</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-09 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Q1ngying</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">168k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">9:18</span>
+</div>
+
+<div class="powered-by">
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <i class="fa fa-user-md"></i>
+    <span id="busuanzi_container_site_uv">
+        本站访客数:<span id="busuanzi_value_site_uv"></span>人
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_pv">
+        本站访问量<span id="busuanzi_value_site_pv"></span>人次
+    </span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,201,74' opacity='1' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

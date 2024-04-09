@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icons8-clover-ios-16-glyph-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icons8-clover-ios-16-glyph-16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.lug.ustc.edu.cn/css?family=Garamond:300,300italic,400,400italic,700,700italic|Courier New:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="本文主要围绕 Uniswap 的库合约">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UniswapV2-Library">
+<meta property="og:url" content="http://example.com/2024/04/09/UniswapV2-Library/index.html">
+<meta property="og:site_name" content="Q1ngying">
+<meta property="og:description" content="本文主要围绕 Uniswap 的库合约">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-04-09T11:51:37.000Z">
+<meta property="article:modified_time" content="2024-04-09T11:52:38.147Z">
+<meta property="article:author" content="Q1ngying">
+<meta property="article:tag" content="Solidity">
+<meta property="article:tag" content="DeFi">
+<meta property="article:tag" content="Uniswap">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2024/04/09/UniswapV2-Library/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>UniswapV2-Library | Q1ngying</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Q1ngying</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">今朝梦醒与君别，遥盼春风寄相思</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/04/09/UniswapV2-Library/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Q1ngying">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Q1ngying">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          UniswapV2-Library
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-04-09 19:51:37 / 修改时间：19:52:38" itemprop="dateCreated datePublished" datetime="2024-04-09T19:51:37+08:00">2024-04-09</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/DeFi/" itemprop="url" rel="index"><span itemprop="name">DeFi</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Solidity/" itemprop="url" rel="index"><span itemprop="name">Solidity</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Uniswap/" itemprop="url" rel="index"><span itemprop="name">Uniswap</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>910</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本文主要围绕 Uniswap 的库合约</p>
+<span id="more"></span>
+
+<h2 id="Code"><a href="#Code" class="headerlink" title="Code"></a>Code</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity &gt;=0.5.0;</span><br><span class="line"></span><br><span class="line">import &#x27;@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol&#x27;;</span><br><span class="line"></span><br><span class="line">import &quot;./SafeMath.sol&quot;;</span><br><span class="line"></span><br><span class="line">library UniswapV2Library &#123;</span><br><span class="line">    using SafeMath for uint;</span><br><span class="line"></span><br><span class="line">    // returns sorted token addresses, used to handle return values from pairs sorted in this order</span><br><span class="line">    function sortTokens(address tokenA, address tokenB) internal pure returns (address token0, address token1) &#123;</span><br><span class="line">        require(tokenA != tokenB, &#x27;UniswapV2Library: IDENTICAL_ADDRESSES&#x27;);</span><br><span class="line">        (token0, token1) = tokenA &lt; tokenB ? (tokenA, tokenB) : (tokenB, tokenA);</span><br><span class="line">        require(token0 != address(0), &#x27;UniswapV2Library: ZERO_ADDRESS&#x27;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // calculates the CREATE2 address for a pair without making any external calls</span><br><span class="line">    function pairFor(address factory, address tokenA, address tokenB) internal pure returns (address pair) &#123;</span><br><span class="line">        (address token0, address token1) = sortTokens(tokenA, tokenB);</span><br><span class="line">        pair = address(uint(keccak256(abi.encodePacked(</span><br><span class="line">                hex&#x27;ff&#x27;,</span><br><span class="line">                factory,</span><br><span class="line">                keccak256(abi.encodePacked(token0, token1)),</span><br><span class="line">                hex&#x27;96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f&#x27; // init code hash</span><br><span class="line">            ))));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // fetches and sorts the reserves for a pair</span><br><span class="line">    function getReserves(address factory, address tokenA, address tokenB) internal view returns (uint reserveA, uint reserveB) &#123;</span><br><span class="line">        (address token0,) = sortTokens(tokenA, tokenB);</span><br><span class="line">        (uint reserve0, uint reserve1,) = IUniswapV2Pair(pairFor(factory, tokenA, tokenB)).getReserves();</span><br><span class="line">        (reserveA, reserveB) = tokenA == token0 ? (reserve0, reserve1) : (reserve1, reserve0);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // given some amount of an asset and pair reserves, returns an equivalent amount of the other asset</span><br><span class="line">    function quote(uint amountA, uint reserveA, uint reserveB) internal pure returns (uint amountB) &#123;</span><br><span class="line">        require(amountA &gt; 0, &#x27;UniswapV2Library: INSUFFICIENT_AMOUNT&#x27;);</span><br><span class="line">        require(reserveA &gt; 0 &amp;&amp; reserveB &gt; 0, &#x27;UniswapV2Library: INSUFFICIENT_LIQUIDITY&#x27;);</span><br><span class="line">        amountB = amountA.mul(reserveB) / reserveA;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // given an input amount of an asset and pair reserves, returns the maximum output amount of the other asset</span><br><span class="line">    function getAmountOut(uint amountIn, uint reserveIn, uint reserveOut) internal pure returns (uint amountOut) &#123;</span><br><span class="line">        require(amountIn &gt; 0, &#x27;UniswapV2Library: INSUFFICIENT_INPUT_AMOUNT&#x27;);</span><br><span class="line">        require(reserveIn &gt; 0 &amp;&amp; reserveOut &gt; 0, &#x27;UniswapV2Library: INSUFFICIENT_LIQUIDITY&#x27;);</span><br><span class="line">        uint amountInWithFee = amountIn.mul(997);</span><br><span class="line">        uint numerator = amountInWithFee.mul(reserveOut);</span><br><span class="line">        uint denominator = reserveIn.mul(1000).add(amountInWithFee);</span><br><span class="line">        amountOut = numerator / denominator;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // given an output amount of an asset and pair reserves, returns a required input amount of the other asset</span><br><span class="line">    function getAmountIn(uint amountOut, uint reserveIn, uint reserveOut) internal pure returns (uint amountIn) &#123;</span><br><span class="line">        require(amountOut &gt; 0, &#x27;UniswapV2Library: INSUFFICIENT_OUTPUT_AMOUNT&#x27;);</span><br><span class="line">        require(reserveIn &gt; 0 &amp;&amp; reserveOut &gt; 0, &#x27;UniswapV2Library: INSUFFICIENT_LIQUIDITY&#x27;);</span><br><span class="line">        uint numerator = reserveIn.mul(amountOut).mul(1000);</span><br><span class="line">        uint denominator = reserveOut.sub(amountOut).mul(997);</span><br><span class="line">        amountIn = (numerator / denominator).add(1);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // performs chained getAmountOut calculations on any number of pairs</span><br><span class="line">    function getAmountsOut(address factory, uint amountIn, address[] memory path) internal view returns (uint[] memory amounts) &#123;</span><br><span class="line">        require(path.length &gt;= 2, &#x27;UniswapV2Library: INVALID_PATH&#x27;);</span><br><span class="line">        amounts = new uint[](path.length);</span><br><span class="line">        amounts[0] = amountIn;</span><br><span class="line">        for (uint i; i &lt; path.length - 1; i++) &#123;</span><br><span class="line">            (uint reserveIn, uint reserveOut) = getReserves(factory, path[i], path[i + 1]);</span><br><span class="line">            amounts[i + 1] = getAmountOut(amounts[i], reserveIn, reserveOut);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // performs chained getAmountIn calculations on any number of pairs</span><br><span class="line">    function getAmountsIn(address factory, uint amountOut, address[] memory path) internal view returns (uint[] memory amounts) &#123;</span><br><span class="line">        require(path.length &gt;= 2, &#x27;UniswapV2Library: INVALID_PATH&#x27;);</span><br><span class="line">        amounts = new uint[](path.length);</span><br><span class="line">        amounts[amounts.length - 1] = amountOut;</span><br><span class="line">        for (uint i = path.length - 1; i &gt; 0; i--) &#123;</span><br><span class="line">            (uint reserveIn, uint reserveOut) = getReserves(factory, path[i - 1], path[i]);</span><br><span class="line">            amounts[i - 1] = getAmountIn(amounts[i], reserveIn, reserveOut);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Internal-Functions"><a href="#Internal-Functions" class="headerlink" title="Internal Functions"></a>Internal Functions</h2><h3 id="sortTokens"><a href="#sortTokens" class="headerlink" title="sortTokens"></a>sortTokens</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function sortTokens(address tokenA, address tokenB) internal pure returns (address token0, address token1);</span><br></pre></td></tr></table></figure>
+
+<p>对 Token 地址进行排序。</p>
+<h3 id="pairFor"><a href="#pairFor" class="headerlink" title="pairFor"></a>pairFor</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function pairFor(address factory, address tokenA, address tokenB) internal pure returns (address pair);</span><br></pre></td></tr></table></figure>
+
+<p>计算对的地址，无需通过 v2 SDK 进行任何外部调用。</p>
+<h3 id="getReserves"><a href="#getReserves" class="headerlink" title="getReserves"></a>getReserves</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function getReserves(address factory, address tokenA, address tokenB) internal view returns (uint reserveA, uint reserveB);</span><br></pre></td></tr></table></figure>
+
+<p>对传递的 Token 在 Pair 合约调用 <a href="./Pair.md###getReserves">getReserves</a> ，并返回按传入参数的顺序排序结果</p>
+<h3 id="quote"><a href="#quote" class="headerlink" title="quote"></a>quote</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function quote(uint amountA, uint reserveA, uint reserveB) internal pure returns (uint amountB);</span><br></pre></td></tr></table></figure>
+
+<p>给定一些资产金额和储备，返回代表等值的其他资产的金额。</p>
+<ul>
+<li>对于在调用 mint 之前计算最佳代币的数量很有用</li>
+</ul>
+<h3 id="getAmountOut"><a href="#getAmountOut" class="headerlink" title="getAmountOut"></a>getAmountOut</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function getAmountOut(uint amountIn, uint reserveIn, uint reserveOut) internal pure returns (uint amountOut);</span><br></pre></td></tr></table></figure>
+
+<p>给定输入资产金额，返回给定储备的其他资产的最大输出金额（考虑费用）</p>
+<ul>
+<li>用在<a href="###getAmountsOut">getAmountsOut</a></li>
+</ul>
+<h3 id="getAmountIn"><a href="#getAmountIn" class="headerlink" title="getAmountIn"></a>getAmountIn</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function getAmountIn(uint amountOut, uint reserveIn, uint reserveOut) internal pure returns (uint amountIn);</span><br></pre></td></tr></table></figure>
+
+<p>返回购买给定储备的给定输出资产金额（考虑费用）所需的最小资产金额。</p>
+<ul>
+<li>用在 <a href="###getAmountsIn">getAmountsIn</a></li>
+</ul>
+<h3 id="getAmountsOut"><a href="#getAmountsOut" class="headerlink" title="getAmountsOut"></a>getAmountsOut</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function getAmountsOut(uint amountIn, address[] memory path) internal view returns (uint[] memory amounts);</span><br></pre></td></tr></table></figure>
+
+<p>给定输入资产数量和一组代币地址，通过一次为路径中的每组代币调用 getReserves 并使用它们调用  getAmountOut 来计算所有后续最大输出代币数量。</p>
+<ul>
+<li>对于在调用交换之前计算最佳代币数量很有用</li>
+</ul>
+<h3 id="getAmountsIn"><a href="#getAmountsIn" class="headerlink" title="getAmountsIn"></a>getAmountsIn</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function getAMountsIn(address factorym uint amountOut, address[] memory path) internal view returns(uint[] memory amounts);</span><br></pre></td></tr></table></figure>
+
+<p>给定一个输出资产数量和一组代币地址，通过依次为路径中的每对代币地址调用 getReserves 来计算所有前面的最小输入代币数量，并使用它们调用 getAmountIn。</p>
+<ul>
+<li>对于在调用交换之前计算最佳代币数量很有用。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Q1ngying
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2024/04/09/UniswapV2-Library/" title="UniswapV2-Library">http://example.com/2024/04/09/UniswapV2-Library/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Solidity/" rel="tag"># Solidity</a>
+              <a href="/tags/DeFi/" rel="tag"># DeFi</a>
+              <a href="/tags/Uniswap/" rel="tag"># Uniswap</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/04/09/UniswapV2-Pair/" rel="prev" title="UniswapV2-Pair">
+      <i class="fa fa-chevron-left"></i> UniswapV2-Pair
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2024/04/09/UniswapV2-Rounter/" rel="next" title="UniswapV2-Rounter">
+      UniswapV2-Rounter <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Code"><span class="nav-number">1.</span> <span class="nav-text">Code</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Internal-Functions"><span class="nav-number">2.</span> <span class="nav-text">Internal Functions</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#sortTokens"><span class="nav-number">2.1.</span> <span class="nav-text">sortTokens</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pairFor"><span class="nav-number">2.2.</span> <span class="nav-text">pairFor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#getReserves"><span class="nav-number">2.3.</span> <span class="nav-text">getReserves</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#quote"><span class="nav-number">2.4.</span> <span class="nav-text">quote</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#getAmountOut"><span class="nav-number">2.5.</span> <span class="nav-text">getAmountOut</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#getAmountIn"><span class="nav-number">2.6.</span> <span class="nav-text">getAmountIn</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#getAmountsOut"><span class="nav-number">2.7.</span> <span class="nav-text">getAmountsOut</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#getAmountsIn"><span class="nav-number">2.8.</span> <span class="nav-text">getAmountsIn</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Q1ngying"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Q1ngying</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">63</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/q1ngying" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;q1ngying" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:q1ngying@163.com" title="E-Mail → mailto:q1ngying@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/QingYing_0523" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;QingYing_0523" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://instagram.com/" title="Instagram → https:&#x2F;&#x2F;instagram.com&#x2F;" rel="noopener" target="_blank"><i class="fab fa-instagram fa-fw"></i>Instagram</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-09 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Q1ngying</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">168k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">9:18</span>
+</div>
+
+<div class="powered-by">
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <i class="fa fa-user-md"></i>
+    <span id="busuanzi_container_site_uv">
+        本站访客数:<span id="busuanzi_value_site_uv"></span>人
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_pv">
+        本站访问量<span id="busuanzi_value_site_pv"></span>人次
+    </span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,201,74' opacity='1' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
