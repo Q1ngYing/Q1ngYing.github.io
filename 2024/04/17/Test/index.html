@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icons8-clover-ios-16-glyph-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icons8-clover-ios-16-glyph-16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.lug.ustc.edu.cn/css?family=Garamond:300,300italic,400,400italic,700,700italic|Courier New:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Solidity 测试&#x2F;审计 原文：https:&#x2F;&#x2F;github.com&#x2F;Cyfrin&#x2F;sc-exploits-minimized&#x2F;blob&#x2F;main&#x2F;src&#x2F;invariant-break&#x2F;README.md  Invariant（不变量）不变量是程序或系统的属性，必须始终保持真实。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Test分类">
+<meta property="og:url" content="http://example.com/2024/04/17/Test/index.html">
+<meta property="og:site_name" content="Q1ngying">
+<meta property="og:description" content="Solidity 测试&#x2F;审计 原文：https:&#x2F;&#x2F;github.com&#x2F;Cyfrin&#x2F;sc-exploits-minimized&#x2F;blob&#x2F;main&#x2F;src&#x2F;invariant-break&#x2F;README.md  Invariant（不变量）不变量是程序或系统的属性，必须始终保持真实。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/Test/image-20240415213908723.png">
+<meta property="article:published_time" content="2024-04-17T01:16:17.000Z">
+<meta property="article:modified_time" content="2024-04-17T01:17:59.024Z">
+<meta property="article:author" content="Q1ngying">
+<meta property="article:tag" content="Solidity">
+<meta property="article:tag" content="Foundry">
+<meta property="article:tag" content="Fuzz">
+<meta property="article:tag" content="FV">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/Test/image-20240415213908723.png">
+
+<link rel="canonical" href="http://example.com/2024/04/17/Test/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Test分类 | Q1ngying</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Q1ngying</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">今朝梦醒与君别，遥盼春风寄相思</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/04/17/Test/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Q1ngying">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Q1ngying">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Test分类
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-04-17 09:16:17 / 修改时间：09:17:59" itemprop="dateCreated datePublished" datetime="2024-04-17T09:16:17+08:00">2024-04-17</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Solidity/" itemprop="url" rel="index"><span itemprop="name">Solidity</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Foundry/" itemprop="url" rel="index"><span itemprop="name">Foundry</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Fuzz/" itemprop="url" rel="index"><span itemprop="name">Fuzz</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/FV/" itemprop="url" rel="index"><span itemprop="name">FV</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>7 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Solidity-测试-审计"><a href="#Solidity-测试-审计" class="headerlink" title="Solidity 测试&#x2F;审计"></a>Solidity 测试&#x2F;审计</h1><blockquote>
+<p>原文：<a target="_blank" rel="noopener" href="https://github.com/Cyfrin/sc-exploits-minimized/blob/main/src/invariant-break/README.md">https://github.com/Cyfrin/sc-exploits-minimized/blob/main/src/invariant-break/README.md</a></p>
+</blockquote>
+<h2 id="Invariant（不变量）"><a href="#Invariant（不变量）" class="headerlink" title="Invariant（不变量）"></a>Invariant（不变量）</h2><p>不变量是程序或系统的属性，必须始终保持真实。</p>
+<span id="more"></span>
+
+
+
+<p>所有系统都<strong>至少具有一种不变性</strong>。甚至 ERC20&#x2F;ERC721 代币也有不变性，<a target="_blank" rel="noopener" href="https://github.com/crytic/properties">Trail of Bits Properties repo</a>中有一些不变性的例子。</p>
+<p>考虑到这点，我们理解了系统的不变量，我们就可以编写测试来专门测试这些不变量</p>
+<h2 id="测试不变量的四个等级"><a href="#测试不变量的四个等级" class="headerlink" title="测试不变量的四个等级"></a>测试不变量的四个等级</h2><p>关于不变量的研究，大致可分为如下四个等级：</p>
+<ul>
+<li>Stateless fuzzing（无状态模糊测试）</li>
+<li>Open Statuful fuzzing （开放有状态模糊测试）</li>
+<li>Handler Stateful fuzzing （基于处理程序的有状态模糊测试）</li>
+<li>Formal Verification（形式化验证）</li>
+</ul>
+<h3 id="1-Stateless-fuzzing-Open"><a href="#1-Stateless-fuzzing-Open" class="headerlink" title="1. Stateless fuzzing - Open"></a>1. Stateless fuzzing - Open</h3><p>无状态模糊测试（一般称为“模糊测试（fuzzing））是指<strong>向函数提供随机数据</strong>以破坏某些不变量或属性</p>
+<p>它是<strong>无状态的</strong>，因为在每次模糊测试运行后，他都会重置状态，或者重新开始</p>
+<h4 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h4><p>我们可以把它想象成测试什么方法打破气球。</p>
+<ol>
+<li>Fuzz run 1:<ol>
+<li>得到一个新的气球<ol>
+<li>做一件事来尝试打破它（即：打它、踢它、放下它）</li>
+<li>记录它是否被打破</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>Fuzz run 2:<ol>
+<li>得到一个新的气球<ol>
+<li>做一件事来尝试打破它（即：打它、踢它、放下它）</li>
+<li>记录它是否被打破</li>
+</ol>
+</li>
+</ol>
+</li>
+<li><em>Repeat…</em></li>
+</ol>
+<h4 id="优点-缺点"><a href="#优点-缺点" class="headerlink" title="优点 &amp; 缺点"></a>优点 &amp; 缺点</h4><ul>
+<li>优点：<ul>
+<li>书写迅速</li>
+<li>测试迅速</li>
+</ul>
+</li>
+<li>缺点：<ul>
+<li>它是无状态的，因此通过调用不同的函数来破坏属性，不会发现问题</li>
+<li>你永远不能 100% 确认它有效，因为它是随机输入</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-Stateful-fuzzing-Open"><a href="#2-Stateful-fuzzing-Open" class="headerlink" title="2. Stateful fuzzing - Open"></a>2. Stateful fuzzing - Open</h3><p>有状态模糊测试是当你想系统提供随机数据时，新的测试是从上一次的模糊测试的结束状态开始进行测试。</p>
+<p>更简单的说，就是像<strong>同一个合约</strong>输入随机数据</p>
+<h4 id="示例-1"><a href="#示例-1" class="headerlink" title="示例"></a>示例</h4><p>我们可以把它想象成测试什么方法打破气球。</p>
+<ol>
+<li>Fuzz run 1:<ol>
+<li>得到一个新的气球<ol>
+<li>做一件事来尝试打破它（即：打它、踢它、放下它）</li>
+<li>记录它是否被打破</li>
+</ol>
+</li>
+<li>如果没破<ol>
+<li>尝试用不同的方式弹出它（即：拳打脚踢，放下）</li>
+<li>记录它是否被打破</li>
+</ol>
+</li>
+<li>如果没有打破…重复一定次数</li>
+</ol>
+</li>
+<li>Fuzz run 2:<ol>
+<li>得到一个新的气球<ol>
+<li>做一件事来尝试打破它（即：打它、踢它、放下它）</li>
+<li>记录它是否被打破</li>
+</ol>
+</li>
+<li>如果没破<ol>
+<li>尝试用不同的方式弹出它（即：拳打脚踢，放下）</li>
+<li>记录它是否被打破</li>
+</ol>
+</li>
+<li>如果没有打破…重复一定次数</li>
+</ol>
+</li>
+<li><em>Repeat</em></li>
+</ol>
+<p>在这里我们可以看到区别，我们没有在每次“模糊运行”中都得到一个新气球。在有状态模糊测试中，我们继续在对之前同一个气球尝试了许多事情。</p>
+<h4 id="优点-缺点-1"><a href="#优点-缺点-1" class="headerlink" title="优点 &amp; 缺点"></a>优点 &amp; 缺点</h4><ul>
+<li>优点：<ul>
+<li>书写迅速（没有 stateless fuzzing 快）</li>
+<li>可以查找来自特定顺序调用函数的 bug</li>
+</ul>
+</li>
+<li>缺点：<ul>
+<li>我们可能遇到”路径爆炸”，其中可能的路径太多，而模糊器什么也没找到</li>
+<li>你永远不能 100% 确认它有效，因为它是随机输入</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-Stateful-Fuzzing-Handler"><a href="#3-Stateful-Fuzzing-Handler" class="headerlink" title="3. Stateful Fuzzing - Handler"></a>3. Stateful Fuzzing - Handler</h3><p>基于处理程序的有状态模糊测试与开放状态模糊测试相同，只是我们<strong>限制了我们可以执行的”随机”操作的数量</strong></p>
+<p>如果我们有太多的选择，我们可能永远不会随机到一些真正会打破我们不变性的东西。因此，<strong>我们将随机输入限制为一组可以调用的特定随机操作</strong></p>
+<h4 id="示例-2"><a href="#示例-2" class="headerlink" title="示例"></a>示例</h4><p>我们可以把它想象成测试什么方法打破气球。</p>
+<ol>
+<li>Fuzz run 1:<ol>
+<li>得到一个新的气球<ol>
+<li>做 1 件事来尝试弹出它（放下它或踢它）</li>
+<li>记录它是否被打破</li>
+</ol>
+</li>
+<li>如果没破<ol>
+<li>尝试用不同的东西来弹出它（放下它或踢它）</li>
+<li>记录它是否被打破</li>
+</ol>
+</li>
+<li>如果没有打破…重复一定次数</li>
+</ol>
+</li>
+<li>Fuzz run 2:<ol>
+<li>得到一个新的气球<ol>
+<li>做 1 件事来尝试弹出它（放下它或踢它）</li>
+<li>记录它是否被打破</li>
+</ol>
+</li>
+<li>如果没破<ol>
+<li>尝试用不同的东西来弹出它（放下它或踢它）</li>
+<li>记录它是否被打破</li>
+</ol>
+</li>
+<li>如果没有打破…重复一定次数</li>
+</ol>
+</li>
+<li><em>Repeat</em></li>
+</ol>
+<p>这需要在 Foundry 中设置更多的工作，在<a target="_blank" rel="noopener" href="https://github.com/Cyfrin/sc-exploits-minimized/blob/main/test/invariant-break/HandlerStatefulFuzz">这里</a>可以看到例子：</p>
+<h4 id="优点-缺点-2"><a href="#优点-缺点-2" class="headerlink" title="优点 &amp; 缺点"></a>优点 &amp; 缺点</h4><ul>
+<li><p>优点：</p>
+<ul>
+<li>可以查找来自按特定顺序调用函数的 bug。</li>
+<li>限制了可能路径太多的“路径爆炸”问题，因此模糊器更有可能发现问题</li>
+</ul>
+</li>
+<li><p>缺点：</p>
+<ul>
+<li>正确书写要长得多</li>
+<li>限制太多来进行测试会容易，但是这样你就会错过潜在的错误</li>
+</ul>
+</li>
+</ul>
+<h4 id="Handler-fuzzing-和-Open-fuzzing-的区别"><a href="#Handler-fuzzing-和-Open-fuzzing-的区别" class="headerlink" title="Handler fuzzing 和 Open fuzzing 的区别"></a>Handler fuzzing 和 Open fuzzing 的区别</h4><p><img src="/../images/Test/image-20240415213908723.png" alt="image-20240415213908723"></p>
+<h3 id="4-Formal-Verification"><a href="#4-Formal-Verification" class="headerlink" title="4. Formal Verification"></a>4. Formal Verification</h3><p>形式验证是在数学上证明程序做特定事情或证明它不做特定事情的过程。</p>
+<p>对于不变量，证明我们的程序总是发挥我们的不变量会很好。</p>
+<p>进行形式验证的最流行方法之一是通过<a target="_blank" rel="noopener" href="https://ethereum.stackexchange.com/questions/145411/is-the-solidity-built-in-smt-checker-a-form-of-symbolic-execution">符号执行</a>。符号执行是一种分析程序的方法，以确定哪些输入导致程序的每个部分执行。它会将程序转换为符号表达式（因此得名）来解决这个问题。</p>
+<h4 id="FV-TL-DR"><a href="#FV-TL-DR" class="headerlink" title="FV TL;DR"></a>FV TL;DR</h4><p>总结来说，FV 是：</p>
+<p>他将你的函数转换为数学，然后试图证明这些公式的属性。数学是可证明的 。数学是可以被解出来的，函数不能（除非将他们转化为数学）。</p>
+<h4 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h4><p>举例，对以下的函数进行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">function f(uint256 y) public &#123;</span><br><span class="line">	uint256 z = y * 2;</span><br><span class="line">	if (z==12) &#123;</span><br><span class="line">	revert();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果我们想要去证明函数 f 有一个输入，使它永远不会回滚，我们将其转换为数学表达式，如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">z == 12 &amp;&amp; // is z == 12, the program reverts</span><br><span class="line">y &gt;= 0 &amp;&amp; y &lt; type(uint256).max &amp;&amp; // y is uint256, so it must be within the uint256 type</span><br><span class="line">z &gt;= 0 &amp;&amp; z &lt; type(uint256).max &amp;&amp; // z is also a uint256</span><br><span class="line">z == y * 2 // our math</span><br></pre></td></tr></table></figure>
+
+<p><em>上述语言被称为 SMTLIB，一种用于符号执行的领域特定语言</em></p>
+<p>在这个示例中，我们有一组 4 个布尔表达式。</p>
+<h4 id="SAT-Solver-（SAT-求解器）"><a href="#SAT-Solver-（SAT-求解器）" class="headerlink" title="SAT Solver （SAT 求解器）"></a>SAT Solver （SAT 求解器）</h4><p>然后，我们将这组逻辑表达式转储到 SAT求解器（<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Boolean_satisfiability_problem">SAT Solver</a> SAT 求解器不是符号执行，但这是现在很流行的下一个步骤）。现在，我们把它想象成一个黑盒，采用布尔表达式，并试图找到一个”满足”集合的例子，对于上面的示例，我们寻找一个输入 y，使得其余布尔值为 true。</p>
+<p>要将其转储到 SAT 求解器中，我们需要将数学转换为 <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Conjunctive_normal_form">CNF 形式</a>，看起来类似于这样：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(z &lt;= 12 OR y &lt; 0 OR z &lt; 0) AND (z &gt;= 12 OR y &lt; 0 OR z &lt; 0) AND (z &lt;= 12 OR y &lt; 0 OR z &gt; 2y) AND (z &gt;= 12 OR y &lt; 0 OR z &gt; 2y) AND (z &lt;= 12 OR y &gt;= 0 OR z &lt; 0) AND (z &gt;= 12 OR y &gt;= 0 OR z &lt; 0) AND (z &lt;= 12 OR y &gt;= 0 OR z &gt; 2y) AND (z &gt;= 12 OR y &gt;= 0 OR z &gt; 2y)</span><br></pre></td></tr></table></figure>
+
+<p>然后，我们的 SAT 求解器将尝试在我们的布尔值集中找到一个矛盾，方法是将布尔值随机设置为 true&#x2F;false，并查看等式的其余部分是否成立。</p>
+<p>他与模糊器不同，因为模糊器会尝试<code>y</code>的输入，而 SAT 求解器将尝试不同的布尔值输入。</p>
+<h4 id="优点-缺点-3"><a href="#优点-缺点-3" class="headerlink" title="优点 &amp; 缺点"></a>优点 &amp; 缺点</h4><ul>
+<li>优点<ul>
+<li>可以 100% 确定属性为 true&#x2F;false</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>可能很难去开始</li>
+<li>在很多情况下都不起作用（例如路径太多）</li>
+<li>工具运行速度可能很慢</li>
+<li>可以给你一种没有错误的虚假安全感。FV 只能针对一个特定属性进行保护</li>
+</ul>
+</li>
+</ul>
+<h3 id="资源"><a href="#资源" class="headerlink" title="资源"></a>资源</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/crytic/properties">ToB properties</a>:基于 ERC20、ERC721、ERC4626 和其他代币标准的属性进行模糊测试。</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/crytic/properties/blob/main/PROPERTIES.md#erc20">Example list of properties</a><br> 属性列表示例</li>
+<li><a target="_blank" rel="noopener" href="https://book.getfoundry.sh/forge/invariant-testing">Invariant&#x2F;Stateful fuzz tests</a><br> 不变&#x2F;有状态模糊测试</li>
+<li><a target="_blank" rel="noopener" href="https://mirror.xyz/horsefacts.eth/Jex2YVaO65dda6zEyfM_-DXlXhOWCAoSpOx5PLocYgw">Handler based testing using WETH</a><br> 使用 WETH 进行基于处理程序的测试</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Q1ngying
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2024/04/17/Test/" title="Test分类">http://example.com/2024/04/17/Test/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Solidity/" rel="tag"># Solidity</a>
+              <a href="/tags/Foundry/" rel="tag"># Foundry</a>
+              <a href="/tags/Fuzz/" rel="tag"># Fuzz</a>
+              <a href="/tags/FV/" rel="tag"># FV</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/04/14/anvil/" rel="prev" title="FoundryAnvil详解">
+      <i class="fa fa-chevron-left"></i> FoundryAnvil详解
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2024/04/25/%E6%B0%B8%E7%BB%AD%E5%90%88%E7%BA%A6%E5%9F%BA%E7%A1%80/" rel="next" title="永续合约基础">
+      永续合约基础 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Solidity-%E6%B5%8B%E8%AF%95-%E5%AE%A1%E8%AE%A1"><span class="nav-number">1.</span> <span class="nav-text">Solidity 测试&#x2F;审计</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Invariant%EF%BC%88%E4%B8%8D%E5%8F%98%E9%87%8F%EF%BC%89"><span class="nav-number">1.1.</span> <span class="nav-text">Invariant（不变量）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E4%B8%8D%E5%8F%98%E9%87%8F%E7%9A%84%E5%9B%9B%E4%B8%AA%E7%AD%89%E7%BA%A7"><span class="nav-number">1.2.</span> <span class="nav-text">测试不变量的四个等级</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Stateless-fuzzing-Open"><span class="nav-number">1.2.1.</span> <span class="nav-text">1. Stateless fuzzing - Open</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">示例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BC%98%E7%82%B9-%E7%BC%BA%E7%82%B9"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">优点 &amp; 缺点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Stateful-fuzzing-Open"><span class="nav-number">1.2.2.</span> <span class="nav-text">2. Stateful fuzzing - Open</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B-1"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">示例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BC%98%E7%82%B9-%E7%BC%BA%E7%82%B9-1"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">优点 &amp; 缺点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Stateful-Fuzzing-Handler"><span class="nav-number">1.2.3.</span> <span class="nav-text">3. Stateful Fuzzing - Handler</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B-2"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">示例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BC%98%E7%82%B9-%E7%BC%BA%E7%82%B9-2"><span class="nav-number">1.2.3.2.</span> <span class="nav-text">优点 &amp; 缺点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Handler-fuzzing-%E5%92%8C-Open-fuzzing-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">1.2.3.3.</span> <span class="nav-text">Handler fuzzing 和 Open fuzzing 的区别</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Formal-Verification"><span class="nav-number">1.2.4.</span> <span class="nav-text">4. Formal Verification</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#FV-TL-DR"><span class="nav-number">1.2.4.1.</span> <span class="nav-text">FV TL;DR</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Example"><span class="nav-number">1.2.4.2.</span> <span class="nav-text">Example</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SAT-Solver-%EF%BC%88SAT-%E6%B1%82%E8%A7%A3%E5%99%A8%EF%BC%89"><span class="nav-number">1.2.4.3.</span> <span class="nav-text">SAT Solver （SAT 求解器）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BC%98%E7%82%B9-%E7%BC%BA%E7%82%B9-3"><span class="nav-number">1.2.4.4.</span> <span class="nav-text">优点 &amp; 缺点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B5%84%E6%BA%90"><span class="nav-number">1.2.5.</span> <span class="nav-text">资源</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Q1ngying"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Q1ngying</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">68</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/q1ngying" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;q1ngying" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:q1ngying@163.com" title="E-Mail → mailto:q1ngying@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/QingYing_0523" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;QingYing_0523" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://instagram.com/" title="Instagram → https:&#x2F;&#x2F;instagram.com&#x2F;" rel="noopener" target="_blank"><i class="fab fa-instagram fa-fw"></i>Instagram</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-09 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Q1ngying</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">178k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">9:52</span>
+</div>
+
+<div class="powered-by">
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <i class="fa fa-user-md"></i>
+    <span id="busuanzi_container_site_uv">
+        本站访客数:<span id="busuanzi_value_site_uv"></span>人
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_pv">
+        本站访问量<span id="busuanzi_value_site_pv"></span>人次
+    </span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,201,74' opacity='1' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
