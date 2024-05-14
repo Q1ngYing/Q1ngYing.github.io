@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icons8-clover-ios-16-glyph-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icons8-clover-ios-16-glyph-16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.lug.ustc.edu.cn/css?family=Garamond:300,300italic,400,400italic,700,700italic|Courier New:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"q1ngying.cn","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Memory 典例分析&amp;内存安全#1 SafeProxy.solgithub 仓库地址：https:&#x2F;&#x2F;github.com&#x2F;safe-global&#x2F;safe-smart-account&#x2F;blob&#x2F;5feb0d08f59cfbb44918be1ed5889d9bb634562a&#x2F;contracts&#x2F;proxies&#x2F;SafeProxy.sol#L14 案例代码：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="memory典例分析&amp;内存安全">
+<meta property="og:url" content="http://q1ngying.cn/2024/05/14/memory%E5%85%B8%E4%BE%8B%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="Q1ngying">
+<meta property="og:description" content="Memory 典例分析&amp;内存安全#1 SafeProxy.solgithub 仓库地址：https:&#x2F;&#x2F;github.com&#x2F;safe-global&#x2F;safe-smart-account&#x2F;blob&#x2F;5feb0d08f59cfbb44918be1ed5889d9bb634562a&#x2F;contracts&#x2F;proxies&#x2F;SafeProxy.sol#L14 案例代码：">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://q1ngying.cn/images/memory%E5%85%B8%E4%BE%8B%E5%88%86%E6%9E%90/image-20240513213040825.png">
+<meta property="og:image" content="http://q1ngying.cn/images/memory%E5%85%B8%E4%BE%8B%E5%88%86%E6%9E%90/image-20240513213252845.png">
+<meta property="og:image" content="http://q1ngying.cn/images/memory%E5%85%B8%E4%BE%8B%E5%88%86%E6%9E%90/image-20240513215358157.png">
+<meta property="og:image" content="http://q1ngying.cn/images/memory%E5%85%B8%E4%BE%8B%E5%88%86%E6%9E%90/image-20240514135331911.png">
+<meta property="og:image" content="http://q1ngying.cn/images/memory%E5%85%B8%E4%BE%8B%E5%88%86%E6%9E%90/image-20240514153826456.png">
+<meta property="article:published_time" content="2024-05-14T08:22:34.000Z">
+<meta property="article:modified_time" content="2024-05-14T08:28:17.838Z">
+<meta property="article:author" content="Q1ngying">
+<meta property="article:tag" content="Solidity">
+<meta property="article:tag" content="EVM">
+<meta property="article:tag" content="security">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://q1ngying.cn/images/memory%E5%85%B8%E4%BE%8B%E5%88%86%E6%9E%90/image-20240513213040825.png">
+
+<link rel="canonical" href="http://q1ngying.cn/2024/05/14/memory%E5%85%B8%E4%BE%8B%E5%88%86%E6%9E%90/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>memory典例分析&内存安全 | Q1ngying</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Q1ngying</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">今朝梦醒与君别，遥盼春风寄相思</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://q1ngying.cn/2024/05/14/memory%E5%85%B8%E4%BE%8B%E5%88%86%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Q1ngying">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Q1ngying">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          memory典例分析&内存安全
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-05-14 16:22:34 / 修改时间：16:28:17" itemprop="dateCreated datePublished" datetime="2024-05-14T16:22:34+08:00">2024-05-14</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/learn/" itemprop="url" rel="index"><span itemprop="name">learn</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Solidity/" itemprop="url" rel="index"><span itemprop="name">Solidity</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/EVM/" itemprop="url" rel="index"><span itemprop="name">EVM</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/security/" itemprop="url" rel="index"><span itemprop="name">security</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>8 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Memory-典例分析-内存安全"><a href="#Memory-典例分析-内存安全" class="headerlink" title="Memory 典例分析&amp;内存安全"></a>Memory 典例分析&amp;内存安全</h1><h2 id="1-SafeProxy-sol"><a href="#1-SafeProxy-sol" class="headerlink" title="#1 SafeProxy.sol"></a>#1 SafeProxy.sol</h2><p>github 仓库地址：<br><a target="_blank" rel="noopener" href="https://github.com/safe-global/safe-smart-account/blob/5feb0d08f59cfbb44918be1ed5889d9bb634562a/contracts/proxies/SafeProxy.sol#L14">https://github.com/safe-global/safe-smart-account/blob/5feb0d08f59cfbb44918be1ed5889d9bb634562a/contracts/proxies/SafeProxy.sol#L14</a></p>
+<p>案例代码：</p>
+<span id="more"></span>
+
+<figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"> /// @dev Fallback function forwards all transactions and returns all received return data.</span><br><span class="line">     fallback() external payable &#123;</span><br><span class="line">         // solhint-disable-next-line no-inline-assembly</span><br><span class="line">         assembly &#123;</span><br><span class="line">@&gt;               let _singleton := sload(0)</span><br><span class="line">             // 0xa619486e == keccak(&quot;masterCopy()&quot;). The value is right padded to 32-bytes with 0s</span><br><span class="line">             if eq(calldataload(0), 0xa619486e00000000000000000000000000000000000000000000000000000000) &#123;</span><br><span class="line">@&gt;               mstore(0, shr(12, shl(12, _singleton)))</span><br><span class="line">                 return(0, 0x20)</span><br><span class="line">             &#125;</span><br><span class="line">@&gt;           calldatacopy(0, 0, calldatasize())</span><br><span class="line">@&gt;           let success := delegatecall(gas(), _singleton, 0, calldatasize(), 0, 0)</span><br><span class="line">             returndatacopy(0, 0, returndatasize())</span><br><span class="line">             if eq(success, 0) &#123;</span><br><span class="line">                 revert(0, returndatasize())</span><br><span class="line">             &#125;</span><br><span class="line">             return(0, returndatasize())</span><br><span class="line">         &#125;</span><br><span class="line">     &#125;</span><br></pre></td></tr></table></figure>
+
+<p>首先在第五行中通过 <code>sload(0)</code> 来读出 slot 0 位置的数据，这个位置存储的 Logic Contract 的合约地址，但是，一个合约地址的大小是 <code>0x20</code> (uint 160)，直接读取 slot 0 的数据可能存在 dirty data。</p>
+<p>第一个 if 循环中，首先根据 <code>calldata</code> 来判断是否调用的<code>masterCopy()</code>函数，如果是则返回 Logic 合约的地址。如上所说，最开始可能存在 dirty data,所以在，代码第八行中的<code>mstore(0, shr(12, shl(12, _signleton)))</code> <strong>对于 <code>_signletion</code> 采取了先左移 12 位然后再右移 12 位</strong>，左移 0x12，首先移出了前 12 字节的数据，然后再进行右移 12，使得恢复成原来的格式，这样保证了<strong>不存在 dirty data</strong>。然后通过<code>mstore(0, _)</code>将得到的纯净地址存储到 memory 中0x00 的位置。最后通过<code>return(0, 0x20)</code>返回刚刚计算到的干净的合约地址。</p>
+<blockquote>
+<p><code>return(0, 0x20)</code>：返回 memory 中从 0x00 位置开始，长度为 0x20(32字节) 的数据，</p>
+</blockquote>
+<p>在后面的<code>calldatacopy()</code>中，复制了整个的 calldata 数据</p>
+<blockquote>
+<p><code>calldatacopy()</code>各参数及其含义：</p>
+<ol>
+<li><code>destOffset</code>: byte offset in the <a target="_blank" rel="noopener" href="https://www.evm.codes/about">memory</a> where the result will be copied. 结果将被复制到内存中的字节偏移量</li>
+</ol>
+<ul>
+<li>即：要将calldata 复制到内存中的那个位置</li>
+</ul>
+<ol start="2">
+<li><code>offset</code>: byte offset in the <a target="_blank" rel="noopener" href="https://www.evm.codes/about">calldata</a> to copy. calldata 中要复制的字节偏移量。</li>
+</ol>
+<ul>
+<li>对 calldata 进行的偏移量大小</li>
+</ul>
+<ol start="3">
+<li><code>size</code>: byte size to copy. 要复制的字节大小。</li>
+</ol>
+<ul>
+<li>要复制的 calldata 的数据大小（上面的 <code>calldatasize()</code> 会返回 calldata 的大小是多少）</li>
+</ul>
+<p>例子：<a target="_blank" rel="noopener" href="https://www.evm.codes/playground?unit=Wei&callData=0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF&codeType=Mnemonic&code=%27z1~32~0ywwz2~8~31y%27~wPUSH1%20z//%20Example%20y~0wCALLDATACOPYw%5Cn%01wyz~_">evm.code</a></p>
+</blockquote>
+<p>然后进行 delegatecall 委托调用。</p>
+<blockquote>
+<p><code>delegatecall()</code>各参数及其含义：</p>
+<ol>
+<li><code>gas</code>: 上下文执行最多花费的 gas 的量 (上文的<code>gas()</code> 函数会获取当前交易剩余的 gas 数量)</li>
+<li><code>address</code>: 要进行委托调用的地址</li>
+<li><code>argsOffset</code>: 内存中要进行委托调用的 calldata 的偏移量</li>
+<li><code>argsSize</code>: 要复制的 calldata 的字节大小</li>
+<li><code>retOffset</code>: 内存中用来存放返回值的偏移量</li>
+<li><code>retSize</code>:返回值的大小（字节为单位）</li>
+</ol>
+<p>该字节码存在返回值，成功调用将 1 压入堆栈（return 1），失败将 0 压入堆栈（return 0）。</p>
+</blockquote>
+<p>在上文中，他并没有直接获取函数调用的返回值（最后两个参数都是<code>0</code>），而是在另一行使用了<code>returndatacopy()</code>来存储委托调用的返回值。（大致原因我个人认为是在进行 delegatecall 之前，并不知道实际的 returndatasize，所以再完成 delegatecall 之后在，在一个独立的行读取返回值）</p>
+<blockquote>
+<p><code>returndatacopy()</code>的运作方式和上文的 <code>calldatacopy()</code> 大致相同</p>
+</blockquote>
+<p>然后进行 if 判断，失败回滚，并返回错误信息；成功返回函数的返回值。</p>
+<h2 id="2-SafeBalanceOf"><a href="#2-SafeBalanceOf" class="headerlink" title="#2 SafeBalanceOf"></a>#2 SafeBalanceOf</h2><p>github 仓库：<a target="_blank" rel="noopener" href="https://github.com/Vectorized/solady/blob/main/src/utils/SafeTransferLib.sol">https://github.com/Vectorized/solady/blob/main/src/utils/SafeTransferLib.sol</a></p>
+<p>案例代码：</p>
+<figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">/// @dev Returns the amount of ERC20 `token` owned by `account`.</span><br><span class="line">/// Returns zero if the `token` does not exist.</span><br><span class="line">function balanceOf(address token, address account) internal view returns (uint256 amount) &#123;</span><br><span class="line">    /// @solidity memory-safe-assembly</span><br><span class="line">    assembly &#123;</span><br><span class="line">        mstore(0x14, account) // Store the `account` argument.</span><br><span class="line">        mstore(0x00, 0x70a08231000000000000000000000000) // `balanceOf(address)`.</span><br><span class="line">        amount :=</span><br><span class="line">            mul( // The arguments of `mul` are evaluated from right to left.</span><br><span class="line">                mload(0x20),</span><br><span class="line">                and( // The arguments of `and` are evaluated from right to left.</span><br><span class="line">                    gt(returndatasize(), 0x1f), // At least 32 bytes returned.</span><br><span class="line">                    staticcall(gas(), token, 0x10, 0x24, 0x20, 0x20)</span><br><span class="line">                )</span><br><span class="line">            )</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>它以一种更动态的方法使用 Memory，以更加有效将内容存入较小的 Memory 位置，因为分配的 Memory 位置越大，消耗的 gas 越多。</p>
+<p>首先他将账户地址存储到了<code>0x14</code>的位置，<strong>不过，<code>mstore</code>存储的永远是32个字节，也就是说实际上存储的 account 是在传入的 accout 参数前补码 0 （补 12 字节的 0）来达到 32 字节的大小</strong>。然后又使用<code>mstore</code>将<code>balanceOf(address)</code>的函数选择器（这里的长度是16字节，也是要补码到32字节，前面补0，补 16 字节的0）存储到偏移为<code>0x00</code>的位置（也是存储了 32 字节）这里就比较抽象了，此时的 memory 布局如下：</p>
+<p><img src="/../images/memory%E5%85%B8%E4%BE%8B%E5%88%86%E6%9E%90/image-20240513213040825.png" alt="image-20240513213040825"></p>
+<p>然后下一行中，首先执行 <code>staticcall()</code></p>
+<blockquote>
+<p><code>staticcall()</code>和上面的<code>delegatecall()</code>参数类似</p>
+</blockquote>
+<p>他这里的设计十分巧妙：<code>staticcall(gas(), token, 0x10, 0x24, 0x20, 0x20)</code></p>
+<p><code>staticcall</code> 的 <code>calldata</code>初始便宜<code>0x10</code>，长度<code>0x24</code>（也就是到 <code>0x34</code>）这样得到了：<code>0x70a08231000000000000000000000000a8ffd8058570ccab8475b4a2c429bdb9038662b9</code>。</p>
+<p>通过 foundry 验证一下：</p>
+<p><img src="/../images/memory%E5%85%B8%E4%BE%8B%E5%88%86%E6%9E%90/image-20240513213252845.png" alt="image-20240513213252845"></p>
+<p>完全一致。</p>
+<p>下一步便是将返回值存储在<code>0x20</code> 的位置，长度是 32 bytes（0x20 -&gt; 32）。</p>
+<p>这个时候的 memory 便变成了一下布局：</p>
+<p><img src="/../images/memory%E5%85%B8%E4%BE%8B%E5%88%86%E6%9E%90/image-20240513215358157.png" alt="image-20240513215358157"></p>
+<p>如果成功完成<code>staticcall</code>这时候就变成了：<code>amount := mul( mload(0x20), and( gt(returndatasize(), 0x1f), 1))</code></p>
+<p>调用失败即为：<code>amount := mul( mload(0x20), and( gt(returndatasize(), 0x1f), 0))</code></p>
+<ul>
+<li>首先分析调用失败：<br>调用失败时，无论<code>gt(returndatasize(), 0x1f)</code> 的结果，与 0 取<code>and</code>结果还是为0，那就变成了<code>mul(mload(0x20), 0)</code>(0x20对应的值 * 0 &#x3D; 0)，即 amount &#x3D; 0。</li>
+<li>调用成功时：<br>调用成功时，<code>gt(returndatasize(), 0x1f) -&gt; gt(0x20, 0x1f) -&gt;1</code> -&gt; <code>and(1,1)</code> -&gt; <code>mul( mload(0x20), 1)</code> -&gt; <code>amount := mload(0x20)</code></li>
+</ul>
+<blockquote>
+<p>关于 <code>gt(returndatasize(), 0x1f)</code> 的检测问题：在<code>staticcall</code>中的参数设置：</p>
+<h3 id="解析staticcall及后续操作"><a href="#解析staticcall及后续操作" class="headerlink" title="解析staticcall及后续操作"></a>解析<code>staticcall</code>及后续操作</h3><ul>
+<li><strong>参数解释</strong>：<code>staticcall(gas(), token, 0x10, 0x24, 0x20, 0x20)</code> 中，最后两个<code>0x20</code>表示期望的返回数据的起始内存位置和期望的大小（均为32字节）。</li>
+<li><strong>返回数据处理</strong>：调用期望返回一个<code>uint256</code>（即32字节大小的整数），这是标准ERC20代币的<code>balanceOf</code>函数的返回类型。</li>
+</ul>
+<p>对<code>returndatasize()</code>的检查：</p>
+<ul>
+<li>**<code>returndatasize()</code>**：这个操作返回实际的返回数据大小，不一定总是与预期的32字节相匹配。调用失败或合约异常可能导致返回数据大小不符。</li>
+<li>**<code>gt(returndatasize(), 0x1f)</code>**：这实际上是检查返回的数据是否至少为32字节。<code>0x1f</code>（十进制的31）是用于确保至少有32字节，如果小于这个值，表示返回数据有问题或不完整。</li>
+</ul>
+<h3 id="安全性和健壮性"><a href="#安全性和健壮性" class="headerlink" title="安全性和健壮性"></a>安全性和健壮性</h3><ul>
+<li><strong>避免错误数据的处理</strong>：在区块链和智能合约的上下文中，保守的编程—检查每一个假设—是非常重要的。尽管<code>staticcall</code>设置了期望的返回数据大小，但在实际处理返回数据之前进行验证是一种常见的做法，用以增加代码的健壮性。</li>
+<li><strong>处理调用失败</strong>：在某些情况下，即使调用返回错误或异常（例如被调用的合约抛出异常而非正常返回），EVM仍然可以返回数据。因此，检查<code>returndatasize()</code>可以帮助区分正常响应和非正常响应。</li>
+</ul>
+<p>(上述回答来自 ChatGPT4)</p>
+</blockquote>
+<h2 id="内存安全"><a href="#内存安全" class="headerlink" title="内存安全"></a>内存安全</h2><p>首先简短的回顾一下 Memory 的布局：</p>
+<p><img src="/../images/memory%E5%85%B8%E4%BE%8B%E5%88%86%E6%9E%90/image-20240514135331911.png" alt="image-20240514135331911"></p>
+<p>实际上，关于内存安全，主要包括了以下内容（当我们离开了内联汇编(assembly)代码块或者函数回滚时（或函数末尾时），以下内容是否是正确的）：</p>
+<ul>
+<li>空闲内存指针是否始终准确的指向未分配的内存位置</li>
+<li>是否覆盖了之前已经分配的 Memory？（仅在空闲内存指针之后修改，我们不能修改超过 0x80 位置的数据，因为可能会重写覆盖，除非提前缓存）</li>
+<li><code>zero slot</code>的值是否还是为 0（类似于未初始化的动态数组，其中没有任何内容）</li>
+</ul>
+<p>因此在安全传输的情况下，我们首先缓存空闲内存指针，因为有些时候会在<code>0x40</code>的位置写入，这个位置就是空闲内存指针的位置，会覆盖掉之前的内存空闲指针的值。</p>
+<h2 id="3-safeTransferFrom"><a href="#3-safeTransferFrom" class="headerlink" title="#3 safeTransferFrom"></a>#3 safeTransferFrom</h2><p>举例：<a target="_blank" rel="noopener" href="https://github.com/Vectorized/solady/blob/main/src/utils/SafeTransferLib.sol">https://github.com/Vectorized/solady/blob/main/src/utils/SafeTransferLib.sol</a></p>
+<figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">function safeTransferFrom(address token, address from, address to, uint256 amount) internal &#123;</span><br><span class="line">        /// @solidity memory-safe-assembly</span><br><span class="line">        assembly &#123;</span><br><span class="line">@&gt;          let m := mload(0x40) // Cache the free memory pointer.</span><br><span class="line">            mstore(0x60, amount) // Store the `amount` argument.</span><br><span class="line">            mstore(0x40, to) // Store the `to` argument.</span><br><span class="line">            mstore(0x2c, shl(96, from)) // Store the `from` argument.</span><br><span class="line">            mstore(0x0c, 0x23b872dd000000000000000000000000) // `transferFrom(address,address,uint256)`.</span><br><span class="line">            // Perform the transfer, reverting upon failure.</span><br><span class="line">            if iszero(</span><br><span class="line">                and( // The arguments of `and` are evaluated from right to left.</span><br><span class="line">                    or(eq(mload(0x00), 1), iszero(returndatasize())), // Returned 1 or nothing.</span><br><span class="line">@&gt;                  call(gas(), token, 0, 0x1c, 0x64, 0x00, 0x20)</span><br><span class="line">                )</span><br><span class="line">            ) &#123;</span><br><span class="line">                mstore(0x00, 0x7939f424) // `TransferFromFailed()`.</span><br><span class="line">                revert(0x1c, 0x04)</span><br><span class="line">            &#125;</span><br><span class="line">@&gt;          mstore(0x60, 0) // Restore the zero slot to zero.</span><br><span class="line">@&gt;          mstore(0x40, m) // Restore the free memory pointer.</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>第4行中，首先缓存了空闲内存指针的值<code>let m := mload(0x40)</code>，因为后面在 <code>0x40</code>，空闲内存指针的位置进行了重写覆盖，虽然我们修改了空闲内存指针的值，不过最后，我们还原了空闲内存指针的值<code>mstore(0x40, m)</code>（<strong>满足了上面内存安全的第一点</strong>）</li>
+<li>因为我们最多涉及到的 Memory 位置为<code>0x60</code>，没有超过<code>0x80</code>，我们的用户不会使用 Memory 中<code>0x80</code>之前的位置，所以我们没有覆盖之前已经分配的 Memory（<strong>满足上面内存安全的第二点</strong>）</li>
+<li>我们还原了<code>zero slot</code> 的 0 值<code>mstore(0x60, 0)</code>（<strong>满足了上面内存安全的第三点</strong>）</li>
+</ul>
+<p>我们来对上面的这个例子进行分析：</p>
+<p><img src="/../images/memory%E5%85%B8%E4%BE%8B%E5%88%86%E6%9E%90/image-20240514153826456.png" alt="image-20240514153826456"></p>
+<p>关于 if 判断部分，由于 and 操作是从右往左，所以会先执行 <code>call()</code> 操作，这个时候根据 <code>call()</code> 的返回值，再和<code>or( eq(mload(0x00), 1), iszero(calldatasize() )</code> 的结果取和</p>
+<p>如果 <code>transferFrom</code> 调用成功，返回值为 Ture，即 <code>0x00</code> 字段的值为1，反之，没有返回值，即 <code>0x00</code> 字段值为0。</p>
+<ul>
+<li>调用成功时：<ul>
+<li>call 返回值：1</li>
+<li><code>or( eq(mload(0x00), 1), iszeroreturndata() ) -&gt; or(1, 1) -&gt; 1</code></li>
+<li><code>and(1, 1) -&gt; 1</code></li>
+<li><code>iszero(1) </code> 不执行 if 语句中的内容</li>
+<li><code>mstore(0x60, 0)</code> 还原<code>zero slot</code> 的零值</li>
+<li><code>mstore(0x40, m)</code> 还原空闲内存指针的值</li>
+</ul>
+</li>
+<li>调用失败时：<ul>
+<li>call 返回值：0</li>
+<li><code>or( eq(mload(0x00), 1), iszeroreturndata() ) -&gt; or(0, 0) -&gt; 0</code></li>
+<li><code>and(0,0) -&gt; 0</code></li>
+<li><code>iszero(0)</code> 执行 if 语句中的内容</li>
+<li><code>mstore(0x00, 0x7939f424)</code>， 0x7939f424 -&gt; <code>TransferFromFailed()</code></li>
+<li><code>revert(0x1c, 0x04)</code> 返回从<code>0x1c</code>开始，长度为<code>0x04</code> 的错误信息，并回滚（刚好对应上一步存储的错误信息）</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Q1ngying
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://q1ngying.cn/2024/05/14/memory%E5%85%B8%E4%BE%8B%E5%88%86%E6%9E%90/" title="memory典例分析&amp;内存安全">http://q1ngying.cn/2024/05/14/memory典例分析/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Solidity/" rel="tag"># Solidity</a>
+              <a href="/tags/EVM/" rel="tag"># EVM</a>
+              <a href="/tags/security/" rel="tag"># security</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/05/14/evm%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/" rel="prev" title="evm存储结构">
+      <i class="fa fa-chevron-left"></i> evm存储结构
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Memory-%E5%85%B8%E4%BE%8B%E5%88%86%E6%9E%90-%E5%86%85%E5%AD%98%E5%AE%89%E5%85%A8"><span class="nav-number">1.</span> <span class="nav-text">Memory 典例分析&amp;内存安全</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-SafeProxy-sol"><span class="nav-number">1.1.</span> <span class="nav-text">#1 SafeProxy.sol</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-SafeBalanceOf"><span class="nav-number">1.2.</span> <span class="nav-text">#2 SafeBalanceOf</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90staticcall%E5%8F%8A%E5%90%8E%E7%BB%AD%E6%93%8D%E4%BD%9C"><span class="nav-number">1.2.1.</span> <span class="nav-text">解析staticcall及后续操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E6%80%A7%E5%92%8C%E5%81%A5%E5%A3%AE%E6%80%A7"><span class="nav-number">1.2.2.</span> <span class="nav-text">安全性和健壮性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E5%AE%89%E5%85%A8"><span class="nav-number">1.3.</span> <span class="nav-text">内存安全</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-safeTransferFrom"><span class="nav-number">1.4.</span> <span class="nav-text">#3 safeTransferFrom</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Q1ngying"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Q1ngying</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">70</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/q1ngying" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;q1ngying" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:q1ngying@163.com" title="E-Mail → mailto:q1ngying@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/QingYing_0523" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;QingYing_0523" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://instagram.com/" title="Instagram → https:&#x2F;&#x2F;instagram.com&#x2F;" rel="noopener" target="_blank"><i class="fab fa-instagram fa-fw"></i>Instagram</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-09 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Q1ngying</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">181k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">10:04</span>
+</div>
+
+<div class="powered-by">
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <i class="fa fa-user-md"></i>
+    <span id="busuanzi_container_site_uv">
+        本站访客数:<span id="busuanzi_value_site_uv"></span>人
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_pv">
+        本站访问量<span id="busuanzi_value_site_pv"></span>人次
+    </span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,201,74' opacity='1' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

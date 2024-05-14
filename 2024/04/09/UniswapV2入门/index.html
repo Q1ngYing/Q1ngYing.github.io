@@ -19,20 +19,20 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"q1ngying.cn","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="本文将主要围绕 UniswapV2 如何工作，其生态系统有、参与者，以及 V2 版本合约的一些简述。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="UniswapV2入门">
-<meta property="og:url" content="http://example.com/2024/04/09/UniswapV2%E5%85%A5%E9%97%A8/index.html">
+<meta property="og:url" content="http://q1ngying.cn/2024/04/09/UniswapV2%E5%85%A5%E9%97%A8/index.html">
 <meta property="og:site_name" content="Q1ngying">
 <meta property="og:description" content="本文将主要围绕 UniswapV2 如何工作，其生态系统有、参与者，以及 V2 版本合约的一些简述。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/images/UniswapV2%E5%85%A5%E9%97%A8/anatomy-d22fb7ab46013a1195f086ee672468c7.jpg">
-<meta property="og:image" content="http://example.com/images/UniswapV2%E5%85%A5%E9%97%A8/lp-c0b1b03ef921f1325971fa8ab6e9a4f1.jpg">
-<meta property="og:image" content="http://example.com/images/UniswapV2%E5%85%A5%E9%97%A8/trade-b19a05be2c43a62708ab498766dc6d13.jpg">
-<meta property="og:image" content="http://example.com/images/UniswapV2%E5%85%A5%E9%97%A8/participants-a3e150f3c98a0b402c2063de3e160f2e.jpg">
+<meta property="og:image" content="http://q1ngying.cn/images/UniswapV2%E5%85%A5%E9%97%A8/anatomy-d22fb7ab46013a1195f086ee672468c7.jpg">
+<meta property="og:image" content="http://q1ngying.cn/images/UniswapV2%E5%85%A5%E9%97%A8/lp-c0b1b03ef921f1325971fa8ab6e9a4f1.jpg">
+<meta property="og:image" content="http://q1ngying.cn/images/UniswapV2%E5%85%A5%E9%97%A8/trade-b19a05be2c43a62708ab498766dc6d13.jpg">
+<meta property="og:image" content="http://q1ngying.cn/images/UniswapV2%E5%85%A5%E9%97%A8/participants-a3e150f3c98a0b402c2063de3e160f2e.jpg">
 <meta property="article:published_time" content="2024-04-09T11:44:30.000Z">
 <meta property="article:modified_time" content="2024-04-09T12:03:49.667Z">
 <meta property="article:author" content="Q1ngying">
@@ -40,9 +40,9 @@
 <meta property="article:tag" content="DeFi">
 <meta property="article:tag" content="Uniswap">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/images/UniswapV2%E5%85%A5%E9%97%A8/anatomy-d22fb7ab46013a1195f086ee672468c7.jpg">
+<meta name="twitter:image" content="http://q1ngying.cn/images/UniswapV2%E5%85%A5%E9%97%A8/anatomy-d22fb7ab46013a1195f086ee672468c7.jpg">
 
-<link rel="canonical" href="http://example.com/2024/04/09/UniswapV2%E5%85%A5%E9%97%A8/">
+<link rel="canonical" href="http://q1ngying.cn/2024/04/09/UniswapV2%E5%85%A5%E9%97%A8/">
 
 
 <script id="page-configurations">
@@ -181,7 +181,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/04/09/UniswapV2%E5%85%A5%E9%97%A8/">
+    <link itemprop="mainEntityOfPage" href="http://q1ngying.cn/2024/04/09/UniswapV2%E5%85%A5%E9%97%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -294,17 +294,17 @@
 </ul>
 <h2 id="智能合约"><a href="#智能合约" class="headerlink" title="智能合约"></a>智能合约</h2><p>Uniswap V2 是一个二进制智能合约系统。核心合约为与 Uniswap 交互的各方提供基本的安全保障。外围合约与一个或多个核心合约交互，但其本身并不属于核心合约的一部分。</p>
 <h3 id="Core（核心）"><a href="#Core（核心）" class="headerlink" title="Core（核心）"></a>Core（核心）</h3><p>核心由<strong>一个单独的<a href="####Factory">工厂</a>和许多<a href="####Pair">交易对</a><strong>组成。工厂合约负责创建和索引。这些合约的规模很小。这样做的简单理由是：</strong>表面积较小的合约更容易推理，更不容易出现错误，而且功能更加优雅</strong>。（也许这种设计的最大优点是系统的许多所需属性可以直接在代码中断言，几乎没有出错的空间。）一个缺点是：<strong>核心合约对用户有些不友好</strong>。对于大多数的用例，不建议直接与这些合约交互。相反，应该使用外围合约。</p>
-<h4 id="Factory"><a href="#Factory" class="headerlink" title="Factory"></a>Factory</h4><p><a target="_blank" rel="noopener" href="https://q1ngying.cn/2024/04/09/UniswapV2-Factory/">详细的关于Factory部分</a></p>
+<h4 id="Factory"><a href="#Factory" class="headerlink" title="Factory"></a>Factory</h4><p><a href="https://q1ngying.cn/2024/04/09/UniswapV2-Factory/">详细的关于Factory部分</a></p>
 <p>工厂<strong>持有为 pair 赋能的通用字节码</strong>。它的主要工作是为<strong>为每一个唯一的代币对创建一个且仅有一个智能合约</strong>。他还包含打开协议收费的逻辑。</p>
-<h4 id="Pair"><a href="#Pair" class="headerlink" title="Pair"></a>Pair</h4><p><a target="_blank" rel="noopener" href="https://q1ngying.cn/2024/04/09/UniswapV2-Pair/">详细的关于Pair部分</a></p>
+<h4 id="Pair"><a href="#Pair" class="headerlink" title="Pair"></a>Pair</h4><p><a href="https://q1ngying.cn/2024/04/09/UniswapV2-Pair/">详细的关于Pair部分</a></p>
 <p>Token 对有两个主要目的：充当AMM和跟踪池代币余额。他们还公开可用于构建去中心化预言机的数据</p>
 <h4 id="Periphery"><a href="#Periphery" class="headerlink" title="Periphery"></a>Periphery</h4><p><a target="_blank" rel="noopener" href="https://github.com/Uniswap/uniswap-v2-periphery">外围合约代码示例</a></p>
 <p>外围设备是一组智能合约，旨在支持与核心的特定领域交互。由于 Uniswap 的无需许可的性质，下面描述的合约没有特殊权限，实际上只是可能的外围类合约的一小部分。</p>
-<h4 id="Library"><a href="#Library" class="headerlink" title="Library"></a>Library</h4><p><a target="_blank" rel="noopener" href="https://q1ngying.cn/2024/04/09/UniswapV2-Library/">Library 代码示例</a></p>
+<h4 id="Library"><a href="#Library" class="headerlink" title="Library"></a>Library</h4><p><a href="https://q1ngying.cn/2024/04/09/UniswapV2-Library/">Library 代码示例</a></p>
 <p>库提供了各种用于获取数据和定价的便利函数.</p>
-<h4 id="Rounter"><a href="#Rounter" class="headerlink" title="Rounter"></a>Rounter</h4><p><a target="_blank" rel="noopener" href="https://q1ngying.cn/2024/04/09/UniswapV2-Rounter/">详细的关于Rounter部分</a></p>
+<h4 id="Rounter"><a href="#Rounter" class="headerlink" title="Rounter"></a>Rounter</h4><p><a href="https://q1ngying.cn/2024/04/09/UniswapV2-Rounter/">详细的关于Rounter部分</a></p>
 <p>使用该库的路由器（Router）完全支持前端提供交易和流动性管理功能的所有基本要求。值得注意的是，它本身支持多对交易（例如：x 到y  到 z），将 ETH 视为一等公民，并提供元交易以消除流动性。</p>
-<h3 id="设计决策"><a href="#设计决策" class="headerlink" title="设计决策"></a>设计决策</h3><h4 id="发送-Token"><a href="#发送-Token" class="headerlink" title="发送 Token"></a>发送 Token</h4><p>通常需要代币来执行某些功能的智能合约要求潜在的交易者<strong>首先对代币合约进行批准，然后调用一个函数，该函数又在代币合约上调用 transferFrom</strong>（owner-&gt; approve Uniswap 合约可以转账代币 -&gt; Uniswap 合约调用代币合约的 transferFrom 转移 owner 的 token）。这<em>不是</em>V2对 Token 的接收方式。相反，双方在每次互动结束是检查他们的代币余额，然后，在下一次交互开始时，将当前余额与存储的值进行比较，以确定当前交互着发送的 token 数量。在<a target="_blank" rel="noopener" href="https://docs.uniswap.org/whitepaper.pdf">白皮书</a>中详细解释了为什么会出现这种情况。但要点是，在<strong>调用任何需要代币的方法之前，必须将代币转移到 Pairs</strong>（此规则的一个例外是 <a target="_blank" rel="noopener" href="https://q1ngying.cn/2024/04/09/Swap/">Flash Swaps</a>）</p>
+<h3 id="设计决策"><a href="#设计决策" class="headerlink" title="设计决策"></a>设计决策</h3><h4 id="发送-Token"><a href="#发送-Token" class="headerlink" title="发送 Token"></a>发送 Token</h4><p>通常需要代币来执行某些功能的智能合约要求潜在的交易者<strong>首先对代币合约进行批准，然后调用一个函数，该函数又在代币合约上调用 transferFrom</strong>（owner-&gt; approve Uniswap 合约可以转账代币 -&gt; Uniswap 合约调用代币合约的 transferFrom 转移 owner 的 token）。这<em>不是</em>V2对 Token 的接收方式。相反，双方在每次互动结束是检查他们的代币余额，然后，在下一次交互开始时，将当前余额与存储的值进行比较，以确定当前交互着发送的 token 数量。在<a target="_blank" rel="noopener" href="https://docs.uniswap.org/whitepaper.pdf">白皮书</a>中详细解释了为什么会出现这种情况。但要点是，在<strong>调用任何需要代币的方法之前，必须将代币转移到 Pairs</strong>（此规则的一个例外是 <a href="https://q1ngying.cn/2024/04/09/Swap/">Flash Swaps</a>）</p>
 <h4 id="WETH"><a href="#WETH" class="headerlink" title="WETH"></a>WETH</h4><p><strong>V2 货币对不直接支持 ETH，因此 ETH⇄ERC-20 Pairs 必须用 WETH 进行模拟</strong>。这一选择背后的动机是删除核心中特定于 ETH 的代码，从而形成更精简的代码库。然而，<strong>通过简单地在外围包装&#x2F;解开 ETH，最终用户可以完全不了解此实现细节。</strong></p>
 <p>路由器完全支持通过 ETH 与任何 WETH 对进行交互。</p>
 <h4 id="最低流动性"><a href="#最低流动性" class="headerlink" title="最低流动性"></a>最低流动性</h4><p>为了改善舍入误差并增加流动性供应的理论最小刻度大小，Pairs 会销毁第一个 MINIMUM_LIQUIDITY 池代币。对于绝大多数的配对来说，这只是一个微不足道的值。燃烧在第一次流动性供应期间自动发生，此后总供应量（totalSupply）将永远受到限制</p>
@@ -323,7 +323,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://example.com/2024/04/09/UniswapV2%E5%85%A5%E9%97%A8/" title="UniswapV2入门">http://example.com/2024/04/09/UniswapV2入门/</a>
+    <a href="http://q1ngying.cn/2024/04/09/UniswapV2%E5%85%A5%E9%97%A8/" title="UniswapV2入门">http://q1ngying.cn/2024/04/09/UniswapV2入门/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -426,20 +426,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">68</span>
+          <span class="site-state-item-count">70</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-count">26</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-count">27</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -490,13 +490,13 @@
       <i class="fa fa-chart-area"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">178k</span>
+    <span title="站点总字数">181k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">9:52</span>
+    <span title="站点阅读时长">10:04</span>
 </div>
 
 <div class="powered-by">
