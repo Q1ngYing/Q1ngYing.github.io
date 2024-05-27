@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icons8-clover-ios-16-glyph-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icons8-clover-ios-16-glyph-16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.lug.ustc.edu.cn/css?family=Garamond:300,300italic,400,400italic,700,700italic|Courier New:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"q1ngying.cn","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="calldata 编码规则在上两篇文章中，我们分析了 Solidity EVM 中的存储结构，在本篇文章中，我们将详细分析 EVM 的 calldata 是如何进行编码的。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="calldata编码原理">
+<meta property="og:url" content="http://q1ngying.cn/2024/05/27/calldata%E7%BC%96%E7%A0%81%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:site_name" content="Q1ngying">
+<meta property="og:description" content="calldata 编码规则在上两篇文章中，我们分析了 Solidity EVM 中的存储结构，在本篇文章中，我们将详细分析 EVM 的 calldata 是如何进行编码的。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://q1ngying.cn/2024/05/27/images/calldata%E7%BC%96%E7%A0%81%E5%8E%9F%E7%90%86/image-20240526201330192.png">
+<meta property="og:image" content="http://q1ngying.cn/images/calldata%E7%BC%96%E7%A0%81%E5%8E%9F%E7%90%86/image-20240526203830602.png">
+<meta property="og:image" content="http://q1ngying.cn/2024/05/27/images/calldata%E7%BC%96%E7%A0%81%E5%8E%9F%E7%90%86/image-20240526203941793.png">
+<meta property="og:image" content="http://q1ngying.cn/images/calldata%E7%BC%96%E7%A0%81%E5%8E%9F%E7%90%86/image-20240526210611385.png">
+<meta property="og:image" content="http://q1ngying.cn/images/calldata%E7%BC%96%E7%A0%81%E5%8E%9F%E7%90%86/image-20240526205120828.png">
+<meta property="article:published_time" content="2024-05-27T11:03:57.000Z">
+<meta property="article:modified_time" content="2024-05-27T11:32:26.327Z">
+<meta property="article:author" content="Q1ngying">
+<meta property="article:tag" content="Solidity">
+<meta property="article:tag" content="EVM">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://q1ngying.cn/2024/05/27/images/calldata%E7%BC%96%E7%A0%81%E5%8E%9F%E7%90%86/image-20240526201330192.png">
+
+<link rel="canonical" href="http://q1ngying.cn/2024/05/27/calldata%E7%BC%96%E7%A0%81%E5%8E%9F%E7%90%86/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>calldata编码原理 | Q1ngying</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Q1ngying</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">今朝梦醒与君别，遥盼春风寄相思</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://q1ngying.cn/2024/05/27/calldata%E7%BC%96%E7%A0%81%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Q1ngying">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Q1ngying">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          calldata编码原理
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-05-27 19:03:57 / 修改时间：19:32:26" itemprop="dateCreated datePublished" datetime="2024-05-27T19:03:57+08:00">2024-05-27</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/learn/" itemprop="url" rel="index"><span itemprop="name">learn</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Solidity/" itemprop="url" rel="index"><span itemprop="name">Solidity</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/EVM/" itemprop="url" rel="index"><span itemprop="name">EVM</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>9 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="calldata-编码规则"><a href="#calldata-编码规则" class="headerlink" title="calldata 编码规则"></a>calldata 编码规则</h1><p>在上两篇文章中，我们分析了 Solidity EVM 中的存储结构，在本篇文章中，我们将详细分析 EVM 的 calldata 是如何进行编码的。</p>
+<span id="more"></span>
+
+<h2 id="solidity-官方文档中的描述："><a href="#solidity-官方文档中的描述：" class="headerlink" title="solidity 官方文档中的描述："></a>solidity 官方文档中的描述：</h2><blockquote>
+<p><strong>定义：</strong> <code>len(a)</code>是一个二进制字符串<code>a</code>的字节长度。<code>len(a)</code>的类型被呈现为<code>uint256</code></p>
+<p>我们把实际的编码<code>enc</code>定义为一个由 ABI 类型到二进制字符串的值的映射，因此，当且仅当<code>X</code>的类型是动态的，<code>len(enc(X))</code>才会依赖于<code>X</code>的值</p>
+<p><strong>定义</strong>：对于任意的ABI值<code>X</code>，根据<code>X</code>的实际类型递归的定义<code>enc(X)</code></p>
+</blockquote>
+<blockquote>
+<ul>
+<li><code>(T1,...,Tk)</code> 对于 <code>k &gt;= 0</code> 且任意类型 <code>T1</code>， …， <code>Tk</code></li>
+</ul>
+<p><code>enc(X) = head(X(1)) ... head(X(k)) tail(X(1)) ... tail(X(k))</code></p>
+<p>这里， <code>X = (X(1), ..., X(k))</code> 并且 <code>head</code> 和 <code>tail</code> 被定义为如下 <code>Ti</code> ：</p>
+<p>如果 <code>Ti</code> 是静态类型：</p>
+<p>​	<code>head(X(i)) = enc(X(i))</code> 和 <code>tail(X(i)) = &quot;&quot;</code> （空字符串）</p>
+<p>否则，即 <code>Ti</code> 是动态类型时，它们被定义为：</p>
+<p>​	<code>head(X(i)) = enc(len( head(X(1)) ... head(X(k)) tail(X(1)) ... tail(X(i-1)) ))</code> <code>tail(X(i)) = enc(X(i))</code></p>
+<p>注意，在动态类型的情况下，由于 head 部分的长度仅取决于类型而非值，所以 <code>head(X(i))</code> 是定义明确的。 <strong>它的值是从 <code>enc(X)</code> 的开始算起的， <code>tail(X(i))</code> 的起始位在 <code>head(X(i))</code> 中的偏移量</strong>。</p>
+<ul>
+<li><code>T[k]</code> 对于任意 <code>T</code> 和 <code>k</code>：</li>
+</ul>
+<p><code>enc(X) = enc((X[0], ..., X[k-1]))</code></p>
+<p>即，它就像是个由相同类型的 <code>k</code> 个元素组成的元组那样被编码的。</p>
+<ul>
+<li><code>T[]</code> 当 <code>X</code> 有 <code>k</code> 个元素 （ <code>k</code> 的类型为 <code>uint256</code>）：</li>
+</ul>
+<p><code>enc(X) = enc(k) enc((X[0], ..., X[k-1]))</code></p>
+<p>也就是说，它被编码为具有相同类型的 <code>k</code> 元素的元组（即静态大小为 <code>k</code> 的数组），前缀为元素的数量。</p>
+<ul>
+<li>具有 <code>k</code> 字节长度的 <code>bytes</code>， （假设其类型为 <code>uint256</code>）：</li>
+</ul>
+<p><code>enc(X) = enc(k) pad_right(X)</code>，即，字节数被编码为 <code>uint256</code>，紧跟着实际的 <code>X</code> 的字节码序列， 再在前边（左边）补上可以使 <code>len(enc(X))</code> 成为 32 的倍数的最少数量的 0 值字节数据。</p>
+<ul>
+<li><code>string</code>：</li>
+</ul>
+<p><code>enc(X) = enc(enc_utf8(X))</code>， 即 <code>X</code> 被 UTF-8 编码，且在后续编码中将这个值解释为 <code>bytes</code> 类型。 注意，在随后的编码中使用的长度是其 UTF-8 编码的字符串的字节数，而不是其字符数。</p>
+<ul>
+<li><p><code>uint&lt;M&gt;</code>： <code>enc(X)</code> 是在 <code>X</code> 的大端序编码的高位（左侧）补充若干 0 值字节以使其长度成为 32 字节。</p>
+</li>
+<li><p><code>address</code>： 与 <code>uint160</code> 的情况相同。</p>
+</li>
+<li><p><code>int&lt;M&gt;</code>： <code>enc(X)</code> 是在 <code>X</code> 的大端序的 2 的补码编码的高位（左侧）添加若干字节数据以使其长度成为 32 字节； 对于负数，添加值为 <code>0xff</code> 的字节数据，对于正数，添加 0 值字节数据。</p>
+</li>
+<li><p><code>bool</code>： 与 <code>uint8</code> 的情况相同， <code>1</code> 用来表示 <code>true</code>， <code>0</code> 表示 <code>false</code>。</p>
+</li>
+<li><p><code>fixed&lt;M&gt;x&lt;N&gt;</code>： <code>enc(X)</code> 就是 <code>enc(X * 10**N)</code>，其中 <code>X * 10**N</code> 可以理解为 <code>int256</code>。</p>
+</li>
+<li><p><code>fixed</code>： 与 <code>fixed128x18</code> 的情况相同。</p>
+</li>
+<li><p><code>ufixed&lt;M&gt;x&lt;N&gt;</code>： <code>enc(X)</code> 就是 <code>enc(X * 10**N)</code> ，其中 <code>X * 10**N</code> 可以理解为 <code>uint256</code>。</p>
+</li>
+<li><p><code>ufixed</code>： 与 <code>ufixed128x18</code> 的情况相同。</p>
+</li>
+<li><p><code>bytes&lt;M&gt;</code>： <code>enc(X)</code> 就是 <code>X</code> 的字节序列加上为使长度成为 32 字节而添加的若干 0 值字节。</p>
+</li>
+</ul>
+<p>注意，对于任意的 <code>X</code>， <code>len(enc(X))</code> 都是 32 的倍数。</p>
+</blockquote>
+<h2 id="展开理解（说人话）"><a href="#展开理解（说人话）" class="headerlink" title="展开理解（说人话）"></a>展开理解（说人话）</h2><h4 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h4><ol>
+<li>**len(a)**：表示二进制字符串 <code>a</code> 的字节长度，其类型为 <code>uint256</code>。</li>
+<li><strong>enc</strong>：表示 ABI 类型到二进制字符串的值的映射，即编码函数。</li>
+</ol>
+<h4 id="递归定义enc-X"><a href="#递归定义enc-X" class="headerlink" title="递归定义enc(X)"></a>递归定义<code>enc(X)</code></h4><p><code>exc(X)</code>是根据<code>X</code>的实际类型来递归定义的：</p>
+<ol>
+<li><p>对于元组（<code>T1, ..., Tk</code>）（结构体）</p>
+<ul>
+<li><p><code>enc(X) = head(X(1)) ... head(X(k)) tail(X(1)) ... tail(X(k))</code></p>
+</li>
+<li><p>对于元组（结构体）中的每个元素<code>Xi</code></p>
+<ul>
+<li><p>当对应的$X_i$是静态类型，<code>head(X(i))</code>就等于<code>enc(X(i))</code>（<strong>实际对应的参数的内容</strong>），<code>tail(X(i))</code>为空（<strong>不存在</strong>）。即，<strong>静态类型会在他的<code>head</code>位置直接存储其实际的值</strong></p>
+</li>
+<li><p>当对应的$X_i$是动态类型，<code>head(X(i))</code>是<code>enc</code>数据的偏移量（<strong>距离<code>enc</code>开始存储的位置的偏移量</strong>），<code>tail(X(i))=enc(X(i))</code>（即**<code>tail</code>存储动态数据中的实际数据<strong>）即，</strong>动态类型会在它的<code>head</code>存储它的长度，在他的<code>tail</code>存储它实际的参数内容**</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>固定大小数组<code>T[K]</code></p>
+<ul>
+<li><code>enc(X) = enc((X[0], ..., X[k-1]))</code></li>
+<li>他被编码为<code>k</code>个相同类型元素的元组（又回到了第一条，根据元素的类型再进行不同的区分）</li>
+</ul>
+</li>
+<li><p>动态大小数组<code>T[]</code></p>
+<ul>
+<li>&#96;&#96;enc(X) &#x3D; enc(k) enc((X[0], …, X[k-1]))&#96; </li>
+<li>编码为元素数量<code>k</code>和<code>k</code>个相同类型元素的数组（首位存储动态数组的长度，后续存储动态数组每一个元素的值，回到第一条根据元素的类型再进行区分）</li>
+</ul>
+</li>
+<li><p>字节数组<code>bytes</code></p>
+<ul>
+<li><code>enc(X) = enc(len(X)) pad_right(X)</code></li>
+<li>编码为长度和实际字节数据，数据右填充为32字节倍数。（首位存储字节数组的长度（独自占用一个字（32 bytes），后续存储<code>bytes</code>字节数组的实际内容。当最后的内容没占满一个字（32 bytes）时补码 0 占满整个字）</li>
+</ul>
+</li>
+<li><p>字符串<code>string</code>：</p>
+<ul>
+<li><code>enc(X) = enc(enc_utf8(X))</code></li>
+<li>编码为 UTF-8 字符串的字节表示，右填充为32字节倍数。</li>
+</ul>
+</li>
+</ol>
+<h4 id="基本类型编码"><a href="#基本类型编码" class="headerlink" title="基本类型编码"></a>基本类型编码</h4><ol>
+<li><code>uint&lt;M&gt;</code>：<ul>
+<li><code>enc(X)</code>是<code>X</code>的大端序编码，<strong>高位（左侧）补零</strong>到 32 字节。</li>
+</ul>
+</li>
+<li><code>address</code>：<ul>
+<li>类似<code>uint160</code>，<strong>补零（左补零）</strong>到 32 字节</li>
+</ul>
+</li>
+<li><code>int&lt;M&gt;</code>：<ul>
+<li><code>enc(X)</code>是<code>X</code>的大端序2的补码编码，<strong>高位（左）补</strong><code>0xff</code>或<code>0x00</code>到 32 字节</li>
+</ul>
+</li>
+<li><code>bool</code>：<ul>
+<li>类似<code>uint8</code>，<code>1</code>代表<code>true</code>，<code>0</code>表示<code>false</code></li>
+</ul>
+</li>
+<li><code>fixed&lt;M&gt;x&lt;N&gt;</code>和<code>ufixed&lt;M&gt;x&lt;N&gt;</code>：<ul>
+<li><code>enc(X)</code>是<code>X * 10**N</code>表示为<code>int256</code>或<code>uint256</code></li>
+</ul>
+</li>
+<li><code>bytes&lt;M&gt;</code>：<ul>
+<li><code>enc(X)</code>是<code>X</code>的字节序列，<strong>右填充</strong>为 32 字节倍数</li>
+</ul>
+</li>
+</ol>
+<h4 id="动态类型的-head-和-tail"><a href="#动态类型的-head-和-tail" class="headerlink" title="动态类型的 head 和 tail"></a>动态类型的 <code>head</code> 和 <code>tail</code></h4><ul>
+<li>对于动态类型，<code>head</code>部分存储了<code>enc(X)</code>数据的偏移量，<code>tail</code> 部分存储实际数据。</li>
+<li>对于动态数组 <code>X</code>，<code>head(X(i))</code> 是从 <code>enc(X)</code> 开始到 <code>tail(X(i))</code> 的字节数</li>
+</ul>
+<h4 id="举例："><a href="#举例：" class="headerlink" title="举例："></a>举例：</h4><p>假设函数<code>createOrder</code>，参数的 Signature 如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function createOrder((address, address[], string)) public</span><br></pre></td></tr></table></figure>
+
+<p>调用时传递参数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(address1, [address2, address3], ”hello&quot;)</span><br></pre></td></tr></table></figure>
+
+<p><strong>编码过程：</strong></p>
+<ol>
+<li><p><strong>计算<code>head</code>部分</strong></p>
+<ul>
+<li><code>head(address1)</code>&#x3D;<code>enc(address1)</code></li>
+<li><code>head(address[])</code>&#x3D; 偏移量</li>
+<li><code>head(string)</code> &#x3D; 偏移量</li>
+</ul>
+</li>
+<li><p>计算<code>tail</code>部分：</p>
+<ul>
+<li><code>tail(address[])</code> &#x3D; <code>enc(address2) enc(address3)</code></li>
+<li><code>tail(string)</code> &#x3D; <code>enc(&quot;hello&quot;)</code></li>
+</ul>
+</li>
+</ol>
+<p>整个<code>calldata</code>依次连接<code>head</code>和<code>tail</code>部分</p>
+<h2 id="复杂-calldata-解码举例"><a href="#复杂-calldata-解码举例" class="headerlink" title="复杂 calldata 解码举例"></a>复杂 calldata 解码举例</h2><h4 id="第一步-decode"><a href="#第一步-decode" class="headerlink" title="第一步 decode"></a>第一步 decode</h4><p>接下来对这个复杂的 calldata 解码：</p>
+<p><code>0xac9650d800000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000c000000000000000000000000000000000000000000000000000000000000000447d39aaf100000000000000000000000021d44c73b6b341f98be57eaf8008bcbf6e2d58110000000000000000000000000000000000000000000000000de27d72f9c740000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002a44a393a41000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000001a000000000000000000000000000000000000000b1a02fac5914898f0c800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000cdc1e5f9d480000000000000000000000000000000000000000000000000001c6bf526340000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000cb085d52bff5a0e380b3be7906ae76369d8babe300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b7c34340b8805ec5a767050658cfa389c49304ca0000000000000000000000001d308089a2d1ced3f1ce36b1fcaf815b07217be300000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000</code></p>
+<p>首先 Foundry pretty-calldata decode：</p>
+<img src="../images/calldata编码原理/image-20240526201330192.png" alt="image-20240526201330192" style="zoom: 80%;" />
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">Possible methods:</span><br><span class="line">- multicall(bytes[])</span><br><span class="line">------------</span><br><span class="line">[000]: 0000000000000000000000000000000000000000000000000000000000000020  # 第一个动态结构的 head 指向它的 tail 偏移 0x20</span><br><span class="line">[020]: 0000000000000000000000000000000000000000000000000000000000000002  # 进入动态结构，因为这个动态结构是 bytes[] 动态数组，所以第一个存储的是 长度</span><br><span class="line">[040]: 0000000000000000000000000000000000000000000000000000000000000040  </span><br><span class="line"># 子结构中第一个元素的 head ，存储第一个元素 tail 的偏移（距离 `enc(X[]i)` （0x40） 的偏移）得到第一个元素 tail 的位置 0x40 + 0x40 = 0x80</span><br><span class="line"># 是 0x40 而不是 0x20 的原因：动态数组的 enc(X) 为 ``enc(X) = enc(k) enc((X[0], ..., X[k-1]))` </span><br><span class="line"># 0x20 对应的是 enc(k) ,0x40 对应的是 enc((X[0], ..., X[k-1])) 也就是实际上 0x40 对应的 enc</span><br><span class="line">[060]: 00000000000000000000000000000000000000000000000000000000000000c0  # 子结构中第一个元素的 head ，计算得到 tail 的偏移为 0x40 + 0xc0 = 0x100</span><br><span class="line">[080]: 0000000000000000000000000000000000000000000000000000000000000044  </span><br><span class="line"># 子结构中第一个元素的 tail。这个元素是一个 bytes 类型，第一个位置存储的是 bytes 字节数组的长度 0x44, 最后一个元素的位置为 0xa0 + 0x60(0x44 补满 bytes32) = 0x100</span><br><span class="line">[0a0]: 7d39aaf100000000000000000000000021d44c73b6b341f98be57eaf8008bcbf  # 子结构中第一个元素的实际内容</span><br><span class="line">[0c0]: 6e2d58110000000000000000000000000000000000000000000000000de27d72  # 子结构中第一个元素的实际内容</span><br><span class="line">[0e0]: f9c7400000000000000000000000000000000000000000000000000000000000  # 子结构中第一个元素的实际内容 + 补码到占用一整个 bytes32 长度</span><br><span class="line">[100]: 00000000000000000000000000000000000000000000000000000000000002a4  </span><br><span class="line"># 子结构中第二个元素的 tail。这个元素是一个 bytes 类型，第一个位置存储的是 bytes 字节数组的长度 0x2a4, 最后一个元素的位置为 0x120 + 0x2c0(0x2a4 补满 bytes32) = 0x3e0 </span><br><span class="line">[120]: 4a393a4100000000000000000000000000000000000000000000000000000000 # 子结构中第二个元素的实际内容</span><br><span class="line">...</span><br><span class="line">[3c0]: 0000000000000000000000000000000000000000000000000000000000000000 # 子结构中第二个元素的实际内容 + 补码到占用一整个 bytes32 长度</span><br></pre></td></tr></table></figure>
+
+<p>分解后发现，子结构中的两个元素又是两个 calldata。对这两个 calldata 再 decode</p>
+<h4 id="decode-出的第一个-calldata-decode"><a href="#decode-出的第一个-calldata-decode" class="headerlink" title="decode 出的第一个 calldata decode"></a>decode 出的第一个 calldata decode</h4><p>这个 calldata 是一个静态 calldata，直接就能 decode：</p>
+<p><img src="/../images/calldata%E7%BC%96%E7%A0%81%E5%8E%9F%E7%90%86/image-20240526203830602.png" alt="image-20240526203830602"></p>
+<h4 id="decode-出的第二个-calldata-decode"><a href="#decode-出的第二个-calldata-decode" class="headerlink" title="decode 出的第二个 calldata decode"></a>decode 出的第二个 calldata decode</h4><img src="../images/calldata编码原理/image-20240526203941793.png" alt="image-20240526203941793" style="zoom: 50%;" />
+
+
+
+<p>decode 发现这个 calldata 是一个动态 calldata，对其进行分析：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">Possible methods:</span><br><span class="line">- createOrder(((address,address,address,address,address,address[]),(uint256,uint256,uint256,uint256,uint256,uint256,uint256),uint8,uint8,bool,bool,bytes32))</span><br><span class="line">------------</span><br><span class="line">[000]: 0000000000000000000000000000000000000000000000000000000000000020 # 第一个动态结构的 head 指向它的 tail 偏移 0x20</span><br><span class="line">[020]: 00000000000000000000000000000000000000000000000000000000000001a0 </span><br><span class="line"># 第一个动态结构的子结构(以下简称子结构)的 head（因为这个 struct 是动态的），指向第一个元素的 tail 的偏移（距离0x20） 0x20 + 0x1a0 = 0x1c0</span><br><span class="line">[040]: 00000000000000000000000000000000000000b1a02fac5914898f0c80000000 # 子结构第二个元素（一个静态的结构体，所以 head 直接存储了内容）的第一个元素 uint256 1</span><br><span class="line">[060]: 0000000000000000000000000000000000000000000000000000000000000000 # 子结构第二个元素的第二个元素 uint256 2</span><br><span class="line">[080]: 0000000000000000000000000000000000000000000000000000000000000000 # 子结构第二个元素的第三个元素 uint256 3</span><br><span class="line">[0a0]: 00000000000000000000000000000000000000000000000000000cdc1e5f9d48 # 子结构第二个元素的第四个元素 uint256 4</span><br><span class="line">[0c0]: 0000000000000000000000000000000000000000000000000001c6bf52634000 # 子结构第二个元素的第五个元素 uint256 5</span><br><span class="line">[0e0]: 0000000000000000000000000000000000000000000000000000000000000000 # 子结构第二个元素的第六个元素 uint256 6</span><br><span class="line">[100]: 0000000000000000000000000000000000000000000000000000000000000000 # 子结构第二个元素的第七个元素 uint256 7</span><br><span class="line">[120]: 0000000000000000000000000000000000000000000000000000000000000002 # 子结构的第三个元素 uint8</span><br><span class="line">[140]: 0000000000000000000000000000000000000000000000000000000000000000 # 子结构的第四个元素 uint8</span><br><span class="line">[160]: 0000000000000000000000000000000000000000000000000000000000000001 # 子结构的第五个元素 bool</span><br><span class="line">[180]: 0000000000000000000000000000000000000000000000000000000000000001 # 子结构的第六个元素 bool</span><br><span class="line">[1a0]: 0000000000000000000000000000000000000000000000000000000000000000 # 子结构的第七个元素 bytes32</span><br><span class="line">[1c0]: 000000000000000000000000cb085d52bff5a0e380b3be7906ae76369d8babe3 # 子元素第一个元素的 tail， address 1</span><br><span class="line">[1e0]: 0000000000000000000000000000000000000000000000000000000000000000 # 子元素第一个元素的 tail， address 2</span><br><span class="line">[200]: 0000000000000000000000000000000000000000000000000000000000000000 # 子元素第一个元素的 tail， address 3</span><br><span class="line">[220]: 000000000000000000000000b7c34340b8805ec5a767050658cfa389c49304ca # 子元素第一个元素的 tail， address 4</span><br><span class="line">[240]: 0000000000000000000000001d308089a2d1ced3f1ce36b1fcaf815b07217be3 # 子元素第一个元素的 tail， address 5</span><br><span class="line">[260]: 00000000000000000000000000000000000000000000000000000000000000c0 </span><br><span class="line"># 子元素第一个元素的 tail， address[] 这是 address[]  元素的 head，存储了 address[] tail 的偏移（距离 0x1c0) 0x1c0 + 0xc0 = 0x280</span><br><span class="line">[280]: 0000000000000000000000000000000000000000000000000000000000000000 # 子元素第一个元素中的 address[] 的 tail</span><br></pre></td></tr></table></figure>
+
+<p>所以对应调用该函数时实际上的结构是这样的：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">createOrder(((0xcb085d52bff5a0e380b3be7906ae76369d8babe3,0x0000000000000000000000000000000000000000,0x0000000000000000000000000000000000000000,0xb7c34340b8805ec5a767050658cfa389c49304ca,0x1d308089a2d1ced3f1ce36b1fcaf815b07217be3,[]),(14072960000000000000000000000000,0,0,500000000000000,500000000000000,0,</span><br><span class="line">0),2,0,true,true,0x0000000000000000000000000000000000000000000000000000000000000000))</span><br></pre></td></tr></table></figure>
+
+<p>Foundry 验证一下：</p>
+<p><img src="/../images/calldata%E7%BC%96%E7%A0%81%E5%8E%9F%E7%90%86/image-20240526210611385.png" alt="image-20240526210611385"></p>
+<p><img src="/../images/calldata%E7%BC%96%E7%A0%81%E5%8E%9F%E7%90%86/image-20240526205120828.png" alt="image-20240526205120828"></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Q1ngying
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://q1ngying.cn/2024/05/27/calldata%E7%BC%96%E7%A0%81%E5%8E%9F%E7%90%86/" title="calldata编码原理">http://q1ngying.cn/2024/05/27/calldata编码原理/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Solidity/" rel="tag"># Solidity</a>
+              <a href="/tags/EVM/" rel="tag"># EVM</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/05/14/memory%E5%85%B8%E4%BE%8B%E5%88%86%E6%9E%90/" rel="prev" title="memory典例分析&内存安全">
+      <i class="fa fa-chevron-left"></i> memory典例分析&内存安全
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#calldata-%E7%BC%96%E7%A0%81%E8%A7%84%E5%88%99"><span class="nav-number">1.</span> <span class="nav-text">calldata 编码规则</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#solidity-%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3%E4%B8%AD%E7%9A%84%E6%8F%8F%E8%BF%B0%EF%BC%9A"><span class="nav-number">1.1.</span> <span class="nav-text">solidity 官方文档中的描述：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B1%95%E5%BC%80%E7%90%86%E8%A7%A3%EF%BC%88%E8%AF%B4%E4%BA%BA%E8%AF%9D%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">展开理解（说人话）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">1.2.0.1.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%92%E5%BD%92%E5%AE%9A%E4%B9%89enc-X"><span class="nav-number">1.2.0.2.</span> <span class="nav-text">递归定义enc(X)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B%E7%BC%96%E7%A0%81"><span class="nav-number">1.2.0.3.</span> <span class="nav-text">基本类型编码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E7%B1%BB%E5%9E%8B%E7%9A%84-head-%E5%92%8C-tail"><span class="nav-number">1.2.0.4.</span> <span class="nav-text">动态类型的 head 和 tail</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BE%E4%BE%8B%EF%BC%9A"><span class="nav-number">1.2.0.5.</span> <span class="nav-text">举例：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%8D%E6%9D%82-calldata-%E8%A7%A3%E7%A0%81%E4%B8%BE%E4%BE%8B"><span class="nav-number">1.3.</span> <span class="nav-text">复杂 calldata 解码举例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5-decode"><span class="nav-number">1.3.0.1.</span> <span class="nav-text">第一步 decode</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#decode-%E5%87%BA%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA-calldata-decode"><span class="nav-number">1.3.0.2.</span> <span class="nav-text">decode 出的第一个 calldata decode</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#decode-%E5%87%BA%E7%9A%84%E7%AC%AC%E4%BA%8C%E4%B8%AA-calldata-decode"><span class="nav-number">1.3.0.3.</span> <span class="nav-text">decode 出的第二个 calldata decode</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Q1ngying"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Q1ngying</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">71</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/q1ngying" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;q1ngying" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:q1ngying@163.com" title="E-Mail → mailto:q1ngying@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/QingYing_0523" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;QingYing_0523" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://instagram.com/" title="Instagram → https:&#x2F;&#x2F;instagram.com&#x2F;" rel="noopener" target="_blank"><i class="fab fa-instagram fa-fw"></i>Instagram</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-09 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Q1ngying</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">184k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">10:13</span>
+</div>
+
+<div class="powered-by">
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <i class="fa fa-user-md"></i>
+    <span id="busuanzi_container_site_uv">
+        本站访客数:<span id="busuanzi_value_site_uv"></span>人
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_pv">
+        本站访问量<span id="busuanzi_value_site_pv"></span>人次
+    </span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,201,74' opacity='1' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
