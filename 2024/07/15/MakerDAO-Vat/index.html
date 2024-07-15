@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icons8-clover-ios-16-glyph-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icons8-clover-ios-16-glyph-16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.lug.ustc.edu.cn/css?family=Garamond:300,300italic,400,400italic,700,700italic|Courier New:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"q1ngying.cn","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="MakerDAO Vat 合约分析123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858687888990919293949596">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MakerDAO-Vat">
+<meta property="og:url" content="http://q1ngying.cn/2024/07/15/MakerDAO-Vat/index.html">
+<meta property="og:site_name" content="Q1ngying">
+<meta property="og:description" content="MakerDAO Vat 合约分析123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858687888990919293949596">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-07-15T07:34:34.000Z">
+<meta property="article:modified_time" content="2024-07-15T07:38:36.337Z">
+<meta property="article:author" content="Q1ngying">
+<meta property="article:tag" content="DeFi">
+<meta property="article:tag" content="MakerDAO">
+<meta property="article:tag" content="Contract">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://q1ngying.cn/2024/07/15/MakerDAO-Vat/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>MakerDAO-Vat | Q1ngying</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Q1ngying</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">今朝梦醒与君别，遥盼春风寄相思</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://q1ngying.cn/2024/07/15/MakerDAO-Vat/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Q1ngying">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Q1ngying">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MakerDAO-Vat
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-07-15 15:34:34 / 修改时间：15:38:36" itemprop="dateCreated datePublished" datetime="2024-07-15T15:34:34+08:00">2024-07-15</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/DeFI/" itemprop="url" rel="index"><span itemprop="name">DeFI</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/MakerDAO/" itemprop="url" rel="index"><span itemprop="name">MakerDAO</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Contract/" itemprop="url" rel="index"><span itemprop="name">Contract</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>8 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="MakerDAO-Vat-合约分析"><a href="#MakerDAO-Vat-合约分析" class="headerlink" title="MakerDAO Vat 合约分析"></a>MakerDAO Vat 合约分析</h1><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br><span class="line">360</span><br><span class="line">361</span><br><span class="line">362</span><br><span class="line">363</span><br><span class="line">364</span><br><span class="line">365</span><br><span class="line">366</span><br><span class="line">367</span><br><span class="line">368</span><br><span class="line">369</span><br><span class="line">370</span><br><span class="line">371</span><br><span class="line">372</span><br><span class="line">373</span><br><span class="line">374</span><br><span class="line">375</span><br><span class="line">376</span><br><span class="line">377</span><br><span class="line">378</span><br><span class="line">379</span><br><span class="line">380</span><br><span class="line">381</span><br><span class="line">382</span><br><span class="line">383</span><br><span class="line">384</span><br><span class="line">385</span><br><span class="line">386</span><br><span class="line">387</span><br><span class="line">388</span><br><span class="line">389</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// SPDX-License-Identifier: AGPL-3.0-or-later</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/// vat.sol -- Dai CDP database</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Copyright (C) 2018 Rain &lt;rainbreak@riseup.net&gt;</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// This program is free software: you can redistribute it and/or modify</span></span><br><span class="line"><span class="comment">// it under the terms of the GNU Affero General Public License as published by</span></span><br><span class="line"><span class="comment">// the Free Software Foundation, either version 3 of the License, or</span></span><br><span class="line"><span class="comment">// (at your option) any later version.</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// This program is distributed in the hope that it will be useful,</span></span><br><span class="line"><span class="comment">// but WITHOUT ANY WARRANTY; without even the implied warranty of</span></span><br><span class="line"><span class="comment">// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span></span><br><span class="line"><span class="comment">// GNU Affero General Public License for more details.</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// You should have received a copy of the GNU Affero General Public License</span></span><br><span class="line"><span class="comment">// along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.</span></span><br><span class="line"></span><br><span class="line">pragma solidity ^<span class="number">0.6</span><span class="number">.12</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// <span class="doctag">FIXME:</span> This contract was altered compared to the production version.</span></span><br><span class="line"><span class="comment">// It doesn&#x27;t use LibNote anymore.</span></span><br><span class="line"><span class="comment">// New deployments of this contract will need to include custom events (TO DO).</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@title</span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@notice</span></span></span><br><span class="line"><span class="comment"> * - `Vat` 合约中的 Dai 不是以 ERC-20 代币的形式存在的，而是作为系统内部的记账单位 `rad` 存在的</span></span><br><span class="line"><span class="comment"> *   这些 Dai 只在系统内部使用，不在市场上直接流通，设计原因如下：</span></span><br><span class="line"><span class="comment"> *      - 系统内部记账：Vat 合约使用 rad 作为记账单位，确保高精度（10^45）记录所有抵押品和债务。</span></span><br><span class="line"><span class="comment"> *      - 管理和操作：通过将 Dai 转换为内部记账单位，系统可以更容易地管理和操作抵押品和生成的 Dai。</span></span><br><span class="line"><span class="comment"> *      - 流通和流动性：在需要时，通过 DaiJoin 的 exit 操作，用户可以将 Vat 中的 Dai 转换回 ERC-20</span></span><br><span class="line"><span class="comment"> *        形式的 Dai，从而进入市场流通。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">contract <span class="title class_">Vat</span> &#123;</span><br><span class="line">    <span class="comment">// --- Auth ---</span></span><br><span class="line">    <span class="title function_">mapping</span>(<span class="function"><span class="params">address</span> =&gt;</span> uint256) public wards;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">rely</span>(<span class="params">address usr</span>) external auth &#123;</span><br><span class="line">        <span class="built_in">require</span>(live == <span class="number">1</span>, <span class="string">&quot;Vat/not-live&quot;</span>);</span><br><span class="line">        wards[usr] = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">deny</span>(<span class="params">address usr</span>) external auth &#123;</span><br><span class="line">        <span class="built_in">require</span>(live == <span class="number">1</span>, <span class="string">&quot;Vat/not-live&quot;</span>);</span><br><span class="line">        wards[usr] = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    modifier <span class="title function_">auth</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="built_in">require</span>(wards[msg.<span class="property">sender</span>] == <span class="number">1</span>, <span class="string">&quot;Vat/not-authorized&quot;</span>);</span><br><span class="line">        _;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="title function_">mapping</span>(<span class="function"><span class="params">address</span> =&gt;</span> <span class="title function_">mapping</span>(<span class="function"><span class="params">address</span> =&gt;</span> uint256)) public can;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">hope</span>(<span class="params">address usr</span>) external &#123;</span><br><span class="line">        can[msg.<span class="property">sender</span>][usr] = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">nope</span>(<span class="params">address usr</span>) external &#123;</span><br><span class="line">        can[msg.<span class="property">sender</span>][usr] = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">wish</span>(<span class="params">address bit, address usr</span>) internal view returns (bool) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="title function_">either</span>(bit == usr, can[bit][usr] == <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// --- Data ---</span></span><br><span class="line">    struct <span class="title class_">Ilk</span> &#123;</span><br><span class="line">        <span class="comment">// 抵押类型</span></span><br><span class="line">        uint256 <span class="title class_">Art</span>; <span class="comment">// Total Normalised Debt     [wad] 总标准化债务 [wad = 10^18]</span></span><br><span class="line">        uint256 rate; <span class="comment">// Accumulated Rates         [ray] 累计费率 [ray = 10^27]</span></span><br><span class="line">        uint256 spot; <span class="comment">// Price with Safety Margin  [ray] 带有安全边际的价格 [ray = 10^27]</span></span><br><span class="line">        uint256 line; <span class="comment">// Debt Ceiling              [rad] 债务上限 [rad = 10^45]</span></span><br><span class="line">        uint256 dust; <span class="comment">// Urn Debt Floor            [rad] 债务下限 [rad = 10^45]</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    struct <span class="title class_">Urn</span> &#123;</span><br><span class="line">        <span class="comment">// 一个特殊的 Vault</span></span><br><span class="line">        uint256 ink; <span class="comment">// Locked Collateral  [wad = 10^18] 抵押品金额</span></span><br><span class="line">        uint256 art; <span class="comment">// Normalised Debt    [wad = 10^18] 标准化未偿还稳定币债务</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// --- Mappings ---</span></span><br><span class="line">    <span class="comment">/// @notice 存储每种抵押品类型（ilk）的相关信息。</span></span><br><span class="line">    <span class="title function_">mapping</span>(<span class="function"><span class="params">bytes32</span> =&gt;</span> <span class="title class_">Ilk</span>) public ilks;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@notice</span> 存储每种抵押品类型下，每个用户的 Vault 信息（即每个用户持有的特定抵押品的详细信息）。</span></span><br><span class="line"><span class="comment">     * - `bytes32` 抵押品类型标识符</span></span><br><span class="line"><span class="comment">     * - `address` 用户地址</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="title function_">mapping</span>(<span class="function"><span class="params">bytes32</span> =&gt;</span> <span class="title function_">mapping</span>(<span class="function"><span class="params">address</span> =&gt;</span> <span class="title class_">Urn</span>)) public urns;</span><br><span class="line">    <span class="comment">/// @notice 用于存储每种抵押品类型下，每个用户的抵押品余额。</span></span><br><span class="line">    <span class="title function_">mapping</span>(<span class="function"><span class="params">bytes32</span> =&gt;</span> <span class="title function_">mapping</span>(<span class="function"><span class="params">address</span> =&gt;</span> uint256)) public gem; <span class="comment">// [wad = 10^18]</span></span><br><span class="line">    <span class="title function_">mapping</span>(<span class="function"><span class="params">address</span> =&gt;</span> uint256) public dai; <span class="comment">// [rad = 10^45]</span></span><br><span class="line">    <span class="title function_">mapping</span>(<span class="function"><span class="params">address</span> =&gt;</span> uint256) public sin; <span class="comment">// [rad = 10^45]</span></span><br><span class="line"></span><br><span class="line">    uint256 public debt; <span class="comment">// Total Dai Issued    [rad = 10^45] 总债务</span></span><br><span class="line">    uint256 public vice; <span class="comment">// Total Unbacked Dai  [rad = 10^45] 总不良债务</span></span><br><span class="line">    uint256 public <span class="title class_">Line</span>; <span class="comment">// Total Debt Ceiling  [rad = 10^45] 总债务上限</span></span><br><span class="line">    uint256 public live; <span class="comment">// Active Flag</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// --- Init ---</span></span><br><span class="line">    <span class="title function_">constructor</span>(<span class="params"></span>) public &#123;</span><br><span class="line">        wards[msg.<span class="property">sender</span>] = <span class="number">1</span>;</span><br><span class="line">        live = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// --- Math ---</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">_add</span>(<span class="params">uint256 x, int256 y</span>) internal pure returns (uint256 z) &#123;</span><br><span class="line">        z = x + <span class="title function_">uint256</span>(y);</span><br><span class="line">        <span class="built_in">require</span>(y &gt;= <span class="number">0</span> || z &lt;= x);</span><br><span class="line">        <span class="built_in">require</span>(y &lt;= <span class="number">0</span> || z &gt;= x);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">_sub</span>(<span class="params">uint256 x, int256 y</span>) internal pure returns (uint256 z) &#123;</span><br><span class="line">        z = x - <span class="title function_">uint256</span>(y);</span><br><span class="line">        <span class="built_in">require</span>(y &lt;= <span class="number">0</span> || z &lt;= x);</span><br><span class="line">        <span class="built_in">require</span>(y &gt;= <span class="number">0</span> || z &gt;= x);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">_mul</span>(<span class="params">uint256 x, int256 y</span>) internal pure returns (int256 z) &#123;</span><br><span class="line">        z = <span class="title function_">int256</span>(x) * y;</span><br><span class="line">        <span class="built_in">require</span>(<span class="title function_">int256</span>(x) &gt;= <span class="number">0</span>);</span><br><span class="line">        <span class="built_in">require</span>(y == <span class="number">0</span> || z / y == <span class="title function_">int256</span>(x));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">_add</span>(<span class="params">uint256 x, uint256 y</span>) internal pure returns (uint256 z) &#123;</span><br><span class="line">        <span class="built_in">require</span>((z = x + y) &gt;= x);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">_sub</span>(<span class="params">uint256 x, uint256 y</span>) internal pure returns (uint256 z) &#123;</span><br><span class="line">        <span class="built_in">require</span>((z = x - y) &lt;= x);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">_mul</span>(<span class="params">uint256 x, uint256 y</span>) internal pure returns (uint256 z) &#123;</span><br><span class="line">        <span class="built_in">require</span>(y == <span class="number">0</span> || (z = x * y) / y == x);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// --- Administration ---</span></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@notice</span> 初始化新的抵押品类型(`ilk`)</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@dev</span> 该函数确保了一个 `ilk` 只能初始化一次，并在初始化时设置其初始费率</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@dev</span> `auth` 修饰符确保了这个函数的权限访问，只能具有授权的用户调用</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> ilk 抵押品类型</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">init</span>(<span class="params">bytes32 ilk</span>) external auth &#123;</span><br><span class="line">        <span class="built_in">require</span>(ilks[ilk].<span class="property">rate</span> == <span class="number">0</span>, <span class="string">&quot;Vat/ilk-already-init&quot;</span>); <span class="comment">// 是否已经初始化，若已经初始化，直接回滚</span></span><br><span class="line">        ilks[ilk].<span class="property">rate</span> = <span class="number">10</span> ** <span class="number">27</span>; <span class="comment">// 初始化抵押品的费率为 1 ray [ray = 10^27]</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@notice</span> 用于设置全局参数，例如系统的债务上限(`Line`)</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@dev</span> `auth` 修饰符确保了这个函数的权限访问，只能具有授权的用户调用</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> what 用于指定更新的参数名称，该函数中 `what` 可以是 `Line`  表示系统的总债务上限</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> data 指定 `what` 参数对应的新值，该函数中，`data` 是系统的总债务上限的具体数值</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">file</span>(<span class="params">bytes32 what, uint256 data</span>) external auth &#123;</span><br><span class="line">        <span class="built_in">require</span>(live == <span class="number">1</span>, <span class="string">&quot;Vat/not-live&quot;</span>);</span><br><span class="line">        <span class="keyword">if</span> (what == <span class="string">&quot;Line&quot;</span>) <span class="title class_">Line</span> = data;</span><br><span class="line">        <span class="keyword">else</span> <span class="title function_">revert</span>(<span class="string">&quot;Vat/file-unrecognized-param&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@notice</span> 用于设置特定抵押品类型的参数，例如现货价格（spot）、债务上限（line）和最小债务（dust）。</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> ilk 指定要更新的抵押品类型</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> what 指定要更新的具体参数名称，该函数中，可选值有 `spot`、`line`、`dust`，分别表示现货价格、债务上限和最小债务。</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> data 指定 `what` 参数对应的新值</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">file</span>(<span class="params">bytes32 ilk, bytes32 what, uint256 data</span>) external auth &#123;</span><br><span class="line">        <span class="built_in">require</span>(live == <span class="number">1</span>, <span class="string">&quot;Vat/not-live&quot;</span>);</span><br><span class="line">        <span class="keyword">if</span> (what == <span class="string">&quot;spot&quot;</span>) ilks[ilk].<span class="property">spot</span> = data;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (what == <span class="string">&quot;line&quot;</span>) ilks[ilk].<span class="property">line</span> = data;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (what == <span class="string">&quot;dust&quot;</span>) ilks[ilk].<span class="property">dust</span> = data;</span><br><span class="line">        <span class="keyword">else</span> <span class="title function_">revert</span>(<span class="string">&quot;Vat/file-unrecognized-param&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">cage</span>(<span class="params"></span>) external auth &#123;</span><br><span class="line">        live = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// --- Fungibility --- （可互换性）</span></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 修改用户抵押品的金额，admin</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> ilk 抵押品</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> usr 用户</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> wad 金额</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">slip</span>(<span class="params">bytes32 ilk, address usr, int256 wad</span>) external auth &#123;</span><br><span class="line">        gem[ilk][usr] = <span class="title function_">_add</span>(gem[ilk][usr], wad);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 用户之间转移抵押品</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> ilk 抵押品</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> src 转出方</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> dst 转入到</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> wad 金额</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">flux</span>(<span class="params">bytes32 ilk, address src, address dst, uint256 wad</span>) external &#123;</span><br><span class="line">        <span class="built_in">require</span>(<span class="title function_">wish</span>(src, msg.<span class="property">sender</span>), <span class="string">&quot;Vat/not-allowed&quot;</span>);</span><br><span class="line">        gem[ilk][src] = <span class="title function_">_sub</span>(gem[ilk][src], wad);</span><br><span class="line">        gem[ilk][dst] = <span class="title function_">_add</span>(gem[ilk][dst], wad);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 在用户之间转移稳定币</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> src 转出方用户地址</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> dst 转入到用户地址</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> rad 金额 [rad = 10^45]</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">move</span>(<span class="params">address src, address dst, uint256 rad</span>) external &#123;</span><br><span class="line">        <span class="built_in">require</span>(<span class="title function_">wish</span>(src, msg.<span class="property">sender</span>), <span class="string">&quot;Vat/not-allowed&quot;</span>);</span><br><span class="line">        dai[src] = <span class="title function_">_sub</span>(dai[src], rad);</span><br><span class="line">        dai[dst] = <span class="title function_">_add</span>(dai[dst], rad);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">either</span>(<span class="params">bool x, bool y</span>) internal pure returns (bool z) &#123;</span><br><span class="line">        assembly &#123;</span><br><span class="line">            z := <span class="title function_">or</span>(x, y)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">both</span>(<span class="params">bool x, bool y</span>) internal pure returns (bool z) &#123;</span><br><span class="line">        assembly &#123;</span><br><span class="line">            z := <span class="title function_">and</span>(x, y)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// --- CDP Manipulation --- （CDP 操纵）</span></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 修改 Vault</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> i &lt;=&gt; ilk 资产类型</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> u &lt;=&gt; 对应的特殊 Vault</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> v &lt;=&gt; 授权检查地址（与抵押品操作相关）</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> w &lt;=&gt; Dai 债务的目标地址</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> dink 抵押品变化</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> dart 债务变化</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@notice</span> `dink` 为正值时，表示增加抵押品，抵押品从 `v` 地址转到 Vault，为负值，表示减少抵押品，从 Vault 转到 `v`</span></span><br><span class="line"><span class="comment">     * `dink` 为正值时，还需要检查 `v` 地址是否授权给 `msg.sender` 操作其抵押品</span></span><br><span class="line"><span class="comment">     * `dart` 为正值时，表示增加债务，生成的 Dai 发送到 `w` 地址。为负值时，表示偿还债务，`w` 地址的 Dai 被扣除</span></span><br><span class="line"><span class="comment">     * `dart` 为负值时，还需要检查 `w` 地址是否授权给 `msg.sender` 操作其 Dai</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">frob</span>(<span class="params">bytes32 i, address u, address v, address w, int256 dink, int256 dart</span>) external &#123;</span><br><span class="line">        <span class="comment">// system is live</span></span><br><span class="line">        <span class="built_in">require</span>(live == <span class="number">1</span>, <span class="string">&quot;Vat/not-live&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="title class_">Urn</span> memory urn = urns[i][u];</span><br><span class="line">        <span class="title class_">Ilk</span> memory ilk = ilks[i];</span><br><span class="line">        <span class="comment">// ilk has been initialised</span></span><br><span class="line">        <span class="built_in">require</span>(ilk.<span class="property">rate</span> != <span class="number">0</span>, <span class="string">&quot;Vat/ilk-not-init&quot;</span>);</span><br><span class="line"></span><br><span class="line">        urn.<span class="property">ink</span> = <span class="title function_">_add</span>(urn.<span class="property">ink</span>, dink);</span><br><span class="line">        urn.<span class="property">art</span> = <span class="title function_">_add</span>(urn.<span class="property">art</span>, dart);</span><br><span class="line">        ilk.<span class="property">Art</span> = <span class="title function_">_add</span>(ilk.<span class="property">Art</span>, dart);</span><br><span class="line"></span><br><span class="line">        int256 dtab = <span class="title function_">_mul</span>(ilk.<span class="property">rate</span>, dart);</span><br><span class="line">        uint256 tab = <span class="title function_">_mul</span>(ilk.<span class="property">rate</span>, urn.<span class="property">art</span>);</span><br><span class="line">        debt = <span class="title function_">_add</span>(debt, dtab);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// either debt has decreased, or debt ceilings are not exceeded 确保债务没有增加或没有超过债务上限</span></span><br><span class="line">        <span class="built_in">require</span>(<span class="title function_">either</span>(dart &lt;= <span class="number">0</span>, <span class="title function_">both</span>(<span class="title function_">_mul</span>(ilk.<span class="property">Art</span>, ilk.<span class="property">rate</span>) &lt;= ilk.<span class="property">line</span>, debt &lt;= <span class="title class_">Line</span>)), <span class="string">&quot;Vat/ceiling-exceeded&quot;</span>);</span><br><span class="line">        <span class="comment">// urn is either less risky than before, or it is safe 确保 Vault 的风险降低或仍然安全</span></span><br><span class="line">        <span class="built_in">require</span>(<span class="title function_">either</span>(<span class="title function_">both</span>(dart &lt;= <span class="number">0</span>, dink &gt;= <span class="number">0</span>), tab &lt;= <span class="title function_">_mul</span>(urn.<span class="property">ink</span>, ilk.<span class="property">spot</span>)), <span class="string">&quot;Vat/not-safe&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// urn is either more safe, or the owner consents 确保 Vault 更加安全，或者所有者同意</span></span><br><span class="line">        <span class="built_in">require</span>(<span class="title function_">either</span>(<span class="title function_">both</span>(dart &lt;= <span class="number">0</span>, dink &gt;= <span class="number">0</span>), <span class="title function_">wish</span>(u, msg.<span class="property">sender</span>)), <span class="string">&quot;Vat/not-allowed-u&quot;</span>);</span><br><span class="line">        <span class="comment">// collateral src consents 确保抵押品来源地址同意</span></span><br><span class="line">        <span class="built_in">require</span>(<span class="title function_">either</span>(dink &lt;= <span class="number">0</span>, <span class="title function_">wish</span>(v, msg.<span class="property">sender</span>)), <span class="string">&quot;Vat/not-allowed-v&quot;</span>);</span><br><span class="line">        <span class="comment">// debt dst consents 确保债务目标地址同意</span></span><br><span class="line">        <span class="built_in">require</span>(<span class="title function_">either</span>(dart &gt;= <span class="number">0</span>, <span class="title function_">wish</span>(w, msg.<span class="property">sender</span>)), <span class="string">&quot;Vat/not-allowed-w&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// urn has no debt, or a non-dusty amount 确保 Vault 没有债务，或者债务大于最低限额</span></span><br><span class="line">        <span class="built_in">require</span>(<span class="title function_">either</span>(urn.<span class="property">art</span> == <span class="number">0</span>, tab &gt;= ilk.<span class="property">dust</span>), <span class="string">&quot;Vat/dust&quot;</span>);</span><br><span class="line"></span><br><span class="line">        gem[i][v] = <span class="title function_">_sub</span>(gem[i][v], dink);</span><br><span class="line">        dai[w] = <span class="title function_">_add</span>(dai[w], dtab);</span><br><span class="line"></span><br><span class="line">        urns[i][u] = urn;</span><br><span class="line">        ilks[i] = ilk;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// --- CDP Fungibility ---</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@notice</span> 用于在两个 Vault 之间转移抵押品和债务。具体来说，它可以将一个 Vault 中的部分抵押品和债务拆分出来，转移到另一个</span></span><br><span class="line"><span class="comment">     * Vault 中</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> ilk 资产类型</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> src 抵押品来源 （源 Vault）</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> dst 债务目标 （目标 Vault）</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> dink 抵押品变化</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> dart 债务变化</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">fork</span>(<span class="params">bytes32 ilk, address src, address dst, int256 dink, int256 dart</span>) external &#123;</span><br><span class="line">        <span class="title class_">Urn</span> storage u = urns[ilk][src];</span><br><span class="line">        <span class="title class_">Urn</span> storage v = urns[ilk][dst];</span><br><span class="line">        <span class="title class_">Ilk</span> storage i = ilks[ilk];</span><br><span class="line"></span><br><span class="line">        u.<span class="property">ink</span> = <span class="title function_">_sub</span>(u.<span class="property">ink</span>, dink);</span><br><span class="line">        u.<span class="property">art</span> = <span class="title function_">_sub</span>(u.<span class="property">art</span>, dart);</span><br><span class="line">        v.<span class="property">ink</span> = <span class="title function_">_add</span>(v.<span class="property">ink</span>, dink);</span><br><span class="line">        v.<span class="property">art</span> = <span class="title function_">_add</span>(v.<span class="property">art</span>, dart);</span><br><span class="line"></span><br><span class="line">        uint256 utab = <span class="title function_">_mul</span>(u.<span class="property">art</span>, i.<span class="property">rate</span>);</span><br><span class="line">        uint256 vtab = <span class="title function_">_mul</span>(v.<span class="property">art</span>, i.<span class="property">rate</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// both sides consent</span></span><br><span class="line">        <span class="built_in">require</span>(<span class="title function_">both</span>(<span class="title function_">wish</span>(src, msg.<span class="property">sender</span>), <span class="title function_">wish</span>(dst, msg.<span class="property">sender</span>)), <span class="string">&quot;Vat/not-allowed&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// both sides safe</span></span><br><span class="line">        <span class="built_in">require</span>(utab &lt;= <span class="title function_">_mul</span>(u.<span class="property">ink</span>, i.<span class="property">spot</span>), <span class="string">&quot;Vat/not-safe-src&quot;</span>);</span><br><span class="line">        <span class="built_in">require</span>(vtab &lt;= <span class="title function_">_mul</span>(v.<span class="property">ink</span>, i.<span class="property">spot</span>), <span class="string">&quot;Vat/not-safe-dst&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// both sides non-dusty</span></span><br><span class="line">        <span class="built_in">require</span>(<span class="title function_">either</span>(utab &gt;= i.<span class="property">dust</span>, u.<span class="property">art</span> == <span class="number">0</span>), <span class="string">&quot;Vat/dust-src&quot;</span>);</span><br><span class="line">        <span class="built_in">require</span>(<span class="title function_">either</span>(vtab &gt;= i.<span class="property">dust</span>, v.<span class="property">art</span> == <span class="number">0</span>), <span class="string">&quot;Vat/dust-dst&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// --- CDP Confiscation ---</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 清算 Vault</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> i 抵押品类型</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> u Vault 地址</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> v 抵押品的目标地址</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> w 债务的目标地址</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> dink 抵押品的变化量</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> dart 债务的变化量</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">grab</span>(<span class="params">bytes32 i, address u, address v, address w, int256 dink, int256 dart</span>) external auth &#123;</span><br><span class="line">        <span class="title class_">Urn</span> storage urn = urns[i][u];</span><br><span class="line">        <span class="title class_">Ilk</span> storage ilk = ilks[i];</span><br><span class="line"></span><br><span class="line">        urn.<span class="property">ink</span> = <span class="title function_">_add</span>(urn.<span class="property">ink</span>, dink);</span><br><span class="line">        urn.<span class="property">art</span> = <span class="title function_">_add</span>(urn.<span class="property">art</span>, dart);</span><br><span class="line">        ilk.<span class="property">Art</span> = <span class="title function_">_add</span>(ilk.<span class="property">Art</span>, dart);</span><br><span class="line"></span><br><span class="line">        int256 dtab = <span class="title function_">_mul</span>(ilk.<span class="property">rate</span>, dart);</span><br><span class="line"></span><br><span class="line">        gem[i][v] = <span class="title function_">_sub</span>(gem[i][v], dink);</span><br><span class="line">        sin[w] = <span class="title function_">_sub</span>(sin[w], dtab);</span><br><span class="line">        vice = <span class="title function_">_sub</span>(vice, dtab);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// --- Settlement ---</span></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 抵消用户的 `sin`（sin：代表&quot;扣押&quot;或&quot;坏&quot;债务）和负债</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> rad 抵消的金额</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">heal</span>(<span class="params">uint256 rad</span>) external &#123;</span><br><span class="line">        address u = msg.<span class="property">sender</span>;</span><br><span class="line">        sin[u] = <span class="title function_">_sub</span>(sin[u], rad);</span><br><span class="line">        dai[u] = <span class="title function_">_sub</span>(dai[u], rad);</span><br><span class="line">        vice = <span class="title function_">_sub</span>(vice, rad);</span><br><span class="line">        debt = <span class="title function_">_sub</span>(debt, rad);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 增加系统中的债务和不良债务，同时向特定用户分解 Dai</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> u 增加 `sin` 的用户地址</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> v 增加 Dai 的用户地址</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> rad 增加的金额</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">suck</span>(<span class="params">address u, address v, uint256 rad</span>) external auth &#123;</span><br><span class="line">        sin[u] = <span class="title function_">_add</span>(sin[u], rad);</span><br><span class="line">        dai[v] = <span class="title function_">_add</span>(dai[v], rad);</span><br><span class="line">        vice = <span class="title function_">_add</span>(vice, rad);</span><br><span class="line">        debt = <span class="title function_">_add</span>(debt, rad);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// --- Rates ---</span></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 调整特定抵押品类型的费率，并更新系统中的 Dai 和债务</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> i 抵押品类型(ilk)</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> u 更新 Dai 余额的用户地址</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> rate 费率的变化，单位为 `ray` 10^27</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">function</span> <span class="title function_">fold</span>(<span class="params">bytes32 i, address u, int256 rate</span>) external auth &#123;</span><br><span class="line">        <span class="built_in">require</span>(live == <span class="number">1</span>, <span class="string">&quot;Vat/not-live&quot;</span>);</span><br><span class="line">        <span class="title class_">Ilk</span> storage ilk = ilks[i];</span><br><span class="line">        ilk.<span class="property">rate</span> = <span class="title function_">_add</span>(ilk.<span class="property">rate</span>, rate);</span><br><span class="line">        int256 rad = <span class="title function_">_mul</span>(ilk.<span class="property">Art</span>, rate);</span><br><span class="line">        dai[u] = <span class="title function_">_add</span>(dai[u], rad);</span><br><span class="line">        debt = <span class="title function_">_add</span>(debt, rad);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Q1ngying
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://q1ngying.cn/2024/07/15/MakerDAO-Vat/" title="MakerDAO-Vat">http://q1ngying.cn/2024/07/15/MakerDAO-Vat/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/DeFi/" rel="tag"># DeFi</a>
+              <a href="/tags/MakerDAO/" rel="tag"># MakerDAO</a>
+              <a href="/tags/Contract/" rel="tag"># Contract</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/06/11/Storage%20%E8%BF%9B%E9%98%B6%E2%80%94%E2%80%94%E9%80%9A%E8%BF%87%E5%BC%95%E7%94%A8%20Storage%20%E6%8F%90%E9%AB%98%20gas%20%E5%88%A9%E7%94%A8%E7%8E%87/" rel="prev" title="Storage 进阶——通过引用 Storage 提高 gas 利用率">
+      <i class="fa fa-chevron-left"></i> Storage 进阶——通过引用 Storage 提高 gas 利用率
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2024/07/15/MakerDAO-Join/" rel="next" title="MakerDAO-Join">
+      MakerDAO-Join <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#MakerDAO-Vat-%E5%90%88%E7%BA%A6%E5%88%86%E6%9E%90"><span class="nav-number">1.</span> <span class="nav-text">MakerDAO Vat 合约分析</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Q1ngying"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Q1ngying</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">74</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/q1ngying" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;q1ngying" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:q1ngying@163.com" title="E-Mail → mailto:q1ngying@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/Q1ngYing" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;Q1ngYing" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://instagram.com/" title="Instagram → https:&#x2F;&#x2F;instagram.com&#x2F;" rel="noopener" target="_blank"><i class="fab fa-instagram fa-fw"></i>Instagram</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-09 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Q1ngying</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">189k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">10:30</span>
+</div>
+
+<div class="powered-by">
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <i class="fa fa-user-md"></i>
+    <span id="busuanzi_container_site_uv">
+        本站访客数:<span id="busuanzi_value_site_uv"></span>人
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_pv">
+        本站访问量<span id="busuanzi_value_site_pv"></span>人次
+    </span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='255,201,74' opacity='1' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
