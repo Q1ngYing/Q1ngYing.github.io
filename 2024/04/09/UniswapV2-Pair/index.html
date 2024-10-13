@@ -1,34 +1,11 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 6.3.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/icons8-clover-ios-16-glyph-32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/icons8-clover-ios-16-glyph-16.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
-
-<link rel="stylesheet" href="/css/main.css">
-
-<link rel="stylesheet" href="//fonts.lug.ustc.edu.cn/css?family=Garamond:300,300italic,400,400italic,700,700italic|Courier New:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
-  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
-  <script src="/lib/pace/pace.min.js"></script>
-
-<script id="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"q1ngying.cn","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
-  </script>
-
-  <meta name="description" content="这里涵盖 Uniswap 的特殊功能，关于 ERC-20 的功能，这里不多赘述。">
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>UniswapV2-Pair | Q1ngying</title><meta name="author" content="Q1ngying"><meta name="copyright" content="Q1ngying"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="这里涵盖 Uniswap 的特殊功能，关于 ERC-20 的功能，这里不多赘述。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="UniswapV2-Pair">
-<meta property="og:url" content="http://q1ngying.cn/2024/04/09/UniswapV2-Pair/index.html">
+<meta property="og:url" content="https://q1ngying.cn/2024/04/09/UniswapV2-Pair/index.html">
 <meta property="og:site_name" content="Q1ngying">
 <meta property="og:description" content="这里涵盖 Uniswap 的特殊功能，关于 ERC-20 的功能，这里不多赘述。">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://q1ngying.cn/img/butterfly-icon.jpg">
 <meta property="article:published_time" content="2024-04-09T11:49:38.000Z">
 <meta property="article:modified_time" content="2024-04-09T11:51:57.975Z">
 <meta property="article:author" content="Q1ngying">
@@ -36,571 +13,450 @@
 <meta property="article:tag" content="DeFi">
 <meta property="article:tag" content="Uniswap">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://q1ngying.cn/img/butterfly-icon.jpg"><link rel="shortcut icon" href="/img/icons8-clover-ios-16-glyph-32.png"><link rel="canonical" href="https://q1ngying.cn/2024/04/09/UniswapV2-Pair/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><meta name="google-site-verification" content="IzCM4B791_p7IAU4WhRfiLlP"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
 
-<link rel="canonical" href="http://q1ngying.cn/2024/04/09/UniswapV2-Pair/">
-
-
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : true,
-    lang   : 'zh-CN'
-  };
-</script>
-
-  <title>UniswapV2-Pair | Q1ngying</title>
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
   
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
 
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
 
-
-
-
-
-  <noscript>
-  <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
-
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
-
-<!-- hexo injector head_end start -->
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'UniswapV2-Pair',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-04-09 19:51:57'
+}</script><!-- hexo injector head_end start -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
-<!-- hexo injector head_end end --></head>
-
-<body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
-
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
-    </div>
-  </div>
-
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">Q1ngying</h1>
-      <span class="logo-line-after"><i></i></span>
-    </a>
-      <p class="site-subtitle" itemprop="description">今朝梦醒与君别，遥盼春风寄相思</p>
-  </div>
-
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
-    </div>
-  </div>
-</div>
-
-
-
-
-<nav class="site-nav">
-  <ul id="menu" class="main-menu menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
-
-  </li>
-        <li class="menu-item menu-item-about">
-
-    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
-
-  </li>
-  </ul>
-</nav>
-
-
-
-
-</div>
-    </header>
-
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-  <div class="reading-progress-bar"></div>
-
-
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-
-          <div class="content post posts-expand">
-            
-
-    
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://q1ngying.cn/2024/04/09/UniswapV2-Pair/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Q1ngying">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Q1ngying">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          UniswapV2-Pair
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-04-09 19:49:38 / 修改时间：19:51:57" itemprop="dateCreated datePublished" datetime="2024-04-09T19:49:38+08:00">2024-04-09</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/DeFi/" itemprop="url" rel="index"><span itemprop="name">DeFi</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Solidity/" itemprop="url" rel="index"><span itemprop="name">Solidity</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Uniswap/" itemprop="url" rel="index"><span itemprop="name">Uniswap</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>1.7k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>6 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-        <p>这里涵盖 Uniswap 的特殊功能，关于 ERC-20 的功能，这里不多赘述。</p>
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/butterfly-icon.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">29</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/back1.webp);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Q1ngying</span></a><a class="nav-page-title" href="/"><span class="site-name">UniswapV2-Pair</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">UniswapV2-Pair</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-04-09T11:49:38.000Z" title="发表于 2024-04-09 19:49:38">2024-04-09</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-04-09T11:51:57.975Z" title="更新于 2024-04-09 19:51:57">2024-04-09</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/DeFi/">DeFi</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Solidity/">Solidity</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Uniswap/">Uniswap</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">91k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>5:04分钟</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>这里涵盖 Uniswap 的特殊功能，关于 ERC-20 的功能，这里不多赘述。</p>
 <span id="more"></span>
+<h2 id="Code"><a href="#Code" class="headerlink" title="Code"></a>Code</h2><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">=</span><span class="token number">0.5</span><span class="token number">.16</span><span class="token punctuation">;</span>
 
-<h2 id="Code"><a href="#Code" class="headerlink" title="Code"></a>Code</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity =0.5.16;</span><br><span class="line"></span><br><span class="line">import &#x27;./interfaces/IUniswapV2Pair.sol&#x27;;</span><br><span class="line">import &#x27;./UniswapV2ERC20.sol&#x27;;</span><br><span class="line">import &#x27;./libraries/Math.sol&#x27;;</span><br><span class="line">import &#x27;./libraries/UQ112x112.sol&#x27;;</span><br><span class="line">import &#x27;./interfaces/IERC20.sol&#x27;;</span><br><span class="line">import &#x27;./interfaces/IUniswapV2Factory.sol&#x27;;</span><br><span class="line">import &#x27;./interfaces/IUniswapV2Callee.sol&#x27;;</span><br><span class="line"></span><br><span class="line">contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 &#123;</span><br><span class="line">    using SafeMath  for uint;</span><br><span class="line">    using UQ112x112 for uint224;</span><br><span class="line"></span><br><span class="line">    uint public constant MINIMUM_LIQUIDITY = 10**3;</span><br><span class="line">    bytes4 private constant SELECTOR = bytes4(keccak256(bytes(&#x27;transfer(address,uint256)&#x27;)));</span><br><span class="line"></span><br><span class="line">    address public factory;</span><br><span class="line">    address public token0;</span><br><span class="line">    address public token1;</span><br><span class="line"></span><br><span class="line">    uint112 private reserve0;           // uses single storage slot, accessible via getReserves</span><br><span class="line">    uint112 private reserve1;           // uses single storage slot, accessible via getReserves</span><br><span class="line">    uint32  private blockTimestampLast; // uses single storage slot, accessible via getReserves</span><br><span class="line"></span><br><span class="line">    uint public price0CumulativeLast;</span><br><span class="line">    uint public price1CumulativeLast;</span><br><span class="line">    uint public kLast; // reserve0 * reserve1, as of immediately after the most recent liquidity event</span><br><span class="line"></span><br><span class="line">    uint private unlocked = 1;</span><br><span class="line">    modifier lock() &#123;</span><br><span class="line">        require(unlocked == 1, &#x27;UniswapV2: LOCKED&#x27;);</span><br><span class="line">        unlocked = 0;</span><br><span class="line">        _;</span><br><span class="line">        unlocked = 1;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function getReserves() public view returns (uint112 _reserve0, uint112 _reserve1, uint32 _blockTimestampLast) &#123;</span><br><span class="line">        _reserve0 = reserve0;</span><br><span class="line">        _reserve1 = reserve1;</span><br><span class="line">        _blockTimestampLast = blockTimestampLast;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function _safeTransfer(address token, address to, uint value) private &#123;</span><br><span class="line">        (bool success, bytes memory data) = token.call(abi.encodeWithSelector(SELECTOR, to, value));</span><br><span class="line">        require(success &amp;&amp; (data.length == 0 || abi.decode(data, (bool))), &#x27;UniswapV2: TRANSFER_FAILED&#x27;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    event Mint(address indexed sender, uint amount0, uint amount1);</span><br><span class="line">    event Burn(address indexed sender, uint amount0, uint amount1, address indexed to);</span><br><span class="line">    event Swap(</span><br><span class="line">        address indexed sender,</span><br><span class="line">        uint amount0In,</span><br><span class="line">        uint amount1In,</span><br><span class="line">        uint amount0Out,</span><br><span class="line">        uint amount1Out,</span><br><span class="line">        address indexed to</span><br><span class="line">    );</span><br><span class="line">    event Sync(uint112 reserve0, uint112 reserve1);</span><br><span class="line"></span><br><span class="line">    constructor() public &#123;</span><br><span class="line">        factory = msg.sender;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // called once by the factory at time of deployment</span><br><span class="line">    function initialize(address _token0, address _token1) external &#123;</span><br><span class="line">        require(msg.sender == factory, &#x27;UniswapV2: FORBIDDEN&#x27;); // sufficient check</span><br><span class="line">        token0 = _token0;</span><br><span class="line">        token1 = _token1;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // update reserves and, on the first call per block, price accumulators</span><br><span class="line">    function _update(uint balance0, uint balance1, uint112 _reserve0, uint112 _reserve1) private &#123;</span><br><span class="line">        require(balance0 &lt;= uint112(-1) &amp;&amp; balance1 &lt;= uint112(-1), &#x27;UniswapV2: OVERFLOW&#x27;);</span><br><span class="line">        uint32 blockTimestamp = uint32(block.timestamp % 2**32);</span><br><span class="line">        uint32 timeElapsed = blockTimestamp - blockTimestampLast; // overflow is desired</span><br><span class="line">        if (timeElapsed &gt; 0 &amp;&amp; _reserve0 != 0 &amp;&amp; _reserve1 != 0) &#123;</span><br><span class="line">            // * never overflows, and + overflow is desired</span><br><span class="line">            price0CumulativeLast += uint(UQ112x112.encode(_reserve1).uqdiv(_reserve0)) * timeElapsed;</span><br><span class="line">            price1CumulativeLast += uint(UQ112x112.encode(_reserve0).uqdiv(_reserve1)) * timeElapsed;</span><br><span class="line">        &#125;</span><br><span class="line">        reserve0 = uint112(balance0);</span><br><span class="line">        reserve1 = uint112(balance1);</span><br><span class="line">        blockTimestampLast = blockTimestamp;</span><br><span class="line">        emit Sync(reserve0, reserve1);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // if fee is on, mint liquidity equivalent to 1/6th of the growth in sqrt(k)</span><br><span class="line">    function _mintFee(uint112 _reserve0, uint112 _reserve1) private returns (bool feeOn) &#123;</span><br><span class="line">        address feeTo = IUniswapV2Factory(factory).feeTo();</span><br><span class="line">        feeOn = feeTo != address(0);</span><br><span class="line">        uint _kLast = kLast; // gas savings</span><br><span class="line">        if (feeOn) &#123;</span><br><span class="line">            if (_kLast != 0) &#123;</span><br><span class="line">                uint rootK = Math.sqrt(uint(_reserve0).mul(_reserve1));</span><br><span class="line">                uint rootKLast = Math.sqrt(_kLast);</span><br><span class="line">                if (rootK &gt; rootKLast) &#123;</span><br><span class="line">                    uint numerator = totalSupply.mul(rootK.sub(rootKLast));</span><br><span class="line">                    uint denominator = rootK.mul(5).add(rootKLast);</span><br><span class="line">                    uint liquidity = numerator / denominator;</span><br><span class="line">                    if (liquidity &gt; 0) _mint(feeTo, liquidity);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; else if (_kLast != 0) &#123;</span><br><span class="line">            kLast = 0;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // this low-level function should be called from a contract which performs important safety checks</span><br><span class="line">    function mint(address to) external lock returns (uint liquidity) &#123;</span><br><span class="line">        (uint112 _reserve0, uint112 _reserve1,) = getReserves(); // gas savings</span><br><span class="line">        uint balance0 = IERC20(token0).balanceOf(address(this));</span><br><span class="line">        uint balance1 = IERC20(token1).balanceOf(address(this));</span><br><span class="line">        uint amount0 = balance0.sub(_reserve0);</span><br><span class="line">        uint amount1 = balance1.sub(_reserve1);</span><br><span class="line"></span><br><span class="line">        bool feeOn = _mintFee(_reserve0, _reserve1);</span><br><span class="line">        uint _totalSupply = totalSupply; // gas savings, must be defined here since totalSupply can update in _mintFee</span><br><span class="line">        if (_totalSupply == 0) &#123;</span><br><span class="line">            liquidity = Math.sqrt(amount0.mul(amount1)).sub(MINIMUM_LIQUIDITY);</span><br><span class="line">           _mint(address(0), MINIMUM_LIQUIDITY); // permanently lock the first MINIMUM_LIQUIDITY tokens</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            liquidity = Math.min(amount0.mul(_totalSupply) / _reserve0, amount1.mul(_totalSupply) / _reserve1);</span><br><span class="line">        &#125;</span><br><span class="line">        require(liquidity &gt; 0, &#x27;UniswapV2: INSUFFICIENT_LIQUIDITY_MINTED&#x27;);</span><br><span class="line">        _mint(to, liquidity);</span><br><span class="line"></span><br><span class="line">        _update(balance0, balance1, _reserve0, _reserve1);</span><br><span class="line">        if (feeOn) kLast = uint(reserve0).mul(reserve1); // reserve0 and reserve1 are up-to-date</span><br><span class="line">        emit Mint(msg.sender, amount0, amount1);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // this low-level function should be called from a contract which performs important safety checks</span><br><span class="line">    function burn(address to) external lock returns (uint amount0, uint amount1) &#123;</span><br><span class="line">        (uint112 _reserve0, uint112 _reserve1,) = getReserves(); // gas savings</span><br><span class="line">        address _token0 = token0;                                // gas savings</span><br><span class="line">        address _token1 = token1;                                // gas savings</span><br><span class="line">        uint balance0 = IERC20(_token0).balanceOf(address(this));</span><br><span class="line">        uint balance1 = IERC20(_token1).balanceOf(address(this));</span><br><span class="line">        uint liquidity = balanceOf[address(this)];</span><br><span class="line"></span><br><span class="line">        bool feeOn = _mintFee(_reserve0, _reserve1);</span><br><span class="line">        uint _totalSupply = totalSupply; // gas savings, must be defined here since totalSupply can update in _mintFee</span><br><span class="line">        amount0 = liquidity.mul(balance0) / _totalSupply; // using balances ensures pro-rata distribution</span><br><span class="line">        amount1 = liquidity.mul(balance1) / _totalSupply; // using balances ensures pro-rata distribution</span><br><span class="line">        require(amount0 &gt; 0 &amp;&amp; amount1 &gt; 0, &#x27;UniswapV2: INSUFFICIENT_LIQUIDITY_BURNED&#x27;);</span><br><span class="line">        _burn(address(this), liquidity);</span><br><span class="line">        _safeTransfer(_token0, to, amount0);</span><br><span class="line">        _safeTransfer(_token1, to, amount1);</span><br><span class="line">        balance0 = IERC20(_token0).balanceOf(address(this));</span><br><span class="line">        balance1 = IERC20(_token1).balanceOf(address(this));</span><br><span class="line"></span><br><span class="line">        _update(balance0, balance1, _reserve0, _reserve1);</span><br><span class="line">        if (feeOn) kLast = uint(reserve0).mul(reserve1); // reserve0 and reserve1 are up-to-date</span><br><span class="line">        emit Burn(msg.sender, amount0, amount1, to);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // this low-level function should be called from a contract which performs important safety checks</span><br><span class="line">    function swap(uint amount0Out, uint amount1Out, address to, bytes calldata data) external lock &#123;</span><br><span class="line">        require(amount0Out &gt; 0 || amount1Out &gt; 0, &#x27;UniswapV2: INSUFFICIENT_OUTPUT_AMOUNT&#x27;);</span><br><span class="line">        (uint112 _reserve0, uint112 _reserve1,) = getReserves(); // gas savings</span><br><span class="line">        require(amount0Out &lt; _reserve0 &amp;&amp; amount1Out &lt; _reserve1, &#x27;UniswapV2: INSUFFICIENT_LIQUIDITY&#x27;);</span><br><span class="line"></span><br><span class="line">        uint balance0;</span><br><span class="line">        uint balance1;</span><br><span class="line">        &#123; // scope for _token&#123;0,1&#125;, avoids stack too deep errors</span><br><span class="line">        address _token0 = token0;</span><br><span class="line">        address _token1 = token1;</span><br><span class="line">        require(to != _token0 &amp;&amp; to != _token1, &#x27;UniswapV2: INVALID_TO&#x27;);</span><br><span class="line">        if (amount0Out &gt; 0) _safeTransfer(_token0, to, amount0Out); // optimistically transfer tokens</span><br><span class="line">        if (amount1Out &gt; 0) _safeTransfer(_token1, to, amount1Out); // optimistically transfer tokens</span><br><span class="line">        if (data.length &gt; 0) IUniswapV2Callee(to).uniswapV2Call(msg.sender, amount0Out, amount1Out, data);</span><br><span class="line">        balance0 = IERC20(_token0).balanceOf(address(this));</span><br><span class="line">        balance1 = IERC20(_token1).balanceOf(address(this));</span><br><span class="line">        &#125;</span><br><span class="line">        uint amount0In = balance0 &gt; _reserve0 - amount0Out ? balance0 - (_reserve0 - amount0Out) : 0;</span><br><span class="line">        uint amount1In = balance1 &gt; _reserve1 - amount1Out ? balance1 - (_reserve1 - amount1Out) : 0;</span><br><span class="line">        require(amount0In &gt; 0 || amount1In &gt; 0, &#x27;UniswapV2: INSUFFICIENT_INPUT_AMOUNT&#x27;);</span><br><span class="line">        &#123; // scope for reserve&#123;0,1&#125;Adjusted, avoids stack too deep errors</span><br><span class="line">        uint balance0Adjusted = balance0.mul(1000).sub(amount0In.mul(3));</span><br><span class="line">        uint balance1Adjusted = balance1.mul(1000).sub(amount1In.mul(3));</span><br><span class="line">        require(balance0Adjusted.mul(balance1Adjusted) &gt;= uint(_reserve0).mul(_reserve1).mul(1000**2), &#x27;UniswapV2: K&#x27;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        _update(balance0, balance1, _reserve0, _reserve1);</span><br><span class="line">        emit Swap(msg.sender, amount0In, amount1In, amount0Out, amount1Out, to);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // force balances to match reserves</span><br><span class="line">    function skim(address to) external lock &#123;</span><br><span class="line">        address _token0 = token0; // gas savings</span><br><span class="line">        address _token1 = token1; // gas savings</span><br><span class="line">        _safeTransfer(_token0, to, IERC20(_token0).balanceOf(address(this)).sub(reserve0));</span><br><span class="line">        _safeTransfer(_token1, to, IERC20(_token1).balanceOf(address(this)).sub(reserve1));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // force reserves to match balances</span><br><span class="line">    function sync() external lock &#123;</span><br><span class="line">        _update(IERC20(token0).balanceOf(address(this)), IERC20(token1).balanceOf(address(this)), reserve0, reserve1);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<span class="token keyword">import</span> <span class="token string">'./interfaces/IUniswapV2Pair.sol'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token string">'./UniswapV2ERC20.sol'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token string">'./libraries/Math.sol'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token string">'./libraries/UQ112x112.sol'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token string">'./interfaces/IERC20.sol'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token string">'./interfaces/IUniswapV2Factory.sol'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token string">'./interfaces/IUniswapV2Callee.sol'</span><span class="token punctuation">;</span>
 
-<h2 id="Event"><a href="#Event" class="headerlink" title="Event"></a>Event</h2><h3 id="Mint"><a href="#Mint" class="headerlink" title="Mint"></a>Mint</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">event Mint(address indexed sender, uint amount0, uint amount1);</span><br></pre></td></tr></table></figure>
+<span class="token keyword">contract</span> <span class="token class-name">UniswapV2Pair</span> <span class="token keyword">is</span> IUniswapV2Pair<span class="token punctuation">,</span> UniswapV2ERC20 <span class="token punctuation">&#123;</span>
+    <span class="token keyword">using</span> <span class="token class-name">SafeMath</span>  <span class="token keyword">for</span> <span class="token builtin">uint</span><span class="token punctuation">;</span>
+    <span class="token keyword">using</span> <span class="token class-name">UQ112x112</span> <span class="token keyword">for</span> <span class="token builtin">uint224</span><span class="token punctuation">;</span>
 
+    <span class="token builtin">uint</span> <span class="token keyword">public</span> <span class="token keyword">constant</span> MINIMUM_LIQUIDITY <span class="token operator">=</span> <span class="token number">10</span><span class="token operator">**</span><span class="token number">3</span><span class="token punctuation">;</span>
+    <span class="token builtin">bytes4</span> <span class="token keyword">private</span> <span class="token keyword">constant</span> SELECTOR <span class="token operator">=</span> <span class="token builtin">bytes4</span><span class="token punctuation">(</span><span class="token function">keccak256</span><span class="token punctuation">(</span><span class="token builtin">bytes</span><span class="token punctuation">(</span><span class="token string">'transfer(address,uint256)'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token builtin">address</span> <span class="token keyword">public</span> factory<span class="token punctuation">;</span>
+    <span class="token builtin">address</span> <span class="token keyword">public</span> token0<span class="token punctuation">;</span>
+    <span class="token builtin">address</span> <span class="token keyword">public</span> token1<span class="token punctuation">;</span>
+
+    <span class="token builtin">uint112</span> <span class="token keyword">private</span> reserve0<span class="token punctuation">;</span>           <span class="token comment">// uses single storage slot, accessible via getReserves</span>
+    <span class="token builtin">uint112</span> <span class="token keyword">private</span> reserve1<span class="token punctuation">;</span>           <span class="token comment">// uses single storage slot, accessible via getReserves</span>
+    <span class="token builtin">uint32</span>  <span class="token keyword">private</span> blockTimestampLast<span class="token punctuation">;</span> <span class="token comment">// uses single storage slot, accessible via getReserves</span>
+
+    <span class="token builtin">uint</span> <span class="token keyword">public</span> price0CumulativeLast<span class="token punctuation">;</span>
+    <span class="token builtin">uint</span> <span class="token keyword">public</span> price1CumulativeLast<span class="token punctuation">;</span>
+    <span class="token builtin">uint</span> <span class="token keyword">public</span> kLast<span class="token punctuation">;</span> <span class="token comment">// reserve0 * reserve1, as of immediately after the most recent liquidity event</span>
+
+    <span class="token builtin">uint</span> <span class="token keyword">private</span> unlocked <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token keyword">modifier</span> <span class="token function">lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span>unlocked <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token string">'UniswapV2: LOCKED'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        unlocked <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        <span class="token keyword">_</span><span class="token punctuation">;</span>
+        unlocked <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">getReserves</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint112</span> _reserve0<span class="token punctuation">,</span> <span class="token builtin">uint112</span> _reserve1<span class="token punctuation">,</span> <span class="token builtin">uint32</span> _blockTimestampLast<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        _reserve0 <span class="token operator">=</span> reserve0<span class="token punctuation">;</span>
+        _reserve1 <span class="token operator">=</span> reserve1<span class="token punctuation">;</span>
+        _blockTimestampLast <span class="token operator">=</span> blockTimestampLast<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">_safeTransfer</span><span class="token punctuation">(</span><span class="token builtin">address</span> token<span class="token punctuation">,</span> <span class="token builtin">address</span> to<span class="token punctuation">,</span> <span class="token builtin">uint</span> value<span class="token punctuation">)</span> <span class="token keyword">private</span> <span class="token punctuation">&#123;</span>
+        <span class="token punctuation">(</span><span class="token builtin">bool</span> success<span class="token punctuation">,</span> <span class="token builtin">bytes</span> <span class="token keyword">memory</span> data<span class="token punctuation">)</span> <span class="token operator">=</span> token<span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span>abi<span class="token punctuation">.</span><span class="token function">encodeWithSelector</span><span class="token punctuation">(</span>SELECTOR<span class="token punctuation">,</span> to<span class="token punctuation">,</span> value<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span>success <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span>data<span class="token punctuation">.</span>length <span class="token operator">==</span> <span class="token number">0</span> <span class="token operator">||</span> abi<span class="token punctuation">.</span><span class="token function">decode</span><span class="token punctuation">(</span>data<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token builtin">bool</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">'UniswapV2: TRANSFER_FAILED'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">event</span> <span class="token function">Mint</span><span class="token punctuation">(</span><span class="token builtin">address</span> <span class="token keyword">indexed</span> sender<span class="token punctuation">,</span> <span class="token builtin">uint</span> amount0<span class="token punctuation">,</span> <span class="token builtin">uint</span> amount1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">event</span> <span class="token function">Burn</span><span class="token punctuation">(</span><span class="token builtin">address</span> <span class="token keyword">indexed</span> sender<span class="token punctuation">,</span> <span class="token builtin">uint</span> amount0<span class="token punctuation">,</span> <span class="token builtin">uint</span> amount1<span class="token punctuation">,</span> <span class="token builtin">address</span> <span class="token keyword">indexed</span> to<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">event</span> <span class="token function">Swap</span><span class="token punctuation">(</span>
+        <span class="token builtin">address</span> <span class="token keyword">indexed</span> sender<span class="token punctuation">,</span>
+        <span class="token builtin">uint</span> amount0In<span class="token punctuation">,</span>
+        <span class="token builtin">uint</span> amount1In<span class="token punctuation">,</span>
+        <span class="token builtin">uint</span> amount0Out<span class="token punctuation">,</span>
+        <span class="token builtin">uint</span> amount1Out<span class="token punctuation">,</span>
+        <span class="token builtin">address</span> <span class="token keyword">indexed</span> to
+    <span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">event</span> <span class="token function">Sync</span><span class="token punctuation">(</span><span class="token builtin">uint112</span> reserve0<span class="token punctuation">,</span> <span class="token builtin">uint112</span> reserve1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        factory <span class="token operator">=</span> msg<span class="token punctuation">.</span>sender<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// called once by the factory at time of deployment</span>
+    <span class="token keyword">function</span> <span class="token function">initialize</span><span class="token punctuation">(</span><span class="token builtin">address</span> _token0<span class="token punctuation">,</span> <span class="token builtin">address</span> _token1<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span>msg<span class="token punctuation">.</span>sender <span class="token operator">==</span> factory<span class="token punctuation">,</span> <span class="token string">'UniswapV2: FORBIDDEN'</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// sufficient check</span>
+        token0 <span class="token operator">=</span> _token0<span class="token punctuation">;</span>
+        token1 <span class="token operator">=</span> _token1<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// update reserves and, on the first call per block, price accumulators</span>
+    <span class="token keyword">function</span> <span class="token function">_update</span><span class="token punctuation">(</span><span class="token builtin">uint</span> balance0<span class="token punctuation">,</span> <span class="token builtin">uint</span> balance1<span class="token punctuation">,</span> <span class="token builtin">uint112</span> _reserve0<span class="token punctuation">,</span> <span class="token builtin">uint112</span> _reserve1<span class="token punctuation">)</span> <span class="token keyword">private</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span>balance0 <span class="token operator">&lt;=</span> <span class="token builtin">uint112</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> balance1 <span class="token operator">&lt;=</span> <span class="token builtin">uint112</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">'UniswapV2: OVERFLOW'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token builtin">uint32</span> blockTimestamp <span class="token operator">=</span> <span class="token builtin">uint32</span><span class="token punctuation">(</span>block<span class="token punctuation">.</span>timestamp <span class="token operator">%</span> <span class="token number">2</span><span class="token operator">**</span><span class="token number">32</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token builtin">uint32</span> timeElapsed <span class="token operator">=</span> blockTimestamp <span class="token operator">-</span> blockTimestampLast<span class="token punctuation">;</span> <span class="token comment">// overflow is desired</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>timeElapsed <span class="token operator">></span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> _reserve0 <span class="token operator">!=</span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> _reserve1 <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token comment">// * never overflows, and + overflow is desired</span>
+            price0CumulativeLast <span class="token operator">+=</span> <span class="token builtin">uint</span><span class="token punctuation">(</span>UQ112x112<span class="token punctuation">.</span><span class="token function">encode</span><span class="token punctuation">(</span>_reserve1<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">uqdiv</span><span class="token punctuation">(</span>_reserve0<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">*</span> timeElapsed<span class="token punctuation">;</span>
+            price1CumulativeLast <span class="token operator">+=</span> <span class="token builtin">uint</span><span class="token punctuation">(</span>UQ112x112<span class="token punctuation">.</span><span class="token function">encode</span><span class="token punctuation">(</span>_reserve0<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">uqdiv</span><span class="token punctuation">(</span>_reserve1<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">*</span> timeElapsed<span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        reserve0 <span class="token operator">=</span> <span class="token builtin">uint112</span><span class="token punctuation">(</span>balance0<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        reserve1 <span class="token operator">=</span> <span class="token builtin">uint112</span><span class="token punctuation">(</span>balance1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        blockTimestampLast <span class="token operator">=</span> blockTimestamp<span class="token punctuation">;</span>
+        <span class="token keyword">emit</span> <span class="token function">Sync</span><span class="token punctuation">(</span>reserve0<span class="token punctuation">,</span> reserve1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// if fee is on, mint liquidity equivalent to 1/6th of the growth in sqrt(k)</span>
+    <span class="token keyword">function</span> <span class="token function">_mintFee</span><span class="token punctuation">(</span><span class="token builtin">uint112</span> _reserve0<span class="token punctuation">,</span> <span class="token builtin">uint112</span> _reserve1<span class="token punctuation">)</span> <span class="token keyword">private</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">bool</span> feeOn<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token builtin">address</span> feeTo <span class="token operator">=</span> <span class="token function">IUniswapV2Factory</span><span class="token punctuation">(</span>factory<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">feeTo</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        feeOn <span class="token operator">=</span> feeTo <span class="token operator">!=</span> <span class="token builtin">address</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token builtin">uint</span> _kLast <span class="token operator">=</span> kLast<span class="token punctuation">;</span> <span class="token comment">// gas savings</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>feeOn<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>_kLast <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                <span class="token builtin">uint</span> rootK <span class="token operator">=</span> Math<span class="token punctuation">.</span><span class="token function">sqrt</span><span class="token punctuation">(</span><span class="token builtin">uint</span><span class="token punctuation">(</span>_reserve0<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">mul</span><span class="token punctuation">(</span>_reserve1<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token builtin">uint</span> rootKLast <span class="token operator">=</span> Math<span class="token punctuation">.</span><span class="token function">sqrt</span><span class="token punctuation">(</span>_kLast<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>rootK <span class="token operator">></span> rootKLast<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                    <span class="token builtin">uint</span> numerator <span class="token operator">=</span> totalSupply<span class="token punctuation">.</span><span class="token function">mul</span><span class="token punctuation">(</span>rootK<span class="token punctuation">.</span><span class="token function">sub</span><span class="token punctuation">(</span>rootKLast<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token builtin">uint</span> denominator <span class="token operator">=</span> rootK<span class="token punctuation">.</span><span class="token function">mul</span><span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>rootKLast<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token builtin">uint</span> liquidity <span class="token operator">=</span> numerator <span class="token operator">/</span> denominator<span class="token punctuation">;</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>liquidity <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token function">_mint</span><span class="token punctuation">(</span>feeTo<span class="token punctuation">,</span> liquidity<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">&#125;</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>_kLast <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            kLast <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// this low-level function should be called from a contract which performs important safety checks</span>
+    <span class="token keyword">function</span> <span class="token function">mint</span><span class="token punctuation">(</span><span class="token builtin">address</span> to<span class="token punctuation">)</span> <span class="token keyword">external</span> lock <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint</span> liquidity<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token punctuation">(</span><span class="token builtin">uint112</span> _reserve0<span class="token punctuation">,</span> <span class="token builtin">uint112</span> _reserve1<span class="token punctuation">,</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token function">getReserves</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// gas savings</span>
+        <span class="token builtin">uint</span> balance0 <span class="token operator">=</span> <span class="token function">IERC20</span><span class="token punctuation">(</span>token0<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">balanceOf</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token builtin">uint</span> balance1 <span class="token operator">=</span> <span class="token function">IERC20</span><span class="token punctuation">(</span>token1<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">balanceOf</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token builtin">uint</span> amount0 <span class="token operator">=</span> balance0<span class="token punctuation">.</span><span class="token function">sub</span><span class="token punctuation">(</span>_reserve0<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token builtin">uint</span> amount1 <span class="token operator">=</span> balance1<span class="token punctuation">.</span><span class="token function">sub</span><span class="token punctuation">(</span>_reserve1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token builtin">bool</span> feeOn <span class="token operator">=</span> <span class="token function">_mintFee</span><span class="token punctuation">(</span>_reserve0<span class="token punctuation">,</span> _reserve1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token builtin">uint</span> _totalSupply <span class="token operator">=</span> totalSupply<span class="token punctuation">;</span> <span class="token comment">// gas savings, must be defined here since totalSupply can update in _mintFee</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>_totalSupply <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            liquidity <span class="token operator">=</span> Math<span class="token punctuation">.</span><span class="token function">sqrt</span><span class="token punctuation">(</span>amount0<span class="token punctuation">.</span><span class="token function">mul</span><span class="token punctuation">(</span>amount1<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">sub</span><span class="token punctuation">(</span>MINIMUM_LIQUIDITY<span class="token punctuation">)</span><span class="token punctuation">;</span>
+           <span class="token function">_mint</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">,</span> MINIMUM_LIQUIDITY<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// permanently lock the first MINIMUM_LIQUIDITY tokens</span>
+        <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+            liquidity <span class="token operator">=</span> Math<span class="token punctuation">.</span><span class="token function">min</span><span class="token punctuation">(</span>amount0<span class="token punctuation">.</span><span class="token function">mul</span><span class="token punctuation">(</span>_totalSupply<span class="token punctuation">)</span> <span class="token operator">/</span> _reserve0<span class="token punctuation">,</span> amount1<span class="token punctuation">.</span><span class="token function">mul</span><span class="token punctuation">(</span>_totalSupply<span class="token punctuation">)</span> <span class="token operator">/</span> _reserve1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span>liquidity <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token string">'UniswapV2: INSUFFICIENT_LIQUIDITY_MINTED'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">_mint</span><span class="token punctuation">(</span>to<span class="token punctuation">,</span> liquidity<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token function">_update</span><span class="token punctuation">(</span>balance0<span class="token punctuation">,</span> balance1<span class="token punctuation">,</span> _reserve0<span class="token punctuation">,</span> _reserve1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>feeOn<span class="token punctuation">)</span> kLast <span class="token operator">=</span> <span class="token builtin">uint</span><span class="token punctuation">(</span>reserve0<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">mul</span><span class="token punctuation">(</span>reserve1<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// reserve0 and reserve1 are up-to-date</span>
+        <span class="token keyword">emit</span> <span class="token function">Mint</span><span class="token punctuation">(</span>msg<span class="token punctuation">.</span>sender<span class="token punctuation">,</span> amount0<span class="token punctuation">,</span> amount1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// this low-level function should be called from a contract which performs important safety checks</span>
+    <span class="token keyword">function</span> <span class="token function">burn</span><span class="token punctuation">(</span><span class="token builtin">address</span> to<span class="token punctuation">)</span> <span class="token keyword">external</span> lock <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint</span> amount0<span class="token punctuation">,</span> <span class="token builtin">uint</span> amount1<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token punctuation">(</span><span class="token builtin">uint112</span> _reserve0<span class="token punctuation">,</span> <span class="token builtin">uint112</span> _reserve1<span class="token punctuation">,</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token function">getReserves</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// gas savings</span>
+        <span class="token builtin">address</span> _token0 <span class="token operator">=</span> token0<span class="token punctuation">;</span>                                <span class="token comment">// gas savings</span>
+        <span class="token builtin">address</span> _token1 <span class="token operator">=</span> token1<span class="token punctuation">;</span>                                <span class="token comment">// gas savings</span>
+        <span class="token builtin">uint</span> balance0 <span class="token operator">=</span> <span class="token function">IERC20</span><span class="token punctuation">(</span>_token0<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">balanceOf</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token builtin">uint</span> balance1 <span class="token operator">=</span> <span class="token function">IERC20</span><span class="token punctuation">(</span>_token1<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">balanceOf</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token builtin">uint</span> liquidity <span class="token operator">=</span> balanceOf<span class="token punctuation">[</span><span class="token builtin">address</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+        <span class="token builtin">bool</span> feeOn <span class="token operator">=</span> <span class="token function">_mintFee</span><span class="token punctuation">(</span>_reserve0<span class="token punctuation">,</span> _reserve1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token builtin">uint</span> _totalSupply <span class="token operator">=</span> totalSupply<span class="token punctuation">;</span> <span class="token comment">// gas savings, must be defined here since totalSupply can update in _mintFee</span>
+        amount0 <span class="token operator">=</span> liquidity<span class="token punctuation">.</span><span class="token function">mul</span><span class="token punctuation">(</span>balance0<span class="token punctuation">)</span> <span class="token operator">/</span> _totalSupply<span class="token punctuation">;</span> <span class="token comment">// using balances ensures pro-rata distribution</span>
+        amount1 <span class="token operator">=</span> liquidity<span class="token punctuation">.</span><span class="token function">mul</span><span class="token punctuation">(</span>balance1<span class="token punctuation">)</span> <span class="token operator">/</span> _totalSupply<span class="token punctuation">;</span> <span class="token comment">// using balances ensures pro-rata distribution</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span>amount0 <span class="token operator">></span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> amount1 <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token string">'UniswapV2: INSUFFICIENT_LIQUIDITY_BURNED'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">_burn</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">,</span> liquidity<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">_safeTransfer</span><span class="token punctuation">(</span>_token0<span class="token punctuation">,</span> to<span class="token punctuation">,</span> amount0<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">_safeTransfer</span><span class="token punctuation">(</span>_token1<span class="token punctuation">,</span> to<span class="token punctuation">,</span> amount1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        balance0 <span class="token operator">=</span> <span class="token function">IERC20</span><span class="token punctuation">(</span>_token0<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">balanceOf</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        balance1 <span class="token operator">=</span> <span class="token function">IERC20</span><span class="token punctuation">(</span>_token1<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">balanceOf</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token function">_update</span><span class="token punctuation">(</span>balance0<span class="token punctuation">,</span> balance1<span class="token punctuation">,</span> _reserve0<span class="token punctuation">,</span> _reserve1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>feeOn<span class="token punctuation">)</span> kLast <span class="token operator">=</span> <span class="token builtin">uint</span><span class="token punctuation">(</span>reserve0<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">mul</span><span class="token punctuation">(</span>reserve1<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// reserve0 and reserve1 are up-to-date</span>
+        <span class="token keyword">emit</span> <span class="token function">Burn</span><span class="token punctuation">(</span>msg<span class="token punctuation">.</span>sender<span class="token punctuation">,</span> amount0<span class="token punctuation">,</span> amount1<span class="token punctuation">,</span> to<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// this low-level function should be called from a contract which performs important safety checks</span>
+    <span class="token keyword">function</span> <span class="token function">swap</span><span class="token punctuation">(</span><span class="token builtin">uint</span> amount0Out<span class="token punctuation">,</span> <span class="token builtin">uint</span> amount1Out<span class="token punctuation">,</span> <span class="token builtin">address</span> to<span class="token punctuation">,</span> <span class="token builtin">bytes</span> <span class="token keyword">calldata</span> data<span class="token punctuation">)</span> <span class="token keyword">external</span> lock <span class="token punctuation">&#123;</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span>amount0Out <span class="token operator">></span> <span class="token number">0</span> <span class="token operator">||</span> amount1Out <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token string">'UniswapV2: INSUFFICIENT_OUTPUT_AMOUNT'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">(</span><span class="token builtin">uint112</span> _reserve0<span class="token punctuation">,</span> <span class="token builtin">uint112</span> _reserve1<span class="token punctuation">,</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token function">getReserves</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// gas savings</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span>amount0Out <span class="token operator">&lt;</span> _reserve0 <span class="token operator">&amp;&amp;</span> amount1Out <span class="token operator">&lt;</span> _reserve1<span class="token punctuation">,</span> <span class="token string">'UniswapV2: INSUFFICIENT_LIQUIDITY'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token builtin">uint</span> balance0<span class="token punctuation">;</span>
+        <span class="token builtin">uint</span> balance1<span class="token punctuation">;</span>
+        <span class="token punctuation">&#123;</span> <span class="token comment">// scope for _token&#123;0,1&#125;, avoids stack too deep errors</span>
+        <span class="token builtin">address</span> _token0 <span class="token operator">=</span> token0<span class="token punctuation">;</span>
+        <span class="token builtin">address</span> _token1 <span class="token operator">=</span> token1<span class="token punctuation">;</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span>to <span class="token operator">!=</span> _token0 <span class="token operator">&amp;&amp;</span> to <span class="token operator">!=</span> _token1<span class="token punctuation">,</span> <span class="token string">'UniswapV2: INVALID_TO'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>amount0Out <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token function">_safeTransfer</span><span class="token punctuation">(</span>_token0<span class="token punctuation">,</span> to<span class="token punctuation">,</span> amount0Out<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// optimistically transfer tokens</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>amount1Out <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token function">_safeTransfer</span><span class="token punctuation">(</span>_token1<span class="token punctuation">,</span> to<span class="token punctuation">,</span> amount1Out<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// optimistically transfer tokens</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>data<span class="token punctuation">.</span>length <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token function">IUniswapV2Callee</span><span class="token punctuation">(</span>to<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">uniswapV2Call</span><span class="token punctuation">(</span>msg<span class="token punctuation">.</span>sender<span class="token punctuation">,</span> amount0Out<span class="token punctuation">,</span> amount1Out<span class="token punctuation">,</span> data<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        balance0 <span class="token operator">=</span> <span class="token function">IERC20</span><span class="token punctuation">(</span>_token0<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">balanceOf</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        balance1 <span class="token operator">=</span> <span class="token function">IERC20</span><span class="token punctuation">(</span>_token1<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">balanceOf</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token builtin">uint</span> amount0In <span class="token operator">=</span> balance0 <span class="token operator">></span> _reserve0 <span class="token operator">-</span> amount0Out <span class="token operator">?</span> balance0 <span class="token operator">-</span> <span class="token punctuation">(</span>_reserve0 <span class="token operator">-</span> amount0Out<span class="token punctuation">)</span> <span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        <span class="token builtin">uint</span> amount1In <span class="token operator">=</span> balance1 <span class="token operator">></span> _reserve1 <span class="token operator">-</span> amount1Out <span class="token operator">?</span> balance1 <span class="token operator">-</span> <span class="token punctuation">(</span>_reserve1 <span class="token operator">-</span> amount1Out<span class="token punctuation">)</span> <span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span>amount0In <span class="token operator">></span> <span class="token number">0</span> <span class="token operator">||</span> amount1In <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token string">'UniswapV2: INSUFFICIENT_INPUT_AMOUNT'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#123;</span> <span class="token comment">// scope for reserve&#123;0,1&#125;Adjusted, avoids stack too deep errors</span>
+        <span class="token builtin">uint</span> balance0Adjusted <span class="token operator">=</span> balance0<span class="token punctuation">.</span><span class="token function">mul</span><span class="token punctuation">(</span><span class="token number">1000</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">sub</span><span class="token punctuation">(</span>amount0In<span class="token punctuation">.</span><span class="token function">mul</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token builtin">uint</span> balance1Adjusted <span class="token operator">=</span> balance1<span class="token punctuation">.</span><span class="token function">mul</span><span class="token punctuation">(</span><span class="token number">1000</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">sub</span><span class="token punctuation">(</span>amount1In<span class="token punctuation">.</span><span class="token function">mul</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span>balance0Adjusted<span class="token punctuation">.</span><span class="token function">mul</span><span class="token punctuation">(</span>balance1Adjusted<span class="token punctuation">)</span> <span class="token operator">>=</span> <span class="token builtin">uint</span><span class="token punctuation">(</span>_reserve0<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">mul</span><span class="token punctuation">(</span>_reserve1<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">mul</span><span class="token punctuation">(</span><span class="token number">1000</span><span class="token operator">**</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">'UniswapV2: K'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+
+        <span class="token function">_update</span><span class="token punctuation">(</span>balance0<span class="token punctuation">,</span> balance1<span class="token punctuation">,</span> _reserve0<span class="token punctuation">,</span> _reserve1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">emit</span> <span class="token function">Swap</span><span class="token punctuation">(</span>msg<span class="token punctuation">.</span>sender<span class="token punctuation">,</span> amount0In<span class="token punctuation">,</span> amount1In<span class="token punctuation">,</span> amount0Out<span class="token punctuation">,</span> amount1Out<span class="token punctuation">,</span> to<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// force balances to match reserves</span>
+    <span class="token keyword">function</span> <span class="token function">skim</span><span class="token punctuation">(</span><span class="token builtin">address</span> to<span class="token punctuation">)</span> <span class="token keyword">external</span> lock <span class="token punctuation">&#123;</span>
+        <span class="token builtin">address</span> _token0 <span class="token operator">=</span> token0<span class="token punctuation">;</span> <span class="token comment">// gas savings</span>
+        <span class="token builtin">address</span> _token1 <span class="token operator">=</span> token1<span class="token punctuation">;</span> <span class="token comment">// gas savings</span>
+        <span class="token function">_safeTransfer</span><span class="token punctuation">(</span>_token0<span class="token punctuation">,</span> to<span class="token punctuation">,</span> <span class="token function">IERC20</span><span class="token punctuation">(</span>_token0<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">balanceOf</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">sub</span><span class="token punctuation">(</span>reserve0<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">_safeTransfer</span><span class="token punctuation">(</span>_token1<span class="token punctuation">,</span> to<span class="token punctuation">,</span> <span class="token function">IERC20</span><span class="token punctuation">(</span>_token1<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">balanceOf</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">sub</span><span class="token punctuation">(</span>reserve1<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// force reserves to match balances</span>
+    <span class="token keyword">function</span> <span class="token function">sync</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> lock <span class="token punctuation">&#123;</span>
+        <span class="token function">_update</span><span class="token punctuation">(</span><span class="token function">IERC20</span><span class="token punctuation">(</span>token0<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">balanceOf</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">IERC20</span><span class="token punctuation">(</span>token1<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">balanceOf</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span> reserve0<span class="token punctuation">,</span> reserve1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="Event"><a href="#Event" class="headerlink" title="Event"></a>Event</h2><h3 id="Mint"><a href="#Mint" class="headerlink" title="Mint"></a>Mint</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">event</span> <span class="token function">Mint</span><span class="token punctuation">(</span><span class="token builtin">address</span> <span class="token keyword">indexed</span> sender<span class="token punctuation">,</span> <span class="token builtin">uint</span> amount0<span class="token punctuation">,</span> <span class="token builtin">uint</span> amount1<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>每次通过<a href="###mint">mint</a>创建流动性代币（liquidity tokens）时触发</p>
-<h3 id="Burn"><a href="#Burn" class="headerlink" title="Burn"></a>Burn</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">event Burn(address indexed sender, uint amount0, uint amount1, address indexed to);</span><br></pre></td></tr></table></figure>
-
+<h3 id="Burn"><a href="#Burn" class="headerlink" title="Burn"></a>Burn</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">event</span> <span class="token function">Burn</span><span class="token punctuation">(</span><span class="token builtin">address</span> <span class="token keyword">indexed</span> sender<span class="token punctuation">,</span> <span class="token builtin">uint</span> amount0<span class="token punctuation">,</span> <span class="token builtin">uint</span> amount1<span class="token punctuation">,</span> <span class="token builtin">address</span> <span class="token keyword">indexed</span> to<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>每次通过<a href="###burn">burn</a>销毁流动性代币时触发</p>
-<h3 id="Swap"><a href="#Swap" class="headerlink" title="Swap"></a>Swap</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">event Swap(</span><br><span class="line">	address indexed sender,</span><br><span class="line">	uint amount0In,</span><br><span class="line">	uint amount1In,</span><br><span class="line">	uint amount0Out,</span><br><span class="line">	uint amount1Out,</span><br><span class="line">	address indexed to</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
-
+<h3 id="Swap"><a href="#Swap" class="headerlink" title="Swap"></a>Swap</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">event</span> <span class="token function">Swap</span><span class="token punctuation">(</span>
+	<span class="token builtin">address</span> <span class="token keyword">indexed</span> sender<span class="token punctuation">,</span>
+	<span class="token builtin">uint</span> amount0In<span class="token punctuation">,</span>
+	<span class="token builtin">uint</span> amount1In<span class="token punctuation">,</span>
+	<span class="token builtin">uint</span> amount0Out<span class="token punctuation">,</span>
+	<span class="token builtin">uint</span> amount1Out<span class="token punctuation">,</span>
+	<span class="token builtin">address</span> <span class="token keyword">indexed</span> to
+<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>每次通过<a href="###swap">swap</a>交换代币时触发。</p>
-<h3 id="Sync"><a href="#Sync" class="headerlink" title="Sync"></a>Sync</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">event Sync(uint112 reverve0, uint112 reverse1);</span><br></pre></td></tr></table></figure>
-
+<h3 id="Sync"><a href="#Sync" class="headerlink" title="Sync"></a>Sync</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">event</span> <span class="token function">Sync</span><span class="token punctuation">(</span><span class="token builtin">uint112</span> reverve0<span class="token punctuation">,</span> <span class="token builtin">uint112</span> reverse1<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>每次通过<a href="###mint">mint</a>、<a href="###burn">burn</a>、<a href="###swap">swap</a>、<a href="###sync">sync</a>更新储备时发出。</p>
-<h2 id="Read-Only-Function"><a href="#Read-Only-Function" class="headerlink" title="Read-Only Function"></a>Read-Only Function</h2><h3 id="MINIMUM-LIQUIDITY"><a href="#MINIMUM-LIQUIDITY" class="headerlink" title="MINIMUM_LIQUIDITY"></a>MINIMUM_LIQUIDITY</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function MINIMUM_LIQUIDITY() external pure returns(uint);</span><br></pre></td></tr></table></figure>
-
-<p>对于所有的Pairs，返回<code>1000</code>。详细参阅<a href="./Uniswap%E5%85%A5%E9%97%A8.md/###%E6%9C%80%E4%BD%8E%E6%B5%81%E5%8A%A8%E6%80%A7">Minimum Liquidity</a></p>
-<h3 id="factory"><a href="#factory" class="headerlink" title="factory"></a>factory</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function factory() external view returns (address);</span><br></pre></td></tr></table></figure>
-
+<h2 id="Read-Only-Function"><a href="#Read-Only-Function" class="headerlink" title="Read-Only Function"></a>Read-Only Function</h2><h3 id="MINIMUM-LIQUIDITY"><a href="#MINIMUM-LIQUIDITY" class="headerlink" title="MINIMUM_LIQUIDITY"></a>MINIMUM_LIQUIDITY</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">MINIMUM_LIQUIDITY</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">pure</span> <span class="token keyword">returns</span><span class="token punctuation">(</span><span class="token builtin">uint</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>对于所有的Pairs，返回<code>1000</code>。详细参阅<a href="./Uniswap入门.md/###最低流动性">Minimum Liquidity</a></p>
+<h3 id="factory"><a href="#factory" class="headerlink" title="factory"></a>factory</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">factory</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>返回 factory address。</p>
-<h3 id="token0"><a href="#token0" class="headerlink" title="token0"></a>token0</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function token0() external view returns(address);</span><br></pre></td></tr></table></figure>
-
+<h3 id="token0"><a href="#token0" class="headerlink" title="token0"></a>token0</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">token0</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>返回 Pair 中排序顺序较低的 Token 地址。</p>
-<h3 id="token1"><a href="#token1" class="headerlink" title="token1"></a>token1</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function token1() external view returns(address);</span><br></pre></td></tr></table></figure>
-
+<h3 id="token1"><a href="#token1" class="headerlink" title="token1"></a>token1</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">token1</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>返回 Pair 中排序顺序较高的 Token 地址。</p>
-<h3 id="getReserves"><a href="#getReserves" class="headerlink" title="getReserves"></a>getReserves</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function getReserves() external view returns (uint112 reverse0, uint112 reverse1, uint32 blockTimestampLast);</span><br></pre></td></tr></table></figure>
-
+<h3 id="getReserves"><a href="#getReserves" class="headerlink" title="getReserves"></a>getReserves</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">getReserves</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint112</span> reverse0<span class="token punctuation">,</span> <span class="token builtin">uint112</span> reverse1<span class="token punctuation">,</span> <span class="token builtin">uint32</span> blockTimestampLast<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>返回用于定价交易和分配流动性的 <code>token0</code> 和 <code>token1</code> 的储备。参考<a href="./Pricing.md">Pricing</a></p>
 <p>还返回该对发生交互的最后一个块的 <code>block.timestamp (mod 2**32)</code>。</p>
-<h3 id="price0CumulativeLast"><a href="#price0CumulativeLast" class="headerlink" title="price0CumulativeLast"></a>price0CumulativeLast</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function price0CumulativeLast() external view returns(uint);</span><br></pre></td></tr></table></figure>
-
-
-
+<h3 id="price0CumulativeLast"><a href="#price0CumulativeLast" class="headerlink" title="price0CumulativeLast"></a>price0CumulativeLast</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">price0CumulativeLast</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span><span class="token punctuation">(</span><span class="token builtin">uint</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>参考<a href="./Oracles.md">Oracles</a></p>
-<h3 id="price1CumulativeLast"><a href="#price1CumulativeLast" class="headerlink" title="price1CumulativeLast"></a>price1CumulativeLast</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function price1CumulativeLast() external view returns(uint);</span><br></pre></td></tr></table></figure>
-
-
-
+<h3 id="price1CumulativeLast"><a href="#price1CumulativeLast" class="headerlink" title="price1CumulativeLast"></a>price1CumulativeLast</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">price1CumulativeLast</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span><span class="token punctuation">(</span><span class="token builtin">uint</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>参考<a href="./Oracles.md">Oracles</a></p>
-<h3 id="kLast"><a href="#kLast" class="headerlink" title="kLast"></a>kLast</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function kLast() external view returns (uint);</span><br></pre></td></tr></table></figure>
-
-<p>返回截至最近的流动性事件的准备金乘积。请参阅<a href="./Protocol_Charge_Calculation%E8%B4%B9%E7%94%A8%E8%AE%A1%E7%AE%97.md">协议费用计算</a></p>
-<h2 id="State-Changing-Functions"><a href="#State-Changing-Functions" class="headerlink" title="State-Changing Functions"></a>State-Changing Functions</h2><h3 id="mint"><a href="#mint" class="headerlink" title="mint"></a>mint</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function mint(address to) external returns (uint liquidity);</span><br></pre></td></tr></table></figure>
-
+<h3 id="kLast"><a href="#kLast" class="headerlink" title="kLast"></a>kLast</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">kLast</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>返回截至最近的流动性事件的准备金乘积。请参阅<a href="./Protocol_Charge_Calculation费用计算.md">协议费用计算</a></p>
+<h2 id="State-Changing-Functions"><a href="#State-Changing-Functions" class="headerlink" title="State-Changing Functions"></a>State-Changing Functions</h2><h3 id="mint"><a href="#mint" class="headerlink" title="mint"></a>mint</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">mint</span><span class="token punctuation">(</span><span class="token builtin">address</span> to<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint</span> liquidity<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>创建交易池代币</p>
 <ul>
 <li>触发<code>Mint</code>，<code>Sync</code>，<code>Transfer</code>事件</li>
 </ul>
-<h3 id="burn"><a href="#burn" class="headerlink" title="burn"></a>burn</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function burn(address to) external returns (uint amount0, uint amount1);</span><br></pre></td></tr></table></figure>
-
+<h3 id="burn"><a href="#burn" class="headerlink" title="burn"></a>burn</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">burn</span><span class="token punctuation">(</span><span class="token builtin">address</span> to<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint</span> amount0<span class="token punctuation">,</span> <span class="token builtin">uint</span> amount1<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>销毁交易池代币。</p>
 <ul>
 <li>触发<code>Burn</code>，<code>Sync</code>，<code>Transfer</code>事件</li>
 </ul>
-<h3 id="swap"><a href="#swap" class="headerlink" title="swap"></a>swap</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function swap(uint amount0Out, uint amount1Out, address to, bytes calldata data) external;</span><br></pre></td></tr></table></figure>
-
+<h3 id="swap"><a href="#swap" class="headerlink" title="swap"></a>swap</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">swap</span><span class="token punctuation">(</span><span class="token builtin">uint</span> amount0Out<span class="token punctuation">,</span> <span class="token builtin">uint</span> amount1Out<span class="token punctuation">,</span> <span class="token builtin">address</span> to<span class="token punctuation">,</span> <span class="token builtin">bytes</span> <span class="token keyword">calldata</span> data<span class="token punctuation">)</span> <span class="token keyword">external</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>交换代币。对于常规交换，<code>data.length</code>必须为0。另请参阅<a href="./FlashSwaps.md">FlashSwaps</a></p>
 <ul>
 <li>触发<code>Swap</code>、<code>Sync</code>事件</li>
 </ul>
-<h3 id="skim"><a href="#skim" class="headerlink" title="skim"></a>skim</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function skim(address to) external;</span><br></pre></td></tr></table></figure>
-
+<h3 id="skim"><a href="#skim" class="headerlink" title="skim"></a>skim</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">skim</span><span class="token punctuation">(</span><span class="token builtin">address</span> to<span class="token punctuation">)</span> <span class="token keyword">external</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>参考白皮书</p>
-<h3 id="sync"><a href="#sync" class="headerlink" title="sync"></a>sync</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function sync() external;</span><br></pre></td></tr></table></figure>
-
+<h3 id="sync"><a href="#sync" class="headerlink" title="sync"></a>sync</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">sync</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>参考白皮书。</p>
-<h2 id="Interface"><a href="#Interface" class="headerlink" title="Interface"></a>Interface</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import &#x27;@uniswap/v2-core/contracts/interface/IUniswapV2Pair.sol&#x27;;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity &gt;=0.5.0;</span><br><span class="line"></span><br><span class="line">interface IUniswapV2Pair &#123;</span><br><span class="line">	event Approve(address indexed owner, address indexed spender, uint value);</span><br><span class="line">	event Transfer(address indexed from, address indexed to, uint value);</span><br><span class="line">	</span><br><span class="line">	function name() external pure returns (string memory);</span><br><span class="line">	function symbol() external pure returns (string memory);</span><br><span class="line">	function decimals() external pure returns (uint8);</span><br><span class="line">	function totalSupply() external view returns (uint);</span><br><span class="line">	function balanceOf(address owner) external view returns (uint);</span><br><span class="line">	function allowance(address owner, address spender) external view returns (uint);</span><br><span class="line">	</span><br><span class="line">	function approve(address spender, uint value) external returns(bool);</span><br><span class="line">	function transfer(address to, uint value) external returns (bool);</span><br><span class="line">	function transferFrom(address from, address to, uint value) external returns (bool);</span><br><span class="line">	</span><br><span class="line">	function DOMAIN_SEPARATOR() external view returns (bytes32);</span><br><span class="line">	function PERMIT_TYPEHASH() external pure returns(bytes32);</span><br><span class="line">	function nonces(address owner) external view returns(uint);</span><br><span class="line">	</span><br><span class="line">	function permit(address owner, address spender, uint value, uint deadline, uint8, bytes32 r, bytes32 s) external;</span><br><span class="line">	</span><br><span class="line">	event Mint(address indexed spender, uint amount0, uint amount1);</span><br><span class="line">	event Burn(address indexed sender, uint amount0, uint amount1, address indexed to);</span><br><span class="line">	event Swap(</span><br><span class="line">        address indexed sender;</span><br><span class="line">        uint amount0In,</span><br><span class="line">        uint amiunt1In,</span><br><span class="line">        uint amount0Out,</span><br><span class="line">        uint amount1Out,</span><br><span class="line">        address indexed to</span><br><span class="line">	);</span><br><span class="line">	event Sync(uint112 reserve0, uint112 reserve1);</span><br><span class="line">	</span><br><span class="line">	function MINIMUM_LIQUIDITY() external pure returns(uint);</span><br><span class="line">	function factory() external view returns(address);</span><br><span class="line">	function token0() external view returns(address);</span><br><span class="line">	function token1() external view returns(address);</span><br><span class="line">	function getReserves() external view returns (uint112 reserve0, uint112 reserve1, uint32 blockTimestampLast);</span><br><span class="line">	function price0CumulativeLast() external view returns (uint);</span><br><span class="line">	function price1CUmulativeLast() external view returns (uint);</span><br><span class="line">	function kLast() external view returns (uint);</span><br><span class="line">	</span><br><span class="line">	function mint(address to) external returns (uint liquidity);</span><br><span class="line">	function burn(address to) external returns (uint amount0, uint amount1);</span><br><span class="line">	function swap(uint amount0Out, uint1Out, address to, bytes calldata data) external;</span><br><span class="line">	function skim(address to) external;</span><br><span class="line">	function sync() external;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-    </div>
-
-    
-    
-    
-        
-
-<div>
-<ul class="post-copyright">
-  <li class="post-copyright-author">
-    <strong>本文作者： </strong>Q1ngying
-  </li>
-  <li class="post-copyright-link">
-    <strong>本文链接：</strong>
-    <a href="http://q1ngying.cn/2024/04/09/UniswapV2-Pair/" title="UniswapV2-Pair">http://q1ngying.cn/2024/04/09/UniswapV2-Pair/</a>
-  </li>
-  <li class="post-copyright-license">
-    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
-  </li>
-</ul>
-</div>
-
-
-      <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/Solidity/" rel="tag"># Solidity</a>
-              <a href="/tags/DeFi/" rel="tag"># DeFi</a>
-              <a href="/tags/Uniswap/" rel="tag"># Uniswap</a>
-          </div>
-
-        
-
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/2024/04/09/UniswapV2-Factory/" rel="prev" title="UniswapV2-Factory">
-      <i class="fa fa-chevron-left"></i> UniswapV2-Factory
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/2024/04/09/UniswapV2-Library/" rel="next" title="UniswapV2-Library">
-      UniswapV2-Library <i class="fa fa-chevron-right"></i>
-    </a></div>
-    </div>
-      </footer>
-    
-  </article>
-  
-  
-  
-
-
-
-          </div>
-          
-
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
-
-        </div>
-          
-  
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
-  </div>
-
-  <aside class="sidebar">
-    <div class="sidebar-inner">
-
-      <ul class="sidebar-nav motion-element">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Code"><span class="nav-number">1.</span> <span class="nav-text">Code</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Event"><span class="nav-number">2.</span> <span class="nav-text">Event</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Mint"><span class="nav-number">2.1.</span> <span class="nav-text">Mint</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Burn"><span class="nav-number">2.2.</span> <span class="nav-text">Burn</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Swap"><span class="nav-number">2.3.</span> <span class="nav-text">Swap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sync"><span class="nav-number">2.4.</span> <span class="nav-text">Sync</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Read-Only-Function"><span class="nav-number">3.</span> <span class="nav-text">Read-Only Function</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MINIMUM-LIQUIDITY"><span class="nav-number">3.1.</span> <span class="nav-text">MINIMUM_LIQUIDITY</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#factory"><span class="nav-number">3.2.</span> <span class="nav-text">factory</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#token0"><span class="nav-number">3.3.</span> <span class="nav-text">token0</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#token1"><span class="nav-number">3.4.</span> <span class="nav-text">token1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#getReserves"><span class="nav-number">3.5.</span> <span class="nav-text">getReserves</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#price0CumulativeLast"><span class="nav-number">3.6.</span> <span class="nav-text">price0CumulativeLast</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#price1CumulativeLast"><span class="nav-number">3.7.</span> <span class="nav-text">price1CumulativeLast</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kLast"><span class="nav-number">3.8.</span> <span class="nav-text">kLast</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#State-Changing-Functions"><span class="nav-number">4.</span> <span class="nav-text">State-Changing Functions</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#mint"><span class="nav-number">4.1.</span> <span class="nav-text">mint</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#burn"><span class="nav-number">4.2.</span> <span class="nav-text">burn</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#swap"><span class="nav-number">4.3.</span> <span class="nav-text">swap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#skim"><span class="nav-number">4.4.</span> <span class="nav-text">skim</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sync"><span class="nav-number">4.5.</span> <span class="nav-text">sync</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Interface"><span class="nav-number">5.</span> <span class="nav-text">Interface</span></a></li></ol></div>
-      </div>
-      <!--/noindex-->
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="Q1ngying"
-      src="/images/avatar.jpg">
-  <p class="site-author-name" itemprop="name">Q1ngying</p>
-  <div class="site-description" itemprop="description"></div>
-</div>
-<div class="site-state-wrap motion-element">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives/">
-        
-          <span class="site-state-item-count">76</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-          
-        <span class="site-state-item-count">29</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-          
-        <span class="site-state-item-count">29</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
-</div>
-  <div class="links-of-author motion-element">
-      <span class="links-of-author-item">
-        <a href="https://github.com/q1ngying" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;q1ngying" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="mailto:q1ngying@163.com" title="E-Mail → mailto:q1ngying@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="https://twitter.com/Q1ngYing" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;Q1ngYing" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="https://instagram.com/" title="Instagram → https:&#x2F;&#x2F;instagram.com&#x2F;" rel="noopener" target="_blank"><i class="fab fa-instagram fa-fw"></i>Instagram</a>
-      </span>
-  </div>
-
-
-
-      </div>
-
-    </div>
-  </aside>
-  <div id="sidebar-dimmer"></div>
-
-
-      </div>
-    </main>
-
-    <footer class="footer">
-      <div class="footer-inner">
-        
-
-        
-
-<div class="copyright">
-  
-  &copy; 2023-09 – 
-  <span itemprop="copyrightYear">2024</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">Q1ngying</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-chart-area"></i>
-    </span>
-      <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">195k</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-coffee"></i>
-    </span>
-      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">10:51</span>
-</div>
-
-<div class="powered-by">
-    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-    <i class="fa fa-user-md"></i>
-    <span id="busuanzi_container_site_uv">
-        本站访客数:<span id="busuanzi_value_site_uv"></span>人
-    </span>
-    <span class="post-meta-divider">|</span>
-    <span id="busuanzi_container_site_pv">
-        本站访问量<span id="busuanzi_value_site_pv"></span>人次
-    </span>
-</div>
-
-        
-
-
-
-
-
-
-
-
-      </div>
-    </footer>
-  </div>
-
-  
-  
-  <script color='255,201,74' opacity='1' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
-
-<script src="/js/utils.js"></script>
-
-<script src="/js/motion.js"></script>
-
-
-<script src="/js/schemes/pisces.js"></script>
-
-
-<script src="/js/next-boot.js"></script>
-
-
-
-
-  
-  <script>
-    (function(){
-      var canonicalURL, curProtocol;
-      //Get the <link> tag
-      var x=document.getElementsByTagName("link");
-		//Find the last canonical URL
-		if(x.length > 0){
-			for (i=0;i<x.length;i++){
-				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
-					canonicalURL=x[i].href;
-				}
-			}
-		}
-    //Get protocol
-	    if (!canonicalURL){
-	    	curProtocol = window.location.protocol.split(':')[0];
-	    }
-	    else{
-	    	curProtocol = canonicalURL.split(':')[0];
-	    }
-      //Get current URL if the canonical URL does not exist
-	    if (!canonicalURL) canonicalURL = window.location.href;
-	    //Assign script content. Replace current URL with the canonical URL
-      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
-  </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-
-  
-
-</body>
-</html>
+<h2 id="Interface"><a href="#Interface" class="headerlink" title="Interface"></a>Interface</h2><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">import</span> <span class="token string">'@uniswap/v2-core/contracts/interface/IUniswapV2Pair.sol'</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">>=</span><span class="token version number">0.5.0</span><span class="token punctuation">;</span>
+
+<span class="token keyword">interface</span> <span class="token class-name">IUniswapV2Pair</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">event</span> <span class="token function">Approve</span><span class="token punctuation">(</span><span class="token builtin">address</span> <span class="token keyword">indexed</span> owner<span class="token punctuation">,</span> <span class="token builtin">address</span> <span class="token keyword">indexed</span> spender<span class="token punctuation">,</span> <span class="token builtin">uint</span> value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">event</span> <span class="token function">Transfer</span><span class="token punctuation">(</span><span class="token builtin">address</span> <span class="token keyword">indexed</span> <span class="token keyword">from</span><span class="token punctuation">,</span> <span class="token builtin">address</span> <span class="token keyword">indexed</span> to<span class="token punctuation">,</span> <span class="token builtin">uint</span> value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	<span class="token keyword">function</span> <span class="token function">name</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">pure</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">string</span> <span class="token keyword">memory</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">function</span> <span class="token function">symbol</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">pure</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">string</span> <span class="token keyword">memory</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">function</span> <span class="token function">decimals</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">pure</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint8</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">function</span> <span class="token function">totalSupply</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">function</span> <span class="token function">balanceOf</span><span class="token punctuation">(</span><span class="token builtin">address</span> owner<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">function</span> <span class="token function">allowance</span><span class="token punctuation">(</span><span class="token builtin">address</span> owner<span class="token punctuation">,</span> <span class="token builtin">address</span> spender<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	<span class="token keyword">function</span> <span class="token function">approve</span><span class="token punctuation">(</span><span class="token builtin">address</span> spender<span class="token punctuation">,</span> <span class="token builtin">uint</span> value<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">returns</span><span class="token punctuation">(</span><span class="token builtin">bool</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">function</span> <span class="token function">transfer</span><span class="token punctuation">(</span><span class="token builtin">address</span> to<span class="token punctuation">,</span> <span class="token builtin">uint</span> value<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">bool</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">function</span> <span class="token function">transferFrom</span><span class="token punctuation">(</span><span class="token builtin">address</span> <span class="token keyword">from</span><span class="token punctuation">,</span> <span class="token builtin">address</span> to<span class="token punctuation">,</span> <span class="token builtin">uint</span> value<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">bool</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	<span class="token keyword">function</span> <span class="token function">DOMAIN_SEPARATOR</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">bytes32</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">function</span> <span class="token function">PERMIT_TYPEHASH</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">pure</span> <span class="token keyword">returns</span><span class="token punctuation">(</span><span class="token builtin">bytes32</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">function</span> <span class="token function">nonces</span><span class="token punctuation">(</span><span class="token builtin">address</span> owner<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span><span class="token punctuation">(</span><span class="token builtin">uint</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	<span class="token keyword">function</span> <span class="token function">permit</span><span class="token punctuation">(</span><span class="token builtin">address</span> owner<span class="token punctuation">,</span> <span class="token builtin">address</span> spender<span class="token punctuation">,</span> <span class="token builtin">uint</span> value<span class="token punctuation">,</span> <span class="token builtin">uint</span> deadline<span class="token punctuation">,</span> <span class="token builtin">uint8</span><span class="token punctuation">,</span> <span class="token builtin">bytes32</span> r<span class="token punctuation">,</span> <span class="token builtin">bytes32</span> s<span class="token punctuation">)</span> <span class="token keyword">external</span><span class="token punctuation">;</span>
+	
+	<span class="token keyword">event</span> <span class="token function">Mint</span><span class="token punctuation">(</span><span class="token builtin">address</span> <span class="token keyword">indexed</span> spender<span class="token punctuation">,</span> <span class="token builtin">uint</span> amount0<span class="token punctuation">,</span> <span class="token builtin">uint</span> amount1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">event</span> <span class="token function">Burn</span><span class="token punctuation">(</span><span class="token builtin">address</span> <span class="token keyword">indexed</span> sender<span class="token punctuation">,</span> <span class="token builtin">uint</span> amount0<span class="token punctuation">,</span> <span class="token builtin">uint</span> amount1<span class="token punctuation">,</span> <span class="token builtin">address</span> <span class="token keyword">indexed</span> to<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">event</span> <span class="token function">Swap</span><span class="token punctuation">(</span>
+        <span class="token builtin">address</span> <span class="token keyword">indexed</span> sender<span class="token punctuation">;</span>
+        <span class="token builtin">uint</span> amount0In<span class="token punctuation">,</span>
+        <span class="token builtin">uint</span> amiunt1In<span class="token punctuation">,</span>
+        <span class="token builtin">uint</span> amount0Out<span class="token punctuation">,</span>
+        <span class="token builtin">uint</span> amount1Out<span class="token punctuation">,</span>
+        <span class="token builtin">address</span> <span class="token keyword">indexed</span> to
+	<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">event</span> <span class="token function">Sync</span><span class="token punctuation">(</span><span class="token builtin">uint112</span> reserve0<span class="token punctuation">,</span> <span class="token builtin">uint112</span> reserve1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	<span class="token keyword">function</span> <span class="token function">MINIMUM_LIQUIDITY</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">pure</span> <span class="token keyword">returns</span><span class="token punctuation">(</span><span class="token builtin">uint</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">function</span> <span class="token function">factory</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">function</span> <span class="token function">token0</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">function</span> <span class="token function">token1</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">function</span> <span class="token function">getReserves</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint112</span> reserve0<span class="token punctuation">,</span> <span class="token builtin">uint112</span> reserve1<span class="token punctuation">,</span> <span class="token builtin">uint32</span> blockTimestampLast<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">function</span> <span class="token function">price0CumulativeLast</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">function</span> <span class="token function">price1CUmulativeLast</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">function</span> <span class="token function">kLast</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	<span class="token keyword">function</span> <span class="token function">mint</span><span class="token punctuation">(</span><span class="token builtin">address</span> to<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint</span> liquidity<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">function</span> <span class="token function">burn</span><span class="token punctuation">(</span><span class="token builtin">address</span> to<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint</span> amount0<span class="token punctuation">,</span> <span class="token builtin">uint</span> amount1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">function</span> <span class="token function">swap</span><span class="token punctuation">(</span><span class="token builtin">uint</span> amount0Out<span class="token punctuation">,</span> uint1Out<span class="token punctuation">,</span> <span class="token builtin">address</span> to<span class="token punctuation">,</span> <span class="token builtin">bytes</span> <span class="token keyword">calldata</span> data<span class="token punctuation">)</span> <span class="token keyword">external</span><span class="token punctuation">;</span>
+	<span class="token keyword">function</span> <span class="token function">skim</span><span class="token punctuation">(</span><span class="token builtin">address</span> to<span class="token punctuation">)</span> <span class="token keyword">external</span><span class="token punctuation">;</span>
+	<span class="token keyword">function</span> <span class="token function">sync</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://q1ngying.cn">Q1ngying</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://q1ngying.cn/2024/04/09/UniswapV2-Pair/">https://q1ngying.cn/2024/04/09/UniswapV2-Pair/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://q1ngying.cn" target="_blank">Q1ngying</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Solidity/">Solidity</a><a class="post-meta__tags" href="/tags/DeFi/">DeFi</a><a class="post-meta__tags" href="/tags/Uniswap/">Uniswap</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="prev-post pull-left" href="/2024/04/09/UniswapV2-Library/" title="UniswapV2-Library"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">UniswapV2-Library</div></div></a><a class="next-post pull-right" href="/2024/04/09/UniswapV2-Factory/" title="UniswapV2-Factory"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">UniswapV2-Factory</div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a href="/2024/04/09/UniswapV2-Factory/" title="UniswapV2-Factory"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-04-09</div><div class="title">UniswapV2-Factory</div></div></a><a href="/2024/04/09/Swap/" title="UniswapV2-Flash Swap"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-04-09</div><div class="title">UniswapV2-Flash Swap</div></div></a><a href="/2024/04/09/UniswapV2-Library/" title="UniswapV2-Library"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-04-09</div><div class="title">UniswapV2-Library</div></div></a><a href="/2024/04/09/UniswapV2-Rounter/" title="UniswapV2-Rounter"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-04-09</div><div class="title">UniswapV2-Rounter</div></div></a><a href="/2024/04/09/UniswapV2%E5%85%A5%E9%97%A8/" title="UniswapV2入门"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-04-09</div><div class="title">UniswapV2入门</div></div></a><a href="/2024/01/02/DeFi%E4%B8%AD%E7%9A%84%E7%B2%BE%E5%BA%A6%E9%97%AE%E9%A2%98/" title="DeFi中的精度问题"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-01-02</div><div class="title">DeFi中的精度问题</div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info is-center"><div class="avatar-img"><img src="/img/butterfly-icon.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Q1ngying</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">29</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/q1ngying"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/q1ngying" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="https://weibo.com" target="_blank" title="微博"><i class="fab fa-weibo" style="color: #24292e;"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Code"><span class="toc-number">1.</span> <span class="toc-text">Code</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Event"><span class="toc-number">2.</span> <span class="toc-text">Event</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Mint"><span class="toc-number">2.1.</span> <span class="toc-text">Mint</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Burn"><span class="toc-number">2.2.</span> <span class="toc-text">Burn</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Swap"><span class="toc-number">2.3.</span> <span class="toc-text">Swap</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Sync"><span class="toc-number">2.4.</span> <span class="toc-text">Sync</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Read-Only-Function"><span class="toc-number">3.</span> <span class="toc-text">Read-Only Function</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#MINIMUM-LIQUIDITY"><span class="toc-number">3.1.</span> <span class="toc-text">MINIMUM_LIQUIDITY</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#factory"><span class="toc-number">3.2.</span> <span class="toc-text">factory</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#token0"><span class="toc-number">3.3.</span> <span class="toc-text">token0</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#token1"><span class="toc-number">3.4.</span> <span class="toc-text">token1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#getReserves"><span class="toc-number">3.5.</span> <span class="toc-text">getReserves</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#price0CumulativeLast"><span class="toc-number">3.6.</span> <span class="toc-text">price0CumulativeLast</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#price1CumulativeLast"><span class="toc-number">3.7.</span> <span class="toc-text">price1CumulativeLast</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#kLast"><span class="toc-number">3.8.</span> <span class="toc-text">kLast</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#State-Changing-Functions"><span class="toc-number">4.</span> <span class="toc-text">State-Changing Functions</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#mint"><span class="toc-number">4.1.</span> <span class="toc-text">mint</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#burn"><span class="toc-number">4.2.</span> <span class="toc-text">burn</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#swap"><span class="toc-number">4.3.</span> <span class="toc-text">swap</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#skim"><span class="toc-number">4.4.</span> <span class="toc-text">skim</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sync"><span class="toc-number">4.5.</span> <span class="toc-text">sync</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Interface"><span class="toc-number">5.</span> <span class="toc-text">Interface</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/17/MakerDAO-Abacus/" title="MakerDAO-Abacus">MakerDAO-Abacus</a><time datetime="2024-07-17T07:06:42.000Z" title="发表于 2024-07-17 15:06:42">2024-07-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/17/MakerDAO-Clip/" title="MakerDAO-Clip">MakerDAO-Clip</a><time datetime="2024-07-17T07:06:32.000Z" title="发表于 2024-07-17 15:06:32">2024-07-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/15/MakerDAO-Join/" title="MakerDAO-Join">MakerDAO-Join</a><time datetime="2024-07-15T07:34:45.000Z" title="发表于 2024-07-15 15:34:45">2024-07-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/15/MakerDAO-Vat/" title="MakerDAO-Vat">MakerDAO-Vat</a><time datetime="2024-07-15T07:34:34.000Z" title="发表于 2024-07-15 15:34:34">2024-07-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/06/11/Storage%20%E8%BF%9B%E9%98%B6%E2%80%94%E2%80%94%E9%80%9A%E8%BF%87%E5%BC%95%E7%94%A8%20Storage%20%E6%8F%90%E9%AB%98%20gas%20%E5%88%A9%E7%94%A8%E7%8E%87/" title="Storage 进阶——通过引用 Storage 提高 gas 利用率">Storage 进阶——通过引用 Storage 提高 gas 利用率</a><time datetime="2024-06-11T09:13:23.000Z" title="发表于 2024-06-11 17:13:23">2024-06-11</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/back1.webp);"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By Q1ngying</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div></div></body></html>

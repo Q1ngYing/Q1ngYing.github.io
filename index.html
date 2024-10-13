@@ -1,1452 +1,189 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 6.3.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/icons8-clover-ios-16-glyph-32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/icons8-clover-ios-16-glyph-16.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
-
-<link rel="stylesheet" href="/css/main.css">
-
-<link rel="stylesheet" href="//fonts.lug.ustc.edu.cn/css?family=Garamond:300,300italic,400,400italic,700,700italic|Courier New:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
-  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
-  <script src="/lib/pace/pace.min.js"></script>
-
-<script id="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"q1ngying.cn","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
-  </script>
-
-  <meta property="og:type" content="website">
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Q1ngying - 今朝梦醒与君别，遥盼清风寄相思</title><meta name="author" content="Q1ngying"><meta name="copyright" content="Q1ngying"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta property="og:type" content="website">
 <meta property="og:title" content="Q1ngying">
-<meta property="og:url" content="http://q1ngying.cn/index.html">
+<meta property="og:url" content="https://q1ngying.cn/index.html">
 <meta property="og:site_name" content="Q1ngying">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://q1ngying.cn/img/butterfly-icon.jpg">
 <meta property="article:author" content="Q1ngying">
 <meta property="article:tag" content="Solidity,web3,security,blockchain">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://q1ngying.cn/img/butterfly-icon.jpg"><link rel="shortcut icon" href="/img/icons8-clover-ios-16-glyph-32.png"><link rel="canonical" href="https://q1ngying.cn/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><meta name="google-site-verification" content="IzCM4B791_p7IAU4WhRfiLlP"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
 
-<link rel="canonical" href="http://q1ngying.cn/">
-
-
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : true,
-    isPost : false,
-    lang   : 'zh-CN'
-  };
-</script>
-
-  <title>Q1ngying</title>
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
   
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
 
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
 
-
-
-
-
-  <noscript>
-  <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
-
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
-
-<!-- hexo injector head_end start -->
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Q1ngying',
+  isPost: false,
+  isHome: true,
+  isHighlightShrink: false,
+  isToc: false,
+  postUpdate: '2024-10-13 19:41:35'
+}</script><!-- hexo injector head_end start -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
-<!-- hexo injector head_end end --></head>
-
-<body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
-
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
-    </div>
-  </div>
-
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">Q1ngying</h1>
-      <span class="logo-line-after"><i></i></span>
-    </a>
-      <p class="site-subtitle" itemprop="description">今朝梦醒与君别，遥盼春风寄相思</p>
-  </div>
-
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
-    </div>
-  </div>
-</div>
-
-
-
-
-<nav class="site-nav">
-  <ul id="menu" class="main-menu menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
-
-  </li>
-        <li class="menu-item menu-item-about">
-
-    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
-
-  </li>
-  </ul>
-</nav>
-
-
-
-
-</div>
-    </header>
-
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-  <div class="reading-progress-bar"></div>
-
-
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-
-          <div class="content index posts-expand">
-            
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://q1ngying.cn/2024/06/11/Storage%20%E8%BF%9B%E9%98%B6%E2%80%94%E2%80%94%E9%80%9A%E8%BF%87%E5%BC%95%E7%94%A8%20Storage%20%E6%8F%90%E9%AB%98%20gas%20%E5%88%A9%E7%94%A8%E7%8E%87/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Q1ngying">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Q1ngying">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/06/11/Storage%20%E8%BF%9B%E9%98%B6%E2%80%94%E2%80%94%E9%80%9A%E8%BF%87%E5%BC%95%E7%94%A8%20Storage%20%E6%8F%90%E9%AB%98%20gas%20%E5%88%A9%E7%94%A8%E7%8E%87/" class="post-title-link" itemprop="url">Storage 进阶——通过引用 Storage 提高 gas 利用率</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-06-11 17:13:23 / 修改时间：17:15:16" itemprop="dateCreated datePublished" datetime="2024-06-11T17:13:23+08:00">2024-06-11</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/learn/" itemprop="url" rel="index"><span itemprop="name">learn</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Solidity/" itemprop="url" rel="index"><span itemprop="name">Solidity</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/EVM/" itemprop="url" rel="index"><span itemprop="name">EVM</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>1.1k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>4 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <blockquote>
-<p>本文主要介绍了直接在函数中 “引用” Storage；ERC-7201：命名空间存储布局，通过 assembly 在我们想要的 slot 位置定义状态变量</p>
-</blockquote>
-<h2 id="Storage-高效利用——引用-Storage"><a href="#Storage-高效利用——引用-Storage" class="headerlink" title="Storage 高效利用——引用 Storage"></a>Storage 高效利用——引用 Storage</h2><p>先看例子：</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/06/11/Storage%20%E8%BF%9B%E9%98%B6%E2%80%94%E2%80%94%E9%80%9A%E8%BF%87%E5%BC%95%E7%94%A8%20Storage%20%E6%8F%90%E9%AB%98%20gas%20%E5%88%A9%E7%94%A8%E7%8E%87/" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://q1ngying.cn/2024/05/27/calldata%E7%BC%96%E7%A0%81%E5%8E%9F%E7%90%86/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Q1ngying">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Q1ngying">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/05/27/calldata%E7%BC%96%E7%A0%81%E5%8E%9F%E7%90%86/" class="post-title-link" itemprop="url">calldata编码原理</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-05-27 19:03:57 / 修改时间：19:32:26" itemprop="dateCreated datePublished" datetime="2024-05-27T19:03:57+08:00">2024-05-27</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/learn/" itemprop="url" rel="index"><span itemprop="name">learn</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Solidity/" itemprop="url" rel="index"><span itemprop="name">Solidity</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/EVM/" itemprop="url" rel="index"><span itemprop="name">EVM</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>2.6k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>9 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="calldata-编码规则"><a href="#calldata-编码规则" class="headerlink" title="calldata 编码规则"></a>calldata 编码规则</h1><p>在上两篇文章中，我们分析了 Solidity EVM 中的存储结构，在本篇文章中，我们将详细分析 EVM 的 calldata 是如何进行编码的。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/05/27/calldata%E7%BC%96%E7%A0%81%E5%8E%9F%E7%90%86/" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://q1ngying.cn/2024/05/14/memory%E5%85%B8%E4%BE%8B%E5%88%86%E6%9E%90/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Q1ngying">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Q1ngying">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/05/14/memory%E5%85%B8%E4%BE%8B%E5%88%86%E6%9E%90/" class="post-title-link" itemprop="url">memory典例分析&内存安全</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-05-14 16:22:34 / 修改时间：16:28:17" itemprop="dateCreated datePublished" datetime="2024-05-14T16:22:34+08:00">2024-05-14</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/learn/" itemprop="url" rel="index"><span itemprop="name">learn</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Solidity/" itemprop="url" rel="index"><span itemprop="name">Solidity</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/EVM/" itemprop="url" rel="index"><span itemprop="name">EVM</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/security/" itemprop="url" rel="index"><span itemprop="name">security</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>2.5k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>8 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="Memory-典例分析-内存安全"><a href="#Memory-典例分析-内存安全" class="headerlink" title="Memory 典例分析&amp;内存安全"></a>Memory 典例分析&amp;内存安全</h1><h2 id="1-SafeProxy-sol"><a href="#1-SafeProxy-sol" class="headerlink" title="#1 SafeProxy.sol"></a>#1 SafeProxy.sol</h2><p>github 仓库地址：<br><a target="_blank" rel="noopener" href="https://github.com/safe-global/safe-smart-account/blob/5feb0d08f59cfbb44918be1ed5889d9bb634562a/contracts/proxies/SafeProxy.sol#L14">https://github.com/safe-global/safe-smart-account/blob/5feb0d08f59cfbb44918be1ed5889d9bb634562a/contracts/proxies/SafeProxy.sol#L14</a></p>
-<p>案例代码：</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/05/14/memory%E5%85%B8%E4%BE%8B%E5%88%86%E6%9E%90/" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://q1ngying.cn/2024/05/14/evm%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Q1ngying">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Q1ngying">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/05/14/evm%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/" class="post-title-link" itemprop="url">evm存储结构</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-05-14 16:19:49 / 修改时间：16:22:01" itemprop="dateCreated datePublished" datetime="2024-05-14T16:19:49+08:00">2024-05-14</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/learn/" itemprop="url" rel="index"><span itemprop="name">learn</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Solidity/" itemprop="url" rel="index"><span itemprop="name">Solidity</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/EVM/" itemprop="url" rel="index"><span itemprop="name">EVM</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>1k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="EVM-存储结构"><a href="#EVM-存储结构" class="headerlink" title="EVM 存储结构"></a>EVM 存储结构</h1><p>在 EVM 中实际上有六个位置可以存储数据：stack，memory，calldata，storage，code（在一个特定的地址），log（触发事件）</p>
-<p>实际上深入研究的是前四个：stack，memory，calldata，storage</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/05/14/evm%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://q1ngying.cn/2024/04/25/SolidityTest%E5%88%86%E7%B1%BB/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Q1ngying">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Q1ngying">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/04/25/SolidityTest%E5%88%86%E7%B1%BB/" class="post-title-link" itemprop="url">SolidityTest分类</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-04-25 19:19:19 / 修改时间：19:20:26" itemprop="dateCreated datePublished" datetime="2024-04-25T19:19:19+08:00">2024-04-25</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Solidity/" itemprop="url" rel="index"><span itemprop="name">Solidity</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Foundry/" itemprop="url" rel="index"><span itemprop="name">Foundry</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Fuzz/" itemprop="url" rel="index"><span itemprop="name">Fuzz</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>2.1k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>7 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <blockquote>
-<p>原文：<a target="_blank" rel="noopener" href="https://github.com/Cyfrin/sc-exploits-minimized/blob/main/src/invariant-break/README.md">https://github.com/Cyfrin/sc-exploits-minimized/blob/main/src/invariant-break/README.md</a></p>
-</blockquote>
-<h2 id="Invariant（不变量）"><a href="#Invariant（不变量）" class="headerlink" title="Invariant（不变量）"></a>Invariant（不变量）</h2><p>不变量是程序或系统的属性，必须始终保持真实。</p>
-<p>所有系统都<strong>至少具有一种不变性</strong>。甚至 ERC20&#x2F;ERC721 代币也有不变性，<a target="_blank" rel="noopener" href="https://github.com/crytic/properties">Trail of Bits Properties repo</a>中有一些不变性的例子。</p>
-<p>考虑到这点，我们理解了系统的不变量，我们就可以编写测试来专门测试这些不变量</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/04/25/SolidityTest%E5%88%86%E7%B1%BB/" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://q1ngying.cn/2024/04/25/FuzzingTest%E8%BF%9B%E9%98%B6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Q1ngying">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Q1ngying">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/04/25/FuzzingTest%E8%BF%9B%E9%98%B6/" class="post-title-link" itemprop="url">FuzzingTest进阶</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-04-25 19:17:57 / 修改时间：19:19:45" itemprop="dateCreated datePublished" datetime="2024-04-25T19:17:57+08:00">2024-04-25</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Solidity/" itemprop="url" rel="index"><span itemprop="name">Solidity</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Foundry/" itemprop="url" rel="index"><span itemprop="name">Foundry</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Fuzz/" itemprop="url" rel="index"><span itemprop="name">Fuzz</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>2.5k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>8 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="Fuzzing-Test"><a href="#Fuzzing-Test" class="headerlink" title="Fuzzing Test"></a>Fuzzing Test</h1><h2 id="Fuzzing-Test-简介"><a href="#Fuzzing-Test-简介" class="headerlink" title="Fuzzing Test 简介"></a>Fuzzing Test 简介</h2><p>Fuzzing Test(Fuzzing)：向你的系统提供随机数据，并试图破坏它</p>
-<p>为每一个可能的整数（或场景）编写一个用例来测试是基本做不到的（对于一些复杂逻辑的合约）。所以我们需要<strong>一种编程的方法在我们代码中找到一个特殊的场景</strong></p>
-<p>目前有两种常见的方法来寻找这些边缘情况：</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/04/25/FuzzingTest%E8%BF%9B%E9%98%B6/" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://q1ngying.cn/2024/04/25/%E6%B0%B8%E7%BB%AD%E5%90%88%E7%BA%A6%E5%9F%BA%E7%A1%80/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Q1ngying">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Q1ngying">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/04/25/%E6%B0%B8%E7%BB%AD%E5%90%88%E7%BA%A6%E5%9F%BA%E7%A1%80/" class="post-title-link" itemprop="url">永续合约基础</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-04-25 19:13:35 / 修改时间：19:16:17" itemprop="dateCreated datePublished" datetime="2024-04-25T19:13:35+08:00">2024-04-25</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/DeFi/" itemprop="url" rel="index"><span itemprop="name">DeFi</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%B0%B8%E7%BB%AD%E5%90%88%E7%BA%A6/" itemprop="url" rel="index"><span itemprop="name">永续合约</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>2.7k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>9 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="永续合约简介"><a href="#永续合约简介" class="headerlink" title="永续合约简介"></a>永续合约简介</h2><p>永续合约本质上是交易者在不实际购买代币的情况下，对某一特定<em>指数代币</em>的价格进行投注的一种方式，同时使交易者能够使用<em>杠杆</em>。</p>
-<p>之所以称之为永续合约，是因为交易者可以根据自己的意愿，无限期地保持他们的“永续”<em>仓位</em>开放。</p>
-<h3 id="永续合约中常见概念"><a href="#永续合约中常见概念" class="headerlink" title="永续合约中常见概念"></a>永续合约中常见概念</h3>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/04/25/%E6%B0%B8%E7%BB%AD%E5%90%88%E7%BA%A6%E5%9F%BA%E7%A1%80/" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://q1ngying.cn/2024/04/17/Test/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Q1ngying">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Q1ngying">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/04/17/Test/" class="post-title-link" itemprop="url">Test分类</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-04-17 09:16:17 / 修改时间：09:17:59" itemprop="dateCreated datePublished" datetime="2024-04-17T09:16:17+08:00">2024-04-17</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Solidity/" itemprop="url" rel="index"><span itemprop="name">Solidity</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Foundry/" itemprop="url" rel="index"><span itemprop="name">Foundry</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Fuzz/" itemprop="url" rel="index"><span itemprop="name">Fuzz</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/FV/" itemprop="url" rel="index"><span itemprop="name">FV</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>2.1k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>7 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="Solidity-测试-审计"><a href="#Solidity-测试-审计" class="headerlink" title="Solidity 测试&#x2F;审计"></a>Solidity 测试&#x2F;审计</h1><blockquote>
-<p>原文：<a target="_blank" rel="noopener" href="https://github.com/Cyfrin/sc-exploits-minimized/blob/main/src/invariant-break/README.md">https://github.com/Cyfrin/sc-exploits-minimized/blob/main/src/invariant-break/README.md</a></p>
-</blockquote>
-<h2 id="Invariant（不变量）"><a href="#Invariant（不变量）" class="headerlink" title="Invariant（不变量）"></a>Invariant（不变量）</h2><p>不变量是程序或系统的属性，必须始终保持真实。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/04/17/Test/" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://q1ngying.cn/2024/04/14/anvil/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Q1ngying">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Q1ngying">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/04/14/anvil/" class="post-title-link" itemprop="url">FoundryAnvil详解</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-04-14 19:14:42 / 修改时间：19:18:11" itemprop="dateCreated datePublished" datetime="2024-04-14T19:14:42+08:00">2024-04-14</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Solidity/" itemprop="url" rel="index"><span itemprop="name">Solidity</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Foundry/" itemprop="url" rel="index"><span itemprop="name">Foundry</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>859</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>anvil：创建用于部署和测试智能合约的本地测试网节点。它还可以<strong>分叉</strong>其他 EVM 兼容网络。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/04/14/anvil/" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://q1ngying.cn/2024/04/09/Swap/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Q1ngying">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Q1ngying">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/04/09/Swap/" class="post-title-link" itemprop="url">UniswapV2-Flash Swap</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-04-09 19:53:55 / 修改时间：19:54:50" itemprop="dateCreated datePublished" datetime="2024-04-09T19:53:55+08:00">2024-04-09</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/DeFi/" itemprop="url" rel="index"><span itemprop="name">DeFi</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Solidity/" itemprop="url" rel="index"><span itemprop="name">Solidity</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Uniswap/" itemprop="url" rel="index"><span itemprop="name">Uniswap</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>1k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="Flash-Swaps"><a href="#Flash-Swaps" class="headerlink" title="Flash Swaps"></a>Flash Swaps</h1><p>Uniswap flash swap 允许我们提取 Uniswap 上任何 ERC20 代币的全部储备，并无需预付费用即可执行任意逻辑，前提时在交易结束之前我们需要满足：</p>
-<ul>
-<li>使用相应的配对代币支付提取的ERC20代币</li>
-<li>返还提取的 ERC20 代币，并支付一部分的费用</li>
-</ul>
-<p>Flash Swap 非常有用，因为它们消除了涉及 Uniswap 的多步骤交易的前期资本要求和不必要的操作顺序限制。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/04/09/Swap/" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-
-  
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
-  </nav>
-
-
-
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/butterfly-icon.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">29</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div></div></div></div><div class="page" id="body-wrap"><header class="full_page" id="page-header" style="background-image: url(/img/back1.webp);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Q1ngying</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="site-info"><h1 id="site-title">Q1ngying</h1><div id="site-subtitle"><span id="subtitle"></span></div><div id="site_social_icons"><a class="social-icon" href="https://github.com/q1ngying" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="https://weibo.com" target="_blank" title="微博"><i class="fab fa-weibo" style="color: #24292e;"></i></a></div></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts nc" id="recent-posts"><div class="recent-post-items"><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2024/06/11/Storage%20%E8%BF%9B%E9%98%B6%E2%80%94%E2%80%94%E9%80%9A%E8%BF%87%E5%BC%95%E7%94%A8%20Storage%20%E6%8F%90%E9%AB%98%20gas%20%E5%88%A9%E7%94%A8%E7%8E%87/" title="Storage 进阶——通过引用 Storage 提高 gas 利用率">Storage 进阶——通过引用 Storage 提高 gas 利用率</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-06-11T09:13:23.000Z" title="发表于 2024-06-11 17:13:23">2024-06-11</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/learn/">learn</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Solidity/">Solidity</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/EVM/">EVM</a></span></div><div class="content"> 本文主要介绍了直接在函数中 “引用” Storage；ERC-7201：命名空间存储布局，通过 assembly 在我们想要的 slot 位置定义状态变量  Storage 高效利用——引用 Storage先看例子：      struct Proposal &#123;         address proposer;         address recipient;         bytes32 payloadHash;         uint256 votes;         uint256 beginBlock;         mapping(address => bool) voted;         bool executed;     &#125;     Proposal[] public proposals;      constructor(R3Token _token) &#123;         token = _token;     &#125;      function propose(address recipient,...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2024/05/27/calldata%E7%BC%96%E7%A0%81%E5%8E%9F%E7%90%86/" title="calldata编码原理">calldata编码原理</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-05-27T11:03:57.000Z" title="发表于 2024-05-27 19:03:57">2024-05-27</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/learn/">learn</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Solidity/">Solidity</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/EVM/">EVM</a></span></div><div class="content">calldata 编码规则在上两篇文章中，我们分析了 Solidity EVM 中的存储结构，在本篇文章中，我们将详细分析 EVM 的 calldata 是如何进行编码的。  solidity 官方文档中的描述： 定义： len(a)是一个二进制字符串a的字节长度。len(a)的类型被呈现为uint256 我们把实际的编码enc定义为一个由 ABI 类型到二进制字符串的值的映射，因此，当且仅当X的类型是动态的，len(enc(X))才会依赖于X的值 定义：对于任意的ABI值X，根据X的实际类型递归的定义enc(X)  (T1,...,Tk) 对于 k &gt;= 0 且任意类型 T1， …， Tk  enc(X) = head(X(1)) ... head(X(k)) tail(X(1)) ... tail(X(k)) 这里， X = (X(1), ..., X(k)) 并且 head 和 tail 被定义为如下 Ti ： 如果 Ti 是静态类型： ​    head(X(i)) = enc(X(i)) 和 tail(X(i)) = &quot;&quot;...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2024/05/14/memory%E5%85%B8%E4%BE%8B%E5%88%86%E6%9E%90/" title="memory典例分析&amp;内存安全">memory典例分析&amp;内存安全</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-05-14T08:22:34.000Z" title="发表于 2024-05-14 16:22:34">2024-05-14</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/learn/">learn</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Solidity/">Solidity</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/EVM/">EVM</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/security/">security</a></span></div><div class="content">Memory 典例分析&amp;内存安全#1 SafeProxy.solgithub 仓库地址：https://github.com/safe-global/safe-smart-account/blob/5feb0d08f59cfbb44918be1ed5889d9bb634562a/contracts/proxies/SafeProxy.sol#L14 案例代码：   /// @dev Fallback function forwards all transactions and returns all received return data.      fallback() external payable &#123;          // solhint-disable-next-line no-inline-assembly          assembly &#123; @>               let _singleton := sload(0)              // 0xa619486e ==...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2024/05/14/evm%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/" title="evm存储结构">evm存储结构</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-05-14T08:19:49.000Z" title="发表于 2024-05-14 16:19:49">2024-05-14</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/learn/">learn</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Solidity/">Solidity</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/EVM/">EVM</a></span></div><div class="content">EVM 存储结构在 EVM 中实际上有六个位置可以存储数据：stack，memory，calldata，storage，code（在一个特定的地址），log（触发事件） 实际上深入研究的是前四个：stack，memory，calldata，storage  Stack在以太坊的堆栈中，每一次 push 或 pop 的堆栈内容是一个 32 bytes 的内容。 Memory以太坊中的 Memory 和上面的 Stack 类似，也是基于 32 bytes 的大小。但是，它不需要任何的 PUSH，POP 操作 ，我们可以写入两个特定的内存字，并准确地选择要写入的位。Memory 实际上有一个很特殊的布局  Calldatacalldata 也可以存储任意字节，但是不同的是，calldata 只能在这个区域读取，不能编写任何内容来调用数据。因此从calldata 中读取和访问东西要便宜很多。 所以对于一些需要经常读取，但是不需要进行修改的数据，我们可以放在 calldata 中读取它，而不是将他放在 Memory 中。如果有一个函数的参数，不需要修改 Meomry...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2024/04/25/SolidityTest%E5%88%86%E7%B1%BB/" title="SolidityTest分类">SolidityTest分类</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-04-25T11:19:19.000Z" title="发表于 2024-04-25 19:19:19">2024-04-25</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Solidity/">Solidity</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Foundry/">Foundry</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Fuzz/">Fuzz</a></span></div><div class="content"> 原文：https://github.com/Cyfrin/sc-exploits-minimized/blob/main/src/invariant-break/README.md  Invariant（不变量）不变量是程序或系统的属性，必须始终保持真实。 所有系统都至少具有一种不变性。甚至 ERC20/ERC721 代币也有不变性，Trail of Bits Properties repo中有一些不变性的例子。 考虑到这点，我们理解了系统的不变量，我们就可以编写测试来专门测试这些不变量  测试不变量的四个等级关于不变量的研究，大致可分为如下四个等级：  Stateless fuzzing（无状态模糊测试） Open Statuful fuzzing （开放有状态模糊测试） Handler Stateful fuzzing （基于处理程序的有状态模糊测试） Formal Verification（形式化验证）  1. Stateless fuzzing -...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2024/04/25/FuzzingTest%E8%BF%9B%E9%98%B6/" title="FuzzingTest进阶">FuzzingTest进阶</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-04-25T11:17:57.000Z" title="发表于 2024-04-25 19:17:57">2024-04-25</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Solidity/">Solidity</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Foundry/">Foundry</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Fuzz/">Fuzz</a></span></div><div class="content">Fuzzing TestFuzzing Test 简介Fuzzing Test(Fuzzing)：向你的系统提供随机数据，并试图破坏它 为每一个可能的整数（或场景）编写一个用例来测试是基本做不到的（对于一些复杂逻辑的合约）。所以我们需要一种编程的方法在我们代码中找到一个特殊的场景 目前有两种常见的方法来寻找这些边缘情况：   Fuzzing Test/Invariant Test（模糊测试/不变量测试） Symbolic Execution/Formal Verification （符号执行/形式验证）  而 Fuzzing Test 也可以分为两类：  Stateless Fuzzing（无状态模糊测试）：每进行一次 Fuzzing Test 的时候，会丢弃上一次的状态，即完全运行一个新的 Fuzzing Test Stateful Fuzzing（有状态模糊测试）：有状态模糊测试是我们上一次模糊测试运行的结果的状态，作为下一次模糊测试的初始状态  注意，在 Foundry 中，使用 Invariant 来描述这种有状态的模糊测试：  Fuzzing Tests =...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2024/04/25/%E6%B0%B8%E7%BB%AD%E5%90%88%E7%BA%A6%E5%9F%BA%E7%A1%80/" title="永续合约基础">永续合约基础</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-04-25T11:13:35.000Z" title="发表于 2024-04-25 19:13:35">2024-04-25</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/DeFi/">DeFi</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E6%B0%B8%E7%BB%AD%E5%90%88%E7%BA%A6/">永续合约</a></span></div><div class="content">永续合约简介永续合约本质上是交易者在不实际购买代币的情况下，对某一特定指数代币的价格进行投注的一种方式，同时使交易者能够使用杠杆。 之所以称之为永续合约，是因为交易者可以根据自己的意愿，无限期地保持他们的“永续”仓位开放。 永续合约中常见概念  永续合约（Perpetual Contracts）: 这是一种类似于传统金融市场的期货合约，但没有到期日，允许交易者无限期地持有仓位。永续合约通常用于加密货币市场，使交易者能够利用杠杆买卖资产。   保证金（Margin）: 在开设永续合约仓位时所需存入的资金，以保证交易在价格不利移动时仍能持续。保证金可以是初始保证金和维持保证金，分别对应于开仓和保持仓位所需的最低资金水平。   杠杆（Leverage）: 允许交易者以小额资本控制大额资产。杠杆增加了潜在的收益，同时也增加了风险，因为市场小幅度的移动会对交易者的盈亏产生较大影响。   资金费率（Funding...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2024/04/17/Test/" title="Test分类">Test分类</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-04-17T01:16:17.000Z" title="发表于 2024-04-17 09:16:17">2024-04-17</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Solidity/">Solidity</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Foundry/">Foundry</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Fuzz/">Fuzz</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/FV/">FV</a></span></div><div class="content">Solidity 测试/审计 原文：https://github.com/Cyfrin/sc-exploits-minimized/blob/main/src/invariant-break/README.md  Invariant（不变量）不变量是程序或系统的属性，必须始终保持真实。  所有系统都至少具有一种不变性。甚至 ERC20/ERC721 代币也有不变性，Trail of Bits Properties repo中有一些不变性的例子。 考虑到这点，我们理解了系统的不变量，我们就可以编写测试来专门测试这些不变量 测试不变量的四个等级关于不变量的研究，大致可分为如下四个等级：  Stateless fuzzing（无状态模糊测试） Open Statuful fuzzing （开放有状态模糊测试） Handler Stateful fuzzing （基于处理程序的有状态模糊测试） Formal Verification（形式化验证）  1. Stateless fuzzing -...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2024/04/14/anvil/" title="FoundryAnvil详解">FoundryAnvil详解</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-04-14T11:14:42.000Z" title="发表于 2024-04-14 19:14:42">2024-04-14</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Solidity/">Solidity</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Foundry/">Foundry</a></span></div><div class="content">anvil：创建用于部署和测试智能合约的本地测试网节点。它还可以分叉其他 EVM 兼容网络。  使用方法：anvil [options]  描述创建本地测试网节点，用于部署和测试智能合约，还可以用于分叉其他 EVM 兼容网络。 这里涵盖了有关：  挖矿模式 支持的传输层 支持的 RPC 方法 Anvil 标志以及其用法（可以同时运行多个标志）  挖矿模式（Mining Modes）挖矿模式是指使用 Anvil 挖矿区块的频率。默认情况下，他会在提交交易后立即自动生成一个新的区块 如果需要，我们可以手动设置更改为间隔挖矿（在用户选择的给定时间段后生成新区块），使用方法：添加--block-time &lt;block-time-in-seconds&gt; 标志来实现 # 每 10 秒自动挖掘一个新的区块 anvil --block-time 10 还有第三种挖矿模式：永不挖矿。在这种情况下，禁用自动和间隔挖矿，而是按需挖矿。可以通过以下内容来执行此操作： # 设置永不挖矿模式 anvil --no-mining 支持的传输层（Supported Transport...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2024/04/09/Swap/" title="UniswapV2-Flash Swap">UniswapV2-Flash Swap</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-04-09T11:53:55.000Z" title="发表于 2024-04-09 19:53:55">2024-04-09</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/DeFi/">DeFi</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Solidity/">Solidity</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Uniswap/">Uniswap</a></span></div><div class="content">Flash SwapsUniswap flash swap 允许我们提取 Uniswap 上任何 ERC20 代币的全部储备，并无需预付费用即可执行任意逻辑，前提时在交易结束之前我们需要满足：  使用相应的配对代币支付提取的ERC20代币 返还提取的 ERC20 代币，并支付一部分的费用  Flash Swap 非常有用，因为它们消除了涉及 Uniswap 的多步骤交易的前期资本要求和不必要的操作顺序限制。  ExamplesCapital Free Arbitrage（无资本套利）Flash Swap 一个很有趣的用例就是无资本套利。Uniswap 设计的一个组成部分是激励套利者维持 Uniswap 市场价格的”公平”。虽然从博弈论上来说是合理的，但这种策略只有那些拥有足够资本来利用套利机会的人才能使用。Flash swap 完全消除了这一障碍，有效地实现了套利民主化。 比如下面的场景：在 Uniswap 上购买 1 ETH 的成本为 200 DAI（通过调用 getAmountIn 并指定 1 ETH 作为精确输出来计算），而在 Oasis（或任何其他交易场所）上，1...</div></div></div></div><nav id="pagination"><div class="pagination"><span class="page-number current">1</span><a class="page-number" href="/page/2/#content-inner">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/#content-inner">4</a><a class="extend next" rel="next" href="/page/2/#content-inner"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info is-center"><div class="avatar-img"><img src="/img/butterfly-icon.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Q1ngying</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">29</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/q1ngying"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/q1ngying" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="https://weibo.com" target="_blank" title="微博"><i class="fab fa-weibo" style="color: #24292e;"></i></a></div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/17/MakerDAO-Abacus/" title="MakerDAO-Abacus">MakerDAO-Abacus</a><time datetime="2024-07-17T07:06:42.000Z" title="发表于 2024-07-17 15:06:42">2024-07-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/17/MakerDAO-Clip/" title="MakerDAO-Clip">MakerDAO-Clip</a><time datetime="2024-07-17T07:06:32.000Z" title="发表于 2024-07-17 15:06:32">2024-07-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/15/MakerDAO-Join/" title="MakerDAO-Join">MakerDAO-Join</a><time datetime="2024-07-15T07:34:45.000Z" title="发表于 2024-07-15 15:34:45">2024-07-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/15/MakerDAO-Vat/" title="MakerDAO-Vat">MakerDAO-Vat</a><time datetime="2024-07-15T07:34:34.000Z" title="发表于 2024-07-15 15:34:34">2024-07-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/06/11/Storage%20%E8%BF%9B%E9%98%B6%E2%80%94%E2%80%94%E9%80%9A%E8%BF%87%E5%BC%95%E7%94%A8%20Storage%20%E6%8F%90%E9%AB%98%20gas%20%E5%88%A9%E7%94%A8%E7%8E%87/" title="Storage 进阶——通过引用 Storage 提高 gas 利用率">Storage 进阶——通过引用 Storage 提高 gas 利用率</a><time datetime="2024-06-11T09:13:23.000Z" title="发表于 2024-06-11 17:13:23">2024-06-11</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            <a class="card-more-btn" href="/categories/" title="查看更多">
+      <i class="fas fa-angle-right"></i></a>
           </div>
-          
-
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Contract/"><span class="card-category-list-name">Contract</span><span class="card-category-list-count">4</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/DeFI/"><span class="card-category-list-name">DeFI</span><span class="card-category-list-count">4</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/DeFi/"><span class="card-category-list-name">DeFi</span><span class="card-category-list-count">10</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/EIPs/"><span class="card-category-list-name">EIPs</span><span class="card-category-list-count">9</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/EVM/"><span class="card-category-list-name">EVM</span><span class="card-category-list-count">16</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Ethernaut/"><span class="card-category-list-name">Ethernaut</span><span class="card-category-list-count">5</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/FV/"><span class="card-category-list-name">FV</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Foundry/"><span class="card-category-list-name">Foundry</span><span class="card-category-list-count">8</span></a></li>
+          </ul></div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">76</div></div><div class="webinfo-item"><div class="item-name">本站总字数 :</div><div class="item-count">195k</div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2024-10-13T11:41:35.361Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/back1.webp);"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By Q1ngying</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"><script>window.typedJSFn = {
+  init: str => {
+    window.typed = new Typed('#subtitle', Object.assign({
+      strings: str,
+      startDelay: 300,
+      typeSpeed: 150,
+      loop: true,
+      backSpeed: 50,
+    }, null))
+  },
+  run: subtitleType => {
+    if (true) {
+      if (typeof Typed === 'function') {
+        subtitleType()
+      } else {
+        btf.getScript('https://cdn.jsdelivr.net/npm/typed.js/dist/typed.umd.min.js').then(subtitleType)
       }
+    } else {
+      subtitleType()
     }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
   }
-</script>
-
-        </div>
-          
-  
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
-  </div>
-
-  <aside class="sidebar">
-    <div class="sidebar-inner">
-
-      <ul class="sidebar-nav motion-element">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-      </div>
-      <!--/noindex-->
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="Q1ngying"
-      src="/images/avatar.jpg">
-  <p class="site-author-name" itemprop="name">Q1ngying</p>
-  <div class="site-description" itemprop="description"></div>
-</div>
-<div class="site-state-wrap motion-element">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives/">
-        
-          <span class="site-state-item-count">76</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-          
-        <span class="site-state-item-count">29</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-          
-        <span class="site-state-item-count">29</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
-</div>
-  <div class="links-of-author motion-element">
-      <span class="links-of-author-item">
-        <a href="https://github.com/q1ngying" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;q1ngying" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="mailto:q1ngying@163.com" title="E-Mail → mailto:q1ngying@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="https://twitter.com/Q1ngYing" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;Q1ngYing" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="https://instagram.com/" title="Instagram → https:&#x2F;&#x2F;instagram.com&#x2F;" rel="noopener" target="_blank"><i class="fab fa-instagram fa-fw"></i>Instagram</a>
-      </span>
-  </div>
-
-
-
-      </div>
-
-    </div>
-  </aside>
-  <div id="sidebar-dimmer"></div>
-
-
-      </div>
-    </main>
-
-    <footer class="footer">
-      <div class="footer-inner">
-        
-
-        
-
-<div class="copyright">
-  
-  &copy; 2023-09 – 
-  <span itemprop="copyrightYear">2024</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">Q1ngying</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-chart-area"></i>
-    </span>
-      <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">195k</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-coffee"></i>
-    </span>
-      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">10:51</span>
-</div>
-
-<div class="powered-by">
-    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-    <i class="fa fa-user-md"></i>
-    <span id="busuanzi_container_site_uv">
-        本站访客数:<span id="busuanzi_value_site_uv"></span>人
-    </span>
-    <span class="post-meta-divider">|</span>
-    <span id="busuanzi_container_site_pv">
-        本站访问量<span id="busuanzi_value_site_pv"></span>人次
-    </span>
-</div>
-
-        
-
-
-
-
-
-
-
-
-      </div>
-    </footer>
-  </div>
-
-  
-  
-  <script color='255,201,74' opacity='1' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
-
-<script src="/js/utils.js"></script>
-
-<script src="/js/motion.js"></script>
-
-
-<script src="/js/schemes/pisces.js"></script>
-
-
-<script src="/js/next-boot.js"></script>
-
-
-
-
-  
-  <script>
-    (function(){
-      var canonicalURL, curProtocol;
-      //Get the <link> tag
-      var x=document.getElementsByTagName("link");
-		//Find the last canonical URL
-		if(x.length > 0){
-			for (i=0;i<x.length;i++){
-				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
-					canonicalURL=x[i].href;
-				}
-			}
-		}
-    //Get protocol
-	    if (!canonicalURL){
-	    	curProtocol = window.location.protocol.split(':')[0];
-	    }
-	    else{
-	    	curProtocol = canonicalURL.split(':')[0];
-	    }
-      //Get current URL if the canonical URL does not exist
-	    if (!canonicalURL) canonicalURL = window.location.href;
-	    //Assign script content. Replace current URL with the canonical URL
-      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
-  </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-      
-
-<script>
-  if (typeof MathJax === 'undefined') {
-    window.MathJax = {
-      loader: {
-          load: ['[tex]/mhchem'],
-        source: {
-          '[tex]/amsCd': '[tex]/amscd',
-          '[tex]/AMScd': '[tex]/amscd'
-        }
-      },
-      tex: {
-        inlineMath: {'[+]': [['$', '$']]},
-          packages: {'[+]': ['mhchem']},
-        tags: 'ams'
-      },
-      options: {
-        renderActions: {
-          findScript: [10, doc => {
-            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-              const display = !!node.type.match(/; *mode=display/);
-              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-              const text = document.createTextNode('');
-              node.parentNode.replaceChild(text, node);
-              math.start = {node: text, delim: '', n: 0};
-              math.end = {node: text, delim: '', n: 0};
-              doc.math.push(math);
-            });
-          }, '', false],
-          insertedScript: [200, () => {
-            document.querySelectorAll('mjx-container').forEach(node => {
-              let target = node.parentNode;
-              if (target.nodeName.toLowerCase() === 'li') {
-                target.parentNode.classList.add('has-jax');
-              }
-            });
-          }, '', false]
-        }
-      }
-    };
-    (function () {
-      var script = document.createElement('script');
-      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
-      script.defer = true;
-      document.head.appendChild(script);
-    })();
+}
+btf.addGlobalFn('pjaxSendOnce', () => { typed.destroy() }, 'typedDestroy')
+</script><script>function subtitleType () {
+  if (true) {
+    typedJSFn.init(["今朝梦醒与君别，遥盼清风寄相思"])
   } else {
-    MathJax.startup.document.state(0);
-    MathJax.texReset();
-    MathJax.typeset();
+    document.getElementById("subtitle").textContent = "今朝梦醒与君别，遥盼清风寄相思"
   }
-</script>
-
-    
-
-  
-
-</body>
-</html>
+}
+typedJSFn.run(subtitleType)</script></div></div></body></html>

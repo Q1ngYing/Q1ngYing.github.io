@@ -1,34 +1,11 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 6.3.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/icons8-clover-ios-16-glyph-32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/icons8-clover-ios-16-glyph-16.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
-
-<link rel="stylesheet" href="/css/main.css">
-
-<link rel="stylesheet" href="//fonts.lug.ustc.edu.cn/css?family=Garamond:300,300italic,400,400italic,700,700italic|Courier New:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
-  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
-  <script src="/lib/pace/pace.min.js"></script>
-
-<script id="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"q1ngying.cn","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
-  </script>
-
-  <meta name="description" content="通用升级合约（UUPS）通用升级合约（UUPS）相比透明代理合约，UUPS 代理合约最终可以移出其升级能力，使代码真正不可变，而且 UUPS 在技术上部署成本稍低一些。 OpenZeppelin 的文档中详细介绍了这两种代理的区别： https:&#x2F;&#x2F;docs.openzeppelin.com&#x2F;contracts&#x2F;5.x&#x2F;api&#x2F;proxy#transparent-vs-uups">
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>通用升级合约（UUPS） | Q1ngying</title><meta name="author" content="Q1ngying"><meta name="copyright" content="Q1ngying"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="通用升级合约（UUPS）通用升级合约（UUPS）相比透明代理合约，UUPS 代理合约最终可以移出其升级能力，使代码真正不可变，而且 UUPS 在技术上部署成本稍低一些。 OpenZeppelin 的文档中详细介绍了这两种代理的区别： https:&#x2F;&#x2F;docs.openzeppelin.com&#x2F;contracts&#x2F;5.x&#x2F;api&#x2F;proxy#transparent-vs-uups">
 <meta property="og:type" content="article">
 <meta property="og:title" content="通用升级合约（UUPS）">
-<meta property="og:url" content="http://q1ngying.cn/2024/01/11/%E9%80%9A%E7%94%A8%E5%8D%87%E7%BA%A7%E5%90%88%E7%BA%A6%EF%BC%88UUPS%EF%BC%89/index.html">
+<meta property="og:url" content="https://q1ngying.cn/2024/01/11/%E9%80%9A%E7%94%A8%E5%8D%87%E7%BA%A7%E5%90%88%E7%BA%A6%EF%BC%88UUPS%EF%BC%89/index.html">
 <meta property="og:site_name" content="Q1ngying">
 <meta property="og:description" content="通用升级合约（UUPS）通用升级合约（UUPS）相比透明代理合约，UUPS 代理合约最终可以移出其升级能力，使代码真正不可变，而且 UUPS 在技术上部署成本稍低一些。 OpenZeppelin 的文档中详细介绍了这两种代理的区别： https:&#x2F;&#x2F;docs.openzeppelin.com&#x2F;contracts&#x2F;5.x&#x2F;api&#x2F;proxy#transparent-vs-uups">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://q1ngying.cn/img/butterfly-icon.jpg">
 <meta property="article:published_time" content="2024-01-11T12:07:46.000Z">
 <meta property="article:modified_time" content="2024-01-19T08:38:25.787Z">
 <meta property="article:author" content="Q1ngying">
@@ -36,549 +13,342 @@
 <meta property="article:tag" content="Proxy">
 <meta property="article:tag" content="Upgrade">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://q1ngying.cn/img/butterfly-icon.jpg"><link rel="shortcut icon" href="/img/icons8-clover-ios-16-glyph-32.png"><link rel="canonical" href="https://q1ngying.cn/2024/01/11/%E9%80%9A%E7%94%A8%E5%8D%87%E7%BA%A7%E5%90%88%E7%BA%A6%EF%BC%88UUPS%EF%BC%89/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><meta name="google-site-verification" content="IzCM4B791_p7IAU4WhRfiLlP"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
 
-<link rel="canonical" href="http://q1ngying.cn/2024/01/11/%E9%80%9A%E7%94%A8%E5%8D%87%E7%BA%A7%E5%90%88%E7%BA%A6%EF%BC%88UUPS%EF%BC%89/">
-
-
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : true,
-    lang   : 'zh-CN'
-  };
-</script>
-
-  <title>通用升级合约（UUPS） | Q1ngying</title>
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
   
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
 
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
 
-
-
-
-
-  <noscript>
-  <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
-
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
-
-<!-- hexo injector head_end start -->
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '通用升级合约（UUPS）',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-01-19 16:38:25'
+}</script><!-- hexo injector head_end start -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
-<!-- hexo injector head_end end --></head>
-
-<body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
-
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
-    </div>
-  </div>
-
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">Q1ngying</h1>
-      <span class="logo-line-after"><i></i></span>
-    </a>
-      <p class="site-subtitle" itemprop="description">今朝梦醒与君别，遥盼春风寄相思</p>
-  </div>
-
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
-    </div>
-  </div>
-</div>
-
-
-
-
-<nav class="site-nav">
-  <ul id="menu" class="main-menu menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
-
-  </li>
-        <li class="menu-item menu-item-about">
-
-    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
-
-  </li>
-  </ul>
-</nav>
-
-
-
-
-</div>
-    </header>
-
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-  <div class="reading-progress-bar"></div>
-
-
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-
-          <div class="content post posts-expand">
-            
-
-    
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://q1ngying.cn/2024/01/11/%E9%80%9A%E7%94%A8%E5%8D%87%E7%BA%A7%E5%90%88%E7%BA%A6%EF%BC%88UUPS%EF%BC%89/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Q1ngying">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Q1ngying">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          通用升级合约（UUPS）
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-01-11 20:07:46" itemprop="dateCreated datePublished" datetime="2024-01-11T20:07:46+08:00">2024-01-11</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-01-19 16:38:25" itemprop="dateModified" datetime="2024-01-19T16:38:25+08:00">2024-01-19</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Solidity/" itemprop="url" rel="index"><span itemprop="name">Solidity</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Proxy/" itemprop="url" rel="index"><span itemprop="name">Proxy</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Upgrade/" itemprop="url" rel="index"><span itemprop="name">Upgrade</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>1.2k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>4 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-        <h1 id="通用升级合约（UUPS）"><a href="#通用升级合约（UUPS）" class="headerlink" title="通用升级合约（UUPS）"></a>通用升级合约（UUPS）</h1><p>通用升级合约（UUPS）相比透明代理合约，UUPS 代理合约最终可以移出其升级能力，使代码真正不可变，而且 UUPS 在技术上部署成本稍低一些。</p>
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/butterfly-icon.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">29</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/back1.webp);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Q1ngying</span></a><a class="nav-page-title" href="/"><span class="site-name">通用升级合约（UUPS）</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">通用升级合约（UUPS）</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-01-11T12:07:46.000Z" title="发表于 2024-01-11 20:07:46">2024-01-11</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-01-19T08:38:25.787Z" title="更新于 2024-01-19 16:38:25">2024-01-19</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Solidity/">Solidity</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Proxy/">Proxy</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Upgrade/">Upgrade</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">37k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>2:02分钟</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="通用升级合约（UUPS）"><a href="#通用升级合约（UUPS）" class="headerlink" title="通用升级合约（UUPS）"></a>通用升级合约（UUPS）</h1><p>通用升级合约（UUPS）相比透明代理合约，UUPS 代理合约最终可以移出其升级能力，使代码真正不可变，而且 UUPS 在技术上部署成本稍低一些。</p>
 <p>OpenZeppelin 的文档中详细介绍了这两种代理的区别： <a target="_blank" rel="noopener" href="https://docs.openzeppelin.com/contracts/5.x/api/proxy#transparent-vs-uups">https://docs.openzeppelin.com/contracts/5.x/api/proxy#transparent-vs-uups</a> </p>
 <span id="more"></span>
-
 <h2 id="构建一个可升级合约"><a href="#构建一个可升级合约" class="headerlink" title="构建一个可升级合约"></a>构建一个可升级合约</h2><h3 id="构建-V1-合约，V2-合约"><a href="#构建-V1-合约，V2-合约" class="headerlink" title="构建 V1 合约，V2 合约"></a>构建 V1 合约，V2 合约</h3><p>构建一个 UUPS 合约，可以引入 OpenZeppelin 的标准库，对于 Foundry 开发环境：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">forge install OpenZeppelin/openzeppelin-contracts-upgradeable --no-commit</span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">forge <span class="token function">install</span> OpenZeppelin/openzeppelin-contracts-upgradeable --no-commit<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>即可安装 Foundry 到项目中，使用时，导入即可（记得 Foundry.toml 重映射）</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import &#123;UUPSUpgradeable&#125; from &quot;@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol&quot;;</span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span>UUPSUpgradeable<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol"</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p><code>UUPSUpgradeable</code> 是一个抽象合约，需要我们在我们自己的合约中重写<code>_authorizeUpgrade</code>函数：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">function _authorizeUpgrade(address newImplementation) internal override &#123;&#125;</span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">_authorizeUpgrade</span><span class="token punctuation">(</span><span class="token builtin">address</span> newImplementation<span class="token punctuation">)</span> <span class="token keyword">internal</span> override <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>关于重写该函数的原因，在 OpenZeppelin 库中给出了原因：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line">* @dev Function that should revert when `msg.sender` is not authorized to upgrade the contract. Called by</span><br><span class="line">* &#123;upgradeToAndCall&#125;.</span><br><span class="line">*</span><br><span class="line">* Normally, this function will use an xref:access.adoc[access control] modifier such as &#123;Ownable-onlyOwner&#125;.</span><br><span class="line">*</span><br><span class="line">* ```solidity</span><br><span class="line">* function _authorizeUpgrade(address) internal onlyOwner &#123;&#125;</span><br><span class="line">* ```</span><br><span class="line">*/</span><br><span class="line">function _authorizeUpgrade(address newImplementation) internal virtual;</span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">/**
+* @dev Function that should revert when `msg.sender` is not authorized to upgrade the contract. Called by
+* &#123;upgradeToAndCall&#125;.
+*
+* Normally, this function will use an xref:access.adoc[access control] modifier such as &#123;Ownable-onlyOwner&#125;.
+*
+* ```solidity
+* function _authorizeUpgrade(address) internal onlyOwner &#123;&#125;
+* ```
+*/</span>
+<span class="token keyword">function</span> <span class="token function">_authorizeUpgrade</span><span class="token punctuation">(</span><span class="token builtin">address</span> newImplementation<span class="token punctuation">)</span> <span class="token keyword">internal</span> virtual<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>当需要需要构造函数的功能时（即在合约部署时的一些初始化操作时），就需要导入另一个库：<code>Initializable</code>。注意：<strong>在代理合约（Proxy）中不使用构造函数（<code>constructor</code>）</strong></p>
 <p>因为：状态变量存储在 Proxy 合约中，而不是 implementation （实现合约）中，Proxy 只是<strong>借用</strong>了 Implementation 中的一些函数，<strong>所以，代理合约或者打算通过代理使用的合约，不使用构造函数</strong>，满足下面的流程：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Proxy ---&gt; deploy implementation ---&gt; call some &quot;initializable&quot; function</span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-none"><code class="language-none">Proxy ---&gt; deploy implementation ---&gt; call some &quot;initializable&quot; function<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>所以，很多可升级合约做的第一步是调用这个已禁用的 <code>initializers</code> 函数：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/// @custom:oz-upgrades-unsafe-allow constructor</span><br><span class="line">constructor() &#123;</span><br><span class="line">	_disableInitializers();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">/// @custom:oz-upgrades-unsafe-allow constructor</span>
+<span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token function">_disableInitializers</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 <p>而当我们确实需要使用构造函数时，我们之秀添加一个初始化器：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">function initialize() public initializer &#123;</span><br><span class="line">	__Ownable_init(msg.sender); // sets owner</span><br><span class="line">	__UUPSUpgradeable_init();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">initialize</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> initializer <span class="token punctuation">&#123;</span>
+	<span class="token function">__Ownable_init</span><span class="token punctuation">(</span>msg<span class="token punctuation">.</span>sender<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// sets owner</span>
+	<span class="token function">__UUPSUpgradeable_init</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 <p>完整的 V1 合约如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: SEE LICENSE IN LICENSE</span><br><span class="line">pragma solidity ^0.8.18;</span><br><span class="line"></span><br><span class="line">import &#123;UUPSUpgradeable&#125; from &quot;@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol&quot;;</span><br><span class="line">import &#123;Initializable&#125; from &quot;@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol&quot;;</span><br><span class="line">import &#123;OwnableUpgradeable&#125; from &quot;@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract BoxV1 is Initializable, UUPSUpgradeable, OwnableUpgradeable &#123;</span><br><span class="line">    uint256 internal number;</span><br><span class="line"></span><br><span class="line">    /// @custom:oz-upgrades-unsafe-allow constructor</span><br><span class="line">    constructor() &#123;</span><br><span class="line">        _disableInitializers();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function initialize() public initializer &#123;</span><br><span class="line">        __Ownable_init(msg.sender); // sets owner</span><br><span class="line">        __UUPSUpgradeable_init();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function getNumber() external view returns (uint256) &#123;</span><br><span class="line">        return number;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function version() external pure returns (uint256) &#123;</span><br><span class="line">        return 1;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function _authorizeUpgrade(address newImplementation) internal override &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// SPDX-License-Identifier: SEE LICENSE IN LICENSE</span>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.8.18</span><span class="token punctuation">;</span>
 
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>UUPSUpgradeable<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>Initializable<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>OwnableUpgradeable<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">contract</span> <span class="token class-name">BoxV1</span> <span class="token keyword">is</span> Initializable<span class="token punctuation">,</span> UUPSUpgradeable<span class="token punctuation">,</span> OwnableUpgradeable <span class="token punctuation">&#123;</span>
+    <span class="token builtin">uint256</span> <span class="token keyword">internal</span> number<span class="token punctuation">;</span>
+
+    <span class="token comment">/// @custom:oz-upgrades-unsafe-allow constructor</span>
+    <span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token function">_disableInitializers</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">initialize</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> initializer <span class="token punctuation">&#123;</span>
+        <span class="token function">__Ownable_init</span><span class="token punctuation">(</span>msg<span class="token punctuation">.</span>sender<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// sets owner</span>
+        <span class="token function">__UUPSUpgradeable_init</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">getNumber</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> number<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">version</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">pure</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">_authorizeUpgrade</span><span class="token punctuation">(</span><span class="token builtin">address</span> newImplementation<span class="token punctuation">)</span> <span class="token keyword">internal</span> override <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>V2 合约：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: SEE LICENSE IN LICENSE</span><br><span class="line">pragma solidity ^0.8.18;</span><br><span class="line"></span><br><span class="line">import &#123;UUPSUpgradeable&#125; from &quot;@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol&quot;;</span><br><span class="line">import &#123;Initializable&#125; from &quot;@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol&quot;;</span><br><span class="line">import &#123;OwnableUpgradeable&#125; from &quot;@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract BoxV2 is Initializable, UUPSUpgradeable, OwnableUpgradeable &#123;</span><br><span class="line">    uint256 internal number;</span><br><span class="line"></span><br><span class="line">    /// @custom:oz-upgrades-unsafe-allow constructor</span><br><span class="line">    constructor() &#123;</span><br><span class="line">        _disableInitializers();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function initialize() public initializer &#123;</span><br><span class="line">        __Ownable_init(msg.sender); // sets owner</span><br><span class="line">        __UUPSUpgradeable_init();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function getNumber() external view returns (uint256) &#123;</span><br><span class="line">        return number;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function version() external pure returns (uint256) &#123;</span><br><span class="line">        return 2;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function setNumber(uint256 _number) external &#123;</span><br><span class="line">        number = _number;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function _authorizeUpgrade(address newImplementation) internal override &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// SPDX-License-Identifier: SEE LICENSE IN LICENSE</span>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.8.18</span><span class="token punctuation">;</span>
 
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>UUPSUpgradeable<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>Initializable<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>OwnableUpgradeable<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">contract</span> <span class="token class-name">BoxV2</span> <span class="token keyword">is</span> Initializable<span class="token punctuation">,</span> UUPSUpgradeable<span class="token punctuation">,</span> OwnableUpgradeable <span class="token punctuation">&#123;</span>
+    <span class="token builtin">uint256</span> <span class="token keyword">internal</span> number<span class="token punctuation">;</span>
+
+    <span class="token comment">/// @custom:oz-upgrades-unsafe-allow constructor</span>
+    <span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token function">_disableInitializers</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">initialize</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> initializer <span class="token punctuation">&#123;</span>
+        <span class="token function">__Ownable_init</span><span class="token punctuation">(</span>msg<span class="token punctuation">.</span>sender<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// sets owner</span>
+        <span class="token function">__UUPSUpgradeable_init</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">getNumber</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> number<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">version</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">pure</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token number">2</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">setNumber</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> _number<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token punctuation">&#123;</span>
+        number <span class="token operator">=</span> _number<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">_authorizeUpgrade</span><span class="token punctuation">(</span><span class="token builtin">address</span> newImplementation<span class="token punctuation">)</span> <span class="token keyword">internal</span> override <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="部署-V1-合约"><a href="#部署-V1-合约" class="headerlink" title="部署 V1 合约"></a>部署 V1 合约</h3><p>接下来完成部署 V1 合约的脚本。</p>
 <p>这里又回到了最开始的点，实现可升级（不改变合约地址），实际上不改变的是 Proxy 合约的地址，也就是说，部署 V1 合约实际上是部署了两个合约：<strong>一个是Implementation（Logic）合约，一个是 Proxy（代理合约）</strong>。而这里使用的代理合约是 ERC1967 代理合约（还是，从 OpenZeppelin 标准合约库中引用即可）。</p>
 <p>实际上部署完 V1 合约后，所有的交互都是和 <strong>Proxy</strong> 交互，Proxy 通过 Delegatecall 将 Implementation 合约中的逻辑引用过来，所有的状态变量也是存储在 Proxy 合约的 Storage 中。</p>
 <p>完整的部署 V1 合约的脚本合约如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: SEE LICENSE IN LICENSE</span><br><span class="line">pragma solidity ^0.8.18;</span><br><span class="line"></span><br><span class="line">import &#123;Script&#125; from &quot;forge-std/Script.sol&quot;;</span><br><span class="line">import &#123;BoxV1&#125; from &quot;../src/BoxV1.sol&quot;;</span><br><span class="line">import &#123;ERC1967Proxy&#125; from &quot;@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract DeployBox is Script &#123;</span><br><span class="line">    function run() external returns (address) &#123;</span><br><span class="line">        address proxy = deployBox();</span><br><span class="line">        return proxy;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function deployBox() public returns (address) &#123;</span><br><span class="line">        vm.startBroadcast();</span><br><span class="line">        BoxV1 box = new BoxV1(); // implementation (Logic)</span><br><span class="line">        // here we will use ERC1967 Proxy Contract</span><br><span class="line">        ERC1967Proxy proxy = new ERC1967Proxy(address(box), &quot;&quot;);</span><br><span class="line">        vm.stopBroadcast();</span><br><span class="line">        return address(proxy);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// SPDX-License-Identifier: SEE LICENSE IN LICENSE</span>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.8.18</span><span class="token punctuation">;</span>
 
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>Script<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"forge-std/Script.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>BoxV1<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"../src/BoxV1.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>ERC1967Proxy<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">contract</span> <span class="token class-name">DeployBox</span> <span class="token keyword">is</span> Script <span class="token punctuation">&#123;</span>
+    <span class="token keyword">function</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token builtin">address</span> proxy <span class="token operator">=</span> <span class="token function">deployBox</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> proxy<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">deployBox</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        vm<span class="token punctuation">.</span><span class="token function">startBroadcast</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        BoxV1 box <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BoxV1</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// implementation (Logic)</span>
+        <span class="token comment">// here we will use ERC1967 Proxy Contract</span>
+        ERC1967Proxy proxy <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ERC1967Proxy</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span>box<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        vm<span class="token punctuation">.</span><span class="token function">stopBroadcast</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token builtin">address</span><span class="token punctuation">(</span>proxy<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="将-V1-合约升级到-V2"><a href="#将-V1-合约升级到-V2" class="headerlink" title="将 V1 合约升级到 V2"></a>将 V1 合约升级到 V2</h3><p>对合约进行升级时，涉及到这么一个过程：</p>
 <p>deploy V2 -&gt; call function <code>upgradeToAndCall(V2address, &quot;&quot;)</code> (in Proxy) -&gt; 升级成功。</p>
 <p>完整脚本：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: SEE LICENSE IN LICENSE</span><br><span class="line">pragma solidity ^0.8.18;</span><br><span class="line"></span><br><span class="line">import &#123;Script&#125; from &quot;forge-std/Script.sol&quot;;</span><br><span class="line">import &#123;DevOpsTools&#125; from &quot;lib/foundry-devops/src/DevOpsTools.sol&quot;;</span><br><span class="line">import &#123;BoxV2&#125; from &quot;../src/BoxV2.sol&quot;;</span><br><span class="line">import &#123;BoxV1&#125; from &quot;../src/BoxV1.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract UpgradeBox is Script &#123;</span><br><span class="line">    function run() external returns (address) &#123;</span><br><span class="line">        address mostRecentlyDeployed = DevOpsTools.get_most_recent_deployment(&quot;ERC1967Proxy&quot;, block.chainid);</span><br><span class="line"></span><br><span class="line">        vm.startBroadcast();</span><br><span class="line">        BoxV2 newBox = new BoxV2();</span><br><span class="line">        vm.stopBroadcast();</span><br><span class="line">        address proxy = upgradeBox(mostRecentlyDeployed, address(newBox));</span><br><span class="line">        return proxy;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function upgradeBox(address proxyAddress, address newBox) public returns (address) &#123;</span><br><span class="line">        vm.startBroadcast();</span><br><span class="line">        BoxV1 proxy = BoxV1(proxyAddress);</span><br><span class="line">        proxy.upgradeToAndCall(address(newBox), &quot;&quot;);</span><br><span class="line">        vm.stopBroadcast();</span><br><span class="line">        return address(proxy);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// SPDX-License-Identifier: SEE LICENSE IN LICENSE</span>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.8.18</span><span class="token punctuation">;</span>
 
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>Script<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"forge-std/Script.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>DevOpsTools<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"lib/foundry-devops/src/DevOpsTools.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>BoxV2<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"../src/BoxV2.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>BoxV1<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"../src/BoxV1.sol"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">contract</span> <span class="token class-name">UpgradeBox</span> <span class="token keyword">is</span> Script <span class="token punctuation">&#123;</span>
+    <span class="token keyword">function</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token builtin">address</span> mostRecentlyDeployed <span class="token operator">=</span> DevOpsTools<span class="token punctuation">.</span><span class="token function">get_most_recent_deployment</span><span class="token punctuation">(</span><span class="token string">"ERC1967Proxy"</span><span class="token punctuation">,</span> block<span class="token punctuation">.</span>chainid<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        vm<span class="token punctuation">.</span><span class="token function">startBroadcast</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        BoxV2 newBox <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BoxV2</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        vm<span class="token punctuation">.</span><span class="token function">stopBroadcast</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token builtin">address</span> proxy <span class="token operator">=</span> <span class="token function">upgradeBox</span><span class="token punctuation">(</span>mostRecentlyDeployed<span class="token punctuation">,</span> <span class="token builtin">address</span><span class="token punctuation">(</span>newBox<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> proxy<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">upgradeBox</span><span class="token punctuation">(</span><span class="token builtin">address</span> proxyAddress<span class="token punctuation">,</span> <span class="token builtin">address</span> newBox<span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        vm<span class="token punctuation">.</span><span class="token function">startBroadcast</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        BoxV1 proxy <span class="token operator">=</span> <span class="token function">BoxV1</span><span class="token punctuation">(</span>proxyAddress<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        proxy<span class="token punctuation">.</span><span class="token function">upgradeToAndCall</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span>newBox<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        vm<span class="token punctuation">.</span><span class="token function">stopBroadcast</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token builtin">address</span><span class="token punctuation">(</span>proxy<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="一些关于-UUPS-的测试："><a href="#一些关于-UUPS-的测试：" class="headerlink" title="一些关于 UUPS 的测试："></a>一些关于 UUPS 的测试：</h3><p>不多赘述，直接上源代码：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: SEE LICENSE IN LICENSE</span><br><span class="line">pragma solidity ^0.8.18;</span><br><span class="line"></span><br><span class="line">import &#123;Test&#125; from &quot;forge-std/Test.sol&quot;;</span><br><span class="line">import &#123;DeployBox&#125; from &quot;../script/DeployBox.s.sol&quot;;</span><br><span class="line">import &#123;UpgradeBox&#125; from &quot;../script/UpgradeBox.s.sol&quot;;</span><br><span class="line">import &#123;BoxV1&#125; from &quot;../src/BoxV1.sol&quot;;</span><br><span class="line">import &#123;BoxV2&#125; from &quot;../src/BoxV2.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract DeployAndUpgradeTest is Test &#123;</span><br><span class="line">    DeployBox public deployer;</span><br><span class="line">    UpgradeBox public upgrader;</span><br><span class="line">    address public OWNER = makeAddr(&quot;owner&quot;);</span><br><span class="line"></span><br><span class="line">    address public proxy;</span><br><span class="line"></span><br><span class="line">    function setUp() public &#123;</span><br><span class="line">        deployer = new DeployBox();</span><br><span class="line">        upgrader = new UpgradeBox();</span><br><span class="line">        proxy = deployer.run(); // right now, Proxy point to V1</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function testProxyStartAsBoxV1() public &#123;</span><br><span class="line">        vm.expectRevert();</span><br><span class="line">        BoxV2(proxy).setNumber(7);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function testUpgrades() public &#123;</span><br><span class="line">        BoxV2 box2 = new BoxV2();</span><br><span class="line"></span><br><span class="line">        upgrader.upgradeBox(proxy, address(box2));</span><br><span class="line"></span><br><span class="line">        uint256 expectValue = 2;</span><br><span class="line">        assertEq(expectValue, BoxV2(proxy).version());</span><br><span class="line"></span><br><span class="line">        BoxV2(proxy).setNumber(7);</span><br><span class="line">        assertEq(7, BoxV2(proxy).getNumber());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-    </div>
-
-    
-    
-    
-        
-
-<div>
-<ul class="post-copyright">
-  <li class="post-copyright-author">
-    <strong>本文作者： </strong>Q1ngying
-  </li>
-  <li class="post-copyright-link">
-    <strong>本文链接：</strong>
-    <a href="http://q1ngying.cn/2024/01/11/%E9%80%9A%E7%94%A8%E5%8D%87%E7%BA%A7%E5%90%88%E7%BA%A6%EF%BC%88UUPS%EF%BC%89/" title="通用升级合约（UUPS）">http://q1ngying.cn/2024/01/11/通用升级合约（UUPS）/</a>
-  </li>
-  <li class="post-copyright-license">
-    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
-  </li>
-</ul>
-</div>
-
-
-      <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/Solidity/" rel="tag"># Solidity</a>
-              <a href="/tags/Proxy/" rel="tag"># Proxy</a>
-              <a href="/tags/Upgrade/" rel="tag"># Upgrade</a>
-          </div>
-
-        
-
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/2024/01/10/%E5%8F%AF%E5%8D%87%E7%BA%A7%E5%90%88%E7%BA%A6-md/" rel="prev" title="可升级合约">
-      <i class="fa fa-chevron-left"></i> 可升级合约
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/2024/01/16/AlienCodex-wp/" rel="next" title="AlienCodex-wp">
-      AlienCodex-wp <i class="fa fa-chevron-right"></i>
-    </a></div>
-    </div>
-      </footer>
-    
-  </article>
-  
-  
-  
-
-
-
-          </div>
-          
-
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
-
-        </div>
-          
-  
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
-  </div>
-
-  <aside class="sidebar">
-    <div class="sidebar-inner">
-
-      <ul class="sidebar-nav motion-element">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%80%9A%E7%94%A8%E5%8D%87%E7%BA%A7%E5%90%88%E7%BA%A6%EF%BC%88UUPS%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">通用升级合约（UUPS）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%8F%AF%E5%8D%87%E7%BA%A7%E5%90%88%E7%BA%A6"><span class="nav-number">1.1.</span> <span class="nav-text">构建一个可升级合约</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA-V1-%E5%90%88%E7%BA%A6%EF%BC%8CV2-%E5%90%88%E7%BA%A6"><span class="nav-number">1.1.1.</span> <span class="nav-text">构建 V1 合约，V2 合约</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2-V1-%E5%90%88%E7%BA%A6"><span class="nav-number">1.1.2.</span> <span class="nav-text">部署 V1 合约</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%86-V1-%E5%90%88%E7%BA%A6%E5%8D%87%E7%BA%A7%E5%88%B0-V2"><span class="nav-number">1.1.3.</span> <span class="nav-text">将 V1 合约升级到 V2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E5%85%B3%E4%BA%8E-UUPS-%E7%9A%84%E6%B5%8B%E8%AF%95%EF%BC%9A"><span class="nav-number">1.1.4.</span> <span class="nav-text">一些关于 UUPS 的测试：</span></a></li></ol></li></ol></li></ol></div>
-      </div>
-      <!--/noindex-->
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="Q1ngying"
-      src="/images/avatar.jpg">
-  <p class="site-author-name" itemprop="name">Q1ngying</p>
-  <div class="site-description" itemprop="description"></div>
-</div>
-<div class="site-state-wrap motion-element">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives/">
-        
-          <span class="site-state-item-count">76</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-          
-        <span class="site-state-item-count">29</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-          
-        <span class="site-state-item-count">29</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
-</div>
-  <div class="links-of-author motion-element">
-      <span class="links-of-author-item">
-        <a href="https://github.com/q1ngying" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;q1ngying" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="mailto:q1ngying@163.com" title="E-Mail → mailto:q1ngying@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="https://twitter.com/Q1ngYing" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;Q1ngYing" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="https://instagram.com/" title="Instagram → https:&#x2F;&#x2F;instagram.com&#x2F;" rel="noopener" target="_blank"><i class="fab fa-instagram fa-fw"></i>Instagram</a>
-      </span>
-  </div>
-
-
-
-      </div>
-
-    </div>
-  </aside>
-  <div id="sidebar-dimmer"></div>
-
-
-      </div>
-    </main>
-
-    <footer class="footer">
-      <div class="footer-inner">
-        
-
-        
-
-<div class="copyright">
-  
-  &copy; 2023-09 – 
-  <span itemprop="copyrightYear">2024</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">Q1ngying</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-chart-area"></i>
-    </span>
-      <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">195k</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-coffee"></i>
-    </span>
-      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">10:51</span>
-</div>
-
-<div class="powered-by">
-    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-    <i class="fa fa-user-md"></i>
-    <span id="busuanzi_container_site_uv">
-        本站访客数:<span id="busuanzi_value_site_uv"></span>人
-    </span>
-    <span class="post-meta-divider">|</span>
-    <span id="busuanzi_container_site_pv">
-        本站访问量<span id="busuanzi_value_site_pv"></span>人次
-    </span>
-</div>
-
-        
-
-
-
-
-
-
-
-
-      </div>
-    </footer>
-  </div>
-
-  
-  
-  <script color='255,201,74' opacity='1' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
-
-<script src="/js/utils.js"></script>
-
-<script src="/js/motion.js"></script>
-
-
-<script src="/js/schemes/pisces.js"></script>
-
-
-<script src="/js/next-boot.js"></script>
-
-
-
-
-  
-  <script>
-    (function(){
-      var canonicalURL, curProtocol;
-      //Get the <link> tag
-      var x=document.getElementsByTagName("link");
-		//Find the last canonical URL
-		if(x.length > 0){
-			for (i=0;i<x.length;i++){
-				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
-					canonicalURL=x[i].href;
-				}
-			}
-		}
-    //Get protocol
-	    if (!canonicalURL){
-	    	curProtocol = window.location.protocol.split(':')[0];
-	    }
-	    else{
-	    	curProtocol = canonicalURL.split(':')[0];
-	    }
-      //Get current URL if the canonical URL does not exist
-	    if (!canonicalURL) canonicalURL = window.location.href;
-	    //Assign script content. Replace current URL with the canonical URL
-      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
-  </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-
-  
-
-</body>
-</html>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// SPDX-License-Identifier: SEE LICENSE IN LICENSE</span>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.8.18</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>Test<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"forge-std/Test.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>DeployBox<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"../script/DeployBox.s.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>UpgradeBox<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"../script/UpgradeBox.s.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>BoxV1<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"../src/BoxV1.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>BoxV2<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"../src/BoxV2.sol"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">contract</span> <span class="token class-name">DeployAndUpgradeTest</span> <span class="token keyword">is</span> Test <span class="token punctuation">&#123;</span>
+    DeployBox <span class="token keyword">public</span> deployer<span class="token punctuation">;</span>
+    UpgradeBox <span class="token keyword">public</span> upgrader<span class="token punctuation">;</span>
+    <span class="token builtin">address</span> <span class="token keyword">public</span> OWNER <span class="token operator">=</span> <span class="token function">makeAddr</span><span class="token punctuation">(</span><span class="token string">"owner"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token builtin">address</span> <span class="token keyword">public</span> proxy<span class="token punctuation">;</span>
+
+    <span class="token keyword">function</span> <span class="token function">setUp</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        deployer <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DeployBox</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        upgrader <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">UpgradeBox</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        proxy <span class="token operator">=</span> deployer<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// right now, Proxy point to V1</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">testProxyStartAsBoxV1</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        vm<span class="token punctuation">.</span><span class="token function">expectRevert</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">BoxV2</span><span class="token punctuation">(</span>proxy<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setNumber</span><span class="token punctuation">(</span><span class="token number">7</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">testUpgrades</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        BoxV2 box2 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BoxV2</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        upgrader<span class="token punctuation">.</span><span class="token function">upgradeBox</span><span class="token punctuation">(</span>proxy<span class="token punctuation">,</span> <span class="token builtin">address</span><span class="token punctuation">(</span>box2<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token builtin">uint256</span> expectValue <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">;</span>
+        <span class="token function">assertEq</span><span class="token punctuation">(</span>expectValue<span class="token punctuation">,</span> <span class="token function">BoxV2</span><span class="token punctuation">(</span>proxy<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">version</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token function">BoxV2</span><span class="token punctuation">(</span>proxy<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setNumber</span><span class="token punctuation">(</span><span class="token number">7</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">assertEq</span><span class="token punctuation">(</span><span class="token number">7</span><span class="token punctuation">,</span> <span class="token function">BoxV2</span><span class="token punctuation">(</span>proxy<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getNumber</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://q1ngying.cn">Q1ngying</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://q1ngying.cn/2024/01/11/%E9%80%9A%E7%94%A8%E5%8D%87%E7%BA%A7%E5%90%88%E7%BA%A6%EF%BC%88UUPS%EF%BC%89/">https://q1ngying.cn/2024/01/11/%E9%80%9A%E7%94%A8%E5%8D%87%E7%BA%A7%E5%90%88%E7%BA%A6%EF%BC%88UUPS%EF%BC%89/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://q1ngying.cn" target="_blank">Q1ngying</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Solidity/">Solidity</a><a class="post-meta__tags" href="/tags/Proxy/">Proxy</a><a class="post-meta__tags" href="/tags/Upgrade/">Upgrade</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="prev-post pull-left" href="/2024/01/16/AlienCodex-wp/" title="AlienCodex-wp"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">AlienCodex-wp</div></div></a><a class="next-post pull-right" href="/2024/01/10/%E5%8F%AF%E5%8D%87%E7%BA%A7%E5%90%88%E7%BA%A6-md/" title="可升级合约"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">可升级合约</div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a href="/2024/01/10/%E5%8F%AF%E5%8D%87%E7%BA%A7%E5%90%88%E7%BA%A6-md/" title="可升级合约"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-01-10</div><div class="title">可升级合约</div></div></a><a href="/2023/12/20/%E4%BB%A3%E7%90%86%E5%90%88%E7%BA%A6/" title="代理合约"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-12-20</div><div class="title">代理合约</div></div></a><a href="/2023/09/26/Contract-Size-Check/" title="Contract Size Check"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-09-26</div><div class="title">Contract Size Check</div></div></a><a href="/2024/01/02/DeFi%E4%B8%AD%E7%9A%84%E7%B2%BE%E5%BA%A6%E9%97%AE%E9%A2%98/" title="DeFi中的精度问题"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-01-02</div><div class="title">DeFi中的精度问题</div></div></a><a href="/2023/11/06/DeFi%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/" title="DeFi基础概念"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-06</div><div class="title">DeFi基础概念</div></div></a><a href="/2023/11/27/EIP-1167%EF%BC%9AERC-1167%E6%9C%80%E5%B0%8F%E4%BB%A3%E7%90%86%E5%90%88%E7%BA%A6/" title="EIP-1167：ERC-1167最小代理合约"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-27</div><div class="title">EIP-1167：ERC-1167最小代理合约</div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info is-center"><div class="avatar-img"><img src="/img/butterfly-icon.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Q1ngying</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">29</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/q1ngying"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/q1ngying" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="https://weibo.com" target="_blank" title="微博"><i class="fab fa-weibo" style="color: #24292e;"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%80%9A%E7%94%A8%E5%8D%87%E7%BA%A7%E5%90%88%E7%BA%A6%EF%BC%88UUPS%EF%BC%89"><span class="toc-number">1.</span> <span class="toc-text">通用升级合约（UUPS）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9E%84%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%8F%AF%E5%8D%87%E7%BA%A7%E5%90%88%E7%BA%A6"><span class="toc-number">1.1.</span> <span class="toc-text">构建一个可升级合约</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9E%84%E5%BB%BA-V1-%E5%90%88%E7%BA%A6%EF%BC%8CV2-%E5%90%88%E7%BA%A6"><span class="toc-number">1.1.1.</span> <span class="toc-text">构建 V1 合约，V2 合约</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%83%A8%E7%BD%B2-V1-%E5%90%88%E7%BA%A6"><span class="toc-number">1.1.2.</span> <span class="toc-text">部署 V1 合约</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%86-V1-%E5%90%88%E7%BA%A6%E5%8D%87%E7%BA%A7%E5%88%B0-V2"><span class="toc-number">1.1.3.</span> <span class="toc-text">将 V1 合约升级到 V2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E4%BA%9B%E5%85%B3%E4%BA%8E-UUPS-%E7%9A%84%E6%B5%8B%E8%AF%95%EF%BC%9A"><span class="toc-number">1.1.4.</span> <span class="toc-text">一些关于 UUPS 的测试：</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/17/MakerDAO-Abacus/" title="MakerDAO-Abacus">MakerDAO-Abacus</a><time datetime="2024-07-17T07:06:42.000Z" title="发表于 2024-07-17 15:06:42">2024-07-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/17/MakerDAO-Clip/" title="MakerDAO-Clip">MakerDAO-Clip</a><time datetime="2024-07-17T07:06:32.000Z" title="发表于 2024-07-17 15:06:32">2024-07-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/15/MakerDAO-Join/" title="MakerDAO-Join">MakerDAO-Join</a><time datetime="2024-07-15T07:34:45.000Z" title="发表于 2024-07-15 15:34:45">2024-07-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/15/MakerDAO-Vat/" title="MakerDAO-Vat">MakerDAO-Vat</a><time datetime="2024-07-15T07:34:34.000Z" title="发表于 2024-07-15 15:34:34">2024-07-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/06/11/Storage%20%E8%BF%9B%E9%98%B6%E2%80%94%E2%80%94%E9%80%9A%E8%BF%87%E5%BC%95%E7%94%A8%20Storage%20%E6%8F%90%E9%AB%98%20gas%20%E5%88%A9%E7%94%A8%E7%8E%87/" title="Storage 进阶——通过引用 Storage 提高 gas 利用率">Storage 进阶——通过引用 Storage 提高 gas 利用率</a><time datetime="2024-06-11T09:13:23.000Z" title="发表于 2024-06-11 17:13:23">2024-06-11</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/back1.webp);"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By Q1ngying</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div></div></body></html>

@@ -1,37 +1,11 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 6.3.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/icons8-clover-ios-16-glyph-32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/icons8-clover-ios-16-glyph-16.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
-
-<link rel="stylesheet" href="/css/main.css">
-
-<link rel="stylesheet" href="//fonts.lug.ustc.edu.cn/css?family=Garamond:300,300italic,400,400italic,700,700italic|Courier New:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
-  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
-  <script src="/lib/pace/pace.min.js"></script>
-
-<script id="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"q1ngying.cn","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
-  </script>
-
-  <meta name="description" content="Fuzzing TestFuzzing Test 简介Fuzzing Test(Fuzzing)：向你的系统提供随机数据，并试图破坏它 为每一个可能的整数（或场景）编写一个用例来测试是基本做不到的（对于一些复杂逻辑的合约）。所以我们需要一种编程的方法在我们代码中找到一个特殊的场景 目前有两种常见的方法来寻找这些边缘情况：">
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>FuzzingTest进阶 | Q1ngying</title><meta name="author" content="Q1ngying"><meta name="copyright" content="Q1ngying"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Fuzzing TestFuzzing Test 简介Fuzzing Test(Fuzzing)：向你的系统提供随机数据，并试图破坏它 为每一个可能的整数（或场景）编写一个用例来测试是基本做不到的（对于一些复杂逻辑的合约）。所以我们需要一种编程的方法在我们代码中找到一个特殊的场景 目前有两种常见的方法来寻找这些边缘情况：">
 <meta property="og:type" content="article">
 <meta property="og:title" content="FuzzingTest进阶">
-<meta property="og:url" content="http://q1ngying.cn/2024/04/25/FuzzingTest%E8%BF%9B%E9%98%B6/index.html">
+<meta property="og:url" content="https://q1ngying.cn/2024/04/25/FuzzingTest%E8%BF%9B%E9%98%B6/index.html">
 <meta property="og:site_name" content="Q1ngying">
 <meta property="og:description" content="Fuzzing TestFuzzing Test 简介Fuzzing Test(Fuzzing)：向你的系统提供随机数据，并试图破坏它 为每一个可能的整数（或场景）编写一个用例来测试是基本做不到的（对于一些复杂逻辑的合约）。所以我们需要一种编程的方法在我们代码中找到一个特殊的场景 目前有两种常见的方法来寻找这些边缘情况：">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://q1ngying.cn/images/FuzzingTest%E8%BF%9B%E9%98%B6/image-20240417201404300.png">
-<meta property="og:image" content="http://q1ngying.cn/images/FuzzingTest%E8%BF%9B%E9%98%B6/image-20240417201442682.png">
-<meta property="og:image" content="http://q1ngying.cn/2024/04/25/images/FuzzingTest%E8%BF%9B%E9%98%B6/image-20240417205633056.png">
+<meta property="og:image" content="https://q1ngying.cn/img/butterfly-icon.jpg">
 <meta property="article:published_time" content="2024-04-25T11:17:57.000Z">
 <meta property="article:modified_time" content="2024-04-25T11:19:45.360Z">
 <meta property="article:author" content="Q1ngying">
@@ -39,224 +13,154 @@
 <meta property="article:tag" content="Foundry">
 <meta property="article:tag" content="Fuzz">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://q1ngying.cn/images/FuzzingTest%E8%BF%9B%E9%98%B6/image-20240417201404300.png">
+<meta name="twitter:image" content="https://q1ngying.cn/img/butterfly-icon.jpg"><link rel="shortcut icon" href="/img/icons8-clover-ios-16-glyph-32.png"><link rel="canonical" href="https://q1ngying.cn/2024/04/25/FuzzingTest%E8%BF%9B%E9%98%B6/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><meta name="google-site-verification" content="IzCM4B791_p7IAU4WhRfiLlP"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
 
-<link rel="canonical" href="http://q1ngying.cn/2024/04/25/FuzzingTest%E8%BF%9B%E9%98%B6/">
-
-
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : true,
-    lang   : 'zh-CN'
-  };
-</script>
-
-  <title>FuzzingTest进阶 | Q1ngying</title>
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
   
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
 
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
 
-
-
-
-
-  <noscript>
-  <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
-
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
-
-<!-- hexo injector head_end start -->
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'FuzzingTest进阶',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-04-25 19:19:45'
+}</script><!-- hexo injector head_end start -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
-<!-- hexo injector head_end end --></head>
-
-<body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
-
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
-    </div>
-  </div>
-
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">Q1ngying</h1>
-      <span class="logo-line-after"><i></i></span>
-    </a>
-      <p class="site-subtitle" itemprop="description">今朝梦醒与君别，遥盼春风寄相思</p>
-  </div>
-
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
-    </div>
-  </div>
-</div>
-
-
-
-
-<nav class="site-nav">
-  <ul id="menu" class="main-menu menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
-
-  </li>
-        <li class="menu-item menu-item-about">
-
-    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
-
-  </li>
-  </ul>
-</nav>
-
-
-
-
-</div>
-    </header>
-
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-  <div class="reading-progress-bar"></div>
-
-
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-
-          <div class="content post posts-expand">
-            
-
-    
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://q1ngying.cn/2024/04/25/FuzzingTest%E8%BF%9B%E9%98%B6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Q1ngying">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Q1ngying">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          FuzzingTest进阶
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-04-25 19:17:57 / 修改时间：19:19:45" itemprop="dateCreated datePublished" datetime="2024-04-25T19:17:57+08:00">2024-04-25</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Solidity/" itemprop="url" rel="index"><span itemprop="name">Solidity</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Foundry/" itemprop="url" rel="index"><span itemprop="name">Foundry</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Fuzz/" itemprop="url" rel="index"><span itemprop="name">Fuzz</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>2.5k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>8 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-        <h1 id="Fuzzing-Test"><a href="#Fuzzing-Test" class="headerlink" title="Fuzzing Test"></a>Fuzzing Test</h1><h2 id="Fuzzing-Test-简介"><a href="#Fuzzing-Test-简介" class="headerlink" title="Fuzzing Test 简介"></a>Fuzzing Test 简介</h2><p>Fuzzing Test(Fuzzing)：向你的系统提供随机数据，并试图破坏它</p>
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/butterfly-icon.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">29</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/back1.webp);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Q1ngying</span></a><a class="nav-page-title" href="/"><span class="site-name">FuzzingTest进阶</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">FuzzingTest进阶</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-04-25T11:17:57.000Z" title="发表于 2024-04-25 19:17:57">2024-04-25</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-04-25T11:19:45.360Z" title="更新于 2024-04-25 19:19:45">2024-04-25</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Solidity/">Solidity</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Foundry/">Foundry</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Fuzz/">Fuzz</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">67k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>3:43分钟</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Fuzzing-Test"><a href="#Fuzzing-Test" class="headerlink" title="Fuzzing Test"></a>Fuzzing Test</h1><h2 id="Fuzzing-Test-简介"><a href="#Fuzzing-Test-简介" class="headerlink" title="Fuzzing Test 简介"></a>Fuzzing Test 简介</h2><p>Fuzzing Test(Fuzzing)：向你的系统提供随机数据，并试图破坏它</p>
 <p>为每一个可能的整数（或场景）编写一个用例来测试是基本做不到的（对于一些复杂逻辑的合约）。所以我们需要<strong>一种编程的方法在我们代码中找到一个特殊的场景</strong></p>
 <p>目前有两种常见的方法来寻找这些边缘情况：</p>
 <span id="more"></span>
-
 <ul>
-<li>Fuzzing Test&#x2F;Invariant Test（模糊测试&#x2F;不变量测试）</li>
-<li>Symbolic Execution&#x2F;Formal Verification （符号执行&#x2F;形式验证）</li>
+<li>Fuzzing Test/Invariant Test（模糊测试/不变量测试）</li>
+<li>Symbolic Execution/Formal Verification （符号执行/形式验证）</li>
 </ul>
 <p>而 Fuzzing Test 也可以分为两类：</p>
 <ul>
@@ -265,8 +169,8 @@
 </ul>
 <p>注意，在 Foundry 中，使用 Invariant 来描述这种<strong>有状态的模糊测试</strong>：</p>
 <ul>
-<li>Fuzzing Tests &#x3D; Random Data to one function &#x3D; Stateless Fuzzing</li>
-<li>Invariant Tests &#x3D; Random Data &amp; Random Function Calls to may function &#x3D; Stateful Fuzzing</li>
+<li>Fuzzing Tests = Random Data to one function = Stateless Fuzzing</li>
+<li>Invariant Tests = Random Data &amp; Random Function Calls to may function = Stateful Fuzzing</li>
 </ul>
 <h2 id="不变量和属性"><a href="#不变量和属性" class="headerlink" title="不变量和属性"></a>不变量和属性</h2><p>不变量(Invariant)：在系统中应该是在保持的系统属性</p>
 <p>一些常见的不变量举例：</p>
@@ -276,54 +180,199 @@
 <li>没人能从协议中提取出高于他们之前存入的金额的存款</li>
 </ul>
 <h2 id="Stateless-Fuzzing"><a href="#Stateless-Fuzzing" class="headerlink" title="Stateless Fuzzing"></a>Stateless Fuzzing</h2><p>最简单的一种模糊测试方法，在 <strong>Foundry 中进行无状态的模糊测试，只需要将单元测试中的<em>单一变量</em>，变为通过<code>test</code>函数的参数作为输入即可</strong><br>即：</p>
-<figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="deletion">- function testNum() external &#123;</span></span><br><span class="line"><span class="deletion">-	uint256 num = 2;</span></span><br><span class="line"><span class="deletion">-	... some logic about `num` ...</span></span><br><span class="line"><span class="deletion">- &#125;</span></span><br><span class="line"><span class="addition">+ function testNum(uint256 num) external &#123;</span></span><br><span class="line"><span class="addition">+ 	... some logic about `num` ...</span></span><br><span class="line"><span class="addition">+ &#125;</span></span><br></pre></td></tr></table></figure>
-
-
-
-
-
+<pre class="line-numbers language-diff" data-language="diff"><code class="language-diff"><span class="token deleted-sign deleted"><span class="token prefix deleted">-</span><span class="token line"> function testNum() external &#123;
+</span><span class="token prefix deleted">-</span><span class="token line">	uint256 num = 2;
+</span><span class="token prefix deleted">-</span><span class="token line">	... some logic about `num` ...
+</span><span class="token prefix deleted">-</span><span class="token line"> &#125;
+</span></span><span class="token inserted-sign inserted"><span class="token prefix inserted">+</span><span class="token line"> function testNum(uint256 num) external &#123;
+</span><span class="token prefix inserted">+</span><span class="token line"> 	... some logic about `num` ...
+</span><span class="token prefix inserted">+</span><span class="token line"> &#125;</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>举例：</p>
 <ul>
 <li>target：</li>
 </ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity 0.8.20;</span><br><span class="line"></span><br><span class="line">// INVARIANT: doMath should never return 0</span><br><span class="line">contract StatelessFuzzCatches &#123;</span><br><span class="line">    /*</span><br><span class="line">     * @dev Should never return 0</span><br><span class="line">     */</span><br><span class="line">    function doMath(uint128 myNumber) public pure returns (uint256) &#123;</span><br><span class="line">        if (myNumber == 2) &#123;</span><br><span class="line">            return 0;</span><br><span class="line">        &#125;</span><br><span class="line">        return 1;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// SPDX-License-Identifier: MIT</span>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token number">0.8</span><span class="token number">.20</span><span class="token punctuation">;</span>
 
+<span class="token comment">// INVARIANT: doMath should never return 0</span>
+<span class="token keyword">contract</span> <span class="token class-name">StatelessFuzzCatches</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">/*
+     * @dev Should never return 0
+     */</span>
+    <span class="token keyword">function</span> <span class="token function">doMath</span><span class="token punctuation">(</span><span class="token builtin">uint128</span> myNumber<span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token keyword">pure</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>myNumber <span class="token operator">==</span> <span class="token number">2</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token keyword">return</span> <span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <ul>
 <li>test：</li>
 </ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: SEE LICENSE IN LICENSE</span><br><span class="line">pragma solidity ^0.8.18;</span><br><span class="line"></span><br><span class="line">import &#123;StatelessFuzzCatches&#125; from &quot;../../src/invariant-break/StatelessFuzzCatches.sol&quot;;</span><br><span class="line">import &#123;Test, console2&#125; from &quot;forge-std/Test.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract StatelessFuzzCatchesTest is Test &#123;</span><br><span class="line">    StatelessFuzzCatches sfc;</span><br><span class="line"></span><br><span class="line">    function setUp() public &#123;</span><br><span class="line">        sfc = new StatelessFuzzCatches();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function testFuzzCatchesBugStateless(uint128 randomNumber) public view &#123;</span><br><span class="line">        assert(sfc.doMath(randomNumber) != 0);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// SPDX-License-Identifier: SEE LICENSE IN LICENSE</span>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.8.18</span><span class="token punctuation">;</span>
 
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>StatelessFuzzCatches<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"../../src/invariant-break/StatelessFuzzCatches.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>Test<span class="token punctuation">,</span> console2<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"forge-std/Test.sol"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">contract</span> <span class="token class-name">StatelessFuzzCatchesTest</span> <span class="token keyword">is</span> Test <span class="token punctuation">&#123;</span>
+    StatelessFuzzCatches sfc<span class="token punctuation">;</span>
+
+    <span class="token keyword">function</span> <span class="token function">setUp</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        sfc <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StatelessFuzzCatches</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">testFuzzCatchesBugStateless</span><span class="token punctuation">(</span><span class="token builtin">uint128</span> randomNumber<span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token keyword">view</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">assert</span><span class="token punctuation">(</span>sfc<span class="token punctuation">.</span><span class="token function">doMath</span><span class="token punctuation">(</span>randomNumber<span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h2 id="Stateful-Fuzzing"><a href="#Stateful-Fuzzing" class="headerlink" title="Stateful Fuzzing"></a>Stateful Fuzzing</h2><p>有些情况下，使用 Stateless Fuzzing 无法发现一些<strong>路径依赖</strong>的一些bug情况，这个时候就需要使用 Stateful Fuzzing。</p>
 <p>比如，我们要对这个合约进行测试：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity 0.8.20;</span><br><span class="line"></span><br><span class="line">// INVARIANT: doMoreMathAgain should never return 0</span><br><span class="line">contract StatefulFuzzCatches &#123;</span><br><span class="line">    uint256 public myValue = 1;</span><br><span class="line">    uint256 public storedValue = 100;</span><br><span class="line"></span><br><span class="line">    /*</span><br><span class="line">     * @dev Should never return 0</span><br><span class="line">     */</span><br><span class="line">    function doMoreMathAgain(uint128 myNumber) public returns (uint256) &#123;</span><br><span class="line">        uint256 response = (uint256(myNumber) / 1) + myValue;</span><br><span class="line">        storedValue = response;</span><br><span class="line">        return response;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function changeValue(uint256 newValue) public &#123;</span><br><span class="line">        myValue = newValue;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// SPDX-License-Identifier: MIT</span>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token number">0.8</span><span class="token number">.20</span><span class="token punctuation">;</span>
 
-<p>我们能看出来，我们通过<code>changeValue(0) -&gt; doMoreMathAgain(0)</code>的调用，<code>doMoreMathAgain()</code>会返回<code>0</code>。<strong>但是，当我们使用无状态的Fuzzing Test时，无法发现类似问题</strong>（合约逻辑简单时，我们能够手动审查出来，但是当合约逻辑复杂时，使用 fuzzing test 会大大缩短我们审计的时间）。所以，我们就需要使用**有状态的模糊测试（在 Foundry 中称为<code>invariant</code>**）</p>
+<span class="token comment">// INVARIANT: doMoreMathAgain should never return 0</span>
+<span class="token keyword">contract</span> <span class="token class-name">StatefulFuzzCatches</span> <span class="token punctuation">&#123;</span>
+    <span class="token builtin">uint256</span> <span class="token keyword">public</span> myValue <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token builtin">uint256</span> <span class="token keyword">public</span> storedValue <span class="token operator">=</span> <span class="token number">100</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/*
+     * @dev Should never return 0
+     */</span>
+    <span class="token keyword">function</span> <span class="token function">doMoreMathAgain</span><span class="token punctuation">(</span><span class="token builtin">uint128</span> myNumber<span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token builtin">uint256</span> response <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">(</span>myNumber<span class="token punctuation">)</span> <span class="token operator">/</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">+</span> myValue<span class="token punctuation">;</span>
+        storedValue <span class="token operator">=</span> response<span class="token punctuation">;</span>
+        <span class="token keyword">return</span> response<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">changeValue</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> newValue<span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        myValue <span class="token operator">=</span> newValue<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>我们能看出来，我们通过<code>changeValue(0) -&gt; doMoreMathAgain(0)</code>的调用，<code>doMoreMathAgain()</code>会返回<code>0</code>。<strong>但是，当我们使用无状态的Fuzzing Test时，无法发现类似问题</strong>（合约逻辑简单时，我们能够手动审查出来，但是当合约逻辑复杂时，使用 fuzzing test 会大大缩短我们审计的时间）。所以，我们就需要使用<strong>有状态的模糊测试（在 Foundry 中称为<code>invariant</code></strong>）</p>
 <p>在 Foundry 中进行有状态的模糊测试时，需要引入 Foundry 的一个工具包：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;<span class="title class_">StdInvariant</span>&#125; <span class="keyword">from</span> <span class="string">&quot;forge-std/StdInvariant.sol&quot;</span>;</span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span>StdInvariant<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"forge-std/StdInvariant.sol"</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>使用方法直接继承即可，不过需要注意继承的顺序：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">contract TargetFuzzingTest is stdInvariant, Test &#123;&#125;</span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">contract</span> <span class="token class-name">TargetFuzzingTest</span> <span class="token keyword">is</span> stdInvariant<span class="token punctuation">,</span> Test <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>在合约中的 <code>setUp</code> 函数中，要使用一个<code>targetContract()</code>函数，调用这个函数的目的是<strong>告诉 Foundry 我们要对哪个合约中的<em>所有</em>函数都进行 fuzzing</strong>。 Foundry 足够聪明，它能够调用目标合约中的所有公共函数。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function setUp() public &#123;</span><br><span class="line">	statefulFuzzCatches = new StatefulFuzzCatches();</span><br><span class="line">	</span><br><span class="line">	targetContract(address(statefulFuzzCatches));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">setUp</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+	statefulFuzzCatches <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StatefulFuzzCatches</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	<span class="token function">targetContract</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span>statefulFuzzCatches<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>对于状态较少的模糊测试是行不通的，所以我们需要进行<strong>完全模糊测试</strong>。我们如何告诉 Foundry 我们要进行<strong>有状态的模糊测试</strong>我们可以在定义<code>test</code>函数时，在函数前加上<code>statefullFuzz_</code>或<code>invariant_</code>前缀来加以区分：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">function invariant_catchBugs() public view &#123;</span><br><span class="line">    assert(statefulFuzzCatches.storedValue() != 0);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">invariant_catchBugs</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token keyword">view</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">assert</span><span class="token punctuation">(</span>statefulFuzzCatches<span class="token punctuation">.</span><span class="token function">storedValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <p>在进行 stateful fuzzing test 时，需要在 <code>foundry.toml</code> 中修改一些参数：</p>
-<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[invariant]</span></span><br><span class="line"><span class="attr">runs</span> = <span class="number">64</span> <span class="comment"># 运行次数</span></span><br><span class="line"><span class="attr">depth</span> = <span class="number">32</span> <span class="comment"># 深度，即一次调用，调用其他合约的次数，合约逻辑余额复杂，深度越深越好</span></span><br><span class="line"><span class="attr">fail_on_revert</span> = <span class="literal">false</span> <span class="comment"># 遇到回滚时，是否停止测试（因为有些时候会涉及到 overflow 导致 evm revert，此处是为了排除这种情况</span></span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-toml" data-language="toml"><code class="language-toml"><span class="token punctuation">[</span><span class="token table class-name">invariant</span><span class="token punctuation">]</span>
+<span class="token key property">runs</span> <span class="token punctuation">=</span> <span class="token number">64</span> <span class="token comment"># 运行次数</span>
+<span class="token key property">depth</span> <span class="token punctuation">=</span> <span class="token number">32</span> <span class="token comment"># 深度，即一次调用，调用其他合约的次数，合约逻辑余额复杂，深度越深越好</span>
+<span class="token key property">fail_on_revert</span> <span class="token punctuation">=</span> <span class="token boolean">false</span> <span class="token comment"># 遇到回滚时，是否停止测试（因为有些时候会涉及到 overflow 导致 evm revert，此处是为了排除这种情况</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 <p>更多关于 <code>foundry.toml</code> 的参数，详情查看 foundry 官方文档</p>
 <h3 id="有条件的-input"><a href="#有条件的-input" class="headerlink" title="有条件的 input"></a>有条件的 input</h3><p>有些时候，我们的 fuzzing test 对我们<strong>传入的部分参数需要进行限制</strong>，比如如下合约：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">// example</span><br><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity 0.8.20;</span><br><span class="line"></span><br><span class="line">import &#123;IERC20&#125; from &quot;@openzeppelin/contracts/token/ERC20/ERC20.sol&quot;;</span><br><span class="line">import &#123;SafeERC20&#125; from &quot;@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol&quot;;</span><br><span class="line"></span><br><span class="line">/*</span><br><span class="line"> * This contract represents a vault for ERC20 tokens.</span><br><span class="line"> *</span><br><span class="line"> * INVARIANT: Users must always be able to withdraw the exact balance amout out. </span><br><span class="line"> */</span><br><span class="line">contract HandlerStatefulFuzzCatches &#123;</span><br><span class="line">    error HandlerStatefulFuzzCatches__UnsupportedToken();</span><br><span class="line"></span><br><span class="line">    using SafeERC20 for IERC20;</span><br><span class="line"></span><br><span class="line">    mapping(IERC20 =&gt; bool) public tokenIsSupported;</span><br><span class="line">    mapping(address user =&gt; mapping(IERC20 token =&gt; uint256 balance)) public tokenBalances;</span><br><span class="line"></span><br><span class="line">    modifier requireSupportedToken(IERC20 token) &#123;</span><br><span class="line">        if (!tokenIsSupported[token]) revert HandlerStatefulFuzzCatches__UnsupportedToken();</span><br><span class="line">        _;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    constructor(IERC20[] memory _supportedTokens) &#123;</span><br><span class="line">        for (uint256 i; i &lt; _supportedTokens.length; i++) &#123;</span><br><span class="line">            tokenIsSupported[_supportedTokens[i]] = true;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function depositToken(IERC20 token, uint256 amount) external requireSupportedToken(token) &#123;</span><br><span class="line">        tokenBalances[msg.sender][token] += amount;</span><br><span class="line">        token.safeTransferFrom(msg.sender, address(this), amount);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function withdrawToken(IERC20 token) external requireSupportedToken(token) &#123;</span><br><span class="line">        uint256 currentBalance = tokenBalances[msg.sender][token];</span><br><span class="line">        tokenBalances[msg.sender][token] = 0;</span><br><span class="line">        token.safeTransfer(msg.sender, currentBalance);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// example</span>
+<span class="token comment">// SPDX-License-Identifier: MIT</span>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token number">0.8</span><span class="token number">.20</span><span class="token punctuation">;</span>
 
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>IERC20<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"@openzeppelin/contracts/token/ERC20/ERC20.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>SafeERC20<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol"</span><span class="token punctuation">;</span>
+
+<span class="token comment">/*
+ * This contract represents a vault for ERC20 tokens.
+ *
+ * INVARIANT: Users must always be able to withdraw the exact balance amout out. 
+ */</span>
+<span class="token keyword">contract</span> <span class="token class-name">HandlerStatefulFuzzCatches</span> <span class="token punctuation">&#123;</span>
+    error <span class="token function">HandlerStatefulFuzzCatches__UnsupportedToken</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">using</span> <span class="token class-name">SafeERC20</span> <span class="token keyword">for</span> IERC20<span class="token punctuation">;</span>
+
+    <span class="token keyword">mapping</span><span class="token punctuation">(</span>IERC20 <span class="token operator">=></span> <span class="token builtin">bool</span><span class="token punctuation">)</span> <span class="token keyword">public</span> tokenIsSupported<span class="token punctuation">;</span>
+    <span class="token keyword">mapping</span><span class="token punctuation">(</span><span class="token builtin">address</span> user <span class="token operator">=></span> <span class="token keyword">mapping</span><span class="token punctuation">(</span>IERC20 token <span class="token operator">=></span> <span class="token builtin">uint256</span> balance<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">public</span> tokenBalances<span class="token punctuation">;</span>
+
+    <span class="token keyword">modifier</span> <span class="token function">requireSupportedToken</span><span class="token punctuation">(</span>IERC20 token<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>tokenIsSupported<span class="token punctuation">[</span>token<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token keyword">revert</span> <span class="token function">HandlerStatefulFuzzCatches__UnsupportedToken</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">_</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">constructor</span><span class="token punctuation">(</span>IERC20<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token keyword">memory</span> _supportedTokens<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span> i<span class="token punctuation">;</span> i <span class="token operator">&lt;</span> _supportedTokens<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            tokenIsSupported<span class="token punctuation">[</span>_supportedTokens<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">depositToken</span><span class="token punctuation">(</span>IERC20 token<span class="token punctuation">,</span> <span class="token builtin">uint256</span> amount<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token function">requireSupportedToken</span><span class="token punctuation">(</span>token<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        tokenBalances<span class="token punctuation">[</span>msg<span class="token punctuation">.</span>sender<span class="token punctuation">]</span><span class="token punctuation">[</span>token<span class="token punctuation">]</span> <span class="token operator">+=</span> amount<span class="token punctuation">;</span>
+        token<span class="token punctuation">.</span><span class="token function">safeTransferFrom</span><span class="token punctuation">(</span>msg<span class="token punctuation">.</span>sender<span class="token punctuation">,</span> <span class="token builtin">address</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">,</span> amount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">withdrawToken</span><span class="token punctuation">(</span>IERC20 token<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token function">requireSupportedToken</span><span class="token punctuation">(</span>token<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token builtin">uint256</span> currentBalance <span class="token operator">=</span> tokenBalances<span class="token punctuation">[</span>msg<span class="token punctuation">.</span>sender<span class="token punctuation">]</span><span class="token punctuation">[</span>token<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        tokenBalances<span class="token punctuation">[</span>msg<span class="token punctuation">.</span>sender<span class="token punctuation">]</span><span class="token punctuation">[</span>token<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        token<span class="token punctuation">.</span><span class="token function">safeTransfer</span><span class="token punctuation">(</span>msg<span class="token punctuation">.</span>sender<span class="token punctuation">,</span> currentBalance<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>我们进行 stateful fuzzing，脚本如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: SEE LICENSE IN LICENSE</span><br><span class="line">pragma solidity ^0.8.20;</span><br><span class="line"></span><br><span class="line">import &#123;Test&#125; from &quot;forge-std/Test.sol&quot;;</span><br><span class="line">import &#123;StdInvariant&#125; from &quot;forge-std/StdInvariant.sol&quot;;</span><br><span class="line">import &#123;HandlerStatefulFuzzCatches&#125; from &quot;../../../src/invariant-break/HandlerStatefulFuzzCatches.sol&quot;;</span><br><span class="line">import &#123;MockUSDC&#125; from &quot;../../mocks/MockUSDC.sol&quot;;</span><br><span class="line">import &#123;YeildERC20&#125; from &quot;../../mocks/YeildERC20.sol&quot;;</span><br><span class="line">import &#123;IERC20&#125; from &quot;@openzeppelin/contracts/token/ERC20/ERC20.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract AttemptedBreakTest is StdInvariant, Test &#123;</span><br><span class="line">    HandlerStatefulFuzzCatches handlerStatefulFuzzCatches;</span><br><span class="line">    YeildERC20 yeildERC20;</span><br><span class="line">    MockUSDC mockUSDC;</span><br><span class="line">    IERC20[] supposedTokens;</span><br><span class="line">    uint256 startingAmount;</span><br><span class="line"></span><br><span class="line">    // 这次的 fuzzing test 需要一个用户来进行存款，取款，所以我们可以通过 Foundry cheatcode 来创建一个用户</span><br><span class="line">    address user = makeAddr(&quot;user&quot;);</span><br><span class="line"></span><br><span class="line">    function setUp() public &#123;</span><br><span class="line">        // 使用 cheatcode，这样能把下面这些合约的 msg.sender 设置为 `user`</span><br><span class="line">        vm.startPrank(user);</span><br><span class="line">        yeildERC20 = new YeildERC20();</span><br><span class="line">        mockUSDC = new MockUSDC();</span><br><span class="line">        startingAmount = yeildERC20.INITIAL_SUPPLY();</span><br><span class="line">        mockUSDC.mint(user, startingAmount);</span><br><span class="line">        vm.stopPrank();</span><br><span class="line"></span><br><span class="line">        supposedTokens.push(mockUSDC);</span><br><span class="line">        supposedTokens.push(yeildERC20);</span><br><span class="line">        handlerStatefulFuzzCatches = new HandlerStatefulFuzzCatches(supposedTokens);</span><br><span class="line"></span><br><span class="line">        // 要进行 fuzzing 的合约</span><br><span class="line">        targetContract(address(handlerStatefulFuzzCatches));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function testStartingAmountTheSame() public view &#123;</span><br><span class="line">        assert(startingAmount == yeildERC20.balanceOf(user));</span><br><span class="line">        assert(startingAmount == mockUSDC.balanceOf(user));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function invariant_testInvaraintBreaks() public &#123;</span><br><span class="line">        vm.startPrank(user);</span><br><span class="line">        handlerStatefulFuzzCatches.withdrawToken(mockUSDC);</span><br><span class="line">        handlerStatefulFuzzCatches.withdrawToken(yeildERC20);</span><br><span class="line">        vm.stopPrank();</span><br><span class="line"></span><br><span class="line">        assert(mockUSDC.balanceOf(address(handlerStatefulFuzzCatches)) == 0);</span><br><span class="line">        assert(yeildERC20.balanceOf(address(handlerStatefulFuzzCatches)) == 0);</span><br><span class="line"></span><br><span class="line">        assert(mockUSDC.balanceOf(user) == startingAmount);</span><br><span class="line">        assert(yeildERC20.balanceOf(user) == startingAmount);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// SPDX-License-Identifier: SEE LICENSE IN LICENSE</span>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.8.20</span><span class="token punctuation">;</span>
 
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>Test<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"forge-std/Test.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>StdInvariant<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"forge-std/StdInvariant.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>HandlerStatefulFuzzCatches<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"../../../src/invariant-break/HandlerStatefulFuzzCatches.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>MockUSDC<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"../../mocks/MockUSDC.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>YeildERC20<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"../../mocks/YeildERC20.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>IERC20<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"@openzeppelin/contracts/token/ERC20/ERC20.sol"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">contract</span> <span class="token class-name">AttemptedBreakTest</span> <span class="token keyword">is</span> StdInvariant<span class="token punctuation">,</span> Test <span class="token punctuation">&#123;</span>
+    HandlerStatefulFuzzCatches handlerStatefulFuzzCatches<span class="token punctuation">;</span>
+    YeildERC20 yeildERC20<span class="token punctuation">;</span>
+    MockUSDC mockUSDC<span class="token punctuation">;</span>
+    IERC20<span class="token punctuation">[</span><span class="token punctuation">]</span> supposedTokens<span class="token punctuation">;</span>
+    <span class="token builtin">uint256</span> startingAmount<span class="token punctuation">;</span>
+
+    <span class="token comment">// 这次的 fuzzing test 需要一个用户来进行存款，取款，所以我们可以通过 Foundry cheatcode 来创建一个用户</span>
+    <span class="token builtin">address</span> user <span class="token operator">=</span> <span class="token function">makeAddr</span><span class="token punctuation">(</span><span class="token string">"user"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">function</span> <span class="token function">setUp</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        <span class="token comment">// 使用 cheatcode，这样能把下面这些合约的 msg.sender 设置为 `user`</span>
+        vm<span class="token punctuation">.</span><span class="token function">startPrank</span><span class="token punctuation">(</span>user<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        yeildERC20 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">YeildERC20</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        mockUSDC <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">MockUSDC</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        startingAmount <span class="token operator">=</span> yeildERC20<span class="token punctuation">.</span><span class="token function">INITIAL_SUPPLY</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        mockUSDC<span class="token punctuation">.</span><span class="token function">mint</span><span class="token punctuation">(</span>user<span class="token punctuation">,</span> startingAmount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        vm<span class="token punctuation">.</span><span class="token function">stopPrank</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        supposedTokens<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>mockUSDC<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        supposedTokens<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>yeildERC20<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        handlerStatefulFuzzCatches <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HandlerStatefulFuzzCatches</span><span class="token punctuation">(</span>supposedTokens<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 要进行 fuzzing 的合约</span>
+        <span class="token function">targetContract</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span>handlerStatefulFuzzCatches<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">testStartingAmountTheSame</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token keyword">view</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">assert</span><span class="token punctuation">(</span>startingAmount <span class="token operator">==</span> yeildERC20<span class="token punctuation">.</span><span class="token function">balanceOf</span><span class="token punctuation">(</span>user<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">assert</span><span class="token punctuation">(</span>startingAmount <span class="token operator">==</span> mockUSDC<span class="token punctuation">.</span><span class="token function">balanceOf</span><span class="token punctuation">(</span>user<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">invariant_testInvaraintBreaks</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        vm<span class="token punctuation">.</span><span class="token function">startPrank</span><span class="token punctuation">(</span>user<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        handlerStatefulFuzzCatches<span class="token punctuation">.</span><span class="token function">withdrawToken</span><span class="token punctuation">(</span>mockUSDC<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        handlerStatefulFuzzCatches<span class="token punctuation">.</span><span class="token function">withdrawToken</span><span class="token punctuation">(</span>yeildERC20<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        vm<span class="token punctuation">.</span><span class="token function">stopPrank</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">assert</span><span class="token punctuation">(</span>mockUSDC<span class="token punctuation">.</span><span class="token function">balanceOf</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span>handlerStatefulFuzzCatches<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">assert</span><span class="token punctuation">(</span>yeildERC20<span class="token punctuation">.</span><span class="token function">balanceOf</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span>handlerStatefulFuzzCatches<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">assert</span><span class="token punctuation">(</span>mockUSDC<span class="token punctuation">.</span><span class="token function">balanceOf</span><span class="token punctuation">(</span>user<span class="token punctuation">)</span> <span class="token operator">==</span> startingAmount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">assert</span><span class="token punctuation">(</span>yeildERC20<span class="token punctuation">.</span><span class="token function">balanceOf</span><span class="token punctuation">(</span>user<span class="token punctuation">)</span> <span class="token operator">==</span> startingAmount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>运行结果：</p>
-<p><img src="/../images/FuzzingTest%E8%BF%9B%E9%98%B6/image-20240417201404300.png" alt="image-20240417201404300"></p>
+<p><img src="../images/FuzzingTest进阶/image-20240417201404300.png" alt="image-20240417201404300"></p>
 <p>运行结果我们看到一个问题，虽然按照我们的预期，但是<strong>一共运行了 2048 次，发生了 2048 次回滚</strong>。这意味着可能有一些更复杂的问题，当我们把 <code>foundry.toml</code> 配置文件中的<code>fail_on_revert</code> 修改为 <code>true</code> ，配合<code>-vvvv</code>再运行一次，发现：</p>
-<p><img src="/../images/FuzzingTest%E8%BF%9B%E9%98%B6/image-20240417201442682.png" alt="image-20240417201442682"></p>
+<p><img src="../images/FuzzingTest进阶/image-20240417201442682.png" alt="image-20240417201442682"></p>
 <p>原因是，<code>HandlerStatefulFuzzCatches:depositToken</code>收到了<strong>不合法的参数</strong>，因为 fuzzing test 的参数是完全随机的，所以传入<code>depositToken</code>函数的 <code>token</code> 时，发生了回滚。</p>
 <p>不过上述的测试还有很多的问题，如：</p>
 <ul>
@@ -334,311 +383,155 @@
 <p><strong>进行太多的限制，可能会错过一些 bug，但有些情况还必须加以限制，这就是需要进行权衡的。</strong></p>
 <h2 id="Handler-Stateful-fuzzing"><a href="#Handler-Stateful-fuzzing" class="headerlink" title="Handler Stateful fuzzing"></a>Handler Stateful fuzzing</h2><p>第一步便是要创建<code>Handler</code>合约来对我们的 fuzzing 进行限制</p>
 <p>Handler 的作用，下图做出了很好的解释：</p>
-<img src="../images/FuzzingTest进阶/image-20240417205633056.png" alt="image-20240417205633056" style="zoom:50%;" />
-
+<p><img src="../images/FuzzingTest进阶/image-20240417205633056.png" alt="image-20240417205633056" style="zoom:50%;" /></p>
 <h3 id="Handler-合约"><a href="#Handler-合约" class="headerlink" title="Handler 合约"></a>Handler 合约</h3><p>对于 Handler 合约，他也需要继承 <code>Test</code> 合约，并且，还需要用到一些待测试合约的函数来加以限制。所以，不可避免需要引入<code>Test</code>合约和<code>Target</code>合约。</p>
 <p>我们就是把我们想要 Foundry 调用的随机方式写进 <code>Handler</code> 合约中，然后再让 Foundry 对 Handler 进行随机调用。对于刚刚 Stateful Fuzzing 无法成功 Fuzzing 的合约，它的 Handler 如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">// 我们要进行的限制</span><br><span class="line"></span><br><span class="line">// SPDX-License-Identifier: SEE LICENSE IN LICENSE</span><br><span class="line">pragma solidity ^0.8.20;</span><br><span class="line"></span><br><span class="line">import &#123;Test&#125; from &quot;forge-std/Test.sol&quot;;</span><br><span class="line">import &#123;HandlerStatefulFuzzCatches&#125; from &quot;../../../src/invariant-break/HandlerStatefulFuzzCatches.sol&quot;;</span><br><span class="line">import &#123;YeildERC20&#125; from &quot;../../mocks/YeildERC20.sol&quot;;</span><br><span class="line">import &#123;MockUSDC&#125; from &quot;../../mocks/MockUSDC.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract Handler is Test &#123;</span><br><span class="line">    HandlerStatefulFuzzCatches handlerStatefulFuzzCatches;</span><br><span class="line">    MockUSDC mockUSDC;</span><br><span class="line">    YeildERC20 yeildERC20;</span><br><span class="line">    address user;</span><br><span class="line"></span><br><span class="line">    constructor(</span><br><span class="line">        HandlerStatefulFuzzCatches _handlerStatefulFuzzCatches,</span><br><span class="line">        MockUSDC _mockUSDC,</span><br><span class="line">        YeildERC20 _yeildERC20,</span><br><span class="line">        address _user</span><br><span class="line">    ) &#123;</span><br><span class="line">        handlerStatefulFuzzCatches = _handlerStatefulFuzzCatches;</span><br><span class="line">        mockUSDC = _mockUSDC;</span><br><span class="line">        yeildERC20 = _yeildERC20;</span><br><span class="line">        user = _user;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 这个合约将告诉 Foundry 如何和我们的协议进行交互的方式</span><br><span class="line"></span><br><span class="line">    function depositYeildERC20(uint256 _amount) public &#123;</span><br><span class="line">        uint256 amount = bound(_amount, 0, yeildERC20.balanceOf(user));</span><br><span class="line">        vm.startPrank(user);</span><br><span class="line">        yeildERC20.approve(address(handlerStatefulFuzzCatches), amount);</span><br><span class="line">        handlerStatefulFuzzCatches.depositToken(yeildERC20, amount);</span><br><span class="line">        vm.stopPrank();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function depositMockUSDC(uint256 _amount) public &#123;</span><br><span class="line">        uint256 amount = bound(_amount, 0, mockUSDC.balanceOf(user));</span><br><span class="line">        vm.startPrank(user);</span><br><span class="line">        mockUSDC.approve(address(handlerStatefulFuzzCatches), amount);</span><br><span class="line">        handlerStatefulFuzzCatches.depositToken(mockUSDC, amount);</span><br><span class="line">        vm.stopPrank();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function withdrawYeildERC20() public &#123;</span><br><span class="line">        vm.startPrank(user);</span><br><span class="line">        handlerStatefulFuzzCatches.withdrawToken(yeildERC20);</span><br><span class="line">        vm.stopPrank();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function withdrawMockUSDC() public &#123;</span><br><span class="line">        vm.startPrank(user);</span><br><span class="line">        handlerStatefulFuzzCatches.withdrawToken(mockUSDC);</span><br><span class="line">        vm.stopPrank();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// 我们要进行的限制</span>
 
+<span class="token comment">// SPDX-License-Identifier: SEE LICENSE IN LICENSE</span>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.8.20</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>Test<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"forge-std/Test.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>HandlerStatefulFuzzCatches<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"../../../src/invariant-break/HandlerStatefulFuzzCatches.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>YeildERC20<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"../../mocks/YeildERC20.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>MockUSDC<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"../../mocks/MockUSDC.sol"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">contract</span> <span class="token class-name">Handler</span> <span class="token keyword">is</span> Test <span class="token punctuation">&#123;</span>
+    HandlerStatefulFuzzCatches handlerStatefulFuzzCatches<span class="token punctuation">;</span>
+    MockUSDC mockUSDC<span class="token punctuation">;</span>
+    YeildERC20 yeildERC20<span class="token punctuation">;</span>
+    <span class="token builtin">address</span> user<span class="token punctuation">;</span>
+
+    <span class="token keyword">constructor</span><span class="token punctuation">(</span>
+        HandlerStatefulFuzzCatches _handlerStatefulFuzzCatches<span class="token punctuation">,</span>
+        MockUSDC _mockUSDC<span class="token punctuation">,</span>
+        YeildERC20 _yeildERC20<span class="token punctuation">,</span>
+        <span class="token builtin">address</span> _user
+    <span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        handlerStatefulFuzzCatches <span class="token operator">=</span> _handlerStatefulFuzzCatches<span class="token punctuation">;</span>
+        mockUSDC <span class="token operator">=</span> _mockUSDC<span class="token punctuation">;</span>
+        yeildERC20 <span class="token operator">=</span> _yeildERC20<span class="token punctuation">;</span>
+        user <span class="token operator">=</span> _user<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// 这个合约将告诉 Foundry 如何和我们的协议进行交互的方式</span>
+
+    <span class="token keyword">function</span> <span class="token function">depositYeildERC20</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> _amount<span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        <span class="token builtin">uint256</span> amount <span class="token operator">=</span> <span class="token function">bound</span><span class="token punctuation">(</span>_amount<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> yeildERC20<span class="token punctuation">.</span><span class="token function">balanceOf</span><span class="token punctuation">(</span>user<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        vm<span class="token punctuation">.</span><span class="token function">startPrank</span><span class="token punctuation">(</span>user<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        yeildERC20<span class="token punctuation">.</span><span class="token function">approve</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span>handlerStatefulFuzzCatches<span class="token punctuation">)</span><span class="token punctuation">,</span> amount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        handlerStatefulFuzzCatches<span class="token punctuation">.</span><span class="token function">depositToken</span><span class="token punctuation">(</span>yeildERC20<span class="token punctuation">,</span> amount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        vm<span class="token punctuation">.</span><span class="token function">stopPrank</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">depositMockUSDC</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> _amount<span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        <span class="token builtin">uint256</span> amount <span class="token operator">=</span> <span class="token function">bound</span><span class="token punctuation">(</span>_amount<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> mockUSDC<span class="token punctuation">.</span><span class="token function">balanceOf</span><span class="token punctuation">(</span>user<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        vm<span class="token punctuation">.</span><span class="token function">startPrank</span><span class="token punctuation">(</span>user<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        mockUSDC<span class="token punctuation">.</span><span class="token function">approve</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span>handlerStatefulFuzzCatches<span class="token punctuation">)</span><span class="token punctuation">,</span> amount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        handlerStatefulFuzzCatches<span class="token punctuation">.</span><span class="token function">depositToken</span><span class="token punctuation">(</span>mockUSDC<span class="token punctuation">,</span> amount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        vm<span class="token punctuation">.</span><span class="token function">stopPrank</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">withdrawYeildERC20</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        vm<span class="token punctuation">.</span><span class="token function">startPrank</span><span class="token punctuation">(</span>user<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        handlerStatefulFuzzCatches<span class="token punctuation">.</span><span class="token function">withdrawToken</span><span class="token punctuation">(</span>yeildERC20<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        vm<span class="token punctuation">.</span><span class="token function">stopPrank</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">withdrawMockUSDC</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        vm<span class="token punctuation">.</span><span class="token function">startPrank</span><span class="token punctuation">(</span>user<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        handlerStatefulFuzzCatches<span class="token punctuation">.</span><span class="token function">withdrawToken</span><span class="token punctuation">(</span>mockUSDC<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        vm<span class="token punctuation">.</span><span class="token function">stopPrank</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>Handler 写完之后，我们便可以编写我们的 Fuzzing 合约。</p>
 <h3 id="Invariant-合约"><a href="#Invariant-合约" class="headerlink" title="Invariant 合约"></a>Invariant 合约</h3><p>这个合约就是我们主要的 Fuzzing 合约了，他和上面的 Stateful Fuzzing 合约还是有些出入的。关于 Invariant 合约，需要引入 <code>Handler</code>、<code>Test</code>、<code>StdInvariant</code>、以及要进行 Fuzzing 的合约。</p>
 <p>在 Stateful Test 的<code>setUp</code> 函数中设置的是：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">handlerStatefulFuzzCatches = new HandlerStatefulFuzzCatches(supposedTokens);</span><br><span class="line">targetContract(address(handlerStatefulFuzzCatches));</span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity">handlerStatefulFuzzCatches <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HandlerStatefulFuzzCatches</span><span class="token punctuation">(</span>supposedTokens<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">targetContract</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span>handlerStatefulFuzzCatches<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p>但是在 handler Fuzzing 中，我们市要对 handler 进行模糊测试。这时候我们要新建一个<strong>字节数组</strong>，告诉 Foundry 我们要调用的函数选择器：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">bytes4[] memory selectors = new bytes4[](4);</span><br><span class="line">selectors[0] = handler.depositTeildERC20.selector;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token builtin">bytes4</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token keyword">memory</span> selectors <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">bytes4</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+selectors<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> handler<span class="token punctuation">.</span>depositTeildERC20<span class="token punctuation">.</span>selector<span class="token punctuation">;</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <p>然后调用<code>targetSelector</code>和<code>targetContract</code></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">targetSelector(FuzzSelector(&#123;addr: address(handler), selectors: selectors&#125;));</span><br><span class="line">targetContract(address(handler));</span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token function">targetSelector</span><span class="token punctuation">(</span><span class="token function">FuzzSelector</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>addr<span class="token punctuation">:</span> <span class="token builtin">address</span><span class="token punctuation">(</span>handler<span class="token punctuation">)</span><span class="token punctuation">,</span> selectors<span class="token punctuation">:</span> selectors<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">targetContract</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span>handler<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p>最后我们要进行的 Fuzzing Test 函数：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">function invariant_testInvaraintHandler() public &#123;</span><br><span class="line">	vm.startPrank(user);</span><br><span class="line">	handlerStatefulFuzzCatches.withdrawToken(mockUSDC);</span><br><span class="line">	handlerStatefulFuzzCatches.withdrawToken(yeildERC20);</span><br><span class="line">	vm.stopPrank();</span><br><span class="line"></span><br><span class="line">    assert(mockUSDC.balanceOf(address(handlerStatefulFuzzCatches)) == 0);</span><br><span class="line">	assert(yeildERC20.balanceOf(address(handlerStatefulFuzzCatches)) == 0);</span><br><span class="line"></span><br><span class="line">	assert(mockUSDC.balanceOf(user) == startingAmount);</span><br><span class="line">	assert(yeildERC20.balanceOf(user) == startingAmount);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-sollidity" data-language="sollidity"><code class="language-sollidity">function invariant_testInvaraintHandler() public &#123;
+	vm.startPrank(user);
+	handlerStatefulFuzzCatches.withdrawToken(mockUSDC);
+	handlerStatefulFuzzCatches.withdrawToken(yeildERC20);
+	vm.stopPrank();
 
+    assert(mockUSDC.balanceOf(address(handlerStatefulFuzzCatches)) &#x3D;&#x3D; 0);
+	assert(yeildERC20.balanceOf(address(handlerStatefulFuzzCatches)) &#x3D;&#x3D; 0);
+
+	assert(mockUSDC.balanceOf(user) &#x3D;&#x3D; startingAmount);
+	assert(yeildERC20.balanceOf(user) &#x3D;&#x3D; startingAmount);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>完整代码：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: SEE LICENSE IN LICENSE</span><br><span class="line">pragma solidity ^0.8.20;</span><br><span class="line"></span><br><span class="line">import &#123;Test&#125; from &quot;forge-std/Test.sol&quot;;</span><br><span class="line">import &#123;StdInvariant&#125; from &quot;forge-std/StdInvariant.sol&quot;;</span><br><span class="line">import &#123;HandlerStatefulFuzzCatches&#125; from &quot;../../../src/invariant-break/HandlerStatefulFuzzCatches.sol&quot;;</span><br><span class="line">import &#123;MockUSDC&#125; from &quot;../../mocks/MockUSDC.sol&quot;;</span><br><span class="line">import &#123;YeildERC20&#125; from &quot;../../mocks/YeildERC20.sol&quot;;</span><br><span class="line">import &#123;IERC20&#125; from &quot;@openzeppelin/contracts/token/ERC20/ERC20.sol&quot;;</span><br><span class="line">import &#123;Handler&#125; from &quot;./Handler.t.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract AttemptedBreakTest is StdInvariant, Test &#123;</span><br><span class="line">    HandlerStatefulFuzzCatches handlerStatefulFuzzCatches;</span><br><span class="line">    YeildERC20 yeildERC20;</span><br><span class="line">    MockUSDC mockUSDC;</span><br><span class="line">    IERC20[] supposedTokens;</span><br><span class="line">    uint256 startingAmount;</span><br><span class="line"></span><br><span class="line">    // 这次的 fuzzing test 需要一个用户来进行存款，取款，所以我们可以通过 Foundry cheatcode 来创建一个用户</span><br><span class="line">    address user = makeAddr(&quot;user&quot;);</span><br><span class="line"></span><br><span class="line">    Handler handler;</span><br><span class="line"></span><br><span class="line">    function setUp() public &#123;</span><br><span class="line">        // 使用 cheatcode，这样能把下面这些合约的 msg.sender 设置为 `user`</span><br><span class="line">        vm.startPrank(user);</span><br><span class="line">        yeildERC20 = new YeildERC20();</span><br><span class="line">        mockUSDC = new MockUSDC();</span><br><span class="line">        startingAmount = yeildERC20.INITIAL_SUPPLY();</span><br><span class="line">        mockUSDC.mint(user, startingAmount);</span><br><span class="line">        vm.stopPrank();</span><br><span class="line"></span><br><span class="line">        supposedTokens.push(mockUSDC);</span><br><span class="line">        supposedTokens.push(yeildERC20);</span><br><span class="line">        handlerStatefulFuzzCatches = new HandlerStatefulFuzzCatches(supposedTokens);</span><br><span class="line">        // handler fuzzing test 不再像 open stateful fuzzing 直接对要进行模糊测试的合约进行 fuzzing，而是通过 handler 再 待测试合约的方式</span><br><span class="line">        // targetContract(address(handlerStatefulFuzzCatches));</span><br><span class="line">        handler = new Handler(handlerStatefulFuzzCatches, mockUSDC, yeildERC20, user);</span><br><span class="line"></span><br><span class="line">        // 告诉 Foundry 我们要调用的函数选择器</span><br><span class="line">        bytes4[] memory selectors = new bytes4[](4);</span><br><span class="line">        selectors[0] = handler.depositYeildERC20.selector;</span><br><span class="line">        selectors[1] = handler.depositMockUSDC.selector;</span><br><span class="line">        selectors[2] = handler.withdrawMockUSDC.selector;</span><br><span class="line">        selectors[3] = handler.withdrawYeildERC20.selector;</span><br><span class="line"></span><br><span class="line">        targetSelector(FuzzSelector(&#123;addr: address(handler), selectors: selectors&#125;));</span><br><span class="line">        targetContract(address(handler));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function invariant_testInvaraintHandler() public &#123;</span><br><span class="line">        vm.startPrank(user);</span><br><span class="line">        handlerStatefulFuzzCatches.withdrawToken(mockUSDC);</span><br><span class="line">        handlerStatefulFuzzCatches.withdrawToken(yeildERC20);</span><br><span class="line">        vm.stopPrank();</span><br><span class="line"></span><br><span class="line">        assert(mockUSDC.balanceOf(address(handlerStatefulFuzzCatches)) == 0);</span><br><span class="line">        assert(yeildERC20.balanceOf(address(handlerStatefulFuzzCatches)) == 0);</span><br><span class="line"></span><br><span class="line">        assert(mockUSDC.balanceOf(user) == startingAmount);</span><br><span class="line">        assert(yeildERC20.balanceOf(user) == startingAmount);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-    </div>
-
-    
-    
-    
-        
-
-<div>
-<ul class="post-copyright">
-  <li class="post-copyright-author">
-    <strong>本文作者： </strong>Q1ngying
-  </li>
-  <li class="post-copyright-link">
-    <strong>本文链接：</strong>
-    <a href="http://q1ngying.cn/2024/04/25/FuzzingTest%E8%BF%9B%E9%98%B6/" title="FuzzingTest进阶">http://q1ngying.cn/2024/04/25/FuzzingTest进阶/</a>
-  </li>
-  <li class="post-copyright-license">
-    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
-  </li>
-</ul>
-</div>
-
-
-      <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/Solidity/" rel="tag"># Solidity</a>
-              <a href="/tags/Foundry/" rel="tag"># Foundry</a>
-              <a href="/tags/Fuzz/" rel="tag"># Fuzz</a>
-          </div>
-
-        
-
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/2024/04/25/%E6%B0%B8%E7%BB%AD%E5%90%88%E7%BA%A6%E5%9F%BA%E7%A1%80/" rel="prev" title="永续合约基础">
-      <i class="fa fa-chevron-left"></i> 永续合约基础
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/2024/04/25/SolidityTest%E5%88%86%E7%B1%BB/" rel="next" title="SolidityTest分类">
-      SolidityTest分类 <i class="fa fa-chevron-right"></i>
-    </a></div>
-    </div>
-      </footer>
-    
-  </article>
-  
-  
-  
-
-
-
-          </div>
-          
-
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
-
-        </div>
-          
-  
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
-  </div>
-
-  <aside class="sidebar">
-    <div class="sidebar-inner">
-
-      <ul class="sidebar-nav motion-element">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Fuzzing-Test"><span class="nav-number">1.</span> <span class="nav-text">Fuzzing Test</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Fuzzing-Test-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.1.</span> <span class="nav-text">Fuzzing Test 简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8D%E5%8F%98%E9%87%8F%E5%92%8C%E5%B1%9E%E6%80%A7"><span class="nav-number">1.2.</span> <span class="nav-text">不变量和属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Stateless-Fuzzing"><span class="nav-number">1.3.</span> <span class="nav-text">Stateless Fuzzing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Stateful-Fuzzing"><span class="nav-number">1.4.</span> <span class="nav-text">Stateful Fuzzing</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%89%E6%9D%A1%E4%BB%B6%E7%9A%84-input"><span class="nav-number">1.4.1.</span> <span class="nav-text">有条件的 input</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Handler-Stateful-fuzzing"><span class="nav-number">1.5.</span> <span class="nav-text">Handler Stateful fuzzing</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Handler-%E5%90%88%E7%BA%A6"><span class="nav-number">1.5.1.</span> <span class="nav-text">Handler 合约</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Invariant-%E5%90%88%E7%BA%A6"><span class="nav-number">1.5.2.</span> <span class="nav-text">Invariant 合约</span></a></li></ol></li></ol></li></ol></div>
-      </div>
-      <!--/noindex-->
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="Q1ngying"
-      src="/images/avatar.jpg">
-  <p class="site-author-name" itemprop="name">Q1ngying</p>
-  <div class="site-description" itemprop="description"></div>
-</div>
-<div class="site-state-wrap motion-element">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives/">
-        
-          <span class="site-state-item-count">76</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-          
-        <span class="site-state-item-count">29</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-          
-        <span class="site-state-item-count">29</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
-</div>
-  <div class="links-of-author motion-element">
-      <span class="links-of-author-item">
-        <a href="https://github.com/q1ngying" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;q1ngying" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="mailto:q1ngying@163.com" title="E-Mail → mailto:q1ngying@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="https://twitter.com/Q1ngYing" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;Q1ngYing" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="https://instagram.com/" title="Instagram → https:&#x2F;&#x2F;instagram.com&#x2F;" rel="noopener" target="_blank"><i class="fab fa-instagram fa-fw"></i>Instagram</a>
-      </span>
-  </div>
-
-
-
-      </div>
-
-    </div>
-  </aside>
-  <div id="sidebar-dimmer"></div>
-
-
-      </div>
-    </main>
-
-    <footer class="footer">
-      <div class="footer-inner">
-        
-
-        
-
-<div class="copyright">
-  
-  &copy; 2023-09 – 
-  <span itemprop="copyrightYear">2024</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">Q1ngying</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-chart-area"></i>
-    </span>
-      <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">195k</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-coffee"></i>
-    </span>
-      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">10:51</span>
-</div>
-
-<div class="powered-by">
-    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-    <i class="fa fa-user-md"></i>
-    <span id="busuanzi_container_site_uv">
-        本站访客数:<span id="busuanzi_value_site_uv"></span>人
-    </span>
-    <span class="post-meta-divider">|</span>
-    <span id="busuanzi_container_site_pv">
-        本站访问量<span id="busuanzi_value_site_pv"></span>人次
-    </span>
-</div>
-
-        
-
-
-
-
-
-
-
-
-      </div>
-    </footer>
-  </div>
-
-  
-  
-  <script color='255,201,74' opacity='1' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
-
-<script src="/js/utils.js"></script>
-
-<script src="/js/motion.js"></script>
-
-
-<script src="/js/schemes/pisces.js"></script>
-
-
-<script src="/js/next-boot.js"></script>
-
-
-
-
-  
-  <script>
-    (function(){
-      var canonicalURL, curProtocol;
-      //Get the <link> tag
-      var x=document.getElementsByTagName("link");
-		//Find the last canonical URL
-		if(x.length > 0){
-			for (i=0;i<x.length;i++){
-				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
-					canonicalURL=x[i].href;
-				}
-			}
-		}
-    //Get protocol
-	    if (!canonicalURL){
-	    	curProtocol = window.location.protocol.split(':')[0];
-	    }
-	    else{
-	    	curProtocol = canonicalURL.split(':')[0];
-	    }
-      //Get current URL if the canonical URL does not exist
-	    if (!canonicalURL) canonicalURL = window.location.href;
-	    //Assign script content. Replace current URL with the canonical URL
-      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
-  </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-
-  
-
-</body>
-</html>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// SPDX-License-Identifier: SEE LICENSE IN LICENSE</span>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.8.20</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>Test<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"forge-std/Test.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>StdInvariant<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"forge-std/StdInvariant.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>HandlerStatefulFuzzCatches<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"../../../src/invariant-break/HandlerStatefulFuzzCatches.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>MockUSDC<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"../../mocks/MockUSDC.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>YeildERC20<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"../../mocks/YeildERC20.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>IERC20<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"@openzeppelin/contracts/token/ERC20/ERC20.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>Handler<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"./Handler.t.sol"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">contract</span> <span class="token class-name">AttemptedBreakTest</span> <span class="token keyword">is</span> StdInvariant<span class="token punctuation">,</span> Test <span class="token punctuation">&#123;</span>
+    HandlerStatefulFuzzCatches handlerStatefulFuzzCatches<span class="token punctuation">;</span>
+    YeildERC20 yeildERC20<span class="token punctuation">;</span>
+    MockUSDC mockUSDC<span class="token punctuation">;</span>
+    IERC20<span class="token punctuation">[</span><span class="token punctuation">]</span> supposedTokens<span class="token punctuation">;</span>
+    <span class="token builtin">uint256</span> startingAmount<span class="token punctuation">;</span>
+
+    <span class="token comment">// 这次的 fuzzing test 需要一个用户来进行存款，取款，所以我们可以通过 Foundry cheatcode 来创建一个用户</span>
+    <span class="token builtin">address</span> user <span class="token operator">=</span> <span class="token function">makeAddr</span><span class="token punctuation">(</span><span class="token string">"user"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    Handler handler<span class="token punctuation">;</span>
+
+    <span class="token keyword">function</span> <span class="token function">setUp</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        <span class="token comment">// 使用 cheatcode，这样能把下面这些合约的 msg.sender 设置为 `user`</span>
+        vm<span class="token punctuation">.</span><span class="token function">startPrank</span><span class="token punctuation">(</span>user<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        yeildERC20 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">YeildERC20</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        mockUSDC <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">MockUSDC</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        startingAmount <span class="token operator">=</span> yeildERC20<span class="token punctuation">.</span><span class="token function">INITIAL_SUPPLY</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        mockUSDC<span class="token punctuation">.</span><span class="token function">mint</span><span class="token punctuation">(</span>user<span class="token punctuation">,</span> startingAmount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        vm<span class="token punctuation">.</span><span class="token function">stopPrank</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        supposedTokens<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>mockUSDC<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        supposedTokens<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>yeildERC20<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        handlerStatefulFuzzCatches <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HandlerStatefulFuzzCatches</span><span class="token punctuation">(</span>supposedTokens<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// handler fuzzing test 不再像 open stateful fuzzing 直接对要进行模糊测试的合约进行 fuzzing，而是通过 handler 再 待测试合约的方式</span>
+        <span class="token comment">// targetContract(address(handlerStatefulFuzzCatches));</span>
+        handler <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Handler</span><span class="token punctuation">(</span>handlerStatefulFuzzCatches<span class="token punctuation">,</span> mockUSDC<span class="token punctuation">,</span> yeildERC20<span class="token punctuation">,</span> user<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 告诉 Foundry 我们要调用的函数选择器</span>
+        <span class="token builtin">bytes4</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token keyword">memory</span> selectors <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">bytes4</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        selectors<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> handler<span class="token punctuation">.</span>depositYeildERC20<span class="token punctuation">.</span>selector<span class="token punctuation">;</span>
+        selectors<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">=</span> handler<span class="token punctuation">.</span>depositMockUSDC<span class="token punctuation">.</span>selector<span class="token punctuation">;</span>
+        selectors<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span> <span class="token operator">=</span> handler<span class="token punctuation">.</span>withdrawMockUSDC<span class="token punctuation">.</span>selector<span class="token punctuation">;</span>
+        selectors<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span> <span class="token operator">=</span> handler<span class="token punctuation">.</span>withdrawYeildERC20<span class="token punctuation">.</span>selector<span class="token punctuation">;</span>
+
+        <span class="token function">targetSelector</span><span class="token punctuation">(</span><span class="token function">FuzzSelector</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>addr<span class="token punctuation">:</span> <span class="token builtin">address</span><span class="token punctuation">(</span>handler<span class="token punctuation">)</span><span class="token punctuation">,</span> selectors<span class="token punctuation">:</span> selectors<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">targetContract</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span>handler<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">invariant_testInvaraintHandler</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        vm<span class="token punctuation">.</span><span class="token function">startPrank</span><span class="token punctuation">(</span>user<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        handlerStatefulFuzzCatches<span class="token punctuation">.</span><span class="token function">withdrawToken</span><span class="token punctuation">(</span>mockUSDC<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        handlerStatefulFuzzCatches<span class="token punctuation">.</span><span class="token function">withdrawToken</span><span class="token punctuation">(</span>yeildERC20<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        vm<span class="token punctuation">.</span><span class="token function">stopPrank</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">assert</span><span class="token punctuation">(</span>mockUSDC<span class="token punctuation">.</span><span class="token function">balanceOf</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span>handlerStatefulFuzzCatches<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">assert</span><span class="token punctuation">(</span>yeildERC20<span class="token punctuation">.</span><span class="token function">balanceOf</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span>handlerStatefulFuzzCatches<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">assert</span><span class="token punctuation">(</span>mockUSDC<span class="token punctuation">.</span><span class="token function">balanceOf</span><span class="token punctuation">(</span>user<span class="token punctuation">)</span> <span class="token operator">==</span> startingAmount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">assert</span><span class="token punctuation">(</span>yeildERC20<span class="token punctuation">.</span><span class="token function">balanceOf</span><span class="token punctuation">(</span>user<span class="token punctuation">)</span> <span class="token operator">==</span> startingAmount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://q1ngying.cn">Q1ngying</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://q1ngying.cn/2024/04/25/FuzzingTest%E8%BF%9B%E9%98%B6/">https://q1ngying.cn/2024/04/25/FuzzingTest%E8%BF%9B%E9%98%B6/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://q1ngying.cn" target="_blank">Q1ngying</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Solidity/">Solidity</a><a class="post-meta__tags" href="/tags/Foundry/">Foundry</a><a class="post-meta__tags" href="/tags/Fuzz/">Fuzz</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="prev-post pull-left" href="/2024/04/25/SolidityTest%E5%88%86%E7%B1%BB/" title="SolidityTest分类"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">SolidityTest分类</div></div></a><a class="next-post pull-right" href="/2024/04/25/%E6%B0%B8%E7%BB%AD%E5%90%88%E7%BA%A6%E5%9F%BA%E7%A1%80/" title="永续合约基础"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">永续合约基础</div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a href="/2024/01/09/Foundry%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8/" title="Foundry模糊测试入门"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-01-09</div><div class="title">Foundry模糊测试入门</div></div></a><a href="/2024/04/25/SolidityTest%E5%88%86%E7%B1%BB/" title="SolidityTest分类"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-04-25</div><div class="title">SolidityTest分类</div></div></a><a href="/2024/04/17/Test/" title="Test分类"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-04-17</div><div class="title">Test分类</div></div></a><a href="/2023/12/20/Foundry-Test%E8%B0%83%E8%AF%95/" title="Foundry Test调试"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-12-20</div><div class="title">Foundry Test调试</div></div></a><a href="/2023/12/20/Foundry%E4%BD%9C%E5%BC%8A%E7%A0%81/" title="Foundry作弊码"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-12-20</div><div class="title">Foundry作弊码</div></div></a><a href="/2023/10/26/Foundry%E5%85%A5%E9%97%A8/" title="Foundry入门"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-10-26</div><div class="title">Foundry入门</div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info is-center"><div class="avatar-img"><img src="/img/butterfly-icon.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Q1ngying</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">29</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/q1ngying"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/q1ngying" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="https://weibo.com" target="_blank" title="微博"><i class="fab fa-weibo" style="color: #24292e;"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Fuzzing-Test"><span class="toc-number">1.</span> <span class="toc-text">Fuzzing Test</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Fuzzing-Test-%E7%AE%80%E4%BB%8B"><span class="toc-number">1.1.</span> <span class="toc-text">Fuzzing Test 简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8D%E5%8F%98%E9%87%8F%E5%92%8C%E5%B1%9E%E6%80%A7"><span class="toc-number">1.2.</span> <span class="toc-text">不变量和属性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Stateless-Fuzzing"><span class="toc-number">1.3.</span> <span class="toc-text">Stateless Fuzzing</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Stateful-Fuzzing"><span class="toc-number">1.4.</span> <span class="toc-text">Stateful Fuzzing</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%89%E6%9D%A1%E4%BB%B6%E7%9A%84-input"><span class="toc-number">1.4.1.</span> <span class="toc-text">有条件的 input</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Handler-Stateful-fuzzing"><span class="toc-number">1.5.</span> <span class="toc-text">Handler Stateful fuzzing</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Handler-%E5%90%88%E7%BA%A6"><span class="toc-number">1.5.1.</span> <span class="toc-text">Handler 合约</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Invariant-%E5%90%88%E7%BA%A6"><span class="toc-number">1.5.2.</span> <span class="toc-text">Invariant 合约</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/17/MakerDAO-Abacus/" title="MakerDAO-Abacus">MakerDAO-Abacus</a><time datetime="2024-07-17T07:06:42.000Z" title="发表于 2024-07-17 15:06:42">2024-07-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/17/MakerDAO-Clip/" title="MakerDAO-Clip">MakerDAO-Clip</a><time datetime="2024-07-17T07:06:32.000Z" title="发表于 2024-07-17 15:06:32">2024-07-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/15/MakerDAO-Join/" title="MakerDAO-Join">MakerDAO-Join</a><time datetime="2024-07-15T07:34:45.000Z" title="发表于 2024-07-15 15:34:45">2024-07-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/15/MakerDAO-Vat/" title="MakerDAO-Vat">MakerDAO-Vat</a><time datetime="2024-07-15T07:34:34.000Z" title="发表于 2024-07-15 15:34:34">2024-07-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/06/11/Storage%20%E8%BF%9B%E9%98%B6%E2%80%94%E2%80%94%E9%80%9A%E8%BF%87%E5%BC%95%E7%94%A8%20Storage%20%E6%8F%90%E9%AB%98%20gas%20%E5%88%A9%E7%94%A8%E7%8E%87/" title="Storage 进阶——通过引用 Storage 提高 gas 利用率">Storage 进阶——通过引用 Storage 提高 gas 利用率</a><time datetime="2024-06-11T09:13:23.000Z" title="发表于 2024-06-11 17:13:23">2024-06-11</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/back1.webp);"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By Q1ngying</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div></div></body></html>

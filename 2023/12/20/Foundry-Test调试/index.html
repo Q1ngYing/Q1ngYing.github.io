@@ -1,35 +1,11 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 6.3.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/icons8-clover-ios-16-glyph-32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/icons8-clover-ios-16-glyph-16.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
-
-<link rel="stylesheet" href="/css/main.css">
-
-<link rel="stylesheet" href="//fonts.lug.ustc.edu.cn/css?family=Garamond:300,300italic,400,400italic,700,700italic|Courier New:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
-  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
-  <script src="/lib/pace/pace.min.js"></script>
-
-<script id="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"q1ngying.cn","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
-  </script>
-
-  <meta name="description" content="Foundry Test 调试在 Foundry 中进行测试时，如果不指定链，Foundry 会自动启动一个 anvil 链。 每次进行Foundry 测试时，都会首先调用 setUp 函数，并且每次调试都不会保留上次调试的数据。，这就涉及到为什么使用prank将makeAddr出来的账户设置为msg.sender（原因之一），以及将vm.deal(user, balance)放在 setUp 函">
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Foundry Test调试 | Q1ngying</title><meta name="author" content="Q1ngying"><meta name="copyright" content="Q1ngying"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Foundry Test 调试在 Foundry 中进行测试时，如果不指定链，Foundry 会自动启动一个 anvil 链。 每次进行Foundry 测试时，都会首先调用 setUp 函数，并且每次调试都不会保留上次调试的数据。，这就涉及到为什么使用prank将makeAddr出来的账户设置为msg.sender（原因之一），以及将vm.deal(user, balance)放在 setUp 函">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Foundry Test调试">
-<meta property="og:url" content="http://q1ngying.cn/2023/12/20/Foundry-Test%E8%B0%83%E8%AF%95/index.html">
+<meta property="og:url" content="https://q1ngying.cn/2023/12/20/Foundry-Test%E8%B0%83%E8%AF%95/index.html">
 <meta property="og:site_name" content="Q1ngying">
 <meta property="og:description" content="Foundry Test 调试在 Foundry 中进行测试时，如果不指定链，Foundry 会自动启动一个 anvil 链。 每次进行Foundry 测试时，都会首先调用 setUp 函数，并且每次调试都不会保留上次调试的数据。，这就涉及到为什么使用prank将makeAddr出来的账户设置为msg.sender（原因之一），以及将vm.deal(user, balance)放在 setUp 函">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://q1ngying.cn/images/Foundry-Test%E8%B0%83%E8%AF%95/image-20231016145433438.png">
+<meta property="og:image" content="https://q1ngying.cn/img/butterfly-icon.jpg">
 <meta property="article:published_time" content="2023-12-20T12:11:00.000Z">
 <meta property="article:modified_time" content="2023-12-20T12:11:38.967Z">
 <meta property="article:author" content="Q1ngying">
@@ -37,220 +13,174 @@
 <meta property="article:tag" content="Solidity">
 <meta property="article:tag" content="Foundry">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://q1ngying.cn/images/Foundry-Test%E8%B0%83%E8%AF%95/image-20231016145433438.png">
+<meta name="twitter:image" content="https://q1ngying.cn/img/butterfly-icon.jpg"><link rel="shortcut icon" href="/img/icons8-clover-ios-16-glyph-32.png"><link rel="canonical" href="https://q1ngying.cn/2023/12/20/Foundry-Test%E8%B0%83%E8%AF%95/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><meta name="google-site-verification" content="IzCM4B791_p7IAU4WhRfiLlP"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
 
-<link rel="canonical" href="http://q1ngying.cn/2023/12/20/Foundry-Test%E8%B0%83%E8%AF%95/">
-
-
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : true,
-    lang   : 'zh-CN'
-  };
-</script>
-
-  <title>Foundry Test调试 | Q1ngying</title>
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
   
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
 
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
 
-
-
-
-
-  <noscript>
-  <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
-
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
-
-<!-- hexo injector head_end start -->
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Foundry Test调试',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-12-20 20:11:38'
+}</script><!-- hexo injector head_end start -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
-<!-- hexo injector head_end end --></head>
-
-<body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
-
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
-    </div>
-  </div>
-
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">Q1ngying</h1>
-      <span class="logo-line-after"><i></i></span>
-    </a>
-      <p class="site-subtitle" itemprop="description">今朝梦醒与君别，遥盼春风寄相思</p>
-  </div>
-
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
-    </div>
-  </div>
-</div>
-
-
-
-
-<nav class="site-nav">
-  <ul id="menu" class="main-menu menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
-
-  </li>
-        <li class="menu-item menu-item-about">
-
-    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
-
-  </li>
-  </ul>
-</nav>
-
-
-
-
-</div>
-    </header>
-
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-  <div class="reading-progress-bar"></div>
-
-
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-
-          <div class="content post posts-expand">
-            
-
-    
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://q1ngying.cn/2023/12/20/Foundry-Test%E8%B0%83%E8%AF%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Q1ngying">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Q1ngying">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          Foundry Test调试
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2023-12-20 20:11:00 / 修改时间：20:11:38" itemprop="dateCreated datePublished" datetime="2023-12-20T20:11:00+08:00">2023-12-20</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Solidity/" itemprop="url" rel="index"><span itemprop="name">Solidity</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Foundry/" itemprop="url" rel="index"><span itemprop="name">Foundry</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>3.2k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>11 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-        <h1 id="Foundry-Test-调试"><a href="#Foundry-Test-调试" class="headerlink" title="Foundry Test 调试"></a>Foundry Test 调试</h1><p><strong>在 Foundry 中进行测试时，如果不指定链，Foundry 会自动启动一个 anvil 链。</strong></p>
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/butterfly-icon.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">29</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/back1.webp);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Q1ngying</span></a><a class="nav-page-title" href="/"><span class="site-name">Foundry Test调试</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Foundry Test调试</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-12-20T12:11:00.000Z" title="发表于 2023-12-20 20:11:00">2023-12-20</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-12-20T12:11:38.967Z" title="更新于 2023-12-20 20:11:38">2023-12-20</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Solidity/">Solidity</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Foundry/">Foundry</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">48k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>2:40分钟</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Foundry-Test-调试"><a href="#Foundry-Test-调试" class="headerlink" title="Foundry Test 调试"></a>Foundry Test 调试</h1><p><strong>在 Foundry 中进行测试时，如果不指定链，Foundry 会自动启动一个 anvil 链。</strong></p>
 <p><strong>每次进行Foundry 测试时，都会首先调用 <code>setUp</code> 函数，并且每次调试都不会保留上次调试的数据。</strong>，这就涉及到为什么使用<code>prank</code>将<code>makeAddr</code>出来的账户设置为<code>msg.sender</code>（原因之一），<strong>以及将<code>vm.deal(user, balance)</code>放在 <code>setUp</code> 函数里面。</strong></p>
-<h2 id="forge-test-参数"><a href="#forge-test-参数" class="headerlink" title="forge test 参数"></a>forge test 参数</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">forge <span class="built_in">test</span> <span class="comment"># 进行所有的测试</span></span><br><span class="line">forge <span class="built_in">test</span> -vv <span class="comment"># 改变可见性，v越多可见性越高</span></span><br><span class="line"><span class="comment"># 如果我们在测试的时候没有为其提供 RPC URL 时，他会启动一个全新的空白 anvil 链进行测试</span></span><br><span class="line">fork <span class="built_in">test</span> --fork-url <span class="string">&quot;url&quot;</span> </span><br><span class="line"><span class="comment"># 上述命令中，anvil 被启动，但他会使用 Sepolia RPC URL 的副本来运行，他会启动一个 anvil 链，并模拟所有的交易，就像它们在 Sepolia 链上运行一样，他会假装部署和读取 Sepolia 链上的内容，而不是一个完全空白的链</span></span><br><span class="line">--fail-fast 快速失败，第一次失败后停止测试</span><br><span class="line">--gas-report 打印 gas 报告</span><br><span class="line">--match-test &lt;正则表达式&gt;，仅运行与指定正则表达式匹配的测试函数，(别名--mt)</span><br><span class="line">--no-match-test &lt;正则表达式&gt;，仅运行与指定正则表达式不匹配的合约测试，(别名--nmt)</span><br><span class="line">--match-contract &lt;正则表达式&gt;，仅运行与指定正则表达式匹配的合约测试，(别名-mc)</span><br><span class="line">--NO-match-contract &lt;正则表达式&gt;，仅运行与指定正则表达式不匹配的合约测试，(别名-nmc)</span><br><span class="line">-f</span><br><span class="line">--fork-url &lt;URL&gt; 通过远程端点获取状态而不是从一个空的状态</span><br><span class="line">--fork-block-number &lt;块&gt; 通过远程从特定块号获取状态端点。</span><br><span class="line">-v EVM 的详细程度。</span><br><span class="line">多次传递以增加详细程度（例如 -v、-vv、-vvv）。</span><br><span class="line">详细程度：</span><br><span class="line">- 2：打印所有测试的日志</span><br><span class="line">- 3：打印失败测试的执行跟踪</span><br><span class="line">- 4：打印所有测试的执行跟踪以及设置跟踪对于失败的测试</span><br><span class="line">- 5：打印所有测试的执行和设置跟踪</span><br><span class="line">forge coverage : 可以查看实际测试套件中实际测试了多少代码</span><br></pre></td></tr></table></figure>
-
+<h2 id="forge-test-参数"><a href="#forge-test-参数" class="headerlink" title="forge test 参数"></a>forge test 参数</h2><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">forge <span class="token builtin class-name">test</span> <span class="token comment"># 进行所有的测试</span>
+forge <span class="token builtin class-name">test</span> <span class="token parameter variable">-vv</span> <span class="token comment"># 改变可见性，v越多可见性越高</span>
+<span class="token comment"># 如果我们在测试的时候没有为其提供 RPC URL 时，他会启动一个全新的空白 anvil 链进行测试</span>
+fork <span class="token builtin class-name">test</span> --fork-url <span class="token string">"url"</span> 
+<span class="token comment"># 上述命令中，anvil 被启动，但他会使用 Sepolia RPC URL 的副本来运行，他会启动一个 anvil 链，并模拟所有的交易，就像它们在 Sepolia 链上运行一样，他会假装部署和读取 Sepolia 链上的内容，而不是一个完全空白的链</span>
+--fail-fast 快速失败，第一次失败后停止测试
+--gas-report 打印 gas 报告
+--match-test <span class="token operator">&lt;</span>正则表达式<span class="token operator">></span>，仅运行与指定正则表达式匹配的测试函数，<span class="token punctuation">(</span>别名--mt<span class="token punctuation">)</span>
+--no-match-test <span class="token operator">&lt;</span>正则表达式<span class="token operator">></span>，仅运行与指定正则表达式不匹配的合约测试，<span class="token punctuation">(</span>别名--nmt<span class="token punctuation">)</span>
+--match-contract <span class="token operator">&lt;</span>正则表达式<span class="token operator">></span>，仅运行与指定正则表达式匹配的合约测试，<span class="token punctuation">(</span>别名-mc<span class="token punctuation">)</span>
+--NO-match-contract <span class="token operator">&lt;</span>正则表达式<span class="token operator">></span>，仅运行与指定正则表达式不匹配的合约测试，<span class="token punctuation">(</span>别名-nmc<span class="token punctuation">)</span>
+<span class="token parameter variable">-f</span>
+--fork-url <span class="token operator">&lt;</span>URL<span class="token operator">></span> 通过远程端点获取状态而不是从一个空的状态
+--fork-block-number <span class="token operator">&lt;</span>块<span class="token operator">></span> 通过远程从特定块号获取状态端点。
+<span class="token parameter variable">-v</span> EVM 的详细程度。
+多次传递以增加详细程度（例如 -v、-vv、-vvv）。
+详细程度：
+- <span class="token number">2</span>：打印所有测试的日志
+- <span class="token number">3</span>：打印失败测试的执行跟踪
+- <span class="token number">4</span>：打印所有测试的执行跟踪以及设置跟踪对于失败的测试
+- <span class="token number">5</span>：打印所有测试的执行和设置跟踪
+forge coverage <span class="token builtin class-name">:</span> 可以查看实际测试套件中实际测试了多少代码<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h2 id="forge-snapshot"><a href="#forge-snapshot" class="headerlink" title="forge snapshot"></a>forge snapshot</h2><p>forge snapshot 的作用：<strong>创建每个测试的 Gas 使用快照</strong></p>
 <p>简单使用方法：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">forge snapshot</span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">forge snapshot<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>以下描述来自 Foundry 官方文档：</p>
 <blockquote>
 <p>创建每个测试的 Gas 使用快照。</p>
@@ -258,62 +188,186 @@
 <p>在快照中默认包括模糊测试。它们使用一个静态种子来实现确定性的结果。</p>
 <p>快照可以用 <code>--diff</code> 和 <code>--check</code> 来比较。第一个标志将输出一个差异，第二个标志将输出一个差异 <em>同时</em> 如果快照不匹配，则以代码 1 退出。</p>
 </blockquote>
-<h3 id="选项-参数"><a href="#选项-参数" class="headerlink" title="选项&amp;参数"></a>选项&amp;参数</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 选项</span></span><br><span class="line">--asc 按所用 Gas 对结果进行排序（升序）。</span><br><span class="line">--desc 按所用 Gas 对结果进行排序（降序）。</span><br><span class="line">--min min_gas 只包括使用了超过给定数量的 Gas 的测试。</span><br><span class="line">--max max_gas 只包括使用了小于给定数量的 Gas 的测试。</span><br><span class="line">--diff path</span><br><span class="line">    输出一个与预先存在的快照的差异。</span><br><span class="line">    默认情况下，比较是通过 .gas-snapshot 完成的。</span><br><span class="line">--check path</span><br><span class="line">    与预先存在的快照进行比较，如果它们不匹配，则以代码 1 退出。</span><br><span class="line">    如果快照不匹配，则输出一个差异。</span><br><span class="line">    默认情况下，比较是通过 .gas-snapshot 完成的。</span><br><span class="line">--snap path</span><br><span class="line">    快照的输出文件。默认：.gas-snapshot。</span><br><span class="line"><span class="comment"># 参数</span></span><br></pre></td></tr></table></figure>
-
+<h3 id="选项-amp-参数"><a href="#选项-amp-参数" class="headerlink" title="选项&amp;参数"></a>选项&amp;参数</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 选项</span>
+<span class="token parameter variable">--asc</span> 按所用 Gas 对结果进行排序（升序）。
+<span class="token parameter variable">--desc</span> 按所用 Gas 对结果进行排序（降序）。
+<span class="token parameter variable">--min</span> min_gas 只包括使用了超过给定数量的 Gas 的测试。
+<span class="token parameter variable">--max</span> max_gas 只包括使用了小于给定数量的 Gas 的测试。
+<span class="token parameter variable">--diff</span> path
+    输出一个与预先存在的快照的差异。
+    默认情况下，比较是通过 .gas-snapshot 完成的。
+<span class="token parameter variable">--check</span> path
+    与预先存在的快照进行比较，如果它们不匹配，则以代码 <span class="token number">1</span> 退出。
+    如果快照不匹配，则输出一个差异。
+    默认情况下，比较是通过 .gas-snapshot 完成的。
+<span class="token parameter variable">--snap</span> path
+    快照的输出文件。默认：.gas-snapshot。
+<span class="token comment"># 参数</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>其他参数：<a target="_blank" rel="noopener" href="https://learnblockchain.cn/docs/foundry/i18n/zh/reference/forge/forge-snapshot.html">https://learnblockchain.cn/docs/foundry/i18n/zh/reference/forge/forge-snapshot.html</a></p>
 <h2 id="forge-coverage"><a href="#forge-coverage" class="headerlink" title="forge coverage"></a>forge coverage</h2><p>forge coverage 的作用：计算当前合约测试的覆盖率并输出。</p>
-<h3 id="选项-参数-1"><a href="#选项-参数-1" class="headerlink" title="选项&amp;参数"></a>选项&amp;参数</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">--report允许您指定要使用的报告类型覆盖范围。该标志可以多次使用。</span><br><span class="line"></span><br><span class="line">它具有三个不同的选项，并且默认设置为summary。</span><br><span class="line">summary    输出一个图表，显示测试覆盖了代码的百分比。</span><br><span class="line">lcov    创建一个 lcov.info 文件，其中包含您的覆盖范围数据位于项目目录的根目录中。</span><br><span class="line">debug    输出描述未覆盖代码位置的行。</span><br></pre></td></tr></table></figure>
+<h3 id="选项-amp-参数-1"><a href="#选项-amp-参数-1" class="headerlink" title="选项&amp;参数"></a>选项&amp;参数</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">--report允许您指定要使用的报告类型覆盖范围。该标志可以多次使用。
 
+它具有三个不同的选项，并且默认设置为summary。
+summary    输出一个图表，显示测试覆盖了代码的百分比。
+lcov    创建一个 lcov.info 文件，其中包含您的覆盖范围数据位于项目目录的根目录中。
+debug    输出描述未覆盖代码位置的行。<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>可以联合重定向符号，将覆盖范围数据存储到 txt 文件中。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">forge --report debug &gt; coverage.txt</span><br></pre></td></tr></table></figure>
-
-
-
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">forge <span class="token parameter variable">--report</span> debug <span class="token operator">></span> coverage.txt<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <h2 id="基本测试"><a href="#基本测试" class="headerlink" title="基本测试"></a>基本测试</h2><p>在 Foundry 框架中，有一些内置库和工具可以十分方便的测试合约，所以在编写一个测试合约的时候大致框架如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">import &#123;Test&#125; from &quot;forge-std/Test.sol&quot;</span><br><span class="line"></span><br><span class="line">contract Name is Test &#123;</span><br><span class="line">	function setUp() external &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line">    // 我们可以进行以下四种测试：</span><br><span class="line">    // 1. 单元测试</span><br><span class="line">    //   - 测试代码中的一个特定部分</span><br><span class="line">    // 2. 集成测试</span><br><span class="line">    //   - 测试多个不同合约是否能够正确地协同工作</span><br><span class="line">    // 3. Fork测试（可以认为时单元/集成测试的一部分）</span><br><span class="line">    //   - 模拟在真实环境中对代码进行测试</span><br><span class="line">    // 4. Staging 测试</span><br><span class="line">    //   - 将代码部署到测试网或者主网之类的环境中，并在这个真实环境中运行所有测试以确保事情能够正常工作</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.8.0</span><span class="token punctuation">;</span>
 
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>Test<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"forge-std/Test.sol"</span>
+
+<span class="token keyword">contract</span> <span class="token class-name">Name</span> <span class="token keyword">is</span> Test <span class="token punctuation">&#123;</span>
+	<span class="token keyword">function</span> <span class="token function">setUp</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+    <span class="token comment">// 我们可以进行以下四种测试：</span>
+    <span class="token comment">// 1. 单元测试</span>
+    <span class="token comment">//   - 测试代码中的一个特定部分</span>
+    <span class="token comment">// 2. 集成测试</span>
+    <span class="token comment">//   - 测试多个不同合约是否能够正确地协同工作</span>
+    <span class="token comment">// 3. Fork测试（可以认为时单元/集成测试的一部分）</span>
+    <span class="token comment">//   - 模拟在真实环境中对代码进行测试</span>
+    <span class="token comment">// 4. Staging 测试</span>
+    <span class="token comment">//   - 将代码部署到测试网或者主网之类的环境中，并在这个真实环境中运行所有测试以确保事情能够正常工作</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="简单的测试（从-setUp-开始）"><a href="#简单的测试（从-setUp-开始）" class="headerlink" title="简单的测试（从 setUp 开始）"></a>简单的测试（从 <code>setUp</code> 开始）</h3><p>在所有的测试中，第一件都是设置 setUp() 函数，在这里部署合约，然后就可以写需要进行的测试，举例：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">import &#123;Test&#125; from &quot;forge-std/Test.sol&quot;</span><br><span class="line"></span><br><span class="line">contract Name is Test &#123;</span><br><span class="line">	uint number = 1;</span><br><span class="line">	</span><br><span class="line">	function setUp() external &#123;</span><br><span class="line">		number = 2;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	function testDemo() public &#123;</span><br><span class="line">		assertEq(number, 2);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.8.0</span><span class="token punctuation">;</span>
 
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>Test<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"forge-std/Test.sol"</span>
+
+<span class="token keyword">contract</span> <span class="token class-name">Name</span> <span class="token keyword">is</span> Test <span class="token punctuation">&#123;</span>
+	<span class="token builtin">uint</span> number <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+	
+	<span class="token keyword">function</span> <span class="token function">setUp</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token punctuation">&#123;</span>
+		number <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+	
+	<span class="token keyword">function</span> <span class="token function">testDemo</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+		<span class="token function">assertEq</span><span class="token punctuation">(</span>number<span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>测试结果：</p>
-<p><img src="/../images/Foundry-Test%E8%B0%83%E8%AF%95/image-20231016145433438.png" alt="image-20231016145433438"></p>
+<p><img src="../images/Foundry-Test调试/image-20231016145433438.png" alt="image-20231016145433438"></p>
 <h3 id="console-log-测试、调试"><a href="#console-log-测试、调试" class="headerlink" title="console.log 测试、调试"></a>console.log 测试、调试</h3><p>另一种测试和调试的方法是使用<code>console.log</code>,Test是一个很大的库，还有另一个库叫做 <code>console</code>：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line"></span><br><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">import &#123;Test, console&#125; from &quot;forge-std/Test.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract FundMeTest is Test &#123;</span><br><span class="line"></span><br><span class="line">    uint number = 1;</span><br><span class="line"></span><br><span class="line">    function setUp() external &#123;</span><br><span class="line">        number = 2;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function testDemo() external &#123;</span><br><span class="line">        console.log(number);</span><br><span class="line">        console.log(&quot;Hello!&quot;);</span><br><span class="line">        assertEq(number, 2);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// SPDX-License-Identifier: MIT</span>
 
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.8.0</span><span class="token punctuation">;</span>
 
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>Test<span class="token punctuation">,</span> console<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"forge-std/Test.sol"</span><span class="token punctuation">;</span>
 
+<span class="token keyword">contract</span> <span class="token class-name">FundMeTest</span> <span class="token keyword">is</span> Test <span class="token punctuation">&#123;</span>
+
+    <span class="token builtin">uint</span> number <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">function</span> <span class="token function">setUp</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token punctuation">&#123;</span>
+        number <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">testDemo</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token punctuation">&#123;</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>number<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"Hello!"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">assertEq</span><span class="token punctuation">(</span>number<span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h2 id="Arrange、Act、Assert-测试方法"><a href="#Arrange、Act、Assert-测试方法" class="headerlink" title="Arrange、Act、Assert 测试方法"></a>Arrange、Act、Assert 测试方法</h2><p>首先安排测试环境（Arrange），然后考虑要测试的操作（Act），最后进行测试断言（Assert）。</p>
 <p><strong>举例：(对 FundMe 合约的 withDrawWithSingleFunder函数 进行调试)</strong></p>
 <p>这里的 funded 就是这里举例的 modifier</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">function testWithDrawWithSignleFunder() public funded &#123;</span><br><span class="line">	// Arrange</span><br><span class="line">	uint256 startingOwnerBalance = fundMe.getOwner().balance;</span><br><span class="line">	uint256 startingFundMeBalance = address(fundMe).balance;</span><br><span class="line">	</span><br><span class="line">	// Act</span><br><span class="line">	vm.prank(fundMe.getOwner());</span><br><span class="line">	fundMe.withdraw();</span><br><span class="line">	</span><br><span class="line">	// Assert</span><br><span class="line">	uint256 endingOwnerBalance = fundMe.getOwner(),balance;</span><br><span class="line">	uint256 endingFundMeBalance = address(fundMe).balancec;</span><br><span class="line">	assertEq(endingFundMeBalance, 0);</span><br><span class="line">	assertEq(</span><br><span class="line">		startingFundMeBalance + startingOwnerBalance,</span><br><span class="line">		endingOwnerBalance</span><br><span class="line">	);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">testWithDrawWithSignleFunder</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> funded <span class="token punctuation">&#123;</span>
+	<span class="token comment">// Arrange</span>
+	<span class="token builtin">uint256</span> startingOwnerBalance <span class="token operator">=</span> fundMe<span class="token punctuation">.</span><span class="token function">getOwner</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>balance<span class="token punctuation">;</span>
+	<span class="token builtin">uint256</span> startingFundMeBalance <span class="token operator">=</span> <span class="token builtin">address</span><span class="token punctuation">(</span>fundMe<span class="token punctuation">)</span><span class="token punctuation">.</span>balance<span class="token punctuation">;</span>
+	
+	<span class="token comment">// Act</span>
+	vm<span class="token punctuation">.</span><span class="token function">prank</span><span class="token punctuation">(</span>fundMe<span class="token punctuation">.</span><span class="token function">getOwner</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	fundMe<span class="token punctuation">.</span><span class="token function">withdraw</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	<span class="token comment">// Assert</span>
+	<span class="token builtin">uint256</span> endingOwnerBalance <span class="token operator">=</span> fundMe<span class="token punctuation">.</span><span class="token function">getOwner</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>balance<span class="token punctuation">;</span>
+	<span class="token builtin">uint256</span> endingFundMeBalance <span class="token operator">=</span> <span class="token builtin">address</span><span class="token punctuation">(</span>fundMe<span class="token punctuation">)</span><span class="token punctuation">.</span>balancec<span class="token punctuation">;</span>
+	<span class="token function">assertEq</span><span class="token punctuation">(</span>endingFundMeBalance<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">assertEq</span><span class="token punctuation">(</span>
+		startingFundMeBalance <span class="token operator">+</span> startingOwnerBalance<span class="token punctuation">,</span>
+		endingOwnerBalance
+	<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h2 id="模糊测试（fuzz）"><a href="#模糊测试（fuzz）" class="headerlink" title="模糊测试（fuzz）"></a>模糊测试（fuzz）</h2><h2 id="测试是否按照预期回滚"><a href="#测试是否按照预期回滚" class="headerlink" title="测试是否按照预期回滚"></a>测试是否按照预期回滚</h2><p>测试交易是否会按照预期回滚会使用<code>vm.expectRevert()</code>这个作弊码来实现。具体关于这个作弊码查看<strong>Foundry作弊码部分</strong>。</p>
 <p>这里<strong>涉及到自定义错误时</strong>，可以使用下面的方法：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">function testCantEnterWhenRaffleIsCalculating() public &#123;</span><br><span class="line">    vm.prank(PLAYER);</span><br><span class="line">    raffle.enterRaffle&#123;value: entranceFee&#125;();</span><br><span class="line">    vm.warp(block.timestamp + interval + 1);</span><br><span class="line">    vm.roll(block.number + 1);</span><br><span class="line">    raffle.performUpkeep(&quot;&quot;);</span><br><span class="line"></span><br><span class="line">    vm.expectRevert(Raffle.Raffle__RaffleNotOpen.selector);</span><br><span class="line">    vm.prank(PLAYER);</span><br><span class="line">    raffle.enterRaffle&#123;value: entranceFee&#125;();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">testCantEnterWhenRaffleIsCalculating</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+    vm<span class="token punctuation">.</span><span class="token function">prank</span><span class="token punctuation">(</span>PLAYER<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    raffle<span class="token punctuation">.</span>enterRaffle<span class="token punctuation">&#123;</span>value<span class="token punctuation">:</span> entranceFee<span class="token punctuation">&#125;</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    vm<span class="token punctuation">.</span><span class="token function">warp</span><span class="token punctuation">(</span>block<span class="token punctuation">.</span>timestamp <span class="token operator">+</span> interval <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    vm<span class="token punctuation">.</span><span class="token function">roll</span><span class="token punctuation">(</span>block<span class="token punctuation">.</span>number <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    raffle<span class="token punctuation">.</span><span class="token function">performUpkeep</span><span class="token punctuation">(</span><span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
+    vm<span class="token punctuation">.</span><span class="token function">expectRevert</span><span class="token punctuation">(</span>Raffle<span class="token punctuation">.</span>Raffle__RaffleNotOpen<span class="token punctuation">.</span>selector<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    vm<span class="token punctuation">.</span><span class="token function">prank</span><span class="token punctuation">(</span>PLAYER<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    raffle<span class="token punctuation">.</span>enterRaffle<span class="token punctuation">&#123;</span>value<span class="token punctuation">:</span> entranceFee<span class="token punctuation">&#125;</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p><strong>如果自定义错误还有额外的参数</strong>，就需要联合使用<code>abi</code>编码中的<code>abi.encodeWithSelector</code>：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">function testPerformUpKeeperRevertsIfcheckUpkeepIsFalse() public &#123;</span><br><span class="line">    uint256 currentBalance = 0;</span><br><span class="line">    uint256 numPlayers = 0;</span><br><span class="line">    uint256 raffleState = 0;</span><br><span class="line">    vm.expectRevert(</span><br><span class="line">    abi.encodeWithSelector(</span><br><span class="line">    Raffle.Raffle__UpkeepNotNeeded.selector,</span><br><span class="line">    currentBalance,</span><br><span class="line">    numPlayers,</span><br><span class="line">    raffleState</span><br><span class="line">    )</span><br><span class="line">    );</span><br><span class="line">    raffle.performUpkeep(&quot;&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">testPerformUpKeeperRevertsIfcheckUpkeepIsFalse</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+    <span class="token builtin">uint256</span> currentBalance <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token builtin">uint256</span> numPlayers <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token builtin">uint256</span> raffleState <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    vm<span class="token punctuation">.</span><span class="token function">expectRevert</span><span class="token punctuation">(</span>
+    abi<span class="token punctuation">.</span><span class="token function">encodeWithSelector</span><span class="token punctuation">(</span>
+    Raffle<span class="token punctuation">.</span>Raffle__UpkeepNotNeeded<span class="token punctuation">.</span>selector<span class="token punctuation">,</span>
+    currentBalance<span class="token punctuation">,</span>
+    numPlayers<span class="token punctuation">,</span>
+    raffleState
+    <span class="token punctuation">)</span>
+    <span class="token punctuation">)</span><span class="token punctuation">;</span>
+    raffle<span class="token punctuation">.</span><span class="token function">performUpkeep</span><span class="token punctuation">(</span><span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h2 id="对于调试时需要多个地址的解决方法："><a href="#对于调试时需要多个地址的解决方法：" class="headerlink" title="对于调试时需要多个地址的解决方法："></a>对于调试时需要多个地址的解决方法：</h2><p>在使用 Foundry 进行调试时，<strong>有些时候会出现需要模拟多个地址来和合约进行交互的场景</strong>，这个时候就需要善用一些 Solidity 的特性了。</p>
 <p><strong>可以通过利用 <code>for</code> 循环，加上<code>address()</code>将 <code>uint160</code> 类型的整数转换为地址的方式来实现该过程</strong></p>
 <p><strong>举例：</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">function testWithdrawFromMultipleFunders() public funded &#123;</span><br><span class="line">	uint160 numberOfFunders = 10;</span><br><span class="line">	uint160 startingFunderIndex = 1;</span><br><span class="line">	for (uint160 i = startingFunderIndex; i &lt; numberOfFunders; i++) &#123;</span><br><span class="line">		// vm.parnk new address</span><br><span class="line">		// vm.deal new address</span><br><span class="line">		// address()</span><br><span class="line">		hoax(address(i), SEND_VALUE);</span><br><span class="line">		fundMe.fund&#123;value: SEND_VALUE&#125;();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><em><strong>注意：</strong></em></p>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">testWithdrawFromMultipleFunders</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> funded <span class="token punctuation">&#123;</span>
+	<span class="token builtin">uint160</span> numberOfFunders <span class="token operator">=</span> <span class="token number">10</span><span class="token punctuation">;</span>
+	<span class="token builtin">uint160</span> startingFunderIndex <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+	<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token builtin">uint160</span> i <span class="token operator">=</span> startingFunderIndex<span class="token punctuation">;</span> i <span class="token operator">&lt;</span> numberOfFunders<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		<span class="token comment">// vm.parnk new address</span>
+		<span class="token comment">// vm.deal new address</span>
+		<span class="token comment">// address()</span>
+		<span class="token function">hoax</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">,</span> SEND_VALUE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		fundMe<span class="token punctuation">.</span>fund<span class="token punctuation">&#123;</span>value<span class="token punctuation">:</span> SEND_VALUE<span class="token punctuation">&#125;</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><strong><em>注意：</em></strong></p>
 <ul>
 <li>从 Solidity 0.8.0 版本开始，使用 <code>address()</code> 进行类型转换时，有了更严格的要求，所以要使用 <code>uint160</code> 的形式定义上面的数据</li>
 <li><code>for</code> 循环开始遍历时，不能将 <code>0</code> 作为开始，因为<code>0x0</code>地址在进行使用时，有些时候交易会发生回滚<code>revert</code></li>
 </ul>
-<h2 id="Foundry-测试时关于-Gas-相关："><a href="#Foundry-测试时关于-Gas-相关：" class="headerlink" title="Foundry 测试时关于 Gas 相关："></a>Foundry 测试时关于 Gas 相关：</h2><p>想要知道一个测试花费了多少 Gas，可以使用上面的[forge snapshot](##forge snapshot)</p>
+<h2 id="Foundry-测试时关于-Gas-相关："><a href="#Foundry-测试时关于-Gas-相关：" class="headerlink" title="Foundry 测试时关于 Gas 相关："></a>Foundry 测试时关于 Gas 相关：</h2><p>想要知道一个测试花费了多少 Gas，可以使用上面的<a href="##forge snapshot">forge snapshot</a></p>
 <p>关于测试时花费 Gas 相关问题：</p>
 <p>在调试过程中使用<code>vm.prank</code>并执行一笔交易时，我们应该花费一定的 Gas ，这与实际链上的 Gas 价格有关，当使用 anvil（Foundry 内置的本地测试链）时，默认情况下，gas 价格会被设置为 0。所以，在 anvil 本地链开发，无论是否分叉，gas 价格实际上都默认为零。<strong>为了模拟具有实际 gas 价格的交易，我们需要告诉测试模拟使用的真实的 gas 价格，可以使用一个作弊码<code>txGasPrice</code> 来设置 Gas 的值</strong></p>
 <p><strong>示例：</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">function testWithDrawWithSignleFunder() public funded &#123;</span><br><span class="line">    // Arrange</span><br><span class="line">    uint256 startingOwnerBalance = fundMe.getOwner().balance;</span><br><span class="line">    uint256 startingFundMeBalance = address(fundMe).balance;</span><br><span class="line">    </span><br><span class="line">    // Art</span><br><span class="line">    uint256 gasStart = gasleft(); // 模拟交易开始时剩余的 gas eg. 1000</span><br><span class="line">    vm.txGasPrice(GAS_PRICE); // 使用 checkcodes 设置目前的 gas price</span><br><span class="line">    vm.prank(fundMe.getOwner());</span><br><span class="line">    fundMe.withdraw(); // 这里应该实际花费多少 gas？ eg. 200</span><br><span class="line"></span><br><span class="line">    uint256 gasEnd = gasleft(); // 模拟交易后剩余的 gas // 800</span><br><span class="line">    uint256 gasUsed =  (gasStart - gasEnd) * tx.gasprice; </span><br><span class="line">    // tx.gasprice Solidity 内置函数，用于获取当前的 gas 价格 </span><br><span class="line">    console.log(gasUsed); // 输出实际花费了多少的 Gas </span><br><span class="line">    </span><br><span class="line">    // Assert</span><br><span class="line">    uint256 endingOwnerBalance = fundMe.getOwner().balance;</span><br><span class="line">    uint256 endingFundMeBalance = address(fundMe).balance;</span><br><span class="line">    assertEq(endingFundMeBalance, 0);</span><br><span class="line">    assertEq(</span><br><span class="line">        startingFundMeBalance + startingOwnerBalance,</span><br><span class="line">        endingOwnerBalance</span><br><span class="line">    );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">testWithDrawWithSignleFunder</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> funded <span class="token punctuation">&#123;</span>
+    <span class="token comment">// Arrange</span>
+    <span class="token builtin">uint256</span> startingOwnerBalance <span class="token operator">=</span> fundMe<span class="token punctuation">.</span><span class="token function">getOwner</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>balance<span class="token punctuation">;</span>
+    <span class="token builtin">uint256</span> startingFundMeBalance <span class="token operator">=</span> <span class="token builtin">address</span><span class="token punctuation">(</span>fundMe<span class="token punctuation">)</span><span class="token punctuation">.</span>balance<span class="token punctuation">;</span>
+    
+    <span class="token comment">// Art</span>
+    <span class="token builtin">uint256</span> gasStart <span class="token operator">=</span> <span class="token function">gasleft</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 模拟交易开始时剩余的 gas eg. 1000</span>
+    vm<span class="token punctuation">.</span><span class="token function">txGasPrice</span><span class="token punctuation">(</span>GAS_PRICE<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 使用 checkcodes 设置目前的 gas price</span>
+    vm<span class="token punctuation">.</span><span class="token function">prank</span><span class="token punctuation">(</span>fundMe<span class="token punctuation">.</span><span class="token function">getOwner</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    fundMe<span class="token punctuation">.</span><span class="token function">withdraw</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 这里应该实际花费多少 gas？ eg. 200</span>
 
+    <span class="token builtin">uint256</span> gasEnd <span class="token operator">=</span> <span class="token function">gasleft</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 模拟交易后剩余的 gas // 800</span>
+    <span class="token builtin">uint256</span> gasUsed <span class="token operator">=</span>  <span class="token punctuation">(</span>gasStart <span class="token operator">-</span> gasEnd<span class="token punctuation">)</span> <span class="token operator">*</span> tx<span class="token punctuation">.</span>gasprice<span class="token punctuation">;</span> 
+    <span class="token comment">// tx.gasprice Solidity 内置函数，用于获取当前的 gas 价格 </span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>gasUsed<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 输出实际花费了多少的 Gas </span>
+    
+    <span class="token comment">// Assert</span>
+    <span class="token builtin">uint256</span> endingOwnerBalance <span class="token operator">=</span> fundMe<span class="token punctuation">.</span><span class="token function">getOwner</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>balance<span class="token punctuation">;</span>
+    <span class="token builtin">uint256</span> endingFundMeBalance <span class="token operator">=</span> <span class="token builtin">address</span><span class="token punctuation">(</span>fundMe<span class="token punctuation">)</span><span class="token punctuation">.</span>balance<span class="token punctuation">;</span>
+    <span class="token function">assertEq</span><span class="token punctuation">(</span>endingFundMeBalance<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">assertEq</span><span class="token punctuation">(</span>
+        startingFundMeBalance <span class="token operator">+</span> startingOwnerBalance<span class="token punctuation">,</span>
+        endingOwnerBalance
+    <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h2 id="Foundry-Test-关于事件-event-的测试"><a href="#Foundry-Test-关于事件-event-的测试" class="headerlink" title="Foundry Test 关于事件(event)的测试"></a>Foundry Test 关于事件(<code>event</code>)的测试</h2><h3 id="Foundry-测试事件是否正常触发"><a href="#Foundry-测试事件是否正常触发" class="headerlink" title="Foundry 测试事件是否正常触发"></a>Foundry 测试事件是否正常触发</h3><p>在 Foundry 中测试时间是否正常触发需要使用一个作弊码（cheat code）<code>vm.expectEmit</code>。该作弊码有两个签名，实际上就是传入四个（或五个）这些参数对应：</p>
 <ul>
 <li>topic1、topic2、topic3：该事件是否有主题，有几个（有一个，topic1 为 <code>true</code>，其他为<code>false</code>；有两个，topic1、topic2 为 <code>true</code>，其他为<code>false</code>以此类推）</li>
@@ -328,13 +382,48 @@
 <p><strong>示例：</strong></p>
 <ul>
 <li><p>没有地址的签名：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">event Transfer(address indexed from, address indexed to, uint256 ammount);</span><br><span class="line"></span><br><span class="line">function testERC20EmitsTransfer() public &#123;</span><br><span class="line">    // 只有`from`和`to`在ERC20的“Transfer”事件中是 inded，</span><br><span class="line">    // 所以我们专门检查topics 1和2（默认情况下总是检查topic 0），</span><br><span class="line">    // 以及数据（`amount`）。</span><br><span class="line">	vm.expectEmit(true, true, false, true);</span><br><span class="line">	</span><br><span class="line">	// 我们出发的事件：我们预期触发的的事件：</span><br><span class="line">	emit MyToken.Transfer(address(this), address(1), 10);</span><br><span class="line">	</span><br><span class="line">	// 执行调用</span><br><span class="line">	myToken.transfer(address(1). 10);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">event</span> <span class="token function">Transfer</span><span class="token punctuation">(</span><span class="token builtin">address</span> <span class="token keyword">indexed</span> <span class="token keyword">from</span><span class="token punctuation">,</span> <span class="token builtin">address</span> <span class="token keyword">indexed</span> to<span class="token punctuation">,</span> <span class="token builtin">uint256</span> ammount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">function</span> <span class="token function">testERC20EmitsTransfer</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 只有`from`和`to`在ERC20的“Transfer”事件中是 inded，</span>
+    <span class="token comment">// 所以我们专门检查topics 1和2（默认情况下总是检查topic 0），</span>
+    <span class="token comment">// 以及数据（`amount`）。</span>
+	vm<span class="token punctuation">.</span><span class="token function">expectEmit</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	<span class="token comment">// 我们出发的事件：我们预期触发的的事件：</span>
+	<span class="token keyword">emit</span> MyToken<span class="token punctuation">.</span><span class="token function">Transfer</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token builtin">address</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	<span class="token comment">// 执行调用</span>
+	myToken<span class="token punctuation">.</span><span class="token function">transfer</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">.</span> <span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 </li>
 <li><p>有签名的地址：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">event Transfer(address indexed from, address indexed to, uint256 amount);</span><br><span class="line"></span><br><span class="line">function testERC20EmitsTransfer() public &#123;</span><br><span class="line">	// 通过将地址作为第五个参数传递来检测时间的触发者是否为预期的触发者</span><br><span class="line">	vm.expectEmit(true, true, false, true, address(myToken));</span><br><span class="line">	emit myToken.Transfer(address(this), address(1), 10);</span><br><span class="line">	</span><br><span class="line">	myToken.transfer(address(1), 10);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">event</span> <span class="token function">Transfer</span><span class="token punctuation">(</span><span class="token builtin">address</span> <span class="token keyword">indexed</span> <span class="token keyword">from</span><span class="token punctuation">,</span> <span class="token builtin">address</span> <span class="token keyword">indexed</span> to<span class="token punctuation">,</span> <span class="token builtin">uint256</span> amount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">function</span> <span class="token function">testERC20EmitsTransfer</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+	<span class="token comment">// 通过将地址作为第五个参数传递来检测时间的触发者是否为预期的触发者</span>
+	vm<span class="token punctuation">.</span><span class="token function">expectEmit</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token builtin">address</span><span class="token punctuation">(</span>myToken<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">emit</span> myToken<span class="token punctuation">.</span><span class="token function">Transfer</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token builtin">address</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	myToken<span class="token punctuation">.</span><span class="token function">transfer</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 </li>
 <li><p>断言在单次调用中触发多个事件：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">function testERC20EmitsBatchTransfer() public &#123;</span><br><span class="line">	// 声明多个预期的转账事件</span><br><span class="line">	for (uint256 i = 0; i&lt; users.length; i++) &#123;</span><br><span class="line">		vm.expectEmit(true, true, true, true);</span><br><span class="line">		emit Transfer(address(this), users[i], 10);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	// 我们还预期一个自定义的 `BatchTransfer(uint256 numverOfTransfers)` event。</span><br><span class="line">	vm.expectEmit(false, false, false, false);</span><br><span class="line">	emit BatchTransfer(users.length);</span><br><span class="line">	</span><br><span class="line">	// 执行调用</span><br><span class="line">	myToken.batchTransfer(users, 10);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">testERC20EmitsBatchTransfer</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+	<span class="token comment">// 声明多个预期的转账事件</span>
+	<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i<span class="token operator">&lt;</span> users<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		vm<span class="token punctuation">.</span><span class="token function">expectEmit</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">emit</span> <span class="token function">Transfer</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">,</span> users<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+	
+	<span class="token comment">// 我们还预期一个自定义的 `BatchTransfer(uint256 numverOfTransfers)` event。</span>
+	vm<span class="token punctuation">.</span><span class="token function">expectEmit</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">emit</span> <span class="token function">BatchTransfer</span><span class="token punctuation">(</span>users<span class="token punctuation">.</span>length<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	<span class="token comment">// 执行调用</span>
+	myToken<span class="token punctuation">.</span><span class="token function">batchTransfer</span><span class="token punctuation">(</span>users<span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
 </ul>
 <h3 id="测试事件是否能正确触发"><a href="#测试事件是否能正确触发" class="headerlink" title="测试事件是否能正确触发"></a>测试事件是否能正确触发</h3><p>测试时间是否能正确触发，需要用到两个作弊码：<code>recordLogs</code>和<code>getRecordedLogs</code>。</p>
 <ul>
@@ -342,305 +431,31 @@
 <li><code>vm.getRecordedLogs</code>：读取由<code>recordLogs</code>记录的事件。</li>
 </ul>
 <p>再使用这两个作弊码来判断事件是否为预期的参数触发，需要按照内置的格式：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">struct Log &#123;</span><br><span class="line">	bytes32[] topic;</span><br><span class="line">	bytes data;</span><br><span class="line">	address emitter;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">struct</span> <span class="token class-name">Log</span> <span class="token punctuation">&#123;</span>
+	<span class="token builtin">bytes32</span><span class="token punctuation">[</span><span class="token punctuation">]</span> topic<span class="token punctuation">;</span>
+	<span class="token builtin">bytes</span> data<span class="token punctuation">;</span>
+	<span class="token builtin">address</span> emitter<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>而要判断是否为预期触发，可以参考下面的例子：(主义要导入Vm 合约)</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <h2 id="分叉测试相关若干问题"><a href="#分叉测试相关若干问题" class="headerlink" title="分叉测试相关若干问题"></a>分叉测试相关若干问题</h2><h3 id="使用了外部组件需要传入私钥（eg-绑定-Chainlink-中间件）"><a href="#使用了外部组件需要传入私钥（eg-绑定-Chainlink-中间件）" class="headerlink" title="使用了外部组件需要传入私钥（eg. 绑定 Chainlink 中间件）"></a>使用了外部组件需要传入私钥（eg. 绑定 Chainlink 中间件）</h3><p>分叉测试时，涉及到了需要传入私钥，但是<strong>私钥在合约中硬编码会产生安全问题</strong>（Anvil 本地链可以硬编码）所以，这个时候，可以使用作弊码<code>vm.envUint</code>来<strong>从环境变量中读取私钥</strong>，配合<code>vm.startBroadcast()</code>使得下一次的交易发起者是该私钥对应的用户。</p>
 <h2 id="Foundry-调试更佳实践"><a href="#Foundry-调试更佳实践" class="headerlink" title="Foundry 调试更佳实践"></a>Foundry 调试更佳实践</h2><h3 id="使用状态树（state-tree）来组织单元测试"><a href="#使用状态树（state-tree）来组织单元测试" class="headerlink" title="使用状态树（state tree）来组织单元测试"></a>使用状态树（state tree）来组织单元测试</h3><p>使用状态树（state tree）来组织单元测试，找到具有驱动合约行为的父节点特定状态条件。</p>
-<p>如果是我们自己的合约，在写一些测试来测试某些东西，**一旦测试通过，就为其创建一个 <code>modifier</code>**，这样就不必再测试中复制粘贴代码</p>
+<p>如果是我们自己的合约，在写一些测试来测试某些东西，<strong>一旦测试通过，就为其创建一个 <code>modifier</code></strong>，这样就不必再测试中复制粘贴代码</p>
 <p>比如：大部分的调试都需要首先进行使用 <code>vm.prank(USER)</code> 来设置<code>msg.sender</code> 并且需要调用特定的函数来存款(如：<code>fundMe.fund&#123;value: SEND_VALUE&#125;()</code>)那么，就可以通过创建一个 <code>modifier</code> 来解决：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">modifier funded() &#123;</span><br><span class="line">	vm.prank(USER);</span><br><span class="line">	fundMe.fund&#123;value: SEND_VALUE&#125;();</span><br><span class="line">	_;</span><br><span class="line">&#125;</span><br><span class="line">// 之后在测试需要时，只需加上 funded 修饰符即可：</span><br><span class="line"></span><br><span class="line">function testOnlyOwnerCanWithdraw() public funded &#123;</span><br><span class="line">	fundMe.withdraw();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function testOnlyDrawWithASingleFunder() public funded &#123;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">modifier</span> <span class="token function">funded</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	vm<span class="token punctuation">.</span><span class="token function">prank</span><span class="token punctuation">(</span>USER<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	fundMe<span class="token punctuation">.</span>fund<span class="token punctuation">&#123;</span>value<span class="token punctuation">:</span> SEND_VALUE<span class="token punctuation">&#125;</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">_</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token comment">// 之后在测试需要时，只需加上 funded 修饰符即可：</span>
 
+<span class="token keyword">function</span> <span class="token function">testOnlyOwnerCanWithdraw</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> funded <span class="token punctuation">&#123;</span>
+	fundMe<span class="token punctuation">.</span><span class="token function">withdraw</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">function</span> <span class="token function">testOnlyDrawWithASingleFunder</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> funded <span class="token punctuation">&#123;</span>
+	
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h2 id="Foundry-内置的小的-Solidity-编译器——chisel"><a href="#Foundry-内置的小的-Solidity-编译器——chisel" class="headerlink" title="Foundry 内置的小的 Solidity 编译器——chisel"></a>Foundry 内置的小的 Solidity 编译器——chisel</h2><p>在安装了 Foundry 之后，可以使用 <code>chisel</code> 来对一些简单的 Solidity 代码进行测试，只需在终端输入 <code>chisel</code> 即可，它允许在其自己的终端中输入一小段 Solidity 代码并且运行。</p>
-<p><strong>–未完待续–</strong></p>
-
-    </div>
-
-    
-    
-    
-        
-
-<div>
-<ul class="post-copyright">
-  <li class="post-copyright-author">
-    <strong>本文作者： </strong>Q1ngying
-  </li>
-  <li class="post-copyright-link">
-    <strong>本文链接：</strong>
-    <a href="http://q1ngying.cn/2023/12/20/Foundry-Test%E8%B0%83%E8%AF%95/" title="Foundry Test调试">http://q1ngying.cn/2023/12/20/Foundry-Test调试/</a>
-  </li>
-  <li class="post-copyright-license">
-    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
-  </li>
-</ul>
-</div>
-
-
-      <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/learn/" rel="tag"># learn</a>
-              <a href="/tags/Solidity/" rel="tag"># Solidity</a>
-              <a href="/tags/Foundry/" rel="tag"># Foundry</a>
-          </div>
-
-        
-
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/2023/12/20/Foundry%E4%BD%9C%E5%BC%8A%E7%A0%81/" rel="prev" title="Foundry作弊码">
-      <i class="fa fa-chevron-left"></i> Foundry作弊码
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/2023/12/20/%E4%BB%A3%E7%90%86%E5%90%88%E7%BA%A6/" rel="next" title="代理合约">
-      代理合约 <i class="fa fa-chevron-right"></i>
-    </a></div>
-    </div>
-      </footer>
-    
-  </article>
-  
-  
-  
-
-
-
-          </div>
-          
-
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
-
-        </div>
-          
-  
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
-  </div>
-
-  <aside class="sidebar">
-    <div class="sidebar-inner">
-
-      <ul class="sidebar-nav motion-element">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Foundry-Test-%E8%B0%83%E8%AF%95"><span class="nav-number">1.</span> <span class="nav-text">Foundry Test 调试</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#forge-test-%E5%8F%82%E6%95%B0"><span class="nav-number">1.1.</span> <span class="nav-text">forge test 参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#forge-snapshot"><span class="nav-number">1.2.</span> <span class="nav-text">forge snapshot</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%89%E9%A1%B9-%E5%8F%82%E6%95%B0"><span class="nav-number">1.2.1.</span> <span class="nav-text">选项&amp;参数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#forge-coverage"><span class="nav-number">1.3.</span> <span class="nav-text">forge coverage</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%89%E9%A1%B9-%E5%8F%82%E6%95%B0-1"><span class="nav-number">1.3.1.</span> <span class="nav-text">选项&amp;参数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%B5%8B%E8%AF%95"><span class="nav-number">1.4.</span> <span class="nav-text">基本测试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E7%9A%84%E6%B5%8B%E8%AF%95%EF%BC%88%E4%BB%8E-setUp-%E5%BC%80%E5%A7%8B%EF%BC%89"><span class="nav-number">1.4.1.</span> <span class="nav-text">简单的测试（从 setUp 开始）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#console-log-%E6%B5%8B%E8%AF%95%E3%80%81%E8%B0%83%E8%AF%95"><span class="nav-number">1.4.2.</span> <span class="nav-text">console.log 测试、调试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Arrange%E3%80%81Act%E3%80%81Assert-%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95"><span class="nav-number">1.5.</span> <span class="nav-text">Arrange、Act、Assert 测试方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%EF%BC%88fuzz%EF%BC%89"><span class="nav-number">1.6.</span> <span class="nav-text">模糊测试（fuzz）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E6%98%AF%E5%90%A6%E6%8C%89%E7%85%A7%E9%A2%84%E6%9C%9F%E5%9B%9E%E6%BB%9A"><span class="nav-number">1.7.</span> <span class="nav-text">测试是否按照预期回滚</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E4%BA%8E%E8%B0%83%E8%AF%95%E6%97%B6%E9%9C%80%E8%A6%81%E5%A4%9A%E4%B8%AA%E5%9C%B0%E5%9D%80%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95%EF%BC%9A"><span class="nav-number">1.8.</span> <span class="nav-text">对于调试时需要多个地址的解决方法：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Foundry-%E6%B5%8B%E8%AF%95%E6%97%B6%E5%85%B3%E4%BA%8E-Gas-%E7%9B%B8%E5%85%B3%EF%BC%9A"><span class="nav-number">1.9.</span> <span class="nav-text">Foundry 测试时关于 Gas 相关：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Foundry-Test-%E5%85%B3%E4%BA%8E%E4%BA%8B%E4%BB%B6-event-%E7%9A%84%E6%B5%8B%E8%AF%95"><span class="nav-number">1.10.</span> <span class="nav-text">Foundry Test 关于事件(event)的测试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Foundry-%E6%B5%8B%E8%AF%95%E4%BA%8B%E4%BB%B6%E6%98%AF%E5%90%A6%E6%AD%A3%E5%B8%B8%E8%A7%A6%E5%8F%91"><span class="nav-number">1.10.1.</span> <span class="nav-text">Foundry 测试事件是否正常触发</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E4%BA%8B%E4%BB%B6%E6%98%AF%E5%90%A6%E8%83%BD%E6%AD%A3%E7%A1%AE%E8%A7%A6%E5%8F%91"><span class="nav-number">1.10.2.</span> <span class="nav-text">测试事件是否能正确触发</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E5%8F%89%E6%B5%8B%E8%AF%95%E7%9B%B8%E5%85%B3%E8%8B%A5%E5%B9%B2%E9%97%AE%E9%A2%98"><span class="nav-number">1.11.</span> <span class="nav-text">分叉测试相关若干问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E4%BA%86%E5%A4%96%E9%83%A8%E7%BB%84%E4%BB%B6%E9%9C%80%E8%A6%81%E4%BC%A0%E5%85%A5%E7%A7%81%E9%92%A5%EF%BC%88eg-%E7%BB%91%E5%AE%9A-Chainlink-%E4%B8%AD%E9%97%B4%E4%BB%B6%EF%BC%89"><span class="nav-number">1.11.1.</span> <span class="nav-text">使用了外部组件需要传入私钥（eg. 绑定 Chainlink 中间件）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Foundry-%E8%B0%83%E8%AF%95%E6%9B%B4%E4%BD%B3%E5%AE%9E%E8%B7%B5"><span class="nav-number">1.12.</span> <span class="nav-text">Foundry 调试更佳实践</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E7%8A%B6%E6%80%81%E6%A0%91%EF%BC%88state-tree%EF%BC%89%E6%9D%A5%E7%BB%84%E7%BB%87%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95"><span class="nav-number">1.12.1.</span> <span class="nav-text">使用状态树（state tree）来组织单元测试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Foundry-%E5%86%85%E7%BD%AE%E7%9A%84%E5%B0%8F%E7%9A%84-Solidity-%E7%BC%96%E8%AF%91%E5%99%A8%E2%80%94%E2%80%94chisel"><span class="nav-number">1.13.</span> <span class="nav-text">Foundry 内置的小的 Solidity 编译器——chisel</span></a></li></ol></li></ol></div>
-      </div>
-      <!--/noindex-->
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="Q1ngying"
-      src="/images/avatar.jpg">
-  <p class="site-author-name" itemprop="name">Q1ngying</p>
-  <div class="site-description" itemprop="description"></div>
-</div>
-<div class="site-state-wrap motion-element">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives/">
-        
-          <span class="site-state-item-count">76</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-          
-        <span class="site-state-item-count">29</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-          
-        <span class="site-state-item-count">29</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
-</div>
-  <div class="links-of-author motion-element">
-      <span class="links-of-author-item">
-        <a href="https://github.com/q1ngying" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;q1ngying" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="mailto:q1ngying@163.com" title="E-Mail → mailto:q1ngying@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="https://twitter.com/Q1ngYing" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;Q1ngYing" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="https://instagram.com/" title="Instagram → https:&#x2F;&#x2F;instagram.com&#x2F;" rel="noopener" target="_blank"><i class="fab fa-instagram fa-fw"></i>Instagram</a>
-      </span>
-  </div>
-
-
-
-      </div>
-
-    </div>
-  </aside>
-  <div id="sidebar-dimmer"></div>
-
-
-      </div>
-    </main>
-
-    <footer class="footer">
-      <div class="footer-inner">
-        
-
-        
-
-<div class="copyright">
-  
-  &copy; 2023-09 – 
-  <span itemprop="copyrightYear">2024</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">Q1ngying</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-chart-area"></i>
-    </span>
-      <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">195k</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-coffee"></i>
-    </span>
-      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">10:51</span>
-</div>
-
-<div class="powered-by">
-    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-    <i class="fa fa-user-md"></i>
-    <span id="busuanzi_container_site_uv">
-        本站访客数:<span id="busuanzi_value_site_uv"></span>人
-    </span>
-    <span class="post-meta-divider">|</span>
-    <span id="busuanzi_container_site_pv">
-        本站访问量<span id="busuanzi_value_site_pv"></span>人次
-    </span>
-</div>
-
-        
-
-
-
-
-
-
-
-
-      </div>
-    </footer>
-  </div>
-
-  
-  
-  <script color='255,201,74' opacity='1' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
-
-<script src="/js/utils.js"></script>
-
-<script src="/js/motion.js"></script>
-
-
-<script src="/js/schemes/pisces.js"></script>
-
-
-<script src="/js/next-boot.js"></script>
-
-
-
-
-  
-  <script>
-    (function(){
-      var canonicalURL, curProtocol;
-      //Get the <link> tag
-      var x=document.getElementsByTagName("link");
-		//Find the last canonical URL
-		if(x.length > 0){
-			for (i=0;i<x.length;i++){
-				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
-					canonicalURL=x[i].href;
-				}
-			}
-		}
-    //Get protocol
-	    if (!canonicalURL){
-	    	curProtocol = window.location.protocol.split(':')[0];
-	    }
-	    else{
-	    	curProtocol = canonicalURL.split(':')[0];
-	    }
-      //Get current URL if the canonical URL does not exist
-	    if (!canonicalURL) canonicalURL = window.location.href;
-	    //Assign script content. Replace current URL with the canonical URL
-      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
-  </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-
-  
-
-</body>
-</html>
+<p><strong>—未完待续—</strong></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://q1ngying.cn">Q1ngying</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://q1ngying.cn/2023/12/20/Foundry-Test%E8%B0%83%E8%AF%95/">https://q1ngying.cn/2023/12/20/Foundry-Test%E8%B0%83%E8%AF%95/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://q1ngying.cn" target="_blank">Q1ngying</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/learn/">learn</a><a class="post-meta__tags" href="/tags/Solidity/">Solidity</a><a class="post-meta__tags" href="/tags/Foundry/">Foundry</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="prev-post pull-left" href="/2023/12/20/%E4%BB%A3%E7%90%86%E5%90%88%E7%BA%A6/" title="代理合约"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">代理合约</div></div></a><a class="next-post pull-right" href="/2023/12/20/Foundry%E4%BD%9C%E5%BC%8A%E7%A0%81/" title="Foundry作弊码"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Foundry作弊码</div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a href="/2023/12/20/Foundry%E4%BD%9C%E5%BC%8A%E7%A0%81/" title="Foundry作弊码"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-12-20</div><div class="title">Foundry作弊码</div></div></a><a href="/2023/10/26/Foundry%E5%85%A5%E9%97%A8/" title="Foundry入门"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-10-26</div><div class="title">Foundry入门</div></div></a><a href="/2023/09/26/EVM%E5%AD%A6%E4%B9%A0/" title="EVM学习"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-09-26</div><div class="title">EVM学习</div></div></a><a href="/2023/12/20/%E4%BB%A3%E7%90%86%E5%90%88%E7%BA%A6/" title="代理合约"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-12-20</div><div class="title">代理合约</div></div></a><a href="/2024/01/09/Foundry%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8/" title="Foundry模糊测试入门"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-01-09</div><div class="title">Foundry模糊测试入门</div></div></a><a href="/2024/04/25/FuzzingTest%E8%BF%9B%E9%98%B6/" title="FuzzingTest进阶"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-04-25</div><div class="title">FuzzingTest进阶</div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info is-center"><div class="avatar-img"><img src="/img/butterfly-icon.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Q1ngying</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">29</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/q1ngying"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/q1ngying" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="https://weibo.com" target="_blank" title="微博"><i class="fab fa-weibo" style="color: #24292e;"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Foundry-Test-%E8%B0%83%E8%AF%95"><span class="toc-number">1.</span> <span class="toc-text">Foundry Test 调试</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#forge-test-%E5%8F%82%E6%95%B0"><span class="toc-number">1.1.</span> <span class="toc-text">forge test 参数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#forge-snapshot"><span class="toc-number">1.2.</span> <span class="toc-text">forge snapshot</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%89%E9%A1%B9-amp-%E5%8F%82%E6%95%B0"><span class="toc-number">1.2.1.</span> <span class="toc-text">选项&amp;参数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#forge-coverage"><span class="toc-number">1.3.</span> <span class="toc-text">forge coverage</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%89%E9%A1%B9-amp-%E5%8F%82%E6%95%B0-1"><span class="toc-number">1.3.1.</span> <span class="toc-text">选项&amp;参数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%B5%8B%E8%AF%95"><span class="toc-number">1.4.</span> <span class="toc-text">基本测试</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E5%8D%95%E7%9A%84%E6%B5%8B%E8%AF%95%EF%BC%88%E4%BB%8E-setUp-%E5%BC%80%E5%A7%8B%EF%BC%89"><span class="toc-number">1.4.1.</span> <span class="toc-text">简单的测试（从 setUp 开始）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#console-log-%E6%B5%8B%E8%AF%95%E3%80%81%E8%B0%83%E8%AF%95"><span class="toc-number">1.4.2.</span> <span class="toc-text">console.log 测试、调试</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Arrange%E3%80%81Act%E3%80%81Assert-%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95"><span class="toc-number">1.5.</span> <span class="toc-text">Arrange、Act、Assert 测试方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%EF%BC%88fuzz%EF%BC%89"><span class="toc-number">1.6.</span> <span class="toc-text">模糊测试（fuzz）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E6%98%AF%E5%90%A6%E6%8C%89%E7%85%A7%E9%A2%84%E6%9C%9F%E5%9B%9E%E6%BB%9A"><span class="toc-number">1.7.</span> <span class="toc-text">测试是否按照预期回滚</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%B9%E4%BA%8E%E8%B0%83%E8%AF%95%E6%97%B6%E9%9C%80%E8%A6%81%E5%A4%9A%E4%B8%AA%E5%9C%B0%E5%9D%80%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95%EF%BC%9A"><span class="toc-number">1.8.</span> <span class="toc-text">对于调试时需要多个地址的解决方法：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Foundry-%E6%B5%8B%E8%AF%95%E6%97%B6%E5%85%B3%E4%BA%8E-Gas-%E7%9B%B8%E5%85%B3%EF%BC%9A"><span class="toc-number">1.9.</span> <span class="toc-text">Foundry 测试时关于 Gas 相关：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Foundry-Test-%E5%85%B3%E4%BA%8E%E4%BA%8B%E4%BB%B6-event-%E7%9A%84%E6%B5%8B%E8%AF%95"><span class="toc-number">1.10.</span> <span class="toc-text">Foundry Test 关于事件(event)的测试</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Foundry-%E6%B5%8B%E8%AF%95%E4%BA%8B%E4%BB%B6%E6%98%AF%E5%90%A6%E6%AD%A3%E5%B8%B8%E8%A7%A6%E5%8F%91"><span class="toc-number">1.10.1.</span> <span class="toc-text">Foundry 测试事件是否正常触发</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E4%BA%8B%E4%BB%B6%E6%98%AF%E5%90%A6%E8%83%BD%E6%AD%A3%E7%A1%AE%E8%A7%A6%E5%8F%91"><span class="toc-number">1.10.2.</span> <span class="toc-text">测试事件是否能正确触发</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E5%8F%89%E6%B5%8B%E8%AF%95%E7%9B%B8%E5%85%B3%E8%8B%A5%E5%B9%B2%E9%97%AE%E9%A2%98"><span class="toc-number">1.11.</span> <span class="toc-text">分叉测试相关若干问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E4%BA%86%E5%A4%96%E9%83%A8%E7%BB%84%E4%BB%B6%E9%9C%80%E8%A6%81%E4%BC%A0%E5%85%A5%E7%A7%81%E9%92%A5%EF%BC%88eg-%E7%BB%91%E5%AE%9A-Chainlink-%E4%B8%AD%E9%97%B4%E4%BB%B6%EF%BC%89"><span class="toc-number">1.11.1.</span> <span class="toc-text">使用了外部组件需要传入私钥（eg. 绑定 Chainlink 中间件）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Foundry-%E8%B0%83%E8%AF%95%E6%9B%B4%E4%BD%B3%E5%AE%9E%E8%B7%B5"><span class="toc-number">1.12.</span> <span class="toc-text">Foundry 调试更佳实践</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E7%8A%B6%E6%80%81%E6%A0%91%EF%BC%88state-tree%EF%BC%89%E6%9D%A5%E7%BB%84%E7%BB%87%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95"><span class="toc-number">1.12.1.</span> <span class="toc-text">使用状态树（state tree）来组织单元测试</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Foundry-%E5%86%85%E7%BD%AE%E7%9A%84%E5%B0%8F%E7%9A%84-Solidity-%E7%BC%96%E8%AF%91%E5%99%A8%E2%80%94%E2%80%94chisel"><span class="toc-number">1.13.</span> <span class="toc-text">Foundry 内置的小的 Solidity 编译器——chisel</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/17/MakerDAO-Abacus/" title="MakerDAO-Abacus">MakerDAO-Abacus</a><time datetime="2024-07-17T07:06:42.000Z" title="发表于 2024-07-17 15:06:42">2024-07-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/17/MakerDAO-Clip/" title="MakerDAO-Clip">MakerDAO-Clip</a><time datetime="2024-07-17T07:06:32.000Z" title="发表于 2024-07-17 15:06:32">2024-07-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/15/MakerDAO-Join/" title="MakerDAO-Join">MakerDAO-Join</a><time datetime="2024-07-15T07:34:45.000Z" title="发表于 2024-07-15 15:34:45">2024-07-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/15/MakerDAO-Vat/" title="MakerDAO-Vat">MakerDAO-Vat</a><time datetime="2024-07-15T07:34:34.000Z" title="发表于 2024-07-15 15:34:34">2024-07-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/06/11/Storage%20%E8%BF%9B%E9%98%B6%E2%80%94%E2%80%94%E9%80%9A%E8%BF%87%E5%BC%95%E7%94%A8%20Storage%20%E6%8F%90%E9%AB%98%20gas%20%E5%88%A9%E7%94%A8%E7%8E%87/" title="Storage 进阶——通过引用 Storage 提高 gas 利用率">Storage 进阶——通过引用 Storage 提高 gas 利用率</a><time datetime="2024-06-11T09:13:23.000Z" title="发表于 2024-06-11 17:13:23">2024-06-11</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/back1.webp);"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By Q1ngying</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div></div></body></html>

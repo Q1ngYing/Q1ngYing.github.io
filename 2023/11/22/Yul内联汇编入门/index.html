@@ -1,37 +1,11 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 6.3.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/icons8-clover-ios-16-glyph-32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/icons8-clover-ios-16-glyph-16.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
-
-<link rel="stylesheet" href="/css/main.css">
-
-<link rel="stylesheet" href="//fonts.lug.ustc.edu.cn/css?family=Garamond:300,300italic,400,400italic,700,700italic|Courier New:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
-  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
-  <script src="/lib/pace/pace.min.js"></script>
-
-<script id="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"q1ngying.cn","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
-  </script>
-
-  <meta name="description" content="Yul 入门参考来源：https:&#x2F;&#x2F;learnblockchain.cn&#x2F;article&#x2F;6064 Yul概述Yul 是一种中间编程语言，可以用来在智能合约中编写汇编语言。了解 Yul 可以提高智能合约的水平。了解Solidity底层发生的事情，帮助节省 Gas 费用。可以使用assembly代码块来在智能合约中标识 Yul： 123assembly &amp;#123;	&#x2F;&#x2F; do stuff&amp;#12">
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Yul内联汇编入门 | Q1ngying</title><meta name="author" content="Q1ngying"><meta name="copyright" content="Q1ngying"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Yul 入门参考来源：https:&#x2F;&#x2F;learnblockchain.cn&#x2F;article&#x2F;6064 Yul概述Yul 是一种中间编程语言，可以用来在智能合约中编写汇编语言。了解 Yul 可以提高智能合约的水平。了解Solidity底层发生的事情，帮助节省 Gas 费用。可以使用assembly代码块来在智能合约中标识 Yul： assembly &amp;#123; 	&#x2F;&#x2F; do stuff &amp;#125">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Yul内联汇编入门">
-<meta property="og:url" content="http://q1ngying.cn/2023/11/22/Yul%E5%86%85%E8%81%94%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/index.html">
+<meta property="og:url" content="https://q1ngying.cn/2023/11/22/Yul%E5%86%85%E8%81%94%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/index.html">
 <meta property="og:site_name" content="Q1ngying">
-<meta property="og:description" content="Yul 入门参考来源：https:&#x2F;&#x2F;learnblockchain.cn&#x2F;article&#x2F;6064 Yul概述Yul 是一种中间编程语言，可以用来在智能合约中编写汇编语言。了解 Yul 可以提高智能合约的水平。了解Solidity底层发生的事情，帮助节省 Gas 费用。可以使用assembly代码块来在智能合约中标识 Yul： 123assembly &amp;#123;	&#x2F;&#x2F; do stuff&amp;#12">
+<meta property="og:description" content="Yul 入门参考来源：https:&#x2F;&#x2F;learnblockchain.cn&#x2F;article&#x2F;6064 Yul概述Yul 是一种中间编程语言，可以用来在智能合约中编写汇编语言。了解 Yul 可以提高智能合约的水平。了解Solidity底层发生的事情，帮助节省 Gas 费用。可以使用assembly代码块来在智能合约中标识 Yul： assembly &amp;#123; 	&#x2F;&#x2F; do stuff &amp;#125">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://q1ngying.cn/images/Yul%E5%86%85%E8%81%94%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/28025.png">
-<meta property="og:image" content="http://q1ngying.cn/images/Yul%E5%86%85%E8%81%94%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/20165.png">
-<meta property="og:image" content="http://q1ngying.cn/images/Yul%E5%86%85%E8%81%94%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/92085.png">
+<meta property="og:image" content="https://q1ngying.cn/img/butterfly-icon.jpg">
 <meta property="article:published_time" content="2023-11-22T12:33:33.000Z">
 <meta property="article:modified_time" content="2023-11-22T12:35:25.991Z">
 <meta property="article:author" content="Q1ngying">
@@ -39,227 +13,154 @@
 <meta property="article:tag" content="EVM">
 <meta property="article:tag" content="Yul">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://q1ngying.cn/images/Yul%E5%86%85%E8%81%94%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/28025.png">
+<meta name="twitter:image" content="https://q1ngying.cn/img/butterfly-icon.jpg"><link rel="shortcut icon" href="/img/icons8-clover-ios-16-glyph-32.png"><link rel="canonical" href="https://q1ngying.cn/2023/11/22/Yul%E5%86%85%E8%81%94%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><meta name="google-site-verification" content="IzCM4B791_p7IAU4WhRfiLlP"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
 
-<link rel="canonical" href="http://q1ngying.cn/2023/11/22/Yul%E5%86%85%E8%81%94%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/">
-
-
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : true,
-    lang   : 'zh-CN'
-  };
-</script>
-
-  <title>Yul内联汇编入门 | Q1ngying</title>
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
   
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
 
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
 
-
-
-
-
-  <noscript>
-  <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
-
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
-
-<!-- hexo injector head_end start -->
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Yul内联汇编入门',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-11-22 20:35:25'
+}</script><!-- hexo injector head_end start -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
-<!-- hexo injector head_end end --></head>
-
-<body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
-
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
-    </div>
-  </div>
-
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">Q1ngying</h1>
-      <span class="logo-line-after"><i></i></span>
-    </a>
-      <p class="site-subtitle" itemprop="description">今朝梦醒与君别，遥盼春风寄相思</p>
-  </div>
-
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
-    </div>
-  </div>
-</div>
-
-
-
-
-<nav class="site-nav">
-  <ul id="menu" class="main-menu menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
-
-  </li>
-        <li class="menu-item menu-item-about">
-
-    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
-
-  </li>
-  </ul>
-</nav>
-
-
-
-
-</div>
-    </header>
-
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-  <div class="reading-progress-bar"></div>
-
-
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-
-          <div class="content post posts-expand">
-            
-
-    
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://q1ngying.cn/2023/11/22/Yul%E5%86%85%E8%81%94%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Q1ngying">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Q1ngying">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          Yul内联汇编入门
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2023-11-22 20:33:33 / 修改时间：20:35:25" itemprop="dateCreated datePublished" datetime="2023-11-22T20:33:33+08:00">2023-11-22</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/learn/" itemprop="url" rel="index"><span itemprop="name">learn</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Solidity/" itemprop="url" rel="index"><span itemprop="name">Solidity</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/EVM/" itemprop="url" rel="index"><span itemprop="name">EVM</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Yul/" itemprop="url" rel="index"><span itemprop="name">Yul</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>5.9k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>20 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-        <h1 id="Yul-入门"><a href="#Yul-入门" class="headerlink" title="Yul 入门"></a>Yul 入门</h1><p>参考来源：<a target="_blank" rel="noopener" href="https://learnblockchain.cn/article/6064">https://learnblockchain.cn/article/6064</a></p>
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/butterfly-icon.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">29</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/back1.webp);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Q1ngying</span></a><a class="nav-page-title" href="/"><span class="site-name">Yul内联汇编入门</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Yul内联汇编入门</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-11-22T12:33:33.000Z" title="发表于 2023-11-22 20:33:33">2023-11-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-11-22T12:35:25.991Z" title="更新于 2023-11-22 20:35:25">2023-11-22</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/learn/">learn</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Solidity/">Solidity</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/EVM/">EVM</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Yul/">Yul</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">80k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>4:27分钟</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Yul-入门"><a href="#Yul-入门" class="headerlink" title="Yul 入门"></a>Yul 入门</h1><p>参考来源：<a target="_blank" rel="noopener" href="https://learnblockchain.cn/article/6064">https://learnblockchain.cn/article/6064</a></p>
 <h2 id="Yul概述"><a href="#Yul概述" class="headerlink" title="Yul概述"></a>Yul概述</h2><p><strong>Yul 是一种中间编程语言，可以用来在智能合约中编写汇编语言</strong>。了解 Yul 可以提高智能合约的水平。了解<code>Solidity</code>底层发生的事情，帮助节省 Gas 费用。可以使用<code>assembly</code>代码块来在智能合约中标识 Yul：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">assembly &#123;</span><br><span class="line">	// do stuff</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">assembly</span> <span class="token punctuation">&#123;</span>
+	<span class="token comment">// do stuff</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <h2 id="变量赋值、运算、评估"><a href="#变量赋值、运算、评估" class="headerlink" title="变量赋值、运算、评估"></a>变量赋值、运算、评估</h2><p>简单操作，Yul 中有：<code>+ - * / % ** &lt; &gt; =</code>。在 Yul 中不存在<code>&gt;= 和 &lt;=</code>。此外，评估不是等于真或假，而是分别等于 1 或 0。</p>
+<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -267,13 +168,14 @@
 <th>解释</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>let</td>
 <td>这是在定义变量之前需要的，因为所有值都是字节，所以不需要分配值类型</td>
 </tr>
 <tr>
-<td>:&#x3D;</td>
-<td>等价于 Solidity 中的 x &#x3D; y</td>
+<td>:=</td>
+<td>等价于 Solidity 中的 x = y</td>
 </tr>
 <tr>
 <td>add(x,y)</td>
@@ -289,7 +191,7 @@
 </tr>
 <tr>
 <td>div(x,y)</td>
-<td>等价于 Solidity 中的 x &#x2F; y (或 0 如果 y 等于 0)</td>
+<td>等价于 Solidity 中的 x / y (或 0 如果 y 等于 0)</td>
 </tr>
 <tr>
 <td>mod(x,y)</td>
@@ -305,31 +207,71 @@
 </tr>
 <tr>
 <td>eq(x,y)</td>
-<td>等价于 Solidity 中的 x &#x3D;&#x3D; y</td>
+<td>等价于 Solidity 中的 x == y</td>
 </tr>
 <tr>
 <td>iszero(x)</td>
-<td>等价于 Solidity 中的 x &#x3D;&#x3D; 0</td>
+<td>等价于 Solidity 中的 x == 0</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
+</div>
 <p>一个简单的例子：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">function addOneAndTwo() external pure returns(uint256) &#123;</span><br><span class="line">	uint256 ans;</span><br><span class="line">	</span><br><span class="line">	assembly&#123;</span><br><span class="line">		// Yul 中为变量赋值</span><br><span class="line">		let one := 1</span><br><span class="line">		let two := 2</span><br><span class="line">		// 加法</span><br><span class="line">		ans := add(one, two)</span><br><span class="line">	&#125;</span><br><span class="line">	return ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">addOneAndTwo</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">pure</span> <span class="token keyword">returns</span><span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token builtin">uint256</span> ans<span class="token punctuation">;</span>
+	
+	<span class="token keyword">assembly</span><span class="token punctuation">&#123;</span>
+		<span class="token comment">// Yul 中为变量赋值</span>
+		<span class="token keyword">let</span> one <span class="token operator">:=</span> <span class="token number">1</span>
+		<span class="token keyword">let</span> two <span class="token operator">:=</span> <span class="token number">2</span>
+		<span class="token comment">// 加法</span>
+		ans <span class="token operator">:=</span> <span class="token function">add</span><span class="token punctuation">(</span>one<span class="token punctuation">,</span> two<span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+	<span class="token keyword">return</span> ans<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h2 id="For-循环和-if-语句"><a href="#For-循环和-if-语句" class="headerlink" title="For 循环和 if 语句"></a>For 循环和 if 语句</h2><p>例子：计算一个系列中多少个数字是偶数：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">function howManyEvens(uint256 startNum, uint256 endNum) external pure returns(uint256) &#123;</span><br><span class="line">	uint256 ans;</span><br><span class="line">	</span><br><span class="line">	// for 循环的语法</span><br><span class="line">	assembly &#123;</span><br><span class="line">		for &#123; let i := startNum &#125; lt(i, add(endNum, 1) ) &#123; i := add(i,1) &#125;</span><br><span class="line">		&#123;</span><br><span class="line">			// if i == 0,跳过此处迭代</span><br><span class="line">			if iszero(i) &#123;</span><br><span class="line">				continue</span><br><span class="line">			&#125;</span><br><span class="line">			</span><br><span class="line">			// 检查是否 i % 2 == 0</span><br><span class="line">			// 可以使用 iszero，但是接下来展示 eq()</span><br><span class="line">			if eq( mod( i, 2), 0) &#123;</span><br><span class="line">				ans := add(ans, 1)</span><br><span class="line">			&#125;	</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	return ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">howManyEvens</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> startNum<span class="token punctuation">,</span> <span class="token builtin">uint256</span> endNum<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">pure</span> <span class="token keyword">returns</span><span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token builtin">uint256</span> ans<span class="token punctuation">;</span>
+	
+	<span class="token comment">// for 循环的语法</span>
+	<span class="token keyword">assembly</span> <span class="token punctuation">&#123;</span>
+		<span class="token keyword">for</span> <span class="token punctuation">&#123;</span> <span class="token keyword">let</span> i <span class="token operator">:=</span> startNum <span class="token punctuation">&#125;</span> <span class="token function">lt</span><span class="token punctuation">(</span>i<span class="token punctuation">,</span> <span class="token function">add</span><span class="token punctuation">(</span>endNum<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> i <span class="token operator">:=</span> <span class="token function">add</span><span class="token punctuation">(</span>i<span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">&#125;</span>
+		<span class="token punctuation">&#123;</span>
+			<span class="token comment">// if i == 0,跳过此处迭代</span>
+			<span class="token keyword">if</span> <span class="token function">iszero</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+				<span class="token keyword">continue</span>
+			<span class="token punctuation">&#125;</span>
+			
+			<span class="token comment">// 检查是否 i % 2 == 0</span>
+			<span class="token comment">// 可以使用 iszero，但是接下来展示 eq()</span>
+			<span class="token keyword">if</span> <span class="token function">eq</span><span class="token punctuation">(</span> <span class="token function">mod</span><span class="token punctuation">(</span> i<span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+				ans <span class="token operator">:=</span> <span class="token function">add</span><span class="token punctuation">(</span>ans<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span>
+			<span class="token punctuation">&#125;</span>	
+		<span class="token punctuation">&#125;</span>
+	<span class="token punctuation">&#125;</span>
+	<span class="token keyword">return</span> ans<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p><code>if</code>语句的语法和 Solidity 非常相似，但是，我们<strong>不需要用圆括号来包裹条件</strong>。对于 <code>for</code> 循环，注意我们在<strong>声明<code>i</code>和增加<code>i</code>时使用了括号</strong>，但在评估条件时没有使用括号。此外，我们使用了<code>continue</code>来跳过循环的一次迭代。我们也可以在 Yul 中使用 <code>break</code>语句。</p>
 <h2 id="存储"><a href="#存储" class="headerlink" title="存储"></a>存储</h2><p>在深入了解 Yul 的工作原理之前，我们需要了解智能合约中的存储工作原理。<strong>存储是由一系列的槽组成的。一个智能合约有2²⁵⁶个槽位。在声明变量时，我们从槽0开始，然后从那里递增。每个槽的长度为256 比特（32字节），这就是<code>uint256</code>和<code>bytes32</code>的名字由来。</strong>所有的变量都会被转换为十六进制。如果一个变量，例如 <code>uint128</code> 使用时，不会用整个槽来存储该变量。相反，它的左边是用 0 填充的。</p>
 <p>例子：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">// slot 0</span><br><span class="line">uint256 var1 = 256;</span><br><span class="line"></span><br><span class="line">// slot 1</span><br><span class="line">address var2 = 0x9ACc1d6Aa9b846083E8a497A661853aaE07F0F00;</span><br><span class="line"></span><br><span class="line">// slot 2 </span><br><span class="line">bytes32 var3 = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;</span><br><span class="line"></span><br><span class="line">// slot 3</span><br><span class="line">uint128 var4 = 1;</span><br><span class="line">uint128 var5 = 2;</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// slot 0</span>
+<span class="token builtin">uint256</span> var1 <span class="token operator">=</span> <span class="token number">256</span><span class="token punctuation">;</span>
 
+<span class="token comment">// slot 1</span>
+<span class="token builtin">address</span> var2 <span class="token operator">=</span> <span class="token number">0x9ACc1d6Aa9b846083E8a497A661853aaE07F0F00</span><span class="token punctuation">;</span>
+
+<span class="token comment">// slot 2 </span>
+<span class="token builtin">bytes32</span> var3 <span class="token operator">=</span> <span class="token number">0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff</span><span class="token punctuation">;</span>
+
+<span class="token comment">// slot 3</span>
+<span class="token builtin">uint128</span> var4 <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+<span class="token builtin">uint128</span> var5 <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p><code>var1</code>：由于<code>uint256</code>变量等于32字节，<code>var1</code>占据了整个0槽。下面是0号槽中存储的内容： <code>0x00000000000000000000000000000000000000000000000000000000000000000000000000000100</code>。</p>
 <p><code>var2</code>：地址稍微复杂一些。由于它们只占用20个字节的存储空间，地址的左边被填充了0。下面是存储在槽1中的内容： <code>0x00000000000000009acc1d6aa9b846083e8a497a661853aae07f0f00</code>。</p>
 <p><code>var3</code>：这个看起来很简单，槽位2被<code>bytes32</code>变量的全部内容所消耗。</p>
 <p><code>var4</code> &amp; <code>var5</code>：还记得我提到的<code>uint128</code>被填充了0吗？那么，如果我们对变量进行排序，使它们的存储量之和小于32字节，我们就可以把它们一起放入一个槽中！这叫做变量打包！这就是所谓的变量打包，它可以为你节省Gas。让我们来看看3号槽中存储的内容： <code>0x0000000000000000000000000000000200000000000000000000000000000001</code>。 请注意，<code>0x000000000000000000000000000002</code> 和 <code>0x000000000000000000000000000001</code> 完全吻合同一个槽。这是因为它们都占用了16个字节（一半的槽）。</p>
 <p><strong>更多关于 Yul 的内容：</strong></p>
+<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -337,7 +279,8 @@
 <th>解释</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>sload(p)</td>
 <td>从 storage 中加载槽 p 中的变量</td>
 </tr>
@@ -353,44 +296,131 @@
 <td>v.offset</td>
 <td>返回变量 v 在存储槽中开始位置的序列（以字节为单位）。变量从右到左排列</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
+</div>
 <p>例子：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">function readAndWriteToStorage() external returns (uint256, uint256, uint256) &#123;</span><br><span class="line"></span><br><span class="line">	uint256 x;</span><br><span class="line">	uint256 y;</span><br><span class="line">	uint256 z;</span><br><span class="line">	</span><br><span class="line">	assembly &#123;</span><br><span class="line">		// 获得 var5 的槽位置</span><br><span class="line">		let slot := var5.slot</span><br><span class="line">		</span><br><span class="line">		// 获得 var5 的槽偏移</span><br><span class="line">		let offset := var5.offset</span><br><span class="line">		</span><br><span class="line">		// 赋值给 Solidity 中的变量</span><br><span class="line">		x := slot</span><br><span class="line">		y := offset</span><br><span class="line">		</span><br><span class="line">		// 在槽 0 上保存 1</span><br><span class="line">		sstore(0,1)</span><br><span class="line">		</span><br><span class="line">		// 加载槽 0 的值赋值给 z</span><br><span class="line">		z := sload(0)</span><br><span class="line">	&#125;</span><br><span class="line">	return (x, y, z);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">readAndWriteToStorage</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">,</span> <span class="token builtin">uint256</span><span class="token punctuation">,</span> <span class="token builtin">uint256</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
 
-<p><code>x</code> &#x3D; 3. 这是有道理的，因为我们知道 var5 被装入槽3。<br><code>y</code> &#x3D; 16. 这也是合理的，因为我们知道<code>var4</code>占据了3号槽的一半。由于变量是从右到左打包的，我们得到字节16作为<code>var5</code>的起始索引。<br><code>z</code> &#x3D; 1. <code>sstore()</code>是将0号槽的值赋给1。然后，我们用 <code>sload() </code>将0号槽的值分配给z。</p>
+	<span class="token builtin">uint256</span> x<span class="token punctuation">;</span>
+	<span class="token builtin">uint256</span> y<span class="token punctuation">;</span>
+	<span class="token builtin">uint256</span> z<span class="token punctuation">;</span>
+	
+	<span class="token keyword">assembly</span> <span class="token punctuation">&#123;</span>
+		<span class="token comment">// 获得 var5 的槽位置</span>
+		<span class="token keyword">let</span> slot <span class="token operator">:=</span> var5<span class="token punctuation">.</span>slot
+		
+		<span class="token comment">// 获得 var5 的槽偏移</span>
+		<span class="token keyword">let</span> offset <span class="token operator">:=</span> var5<span class="token punctuation">.</span>offset
+		
+		<span class="token comment">// 赋值给 Solidity 中的变量</span>
+		x <span class="token operator">:=</span> slot
+		y <span class="token operator">:=</span> offset
+		
+		<span class="token comment">// 在槽 0 上保存 1</span>
+		<span class="token function">sstore</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span>
+		
+		<span class="token comment">// 加载槽 0 的值赋值给 z</span>
+		z <span class="token operator">:=</span> <span class="token function">sload</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+	<span class="token keyword">return</span> <span class="token punctuation">(</span>x<span class="token punctuation">,</span> y<span class="token punctuation">,</span> z<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>x</code> = 3. 这是有道理的，因为我们知道 var5 被装入槽3。<br><code>y</code> = 16. 这也是合理的，因为我们知道<code>var4</code>占据了3号槽的一半。由于变量是从右到左打包的，我们得到字节16作为<code>var5</code>的起始索引。<br><code>z</code> = 1. <code>sstore()</code>是将0号槽的值赋给1。然后，我们用 <code>sload()</code>将0号槽的值分配给z。</p>
 <p>下面这个函数可以<strong>帮助我们查看每个插槽正在存储的内容</strong>：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">function getValInHex(uint256 y) external view returns (bytes32) &#123;</span><br><span class="line">	bytes32 x;</span><br><span class="line">	</span><br><span class="line">	assembly &#123;</span><br><span class="line">		x := sload(y)</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	return x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">getValInHex</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> y<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">bytes32</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token builtin">bytes32</span> x<span class="token punctuation">;</span>
+	
+	<span class="token keyword">assembly</span> <span class="token punctuation">&#123;</span>
+		x <span class="token operator">:=</span> <span class="token function">sload</span><span class="token punctuation">(</span>y<span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+	
+	<span class="token keyword">return</span> x<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="读取动态数组的值"><a href="#读取动态数组的值" class="headerlink" title="读取动态数组的值"></a>读取动态数组的值</h3><p>接下来是一些更复杂的数据结构：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uint128[4] var6 = [0,1,2,3];</span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token builtin">uint128</span><span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">]</span> var6 <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>当使用静态数组时，EVM 知道要为我们的数据分配多少个槽位。特别是这个数组，我们在每个槽中打包2个元素。所以如果你调用 <code>getValInHex(4)</code>，它将返回 <code>0x0000000000000000000000000000000100000000000000000000000000000000</code>。正如我们所期望的，从右到左读，我们看到的是值0和值1。槽5包含<code>0x0000000000000000000000000000000300000000000000000000000000000002</code>。</p>
 <p>接下来我们要看一下动态数组。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// slot 6</span><br><span class="line">uint256[] var7;</span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// slot 6</span>
+<span class="token builtin">uint256</span><span class="token punctuation">[</span><span class="token punctuation">]</span> var7<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p>尝试调用<code>getValInHex(6)</code>。你会看到它返回 <code>0x00</code>。由于 EVM 不知道需要分配多少个存储槽，我们不能在这里存储数组。相反，当前存储槽（槽6）的keccak256 哈希值被用来作为数组的起始索引。从这里开始，我们需要做的就是添加所需元素的索引来检索值。</p>
 <p>接下来是的例子，演示<strong>如何查找一个动态数组的第一个元素：</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">function getValFromDynamicArray(uint256 targetIndex) external view returns (uint256) &#123;</span><br><span class="line">	</span><br><span class="line">	uint256 slot;</span><br><span class="line">	</span><br><span class="line">	assembly &#123;</span><br><span class="line">		slot := var7.slot</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	bytes32 startIndex = keccak256(abi.encode(slot));</span><br><span class="line">	</span><br><span class="line">	uint256 ans;</span><br><span class="line">	</span><br><span class="line">	assembly &#123;</span><br><span class="line">		ans := sload( add(startIndex, targetIndex) )</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	return ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">getValFromDynamicArray</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> targetIndex<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	
+	<span class="token builtin">uint256</span> slot<span class="token punctuation">;</span>
+	
+	<span class="token keyword">assembly</span> <span class="token punctuation">&#123;</span>
+		slot <span class="token operator">:=</span> var7<span class="token punctuation">.</span>slot
+	<span class="token punctuation">&#125;</span>
+	
+	<span class="token builtin">bytes32</span> startIndex <span class="token operator">=</span> <span class="token function">keccak256</span><span class="token punctuation">(</span>abi<span class="token punctuation">.</span><span class="token function">encode</span><span class="token punctuation">(</span>slot<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	<span class="token builtin">uint256</span> ans<span class="token punctuation">;</span>
+	
+	<span class="token keyword">assembly</span> <span class="token punctuation">&#123;</span>
+		ans <span class="token operator">:=</span> <span class="token function">sload</span><span class="token punctuation">(</span> <span class="token function">add</span><span class="token punctuation">(</span>startIndex<span class="token punctuation">,</span> targetIndex<span class="token punctuation">)</span> <span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+	
+	<span class="token keyword">return</span> ans<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>这里我们检索数组的槽，然后执行<code>add()</code>操作和<code>sload()</code>来获得我们想要的数组元素的值。</p>
 <p>你可能会问，如何防止我们与另一个变量的槽发生碰撞？这是完全可能的，但是，由于2²⁵⁶是一个非常大的数字，所以可能性极小。</p>
 <h3 id="读取-Map-值"><a href="#读取-Map-值" class="headerlink" title="读取 Map 值"></a>读取 Map 值</h3><p><strong>映射的行为类似于动态数组，只是我们将槽和键一起散列。</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// slot7</span><br><span class="line">mapping(uint256 =&gt; uint256) var8;</span><br></pre></td></tr></table></figure>
-
-
-
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">function getMappedValue(uint256 key) external view returns(uint256) &#123;</span><br><span class="line">	</span><br><span class="line">	uint256 slot;</span><br><span class="line">	</span><br><span class="line">	assembly &#123;</span><br><span class="line">		slot := var8.slot</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	// hashs the key and uint256 value of slot</span><br><span class="line">	bytes32 location = keccak256(abi.encode(key, slot));</span><br><span class="line">	</span><br><span class="line">	uint256 ans;</span><br><span class="line">	</span><br><span class="line">	assembly &#123;</span><br><span class="line">		ans := sload(location)</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	return ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="读取一个嵌套的-Map-值："><a href="#读取一个嵌套的-Map-值：" class="headerlink" title="读取一个嵌套的 Map 值："></a>读取一个嵌套的 Map 值：</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// slot 8</span><br><span class="line">mapping(uint256 =&gt; mapping(uint256 =&gt; uint256)) var9;</span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// slot7</span>
+<span class="token keyword">mapping</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> <span class="token operator">=></span> <span class="token builtin">uint256</span><span class="token punctuation">)</span> var8<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">getMappedValue</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> key<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span><span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	
+	<span class="token builtin">uint256</span> slot<span class="token punctuation">;</span>
+	
+	<span class="token keyword">assembly</span> <span class="token punctuation">&#123;</span>
+		slot <span class="token operator">:=</span> var8<span class="token punctuation">.</span>slot
+	<span class="token punctuation">&#125;</span>
+	
+	<span class="token comment">// hashs the key and uint256 value of slot</span>
+	<span class="token builtin">bytes32</span> location <span class="token operator">=</span> <span class="token function">keccak256</span><span class="token punctuation">(</span>abi<span class="token punctuation">.</span><span class="token function">encode</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> slot<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	<span class="token builtin">uint256</span> ans<span class="token punctuation">;</span>
+	
+	<span class="token keyword">assembly</span> <span class="token punctuation">&#123;</span>
+		ans <span class="token operator">:=</span> <span class="token function">sload</span><span class="token punctuation">(</span>location<span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+	
+	<span class="token keyword">return</span> ans<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="读取一个嵌套的-Map-值："><a href="#读取一个嵌套的-Map-值：" class="headerlink" title="读取一个嵌套的 Map 值："></a>读取一个嵌套的 Map 值：</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// slot 8</span>
+<span class="token keyword">mapping</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> <span class="token operator">=></span> <span class="token keyword">mapping</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> <span class="token operator">=></span> <span class="token builtin">uint256</span><span class="token punctuation">)</span><span class="token punctuation">)</span> var9<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p>这个例子中，设置了映射值<code>var9[0][1]=2</code>。下面是代码：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">function getMappedValue(uint256 key1, uint256 key2) external view returns(uint256) &#123;</span><br><span class="line">	</span><br><span class="line">	// get the slot of the mapping</span><br><span class="line">	uint256 slot;</span><br><span class="line">	assembly &#123;</span><br><span class="line">		slot := var9.slot</span><br><span class="line">	&#125;</span><br><span class="line">	// hashs the key and uint256 value of slot</span><br><span class="line">	bytes32 locationOfParentValue = keccak256(abi.encode(key1, slot));</span><br><span class="line">	// hashs the parent key with the nested key</span><br><span class="line">	bytes32 locationOfNestedValue = keccak256(abi.encode(key2, locationOfParentValue));</span><br><span class="line">	</span><br><span class="line">	uint256 ans;</span><br><span class="line">	// loads storage slot of location and returns ans</span><br><span class="line">	assembly &#123;</span><br><span class="line">		ans := sload(locationOfNestedValue)</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	return ans;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">getMappedValue</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> key1<span class="token punctuation">,</span> <span class="token builtin">uint256</span> key2<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span><span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	
+	<span class="token comment">// get the slot of the mapping</span>
+	<span class="token builtin">uint256</span> slot<span class="token punctuation">;</span>
+	<span class="token keyword">assembly</span> <span class="token punctuation">&#123;</span>
+		slot <span class="token operator">:=</span> var9<span class="token punctuation">.</span>slot
+	<span class="token punctuation">&#125;</span>
+	<span class="token comment">// hashs the key and uint256 value of slot</span>
+	<span class="token builtin">bytes32</span> locationOfParentValue <span class="token operator">=</span> <span class="token function">keccak256</span><span class="token punctuation">(</span>abi<span class="token punctuation">.</span><span class="token function">encode</span><span class="token punctuation">(</span>key1<span class="token punctuation">,</span> slot<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token comment">// hashs the parent key with the nested key</span>
+	<span class="token builtin">bytes32</span> locationOfNestedValue <span class="token operator">=</span> <span class="token function">keccak256</span><span class="token punctuation">(</span>abi<span class="token punctuation">.</span><span class="token function">encode</span><span class="token punctuation">(</span>key2<span class="token punctuation">,</span> locationOfParentValue<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	<span class="token builtin">uint256</span> ans<span class="token punctuation">;</span>
+	<span class="token comment">// loads storage slot of location and returns ans</span>
+	<span class="token keyword">assembly</span> <span class="token punctuation">&#123;</span>
+		ans <span class="token operator">:=</span> <span class="token function">sload</span><span class="token punctuation">(</span>locationOfNestedValue<span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+	
+	<span class="token keyword">return</span> ans<span class="token punctuation">;</span>
+	
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>我们首先得到第一个键（0）的哈希值。然后我们用第二个键的哈希值（1）来计算。最后，我们从存储空间加载槽，得到我们的值。</p>
 <h2 id="读取和写入打包的变量"><a href="#读取和写入打包的变量" class="headerlink" title="读取和写入打包的变量"></a>读取和写入打包的变量</h2><p>假如想要将 <code>var5</code>改为 4，我们知道 <code>var5</code>位于 slot 3，所以可以尝试这样做：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">function writeVar5(uint256 newVal) external &#123;</span><br><span class="line">	</span><br><span class="line">	assembly &#123;</span><br><span class="line">		sstore(3, newVal)</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">writeVar5</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> newVal<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token punctuation">&#123;</span>
+	
+	<span class="token keyword">assembly</span> <span class="token punctuation">&#123;</span>
+		<span class="token function">sstore</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span> newVal<span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+	
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>接下来使用<code>getValInHex(3)</code>，我们可以看到 slot 3 被改写为 <code>0x0000000000000000000000000000000000000000000000000000000000000004</code>。这是一个问题，因为现在 <code>var4</code> 被已经被修改为了0。<strong>这一部分将讨论如何读写打包的变量。首先学习更多的 Yul 语法</strong></p>
+<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -398,7 +428,8 @@
 <th>解释</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>and(x, y)</td>
 <td>x 和 y 的按位“与”</td>
 </tr>
@@ -418,36 +449,122 @@
 <td>shr(x, y)</td>
 <td>y 逻辑右移 x 位</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
+</div>
 <h3 id="and"><a href="#and" class="headerlink" title="and()"></a><code>and()</code></h3><p>取两个<code>bytes32</code>类型的值尝试<code>and()</code>操作：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">function getAnd() external pure returns(bytes32) &#123;</span><br><span class="line"></span><br><span class="line">	bytes32 randVar = 0x0000000000000000000000009acc1d6aa9b846083e8a497a661853aae07f0f00;</span><br><span class="line">	bytes32 mask = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;</span><br><span class="line">	bytes32 ans;</span><br><span class="line">	</span><br><span class="line">	assembly &#123;</span><br><span class="line">		ans := and(mask, randVar)</span><br><span class="line">	&#125;</span><br><span class="line">	return ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">getAnd</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">pure</span> <span class="token keyword">returns</span><span class="token punctuation">(</span><span class="token builtin">bytes32</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
 
+	<span class="token builtin">bytes32</span> randVar <span class="token operator">=</span> <span class="token number">0x0000000000000000000000009acc1d6aa9b846083e8a497a661853aae07f0f00</span><span class="token punctuation">;</span>
+	<span class="token builtin">bytes32</span> mask <span class="token operator">=</span> <span class="token number">0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff</span><span class="token punctuation">;</span>
+	<span class="token builtin">bytes32</span> ans<span class="token punctuation">;</span>
+	
+	<span class="token keyword">assembly</span> <span class="token punctuation">&#123;</span>
+		ans <span class="token operator">:=</span> <span class="token function">and</span><span class="token punctuation">(</span>mask<span class="token punctuation">,</span> randVar<span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+	<span class="token keyword">return</span> ans<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>查看输出结果，得到：<code>0x000000000000000000009acc1d6aa9b846083e8a497a661853aae07f0f00</code>。这是因为<code>and()</code>所做的是看两个输入的每一个位，并比较它们的值。如果两个位都是 1 （二进制方式考虑），那么保存这个位的状态，否则将其设置位 0。</p>
-<h3 id="or"><a href="#or" class="headerlink" title="or()"></a><code>or()</code></h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">function getOr() external pure returns (bytes32) &#123;</span><br><span class="line">	</span><br><span class="line">	bytes32 randVar = 0x000000000000000000000000ffffffffffffffffffffffffffffffffffffffff;</span><br><span class="line">	bytes32 mask = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;</span><br><span class="line">	</span><br><span class="line">	bytes32 ans;</span><br><span class="line">	assembly &#123;</span><br><span class="line">		ans := or(mask, randVar)</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	return ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这一次的输出是 <code>0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff</code>， 这是因为它看的是否有一个位处于1 状态（（激活态））。让我们看看如果我们把掩码变量改为 <code>0x00ffffffffffffffffffffff0000000000000000000000000000000000000000 </code>会怎样。你可以看到输出变为 <code>0x00ffffffffffffffffffffff9acc1d6aa9b846083e8a497a661853aae07f0f00</code>。 注意第一个字节是<code>0x00</code>，因为两个输入第一个字节都没有 1 。</p>
+<h3 id="or"><a href="#or" class="headerlink" title="or()"></a><code>or()</code></h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">getOr</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">pure</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">bytes32</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	
+	<span class="token builtin">bytes32</span> randVar <span class="token operator">=</span> <span class="token number">0x000000000000000000000000ffffffffffffffffffffffffffffffffffffffff</span><span class="token punctuation">;</span>
+	<span class="token builtin">bytes32</span> mask <span class="token operator">=</span> <span class="token number">0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff</span><span class="token punctuation">;</span>
+	
+	<span class="token builtin">bytes32</span> ans<span class="token punctuation">;</span>
+	<span class="token keyword">assembly</span> <span class="token punctuation">&#123;</span>
+		ans <span class="token operator">:=</span> <span class="token function">or</span><span class="token punctuation">(</span>mask<span class="token punctuation">,</span> randVar<span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+	
+	<span class="token keyword">return</span> ans<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这一次的输出是 <code>0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff</code>， 这是因为它看的是否有一个位处于1 状态（（激活态））。让我们看看如果我们把掩码变量改为 <code>0x00ffffffffffffffffffffff0000000000000000000000000000000000000000</code>会怎样。你可以看到输出变为 <code>0x00ffffffffffffffffffffff9acc1d6aa9b846083e8a497a661853aae07f0f00</code>。 注意第一个字节是<code>0x00</code>，因为两个输入第一个字节都没有 1 。</p>
 <h3 id="xor"><a href="#xor" class="headerlink" title="xor()"></a><code>xor()</code></h3><p><code>xor()</code>有一些不同。他要求一个位是 1 （激活态），另一个位是 0（非激活态）：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">function getXor() external pure returns(bytes32) &#123;</span><br><span class="line">	</span><br><span class="line">	bytes32 randVar = 0x00000000000000000000000000000000000000000000000000000000000000ff;</span><br><span class="line">	bytes32 mask = 0xffffffffffffffffffffffff00000000000000000000000000000000000000ff;</span><br><span class="line">	</span><br><span class="line">	bytes32 ans;</span><br><span class="line">	</span><br><span class="line">	assembly &#123;</span><br><span class="line">		ans := xor(mask, randVar)</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	return ans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">getXor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">pure</span> <span class="token keyword">returns</span><span class="token punctuation">(</span><span class="token builtin">bytes32</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	
+	<span class="token builtin">bytes32</span> randVar <span class="token operator">=</span> <span class="token number">0x00000000000000000000000000000000000000000000000000000000000000ff</span><span class="token punctuation">;</span>
+	<span class="token builtin">bytes32</span> mask <span class="token operator">=</span> <span class="token number">0xffffffffffffffffffffffff00000000000000000000000000000000000000ff</span><span class="token punctuation">;</span>
+	
+	<span class="token builtin">bytes32</span> ans<span class="token punctuation">;</span>
+	
+	<span class="token keyword">assembly</span> <span class="token punctuation">&#123;</span>
+		ans <span class="token operator">:=</span> <span class="token function">xor</span><span class="token punctuation">(</span>mask<span class="token punctuation">,</span> randVar<span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+	
+	<span class="token keyword">return</span> ans<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>输出是 <code>0xffffffffffffffffffffffff0000000000000000000000000000000000000000</code>。当<code>0x00</code>和<code>0xff</code>对齐时，我们才能看到输出 1 ，区别还是很明显的。</p>
 <h3 id="shl-和shr"><a href="#shl-和shr" class="headerlink" title="shl()和shr()"></a><code>shl()</code>和<code>shr()</code></h3><p><code>shl()</code>和<code>shr()</code>的操作非常类似，二者都是讲输入按位移位。<code>shl()</code>按左移位，<code>shr()</code>按右移位。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">function shlAndShr() external pure returns(bytes32, bytes32) &#123;</span><br><span class="line"></span><br><span class="line">	bytes32 randVar = 0xffff00000000000000000000000000000000000000000000000000000000ffff;</span><br><span class="line">	</span><br><span class="line">	bytes32 ans1;</span><br><span class="line">	bytes32 ans2;</span><br><span class="line">	</span><br><span class="line">	assembly &#123;</span><br><span class="line">		ans1 := shr(16, randVar)</span><br><span class="line">		ans2 := shl(16, randVar)</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	return (ans1, ans2);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">shlAndShr</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">pure</span> <span class="token keyword">returns</span><span class="token punctuation">(</span><span class="token builtin">bytes32</span><span class="token punctuation">,</span> <span class="token builtin">bytes32</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
 
-
-
+	<span class="token builtin">bytes32</span> randVar <span class="token operator">=</span> <span class="token number">0xffff00000000000000000000000000000000000000000000000000000000ffff</span><span class="token punctuation">;</span>
+	
+	<span class="token builtin">bytes32</span> ans1<span class="token punctuation">;</span>
+	<span class="token builtin">bytes32</span> ans2<span class="token punctuation">;</span>
+	
+	<span class="token keyword">assembly</span> <span class="token punctuation">&#123;</span>
+		ans1 <span class="token operator">:=</span> <span class="token function">shr</span><span class="token punctuation">(</span><span class="token number">16</span><span class="token punctuation">,</span> randVar<span class="token punctuation">)</span>
+		ans2 <span class="token operator">:=</span> <span class="token function">shl</span><span class="token punctuation">(</span><span class="token number">16</span><span class="token punctuation">,</span> randVar<span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+	
+	<span class="token keyword">return</span> <span class="token punctuation">(</span>ans1<span class="token punctuation">,</span> ans2<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p><strong>输出：</strong></p>
 <p><code>ans1</code>：<code>0x0000ffff00000000000000000000000000000000000000000000000000000000</code></p>
 <p><code>ans2</code>：<code>0x00000000000000000000000000000000000000000000000000000000ffff0000</code></p>
 <p>首先先看以下<code>ans1</code>。我们按位 16 位（2 个字节）执行 <code>shr()</code> 可以看到最后两个字节从<code>0xffff</code>变为<code>0x0000</code>，前两个字节向右移了两个字节。<code>ans2</code>所发生的就是比特位移到左边而不是右边。</p>
 <h3 id="读取var4和var5的值"><a href="#读取var4和var5的值" class="headerlink" title="读取var4和var5的值"></a>读取<code>var4</code>和<code>var5</code>的值</h3><p>在我们写到 <code>var5</code>之前，我们先写一个函数，<strong>先读<code>var4</code>和<code>var5</code></strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">function readVar4AndVar5() external view returns (uint128, uint128) &#123;</span><br><span class="line"></span><br><span class="line">	uint128 readVar4;</span><br><span class="line">	uint128 readVar5;</span><br><span class="line">	</span><br><span class="line">	bytes32 mask = 0x00000000000000000000000000000000ffffffffffffffffffffffffffffffff;</span><br><span class="line">	// 用于掩码操作，保留变量的低 128 位，将高 128 位置零。</span><br><span class="line">	</span><br><span class="line">	assembly &#123;</span><br><span class="line">		let slot3 := sload(3)</span><br><span class="line">		</span><br><span class="line">		// the and() operation sets var5 to 0x00</span><br><span class="line">		readVar4 := and(slot3, mask)</span><br><span class="line">		// 将 slot3 和 mask 进行按位与操作，即保留 slot3 的低 128 位，将其余位置零，结果存储在 readVar4 中。</span><br><span class="line">		</span><br><span class="line">		// we shift var5 to var4 to 0x00</span><br><span class="line">		// var5&#x27;s old position becomes 0x00</span><br><span class="line">		readVar5 := shr( mul( var5.offset, 8), slot3)</span><br><span class="line">		// mul(var5.offset, 8) 的作用是将偏移量转换为实际的位移数值（每个存储槽的大小是 32 字节，所以乘以 8 将槽位数转换为字节）</span><br><span class="line">		// 然后使用 shr（右移）指令来根据计算出的位移数值，从 slot3 中获取相应的数据并存储在 readVar5 中。</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	return (readVar4, readVar5);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">readVar4AndVar5</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint128</span><span class="token punctuation">,</span> <span class="token builtin">uint128</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
 
+	<span class="token builtin">uint128</span> readVar4<span class="token punctuation">;</span>
+	<span class="token builtin">uint128</span> readVar5<span class="token punctuation">;</span>
+	
+	<span class="token builtin">bytes32</span> mask <span class="token operator">=</span> <span class="token number">0x00000000000000000000000000000000ffffffffffffffffffffffffffffffff</span><span class="token punctuation">;</span>
+	<span class="token comment">// 用于掩码操作，保留变量的低 128 位，将高 128 位置零。</span>
+	
+	<span class="token keyword">assembly</span> <span class="token punctuation">&#123;</span>
+		<span class="token keyword">let</span> slot3 <span class="token operator">:=</span> <span class="token function">sload</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span>
+		
+		<span class="token comment">// the and() operation sets var5 to 0x00</span>
+		readVar4 <span class="token operator">:=</span> <span class="token function">and</span><span class="token punctuation">(</span>slot3<span class="token punctuation">,</span> mask<span class="token punctuation">)</span>
+		<span class="token comment">// 将 slot3 和 mask 进行按位与操作，即保留 slot3 的低 128 位，将其余位置零，结果存储在 readVar4 中。</span>
+		
+		<span class="token comment">// we shift var5 to var4 to 0x00</span>
+		<span class="token comment">// var5's old position becomes 0x00</span>
+		readVar5 <span class="token operator">:=</span> <span class="token function">shr</span><span class="token punctuation">(</span> <span class="token function">mul</span><span class="token punctuation">(</span> var5<span class="token punctuation">.</span>offset<span class="token punctuation">,</span> <span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">,</span> slot3<span class="token punctuation">)</span>
+		<span class="token comment">// mul(var5.offset, 8) 的作用是将偏移量转换为实际的位移数值（每个存储槽的大小是 32 字节，所以乘以 8 将槽位数转换为字节）</span>
+		<span class="token comment">// 然后使用 shr（右移）指令来根据计算出的位移数值，从 slot3 中获取相应的数据并存储在 readVar5 中。</span>
+	<span class="token punctuation">&#125;</span>
+	
+	<span class="token keyword">return</span> <span class="token punctuation">(</span>readVar4<span class="token punctuation">,</span> readVar5<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>输出结果是1和2，符合预期。对于检索<code>var4</code>，我们只需要使用一个掩码，将其值设置为<code>0x0000000000000000000000000000000000000000000000000000000000000001</code>。然后我们返回一个设置为1的<code>uint128</code>。当读取<code>var5</code>时，我们需要将<code>var4</code>向右移位。这样我们就有了<code>0x0000000000000000000000000000000000000000000000000000000000000002</code>，用来返回。需要注意的是，有时你必须将移位和掩码结合起来，以读取一个有2个以上变量的存储槽的值。</p>
-<h3 id="修改var5的值："><a href="#修改var5的值：" class="headerlink" title="修改var5的值："></a>修改<code>var5</code>的值：</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">function writeVar5(uint256 newVal) external &#123;</span><br><span class="line">	</span><br><span class="line">	assembly &#123;</span><br><span class="line">		</span><br><span class="line">		// load slot3</span><br><span class="line">		let slot3 := sload(3)</span><br><span class="line">		</span><br><span class="line">		// mask for clearing var5</span><br><span class="line">		let mask := 0x00000000000000000000000000000000ffffffffffffffffffffffffffffffff</span><br><span class="line">		</span><br><span class="line">		// isolate var4</span><br><span class="line">		let clearedVar5 := and(slot3, mask)</span><br><span class="line">		</span><br><span class="line">		// format new value into var5 position</span><br><span class="line">		let shiftedVal := shl( mul( var5.offset, 8), newVal)</span><br><span class="line">		</span><br><span class="line">		// combine new value with isolated var4</span><br><span class="line">		let newSlot3 := or(shiftedVal, clearedVar5)</span><br><span class="line">		</span><br><span class="line">		// store new value to slot3</span><br><span class="line">		sstore(3, newSlot3)</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<h3 id="修改var5的值："><a href="#修改var5的值：" class="headerlink" title="修改var5的值："></a>修改<code>var5</code>的值：</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">writeVar5</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> newVal<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token punctuation">&#123;</span>
+	
+	<span class="token keyword">assembly</span> <span class="token punctuation">&#123;</span>
+		
+		<span class="token comment">// load slot3</span>
+		<span class="token keyword">let</span> slot3 <span class="token operator">:=</span> <span class="token function">sload</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span>
+		
+		<span class="token comment">// mask for clearing var5</span>
+		<span class="token keyword">let</span> mask <span class="token operator">:=</span> <span class="token number">0x00000000000000000000000000000000ffffffffffffffffffffffffffffffff</span>
+		
+		<span class="token comment">// isolate var4</span>
+		<span class="token keyword">let</span> clearedVar5 <span class="token operator">:=</span> <span class="token function">and</span><span class="token punctuation">(</span>slot3<span class="token punctuation">,</span> mask<span class="token punctuation">)</span>
+		
+		<span class="token comment">// format new value into var5 position</span>
+		<span class="token keyword">let</span> shiftedVal <span class="token operator">:=</span> <span class="token function">shl</span><span class="token punctuation">(</span> <span class="token function">mul</span><span class="token punctuation">(</span> var5<span class="token punctuation">.</span>offset<span class="token punctuation">,</span> <span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">,</span> newVal<span class="token punctuation">)</span>
+		
+		<span class="token comment">// combine new value with isolated var4</span>
+		<span class="token keyword">let</span> newSlot3 <span class="token operator">:=</span> <span class="token function">or</span><span class="token punctuation">(</span>shiftedVal<span class="token punctuation">,</span> clearedVar5<span class="token punctuation">)</span>
+		
+		<span class="token comment">// store new value to slot3</span>
+		<span class="token function">sstore</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span> newSlot3<span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+	
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>第一步是加载存储槽3。接下来，我们需要创建一个掩码。与我们读取<code>var4</code>时类似，我们要将数值隔离为 <code>0x0000000000000000000000000000000000000000000000000000000000000001</code>。下一步是格式化我们的新值，使其在<code>var5</code>的槽位上，所以它看起来像这样的<code>0x0000000000000000000000000000000400000000000000000000000000000000</code>。与我们读取<code>var5</code>时不同，这次我们要将我们的值向左移动。最后，我们将使用<code>or()</code>将我们的值合并成32字节的十六进制，并将该值存储到槽3。我们可以通过调用<code>getValInHex(3)</code>来检查我们的工作。这将返回<code>0x0000000000000000000000000000000400000000000000000000000000000001</code>，这就是我们期望看到的。</p>
 <h2 id="内存"><a href="#内存" class="headerlink" title="内存"></a>内存</h2><p>内存的行为与 Storage 不同。内存是不持久的，这意味着一旦函数执行完毕，所有的变量都会被清除。<strong>内存与其它语言中的堆相当，但没有垃圾收集器</strong>。<strong>内存（memory）比存储（storage）要便宜</strong>得多，<strong>前 22 个字的内存成本是线性计算的</strong>，但要小心，<strong>因为之后的内存成本会变成二次方的</strong>。内存是以32个字节的序列排布的。</p>
-<p>之后我们会对此有更好的理解，但现在要理解**<code>0x00</code>-<code>0x22</code>是一个序列**。Solidity 分配<code>0x00</code>-<code>0x40</code>作为<code>scratch空间</code>。这个区域的内存不保证是空的，它被用于某些操作。<code>0x40</code>-<code>0x60</code>存储的是所谓的<code>free memory pointer(自由空闲指针)</code>的位置，用于向内存写入新的东西。<code>0x60</code>-<code>0x80</code>是空的，作为一个间隙(gap)。<code>0x80</code>是我们开始工作的地方。内存不合并打包数值。从存储器中获取的值将被存储现在他们自己的 32 字节序列中（即<code>0x80</code>-<code>0xa0</code>）。</p>
+<p>之后我们会对此有更好的理解，但现在要理解<strong><code>0x00</code>-<code>0x22</code>是一个序列</strong>。Solidity 分配<code>0x00</code>-<code>0x40</code>作为<code>scratch空间</code>。这个区域的内存不保证是空的，它被用于某些操作。<code>0x40</code>-<code>0x60</code>存储的是所谓的<code>free memory pointer(自由空闲指针)</code>的位置，用于向内存写入新的东西。<code>0x60</code>-<code>0x80</code>是空的，作为一个间隙(gap)。<code>0x80</code>是我们开始工作的地方。内存不合并打包数值。从存储器中获取的值将被存储现在他们自己的 32 字节序列中（即<code>0x80</code>-<code>0xa0</code>）。</p>
 <p>内存被用于以下操作：</p>
 <ul>
 <li>外部调用的返回值</li>
@@ -459,6 +576,7 @@
 <li>创建其他智能合约</li>
 </ul>
 <p>一些关于内存的 Yul 指令：</p>
+<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -466,7 +584,8 @@
 <th>解释</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>mload(p)</td>
 <td>类似于<code>sload()</code>，但是是加载 p 之后接下来的 32 个字节</td>
 </tr>
@@ -494,16 +613,30 @@
 <td>revert(p, s)</td>
 <td>结束执行，不保存状态更改，并从内存位置 p -v 返回数据</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
+</div>
 <p>接下来我们来看一些更多的数据结构：</p>
 <p><strong>结构体和固定长度数组的行为实际上是一样的</strong>：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">struct Var10 &#123;</span><br><span class="line">	uint256 subVar1;</span><br><span class="line">	uint256 subVar2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">struct</span> <span class="token class-name">Var10</span> <span class="token punctuation">&#123;</span>
+	<span class="token builtin">uint256</span> subVar1<span class="token punctuation">;</span>
+	<span class="token builtin">uint256</span> subVar2<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 <p>这没什么不一样的地方，只是一个简单的数据结构。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">function getStructValue() external pure returns (uint256, uint256) &#123;</span><br><span class="line">	</span><br><span class="line">	// initialize struct</span><br><span class="line">	Var10 memory s;</span><br><span class="line">	</span><br><span class="line">	s.subVar1 = 32;</span><br><span class="line">	s.subVar2 = 64;</span><br><span class="line">	</span><br><span class="line">	assembly &#123;</span><br><span class="line">		return(0x80, 0xc0)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">getStructValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">pure</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">,</span> <span class="token builtin">uint256</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	
+	<span class="token comment">// initialize struct</span>
+	Var10 <span class="token keyword">memory</span> s<span class="token punctuation">;</span>
+	
+	s<span class="token punctuation">.</span>subVar1 <span class="token operator">=</span> <span class="token number">32</span><span class="token punctuation">;</span>
+	s<span class="token punctuation">.</span>subVar2 <span class="token operator">=</span> <span class="token number">64</span><span class="token punctuation">;</span>
+	
+	<span class="token keyword">assembly</span> <span class="token punctuation">&#123;</span>
+		<span class="token keyword">return</span><span class="token punctuation">(</span><span class="token number">0x80</span><span class="token punctuation">,</span> <span class="token number">0xc0</span><span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>这里我们将<code>s.subVar1</code>设置为内存位置<code>0x80</code>-<code>0xa0</code>，<code>s.subVar2</code>设置为内存位置<code>0xa0</code>-<code>0xc0</code>。这就是为什么我们要返回<code>0x80</code> - <code>0xc0</code>。下面是一个交易结束前的内存布局表：</p>
-<p><img src="/../images/Yul%E5%86%85%E8%81%94%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/28025.png" alt="img"></p>
+<p><img src="../images/Yul内联汇编入门/28025.png" alt="img"></p>
 <p>从中我们可以看到：</p>
 <ul>
 <li><code>0x00</code> - <code>0x40</code> 是空的 scratch 空间</li>
@@ -513,12 +646,38 @@
 <li><code>0xc0</code>是新的空闲内存指针</li>
 </ul>
 <h3 id="动态数组在内存（memory）中工作"><a href="#动态数组在内存（memory）中工作" class="headerlink" title="动态数组在内存（memory）中工作"></a>动态数组在内存（memory）中工作</h3><p>接下来展示动态数组是如何下内存中工作的。在这个例子中，把<code>[0, 1, 2, 3]</code>作为参数<code>arr</code>传递。这个例子，我们将向数组中添加一个额外元素。<strong>在实际中要注意，因为可能会覆盖一个不同的内存变量</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">function getDynamicArray(uint256[] memory arr) external view returns (uint256[] memory) &#123;</span><br><span class="line">	</span><br><span class="line">	assembly &#123;</span><br><span class="line">		</span><br><span class="line">		// where array is stored in memory (0x80)</span><br><span class="line">		let location := arr</span><br><span class="line">		</span><br><span class="line">		// length of array is stored at arr (4)</span><br><span class="line">		let length := mload(arr)</span><br><span class="line">		</span><br><span class="line">		// gets next available memory location</span><br><span class="line">		let nextMemoryLocation := add( add( location, 0x20), mul( length, 0x20) )</span><br><span class="line">		// stores new value to memory</span><br><span class="line">		mstore(nextMemoryLocation, 4)</span><br><span class="line">		</span><br><span class="line">		// increment length by 1</span><br><span class="line">		length := add( length, 1)</span><br><span class="line">		</span><br><span class="line">		// store new length valur</span><br><span class="line">		mstore(location, length)</span><br><span class="line">		</span><br><span class="line">		// update free memory pointer</span><br><span class="line">		mstore(0x40, 0x140)</span><br><span class="line">		</span><br><span class="line">		return ( add( location, 0x20), mul (length, 0x20))</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">getDynamicArray</span><span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token keyword">memory</span> arr<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token keyword">memory</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	
+	<span class="token keyword">assembly</span> <span class="token punctuation">&#123;</span>
+		
+		<span class="token comment">// where array is stored in memory (0x80)</span>
+		<span class="token keyword">let</span> location <span class="token operator">:=</span> arr
+		
+		<span class="token comment">// length of array is stored at arr (4)</span>
+		<span class="token keyword">let</span> length <span class="token operator">:=</span> <span class="token function">mload</span><span class="token punctuation">(</span>arr<span class="token punctuation">)</span>
+		
+		<span class="token comment">// gets next available memory location</span>
+		<span class="token keyword">let</span> nextMemoryLocation <span class="token operator">:=</span> <span class="token function">add</span><span class="token punctuation">(</span> <span class="token function">add</span><span class="token punctuation">(</span> location<span class="token punctuation">,</span> <span class="token number">0x20</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">mul</span><span class="token punctuation">(</span> length<span class="token punctuation">,</span> <span class="token number">0x20</span><span class="token punctuation">)</span> <span class="token punctuation">)</span>
+		<span class="token comment">// stores new value to memory</span>
+		<span class="token function">mstore</span><span class="token punctuation">(</span>nextMemoryLocation<span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">)</span>
+		
+		<span class="token comment">// increment length by 1</span>
+		length <span class="token operator">:=</span> <span class="token function">add</span><span class="token punctuation">(</span> length<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span>
+		
+		<span class="token comment">// store new length valur</span>
+		<span class="token function">mstore</span><span class="token punctuation">(</span>location<span class="token punctuation">,</span> length<span class="token punctuation">)</span>
+		
+		<span class="token comment">// update free memory pointer</span>
+		<span class="token function">mstore</span><span class="token punctuation">(</span><span class="token number">0x40</span><span class="token punctuation">,</span> <span class="token number">0x140</span><span class="token punctuation">)</span>
+		
+		<span class="token keyword">return</span> <span class="token punctuation">(</span> <span class="token function">add</span><span class="token punctuation">(</span> location<span class="token punctuation">,</span> <span class="token number">0x20</span><span class="token punctuation">)</span><span class="token punctuation">,</span> mul <span class="token punctuation">(</span>length<span class="token punctuation">,</span> <span class="token number">0x20</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>我们在这里所做的是获得数组在内存中的存储位置。然后，我们得到数组的长度，它被存储在数组的第一个内存位置。为了看到下一个可用的位置，我们在该位置上添加32个字节（跳过数组的长度），并将数组的长度乘以32个字节。这将使我们前进到数组后的下一个内存位置。在这里，我们将存储我们的新值（4）。接下来，我们将数组的长度增加1。之后，我们要更新空闲内存指针。最后，我们返回数组。</p>
 <p>让我们再看一次内存布局。</p>
-<p><img src="/../images/Yul%E5%86%85%E8%81%94%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/20165.png" alt="img"></p>
+<p><img src="../images/Yul内联汇编入门/20165.png" alt="img"></p>
 <h2 id="合约调用"><a href="#合约调用" class="headerlink" title="合约调用"></a>合约调用</h2><p>这里，我们将讨论<strong>合约调用在 Yul 中是如何工作的</strong></p>
+<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -526,7 +685,8 @@
 <th>解释</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>gas()</td>
 <td>仍可用于执行的 Gas</td>
 </tr>
@@ -602,312 +762,140 @@
 <td>staticcall(g, a, in, insize, out, outsize)</td>
 <td>与 <code>call()</code> 类似。除了它不能用于调用改变区块链状态的合约（即标记为 <code>pure</code> 和 <code>view</code> 的函数）。注意参数 v 丢失。您不能使用 <code>staticcall()</code> 发送以太币</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
+</div>
 <p>接下来，我们看一下我们将调用的合约：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity ^0.8.17;</span><br><span class="line"></span><br><span class="line">contract CallMe &#123;</span><br><span class="line"></span><br><span class="line">	uint256 public var1 = 1;</span><br><span class="line">	uint256 public var2 = 2;</span><br><span class="line">	</span><br><span class="line">	function a(uint256 _var1, uint256 _var2) external payable returns(uint256, uint256) &#123;</span><br><span class="line">	</span><br><span class="line">		// requires 1 ether was sent to contract</span><br><span class="line">		require(msg.value &gt;= 1 ether);</span><br><span class="line">		</span><br><span class="line">		// updates var1 &amp; var2</span><br><span class="line">		var1 = _var1;</span><br><span class="line">		var2 = _var2;</span><br><span class="line">		</span><br><span class="line">		// returns var1 &amp; var2</span><br><span class="line">		return (var1, var2);</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	function b() external view returns(uint256, uint256) &#123;</span><br><span class="line">			return (var1, var2);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.8.17</span><span class="token punctuation">;</span>
 
+<span class="token keyword">contract</span> <span class="token class-name">CallMe</span> <span class="token punctuation">&#123;</span>
+
+	<span class="token builtin">uint256</span> <span class="token keyword">public</span> var1 <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+	<span class="token builtin">uint256</span> <span class="token keyword">public</span> var2 <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">;</span>
+	
+	<span class="token keyword">function</span> <span class="token function">a</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> _var1<span class="token punctuation">,</span> <span class="token builtin">uint256</span> _var2<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">payable</span> <span class="token keyword">returns</span><span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">,</span> <span class="token builtin">uint256</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	
+		<span class="token comment">// requires 1 ether was sent to contract</span>
+		<span class="token keyword">require</span><span class="token punctuation">(</span>msg<span class="token punctuation">.</span>value <span class="token operator">>=</span> <span class="token number">1</span> ether<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		
+		<span class="token comment">// updates var1 &amp; var2</span>
+		var1 <span class="token operator">=</span> _var1<span class="token punctuation">;</span>
+		var2 <span class="token operator">=</span> _var2<span class="token punctuation">;</span>
+		
+		<span class="token comment">// returns var1 &amp; var2</span>
+		<span class="token keyword">return</span> <span class="token punctuation">(</span>var1<span class="token punctuation">,</span> var2<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		
+	<span class="token punctuation">&#125;</span>
+	
+	<span class="token keyword">function</span> <span class="token function">b</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span><span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">,</span> <span class="token builtin">uint256</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+			<span class="token keyword">return</span> <span class="token punctuation">(</span>var1<span class="token punctuation">,</span> var2<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+	
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>这个合约有两个存储变量<code>var1</code>和<code>var2</code>，分别存储在 slot 0 和 slot 1 中。函数<code>a()</code>要求用户至少发送 1 个以太币给合约，否则它就会回滚。接下来，函数<code>a()</code>更新<code>var1</code>和<code>var2</code>并返回他们。函数<code>b()</code>简单地读取<code>var1</code>和<code>var2</code>并返回。</p>
 <p>在我们调用<code>CallMe</code>合约之前，需要花一分钟时间来理解<strong>函数选择器</strong>。让我们看看下面这个交易<code>0x773d45e000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000002</code> 的调用数据。Calldata的<strong>前4个字节</strong>是所谓的<strong>函数选择器</strong>（<code>0x773d45e0</code>）。这就是EVM如何知道你想调用什么函数。<strong>我们通过获取函数签名的字符串哈希值的前4个字节来得出函数选择器</strong>。所以函数<code>a()</code>的签名是<code>a(uint256,uint256)</code>。从这个字符串的哈希值可以得到<code>0x773d45e097aa76a22159880d254a5f1db8365bc2d0f0987a82bda7dfd3b9c8aa</code>。看一下前4个字节，我们看到它等于<code>0x773d45e0</code><strong>。注意签名中没有空格。这很重要</strong>，因为<strong>添加空格会给我们一个完全不同的哈希值</strong></p>
 <p>我们先看一下存储布局：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">uint256 public var1;</span><br><span class="line">uint256 public var2;</span><br><span class="line">bytes4 selectorA = 0x773d45e0;</span><br><span class="line">bytes4 selectorB = 0x4df7e3d0;</span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token builtin">uint256</span> <span class="token keyword">public</span> var1<span class="token punctuation">;</span>
+<span class="token builtin">uint256</span> <span class="token keyword">public</span> var2<span class="token punctuation">;</span>
+<span class="token builtin">bytes4</span> selectorA <span class="token operator">=</span> <span class="token number">0x773d45e0</span><span class="token punctuation">;</span>
+<span class="token builtin">bytes4</span> selectorB <span class="token operator">=</span> <span class="token number">0x4df7e3d0</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 <p>注意<code>var1</code>和<code>var2</code>的布局与合约<code>CallMe</code>相同。这样才能使<code>delegatecall()</code>正常工作。我们满足了这些需求，并且能够拥有其他的变量（<code>selectorA</code>和<code>selectorB</code>），只要我们的新变量被附加到最后。这可以防止任何存储碰撞。</p>
-<h3 id="staticcall"><a href="#staticcall" class="headerlink" title="staticcall()"></a><code>staticcall()</code></h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">function getVars(address _callMe) external view returns(uint256, uint256) &#123;</span><br><span class="line"></span><br><span class="line">	assembly &#123;</span><br><span class="line">		</span><br><span class="line">		// load slot 2 from memory</span><br><span class="line">		let slot2 := sload(2)</span><br><span class="line">		</span><br><span class="line">		// shift selectorA off 右移位隔离 A</span><br><span class="line">		let funcSelector := shr( 32, slot2)</span><br><span class="line">		</span><br><span class="line">		// store selectorB to memory location 0x80</span><br><span class="line">		mstore(0x00, funcSelector)</span><br><span class="line">		</span><br><span class="line">		// static call CallMe</span><br><span class="line">		let result := staticcall(gas(), _callMe, 0x1c, 0x20, 0x80, 0xc0)</span><br><span class="line">		</span><br><span class="line">		// check if call was successful, else revert</span><br><span class="line">		if iszero(result) &#123;</span><br><span class="line">			revert(0,0)</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		// return values from memory</span><br><span class="line">		return (0x80, 0xc0)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="staticcall"><a href="#staticcall" class="headerlink" title="staticcall()"></a><code>staticcall()</code></h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">getVars</span><span class="token punctuation">(</span><span class="token builtin">address</span> _callMe<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span><span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">,</span> <span class="token builtin">uint256</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
 
-<p>首先从存储空间中获取<code>b()</code>的函数选择器。通过加载 <code>slot2</code> 来获取，但是由于两个函数选择器都存储在 <code>slot2</code>，接下来我们可以<strong>右移 4 个字节（32 位）来提取<code>selectorB</code><strong>。接下来把函数选择器</strong>存储在内存的<code>scratch</code>空间内。</strong>现在我们就可以进行静态调用了。在这些例子中，我们传入了<code>gas()</code>，当然可以指定 Gas 的数量。我们传入参数<code>_callMe</code>为合约地址。<code>0x1c</code>和<code>0x20</code>说的是我们要把存储的最后 4 个字节传到 scratch 空间。因为函数选择器是 4 个字节，但内存是以 32 个字节为一个系列工作的（同样，记住我们是从右往左存储的）。<code>staticcall()</code>的最后两个参数指定我们要将返回数据存储在内存位置<code>0x80</code> - <code>0xc0</code>。接下来，我们检查函数调用是否成功，否则 revert。记住，成功的调用将返回 1。最后，从内存中返回数据，并得到数值 1 和 2。</p>
+	<span class="token keyword">assembly</span> <span class="token punctuation">&#123;</span>
+		
+		<span class="token comment">// load slot 2 from memory</span>
+		<span class="token keyword">let</span> slot2 <span class="token operator">:=</span> <span class="token function">sload</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span>
+		
+		<span class="token comment">// shift selectorA off 右移位隔离 A</span>
+		<span class="token keyword">let</span> funcSelector <span class="token operator">:=</span> <span class="token function">shr</span><span class="token punctuation">(</span> <span class="token number">32</span><span class="token punctuation">,</span> slot2<span class="token punctuation">)</span>
+		
+		<span class="token comment">// store selectorB to memory location 0x80</span>
+		<span class="token function">mstore</span><span class="token punctuation">(</span><span class="token number">0x00</span><span class="token punctuation">,</span> funcSelector<span class="token punctuation">)</span>
+		
+		<span class="token comment">// static call CallMe</span>
+		<span class="token keyword">let</span> result <span class="token operator">:=</span> <span class="token function">staticcall</span><span class="token punctuation">(</span><span class="token function">gas</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> _callMe<span class="token punctuation">,</span> <span class="token number">0x1c</span><span class="token punctuation">,</span> <span class="token number">0x20</span><span class="token punctuation">,</span> <span class="token number">0x80</span><span class="token punctuation">,</span> <span class="token number">0xc0</span><span class="token punctuation">)</span>
+		
+		<span class="token comment">// check if call was successful, else revert</span>
+		<span class="token keyword">if</span> <span class="token function">iszero</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+			<span class="token keyword">revert</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">)</span>
+		<span class="token punctuation">&#125;</span>
+		
+		<span class="token comment">// return values from memory</span>
+		<span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token number">0x80</span><span class="token punctuation">,</span> <span class="token number">0xc0</span><span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>首先从存储空间中获取<code>b()</code>的函数选择器。通过加载 <code>slot2</code> 来获取，但是由于两个函数选择器都存储在 <code>slot2</code>，接下来我们可以<strong>右移 4 个字节（32 位）来提取<code>selectorB</code></strong>。接下来把函数选择器<strong>存储在内存的<code>scratch</code>空间内。</strong>现在我们就可以进行静态调用了。在这些例子中，我们传入了<code>gas()</code>，当然可以指定 Gas 的数量。我们传入参数<code>_callMe</code>为合约地址。<code>0x1c</code>和<code>0x20</code>说的是我们要把存储的最后 4 个字节传到 scratch 空间。因为函数选择器是 4 个字节，但内存是以 32 个字节为一个系列工作的（同样，记住我们是从右往左存储的）。<code>staticcall()</code>的最后两个参数指定我们要将返回数据存储在内存位置<code>0x80</code> - <code>0xc0</code>。接下来，我们检查函数调用是否成功，否则 revert。记住，成功的调用将返回 1。最后，从内存中返回数据，并得到数值 1 和 2。</p>
 <h3 id="call"><a href="#call" class="headerlink" title="call()"></a><code>call()</code></h3><p>从 <code>CallMe</code> 中调用函数<code>a()</code>。调用该函数需要向合约发送一个 Ether。在这个例子中，将 3 和 4 作为<code>_var1</code>和<code>_var2</code>传入</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">function callA(address _callMe, uint256 _var1, uint256 _var2) external payable returns (bytes memory) &#123;</span><br><span class="line"></span><br><span class="line">	assembly &#123;</span><br><span class="line">		</span><br><span class="line">		// load slot 2</span><br><span class="line">		let slot2 := sload(2)</span><br><span class="line">		</span><br><span class="line">		// isolate selectorA</span><br><span class="line">		let mask := 0x00000000000000000000000000000000000000000000000000000000ffffffff</span><br><span class="line">		let funcSelector := and(mask, slot2)</span><br><span class="line">		</span><br><span class="line">0x00000000000000000000000000000000000000000000000000000000ffffffff</span><br><span class="line">0x00000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000</span><br><span class="line">		</span><br><span class="line">		// store function selectorA</span><br><span class="line">		mstore(0x80, funcSelector)</span><br><span class="line">		</span><br><span class="line">		// copies calldata to memory location 0xa0</span><br><span class="line">		// leaves out function selector and _callMe</span><br><span class="line">		calldatacopy(0xa0, 0x24, sub( calldatasize(), 0x24) )</span><br><span class="line">		</span><br><span class="line">		// call contract</span><br><span class="line">		let result := call(gas(), _callMe, callvalue(), 0x9c, 0xe0, 0x100, 0x140)</span><br><span class="line">		</span><br><span class="line">		// check if call was successful, else revert</span><br><span class="line">		if iszero(result) &#123;</span><br><span class="line">			revert(0,0)</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		// return values from memory</span><br><span class="line">		return (0x100, 0x140)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">callA</span><span class="token punctuation">(</span><span class="token builtin">address</span> _callMe<span class="token punctuation">,</span> <span class="token builtin">uint256</span> _var1<span class="token punctuation">,</span> <span class="token builtin">uint256</span> _var2<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">payable</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">bytes</span> <span class="token keyword">memory</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
 
-<p>好的，与我们上一个例子类似，我们必须加载slot2。但是这一次，我们将屏蔽<code>selectorB</code>以隔离<code>selectorA</code>。现在我们将把选择器存储在<code>0x80</code>。<strong>由于我们需要来自calldata的参数，我们将使用<code>calldatacopy()</code><strong>。</strong>我们告诉<code>calldatacopy()</code>在内存位置<code>0xa0</code>存储我们的calldata</strong>。我们还告诉<code>calldatacopy()</code>跳过前36个字节。前4个字节是<code>callA()</code>的函数选择器，接下来的32个字节是<code>callMe</code>的地址（我们将在一分钟内使用它）。我们告诉<code>calldatacopy()</code>的最后一件事是存储calldata的大小减去36字节。</p>
+	<span class="token keyword">assembly</span> <span class="token punctuation">&#123;</span>
+		
+		<span class="token comment">// load slot 2</span>
+		<span class="token keyword">let</span> slot2 <span class="token operator">:=</span> <span class="token function">sload</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span>
+		
+		<span class="token comment">// isolate selectorA</span>
+		<span class="token keyword">let</span> mask <span class="token operator">:=</span> <span class="token number">0x00000000000000000000000000000000000000000000000000000000ffffffff</span>
+		<span class="token keyword">let</span> funcSelector <span class="token operator">:=</span> <span class="token function">and</span><span class="token punctuation">(</span>mask<span class="token punctuation">,</span> slot2<span class="token punctuation">)</span>
+		
+<span class="token number">0x00000000000000000000000000000000000000000000000000000000ffffffff</span>
+<span class="token number">0x00000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000</span>
+		
+		<span class="token comment">// store function selectorA</span>
+		<span class="token function">mstore</span><span class="token punctuation">(</span><span class="token number">0x80</span><span class="token punctuation">,</span> funcSelector<span class="token punctuation">)</span>
+		
+		<span class="token comment">// copies calldata to memory location 0xa0</span>
+		<span class="token comment">// leaves out function selector and _callMe</span>
+		<span class="token function">calldatacopy</span><span class="token punctuation">(</span><span class="token number">0xa0</span><span class="token punctuation">,</span> <span class="token number">0x24</span><span class="token punctuation">,</span> <span class="token function">sub</span><span class="token punctuation">(</span> <span class="token function">calldatasize</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">0x24</span><span class="token punctuation">)</span> <span class="token punctuation">)</span>
+		
+		<span class="token comment">// call contract</span>
+		<span class="token keyword">let</span> result <span class="token operator">:=</span> <span class="token function">call</span><span class="token punctuation">(</span><span class="token function">gas</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> _callMe<span class="token punctuation">,</span> <span class="token function">callvalue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">0x9c</span><span class="token punctuation">,</span> <span class="token number">0xe0</span><span class="token punctuation">,</span> <span class="token number">0x100</span><span class="token punctuation">,</span> <span class="token number">0x140</span><span class="token punctuation">)</span>
+		
+		<span class="token comment">// check if call was successful, else revert</span>
+		<span class="token keyword">if</span> <span class="token function">iszero</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+			<span class="token keyword">revert</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">)</span>
+		<span class="token punctuation">&#125;</span>
+		
+		<span class="token comment">// return values from memory</span>
+		<span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token number">0x100</span><span class="token punctuation">,</span> <span class="token number">0x140</span><span class="token punctuation">)</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>好的，与我们上一个例子类似，我们必须加载slot2。但是这一次，我们将屏蔽<code>selectorB</code>以隔离<code>selectorA</code>。现在我们将把选择器存储在<code>0x80</code>。<strong>由于我们需要来自calldata的参数，我们将使用<code>calldatacopy()</code></strong>。<strong>我们告诉<code>calldatacopy()</code>在内存位置<code>0xa0</code>存储我们的calldata</strong>。我们还告诉<code>calldatacopy()</code>跳过前36个字节。前4个字节是<code>callA()</code>的函数选择器，接下来的32个字节是<code>callMe</code>的地址（我们将在一分钟内使用它）。我们告诉<code>calldatacopy()</code>的最后一件事是存储calldata的大小减去36字节。</p>
 <p>现在我们已经准备好进行合约调用。像上次一样，我们传入<code>gas()</code>和<code>_callMe</code>。然而，这次我们从<code>0x9c</code>（<code>0x80</code>内存系列的最后4个字节）-<code>0xe0</code>传入我们的调用数据，并将数据存储在内存位置<code>0x100</code>-<code>0x120</code>。再次，检查调用是否成功并返回我们的输出。如果我们检查合约<code>CallMe</code>，我们看到值被成功更新为3和4。</p>
 <p>为了进一步说明正在发生的事情，这里是我们返回之前的内存布局。</p>
-<p><img src="/../images/Yul%E5%86%85%E8%81%94%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/92085.png" alt="img"></p>
+<p><img src="../images/Yul内联汇编入门/92085.png" alt="img"></p>
 <h3 id="delegatecall"><a href="#delegatecall" class="headerlink" title="delegatecall()"></a><code>delegatecall()</code></h3><p>最后来看 <code>delegatecall()</code> 合约代码看起来几乎是一样的，只有一个变化：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">function delegatecall(address _callMe, uint256 _val1, uint256 _val2) external payable returns (bytes memory) &#123;</span><br><span class="line">	</span><br><span class="line">	assembly &#123;</span><br><span class="line">		</span><br><span class="line">		// load slot2</span><br><span class="line">		slot2 := sload(2);</span><br><span class="line">		</span><br><span class="line">		// isolate selectorA</span><br><span class="line">		let mask := 0x00000000000000000000000000000000000000000000000000000000ffffffff</span><br><span class="line">		let funcSelector := and(mask, slot2)</span><br><span class="line">		</span><br><span class="line">		// store function selectorA</span><br><span class="line">		mstore(0x80, funcSelector)</span><br><span class="line">		</span><br><span class="line">		// copies calldata to memory location 0xa0</span><br><span class="line">		// leaves out function selector and _callMe</span><br><span class="line">		calldatacopy(0xa0, 0x24, sub( calldatasize(), 0x24 ) )</span><br><span class="line">		</span><br><span class="line">		// call contract</span><br><span class="line">		let result := delegatecall(gas(), _callMe, 0x9c, 0xe0, 0x100, 0x120)</span><br><span class="line">		</span><br><span class="line">		// check if call was successful, else revert</span><br><span class="line">		if iszero(result) &#123;</span><br><span class="line">			revert(0,0)</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		// return values from memory</span><br><span class="line">		return (0x100, 0x120)</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">delegatecall</span><span class="token punctuation">(</span><span class="token builtin">address</span> _callMe<span class="token punctuation">,</span> <span class="token builtin">uint256</span> _val1<span class="token punctuation">,</span> <span class="token builtin">uint256</span> _val2<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">payable</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">bytes</span> <span class="token keyword">memory</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	
+	<span class="token keyword">assembly</span> <span class="token punctuation">&#123;</span>
+		
+		<span class="token comment">// load slot2</span>
+		slot2 <span class="token operator">:=</span> <span class="token function">sload</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		
+		<span class="token comment">// isolate selectorA</span>
+		<span class="token keyword">let</span> mask <span class="token operator">:=</span> <span class="token number">0x00000000000000000000000000000000000000000000000000000000ffffffff</span>
+		<span class="token keyword">let</span> funcSelector <span class="token operator">:=</span> <span class="token function">and</span><span class="token punctuation">(</span>mask<span class="token punctuation">,</span> slot2<span class="token punctuation">)</span>
+		
+		<span class="token comment">// store function selectorA</span>
+		<span class="token function">mstore</span><span class="token punctuation">(</span><span class="token number">0x80</span><span class="token punctuation">,</span> funcSelector<span class="token punctuation">)</span>
+		
+		<span class="token comment">// copies calldata to memory location 0xa0</span>
+		<span class="token comment">// leaves out function selector and _callMe</span>
+		<span class="token function">calldatacopy</span><span class="token punctuation">(</span><span class="token number">0xa0</span><span class="token punctuation">,</span> <span class="token number">0x24</span><span class="token punctuation">,</span> <span class="token function">sub</span><span class="token punctuation">(</span> <span class="token function">calldatasize</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">0x24</span> <span class="token punctuation">)</span> <span class="token punctuation">)</span>
+		
+		<span class="token comment">// call contract</span>
+		<span class="token keyword">let</span> result <span class="token operator">:=</span> <span class="token function">delegatecall</span><span class="token punctuation">(</span><span class="token function">gas</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> _callMe<span class="token punctuation">,</span> <span class="token number">0x9c</span><span class="token punctuation">,</span> <span class="token number">0xe0</span><span class="token punctuation">,</span> <span class="token number">0x100</span><span class="token punctuation">,</span> <span class="token number">0x120</span><span class="token punctuation">)</span>
+		
+		<span class="token comment">// check if call was successful, else revert</span>
+		<span class="token keyword">if</span> <span class="token function">iszero</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+			<span class="token keyword">revert</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">)</span>
+		<span class="token punctuation">&#125;</span>
+		
+		<span class="token comment">// return values from memory</span>
+		<span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token number">0x100</span><span class="token punctuation">,</span> <span class="token number">0x120</span><span class="token punctuation">)</span>
+		
+	<span class="token punctuation">&#125;</span>
+	
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>我们所做的唯一改变是将<code>call()</code>改为<code>delegatecall()</code>并删除<code>callvalue()</code>。我们不需要<code>callvalue()</code>，因为委托调用是在它自己的状态中执行<code>CallMe</code>的代码。因此，<code>a()</code>中的<code>require()</code>语句是在检查以太币是否被发送到我们的<code>Caller</code>合约。如果我们检查<code>CallMe</code>中的<code>var1</code>和<code>var2</code>，我们看到没有变化。然而，我们的<code>Caller</code>合约中的<code>var1</code>和<code>var2</code>被成功更新。</p>
-
-    </div>
-
-    
-    
-    
-        
-
-<div>
-<ul class="post-copyright">
-  <li class="post-copyright-author">
-    <strong>本文作者： </strong>Q1ngying
-  </li>
-  <li class="post-copyright-link">
-    <strong>本文链接：</strong>
-    <a href="http://q1ngying.cn/2023/11/22/Yul%E5%86%85%E8%81%94%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/" title="Yul内联汇编入门">http://q1ngying.cn/2023/11/22/Yul内联汇编入门/</a>
-  </li>
-  <li class="post-copyright-license">
-    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
-  </li>
-</ul>
-</div>
-
-
-      <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/Solidity/" rel="tag"># Solidity</a>
-              <a href="/tags/EVM/" rel="tag"># EVM</a>
-              <a href="/tags/Yul/" rel="tag"># Yul</a>
-          </div>
-
-        
-
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/2023/11/22/abi%E7%BC%96%E7%A0%81%E8%A7%A3%E7%A0%81%E8%AF%A6%E8%A7%A3/" rel="prev" title="abi编码解码详解">
-      <i class="fa fa-chevron-left"></i> abi编码解码详解
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/2023/11/24/EVM-Opcodes-1/" rel="next" title="EVM_Opcodes(1)">
-      EVM_Opcodes(1) <i class="fa fa-chevron-right"></i>
-    </a></div>
-    </div>
-      </footer>
-    
-  </article>
-  
-  
-  
-
-
-
-          </div>
-          
-
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
-
-        </div>
-          
-  
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
-  </div>
-
-  <aside class="sidebar">
-    <div class="sidebar-inner">
-
-      <ul class="sidebar-nav motion-element">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Yul-%E5%85%A5%E9%97%A8"><span class="nav-number">1.</span> <span class="nav-text">Yul 入门</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Yul%E6%A6%82%E8%BF%B0"><span class="nav-number">1.1.</span> <span class="nav-text">Yul概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%98%E9%87%8F%E8%B5%8B%E5%80%BC%E3%80%81%E8%BF%90%E7%AE%97%E3%80%81%E8%AF%84%E4%BC%B0"><span class="nav-number">1.2.</span> <span class="nav-text">变量赋值、运算、评估</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#For-%E5%BE%AA%E7%8E%AF%E5%92%8C-if-%E8%AF%AD%E5%8F%A5"><span class="nav-number">1.3.</span> <span class="nav-text">For 循环和 if 语句</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%98%E5%82%A8"><span class="nav-number">1.4.</span> <span class="nav-text">存储</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E5%8F%96%E5%8A%A8%E6%80%81%E6%95%B0%E7%BB%84%E7%9A%84%E5%80%BC"><span class="nav-number">1.4.1.</span> <span class="nav-text">读取动态数组的值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E5%8F%96-Map-%E5%80%BC"><span class="nav-number">1.4.2.</span> <span class="nav-text">读取 Map 值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E5%8F%96%E4%B8%80%E4%B8%AA%E5%B5%8C%E5%A5%97%E7%9A%84-Map-%E5%80%BC%EF%BC%9A"><span class="nav-number">1.4.3.</span> <span class="nav-text">读取一个嵌套的 Map 值：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%BB%E5%8F%96%E5%92%8C%E5%86%99%E5%85%A5%E6%89%93%E5%8C%85%E7%9A%84%E5%8F%98%E9%87%8F"><span class="nav-number">1.5.</span> <span class="nav-text">读取和写入打包的变量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#and"><span class="nav-number">1.5.1.</span> <span class="nav-text">and()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#or"><span class="nav-number">1.5.2.</span> <span class="nav-text">or()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#xor"><span class="nav-number">1.5.3.</span> <span class="nav-text">xor()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#shl-%E5%92%8Cshr"><span class="nav-number">1.5.4.</span> <span class="nav-text">shl()和shr()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E5%8F%96var4%E5%92%8Cvar5%E7%9A%84%E5%80%BC"><span class="nav-number">1.5.5.</span> <span class="nav-text">读取var4和var5的值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9var5%E7%9A%84%E5%80%BC%EF%BC%9A"><span class="nav-number">1.5.6.</span> <span class="nav-text">修改var5的值：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E5%AD%98"><span class="nav-number">1.6.</span> <span class="nav-text">内存</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E6%95%B0%E7%BB%84%E5%9C%A8%E5%86%85%E5%AD%98%EF%BC%88memory%EF%BC%89%E4%B8%AD%E5%B7%A5%E4%BD%9C"><span class="nav-number">1.6.1.</span> <span class="nav-text">动态数组在内存（memory）中工作</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%88%E7%BA%A6%E8%B0%83%E7%94%A8"><span class="nav-number">1.7.</span> <span class="nav-text">合约调用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#staticcall"><span class="nav-number">1.7.1.</span> <span class="nav-text">staticcall()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#call"><span class="nav-number">1.7.2.</span> <span class="nav-text">call()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#delegatecall"><span class="nav-number">1.7.3.</span> <span class="nav-text">delegatecall()</span></a></li></ol></li></ol></li></ol></div>
-      </div>
-      <!--/noindex-->
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="Q1ngying"
-      src="/images/avatar.jpg">
-  <p class="site-author-name" itemprop="name">Q1ngying</p>
-  <div class="site-description" itemprop="description"></div>
-</div>
-<div class="site-state-wrap motion-element">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives/">
-        
-          <span class="site-state-item-count">76</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-          
-        <span class="site-state-item-count">29</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-          
-        <span class="site-state-item-count">29</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
-</div>
-  <div class="links-of-author motion-element">
-      <span class="links-of-author-item">
-        <a href="https://github.com/q1ngying" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;q1ngying" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="mailto:q1ngying@163.com" title="E-Mail → mailto:q1ngying@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="https://twitter.com/Q1ngYing" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;Q1ngYing" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="https://instagram.com/" title="Instagram → https:&#x2F;&#x2F;instagram.com&#x2F;" rel="noopener" target="_blank"><i class="fab fa-instagram fa-fw"></i>Instagram</a>
-      </span>
-  </div>
-
-
-
-      </div>
-
-    </div>
-  </aside>
-  <div id="sidebar-dimmer"></div>
-
-
-      </div>
-    </main>
-
-    <footer class="footer">
-      <div class="footer-inner">
-        
-
-        
-
-<div class="copyright">
-  
-  &copy; 2023-09 – 
-  <span itemprop="copyrightYear">2024</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">Q1ngying</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-chart-area"></i>
-    </span>
-      <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">195k</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-coffee"></i>
-    </span>
-      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">10:51</span>
-</div>
-
-<div class="powered-by">
-    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-    <i class="fa fa-user-md"></i>
-    <span id="busuanzi_container_site_uv">
-        本站访客数:<span id="busuanzi_value_site_uv"></span>人
-    </span>
-    <span class="post-meta-divider">|</span>
-    <span id="busuanzi_container_site_pv">
-        本站访问量<span id="busuanzi_value_site_pv"></span>人次
-    </span>
-</div>
-
-        
-
-
-
-
-
-
-
-
-      </div>
-    </footer>
-  </div>
-
-  
-  
-  <script color='255,201,74' opacity='1' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
-
-<script src="/js/utils.js"></script>
-
-<script src="/js/motion.js"></script>
-
-
-<script src="/js/schemes/pisces.js"></script>
-
-
-<script src="/js/next-boot.js"></script>
-
-
-
-
-  
-  <script>
-    (function(){
-      var canonicalURL, curProtocol;
-      //Get the <link> tag
-      var x=document.getElementsByTagName("link");
-		//Find the last canonical URL
-		if(x.length > 0){
-			for (i=0;i<x.length;i++){
-				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
-					canonicalURL=x[i].href;
-				}
-			}
-		}
-    //Get protocol
-	    if (!canonicalURL){
-	    	curProtocol = window.location.protocol.split(':')[0];
-	    }
-	    else{
-	    	curProtocol = canonicalURL.split(':')[0];
-	    }
-      //Get current URL if the canonical URL does not exist
-	    if (!canonicalURL) canonicalURL = window.location.href;
-	    //Assign script content. Replace current URL with the canonical URL
-      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
-  </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-
-  
-
-</body>
-</html>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://q1ngying.cn">Q1ngying</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://q1ngying.cn/2023/11/22/Yul%E5%86%85%E8%81%94%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/">https://q1ngying.cn/2023/11/22/Yul%E5%86%85%E8%81%94%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://q1ngying.cn" target="_blank">Q1ngying</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Solidity/">Solidity</a><a class="post-meta__tags" href="/tags/EVM/">EVM</a><a class="post-meta__tags" href="/tags/Yul/">Yul</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="prev-post pull-left" href="/2023/11/24/EVM-Opcodes-1/" title="EVM_Opcodes(1)"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">EVM_Opcodes(1)</div></div></a><a class="next-post pull-right" href="/2023/11/22/abi%E7%BC%96%E7%A0%81%E8%A7%A3%E7%A0%81%E8%AF%A6%E8%A7%A3/" title="abi编码解码详解"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">abi编码解码详解</div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a href="/2023/11/24/EVM-Opcodes-1/" title="EVM_Opcodes(1)"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-24</div><div class="title">EVM_Opcodes(1)</div></div></a><a href="/2023/11/27/EVM-Opcodes-3/" title="EVM_Opcodes(3)"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-27</div><div class="title">EVM_Opcodes(3)</div></div></a><a href="/2023/11/27/EVM-Opcodes-2/" title="EVM_Opcodes(2)"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-27</div><div class="title">EVM_Opcodes(2)</div></div></a><a href="/2023/09/26/EVM%E5%AD%A6%E4%B9%A0/" title="EVM学习"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-09-26</div><div class="title">EVM学习</div></div></a><a href="/2024/03/05/Huff-1/" title="Huff(1)"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-03-05</div><div class="title">Huff(1)</div></div></a><a href="/2024/06/11/Storage%20%E8%BF%9B%E9%98%B6%E2%80%94%E2%80%94%E9%80%9A%E8%BF%87%E5%BC%95%E7%94%A8%20Storage%20%E6%8F%90%E9%AB%98%20gas%20%E5%88%A9%E7%94%A8%E7%8E%87/" title="Storage 进阶——通过引用 Storage 提高 gas 利用率"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-06-11</div><div class="title">Storage 进阶——通过引用 Storage 提高 gas 利用率</div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info is-center"><div class="avatar-img"><img src="/img/butterfly-icon.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Q1ngying</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">29</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/q1ngying"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/q1ngying" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="https://weibo.com" target="_blank" title="微博"><i class="fab fa-weibo" style="color: #24292e;"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Yul-%E5%85%A5%E9%97%A8"><span class="toc-number">1.</span> <span class="toc-text">Yul 入门</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Yul%E6%A6%82%E8%BF%B0"><span class="toc-number">1.1.</span> <span class="toc-text">Yul概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%98%E9%87%8F%E8%B5%8B%E5%80%BC%E3%80%81%E8%BF%90%E7%AE%97%E3%80%81%E8%AF%84%E4%BC%B0"><span class="toc-number">1.2.</span> <span class="toc-text">变量赋值、运算、评估</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#For-%E5%BE%AA%E7%8E%AF%E5%92%8C-if-%E8%AF%AD%E5%8F%A5"><span class="toc-number">1.3.</span> <span class="toc-text">For 循环和 if 语句</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%98%E5%82%A8"><span class="toc-number">1.4.</span> <span class="toc-text">存储</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%BB%E5%8F%96%E5%8A%A8%E6%80%81%E6%95%B0%E7%BB%84%E7%9A%84%E5%80%BC"><span class="toc-number">1.4.1.</span> <span class="toc-text">读取动态数组的值</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%BB%E5%8F%96-Map-%E5%80%BC"><span class="toc-number">1.4.2.</span> <span class="toc-text">读取 Map 值</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%BB%E5%8F%96%E4%B8%80%E4%B8%AA%E5%B5%8C%E5%A5%97%E7%9A%84-Map-%E5%80%BC%EF%BC%9A"><span class="toc-number">1.4.3.</span> <span class="toc-text">读取一个嵌套的 Map 值：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%BB%E5%8F%96%E5%92%8C%E5%86%99%E5%85%A5%E6%89%93%E5%8C%85%E7%9A%84%E5%8F%98%E9%87%8F"><span class="toc-number">1.5.</span> <span class="toc-text">读取和写入打包的变量</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#and"><span class="toc-number">1.5.1.</span> <span class="toc-text">and()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#or"><span class="toc-number">1.5.2.</span> <span class="toc-text">or()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#xor"><span class="toc-number">1.5.3.</span> <span class="toc-text">xor()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#shl-%E5%92%8Cshr"><span class="toc-number">1.5.4.</span> <span class="toc-text">shl()和shr()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%BB%E5%8F%96var4%E5%92%8Cvar5%E7%9A%84%E5%80%BC"><span class="toc-number">1.5.5.</span> <span class="toc-text">读取var4和var5的值</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9var5%E7%9A%84%E5%80%BC%EF%BC%9A"><span class="toc-number">1.5.6.</span> <span class="toc-text">修改var5的值：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E5%AD%98"><span class="toc-number">1.6.</span> <span class="toc-text">内存</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E6%95%B0%E7%BB%84%E5%9C%A8%E5%86%85%E5%AD%98%EF%BC%88memory%EF%BC%89%E4%B8%AD%E5%B7%A5%E4%BD%9C"><span class="toc-number">1.6.1.</span> <span class="toc-text">动态数组在内存（memory）中工作</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%88%E7%BA%A6%E8%B0%83%E7%94%A8"><span class="toc-number">1.7.</span> <span class="toc-text">合约调用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#staticcall"><span class="toc-number">1.7.1.</span> <span class="toc-text">staticcall()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#call"><span class="toc-number">1.7.2.</span> <span class="toc-text">call()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#delegatecall"><span class="toc-number">1.7.3.</span> <span class="toc-text">delegatecall()</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/17/MakerDAO-Abacus/" title="MakerDAO-Abacus">MakerDAO-Abacus</a><time datetime="2024-07-17T07:06:42.000Z" title="发表于 2024-07-17 15:06:42">2024-07-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/17/MakerDAO-Clip/" title="MakerDAO-Clip">MakerDAO-Clip</a><time datetime="2024-07-17T07:06:32.000Z" title="发表于 2024-07-17 15:06:32">2024-07-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/15/MakerDAO-Join/" title="MakerDAO-Join">MakerDAO-Join</a><time datetime="2024-07-15T07:34:45.000Z" title="发表于 2024-07-15 15:34:45">2024-07-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/15/MakerDAO-Vat/" title="MakerDAO-Vat">MakerDAO-Vat</a><time datetime="2024-07-15T07:34:34.000Z" title="发表于 2024-07-15 15:34:34">2024-07-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/06/11/Storage%20%E8%BF%9B%E9%98%B6%E2%80%94%E2%80%94%E9%80%9A%E8%BF%87%E5%BC%95%E7%94%A8%20Storage%20%E6%8F%90%E9%AB%98%20gas%20%E5%88%A9%E7%94%A8%E7%8E%87/" title="Storage 进阶——通过引用 Storage 提高 gas 利用率">Storage 进阶——通过引用 Storage 提高 gas 利用率</a><time datetime="2024-06-11T09:13:23.000Z" title="发表于 2024-06-11 17:13:23">2024-06-11</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/back1.webp);"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By Q1ngying</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div></div></body></html>

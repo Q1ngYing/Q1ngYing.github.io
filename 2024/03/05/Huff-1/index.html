@@ -1,39 +1,11 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 6.3.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/icons8-clover-ios-16-glyph-32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/icons8-clover-ios-16-glyph-16.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
-
-<link rel="stylesheet" href="/css/main.css">
-
-<link rel="stylesheet" href="//fonts.lug.ustc.edu.cn/css?family=Garamond:300,300italic,400,400italic,700,700italic|Courier New:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
-  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
-  <script src="/lib/pace/pace.min.js"></script>
-
-<script id="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"q1ngying.cn","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
-  </script>
-
-  <meta name="description" content="HuffHuff 安装官网：https:&#x2F;&#x2F;docs.huff.sh  Windows系统下，能够成功按照 rust 和 Foundry 的话，直接通过 cargo 命令一次就能成功的安装 Huff。如果没有成功安装 Rust 和 Foundry，大致解决方法：">
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Huff(1) | Q1ngying</title><meta name="author" content="Q1ngying"><meta name="copyright" content="Q1ngying"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="HuffHuff 安装官网：https:&#x2F;&#x2F;docs.huff.sh  Windows系统下，能够成功按照 rust 和 Foundry 的话，直接通过 cargo 命令一次就能成功的安装 Huff。如果没有成功安装 Rust 和 Foundry，大致解决方法：">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Huff(1)">
-<meta property="og:url" content="http://q1ngying.cn/2024/03/05/Huff-1/index.html">
+<meta property="og:url" content="https://q1ngying.cn/2024/03/05/Huff-1/index.html">
 <meta property="og:site_name" content="Q1ngying">
 <meta property="og:description" content="HuffHuff 安装官网：https:&#x2F;&#x2F;docs.huff.sh  Windows系统下，能够成功按照 rust 和 Foundry 的话，直接通过 cargo 命令一次就能成功的安装 Huff。如果没有成功安装 Rust 和 Foundry，大致解决方法：">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://q1ngying.cn/images/Huff-1/image-20240304190428283-17097300625421.png">
-<meta property="og:image" content="http://q1ngying.cn/images/Huff-1/image-20240304192101966-17097300625422.png">
-<meta property="og:image" content="http://q1ngying.cn/images/Huff-1/image-20240305195047849-17097300625423.png">
-<meta property="og:image" content="http://q1ngying.cn/images/Huff-1/image-20240305200602341-17097300625424.png">
-<meta property="og:image" content="http://q1ngying.cn/images/Huff-1/image-20240305200645472-17097300625425.png">
+<meta property="og:image" content="https://q1ngying.cn/img/butterfly-icon.jpg">
 <meta property="article:published_time" content="2024-03-05T12:35:53.000Z">
 <meta property="article:modified_time" content="2024-03-06T13:01:15.937Z">
 <meta property="article:author" content="Q1ngying">
@@ -42,234 +14,150 @@
 <meta property="article:tag" content="Opcode">
 <meta property="article:tag" content="Huff">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://q1ngying.cn/images/Huff-1/image-20240304190428283-17097300625421.png">
+<meta name="twitter:image" content="https://q1ngying.cn/img/butterfly-icon.jpg"><link rel="shortcut icon" href="/img/icons8-clover-ios-16-glyph-32.png"><link rel="canonical" href="https://q1ngying.cn/2024/03/05/Huff-1/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><meta name="google-site-verification" content="IzCM4B791_p7IAU4WhRfiLlP"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
 
-<link rel="canonical" href="http://q1ngying.cn/2024/03/05/Huff-1/">
-
-
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : true,
-    lang   : 'zh-CN'
-  };
-</script>
-
-  <title>Huff(1) | Q1ngying</title>
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
   
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
 
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
 
-
-
-
-
-  <noscript>
-  <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
-
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
-
-<!-- hexo injector head_end start -->
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Huff(1)',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-03-06 21:01:15'
+}</script><!-- hexo injector head_end start -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
-<!-- hexo injector head_end end --></head>
-
-<body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
-
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
-    </div>
-  </div>
-
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">Q1ngying</h1>
-      <span class="logo-line-after"><i></i></span>
-    </a>
-      <p class="site-subtitle" itemprop="description">今朝梦醒与君别，遥盼春风寄相思</p>
-  </div>
-
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
-    </div>
-  </div>
-</div>
-
-
-
-
-<nav class="site-nav">
-  <ul id="menu" class="main-menu menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
-
-  </li>
-        <li class="menu-item menu-item-about">
-
-    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
-
-  </li>
-  </ul>
-</nav>
-
-
-
-
-</div>
-    </header>
-
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-  <div class="reading-progress-bar"></div>
-
-
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-
-          <div class="content post posts-expand">
-            
-
-    
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://q1ngying.cn/2024/03/05/Huff-1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Q1ngying">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Q1ngying">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          Huff(1)
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-03-05 20:35:53" itemprop="dateCreated datePublished" datetime="2024-03-05T20:35:53+08:00">2024-03-05</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-03-06 21:01:15" itemprop="dateModified" datetime="2024-03-06T21:01:15+08:00">2024-03-06</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/learn/" itemprop="url" rel="index"><span itemprop="name">learn</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Solidity/" itemprop="url" rel="index"><span itemprop="name">Solidity</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/EVM/" itemprop="url" rel="index"><span itemprop="name">EVM</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Opcode/" itemprop="url" rel="index"><span itemprop="name">Opcode</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Huff/" itemprop="url" rel="index"><span itemprop="name">Huff</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>3.7k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>12 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-        <h2 id="Huff"><a href="#Huff" class="headerlink" title="Huff"></a>Huff</h2><h3 id="Huff-安装"><a href="#Huff-安装" class="headerlink" title="Huff 安装"></a>Huff 安装</h3><p>官网：<a target="_blank" rel="noopener" href="https://docs.huff.sh/">https://docs.huff.sh</a> </p>
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/butterfly-icon.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">29</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/back1.webp);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Q1ngying</span></a><a class="nav-page-title" href="/"><span class="site-name">Huff(1)</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Huff(1)</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-03-05T12:35:53.000Z" title="发表于 2024-03-05 20:35:53">2024-03-05</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-03-06T13:01:15.937Z" title="更新于 2024-03-06 21:01:15">2024-03-06</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/learn/">learn</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Solidity/">Solidity</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/EVM/">EVM</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Opcode/">Opcode</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Huff/">Huff</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">39k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>2:11分钟</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="Huff"><a href="#Huff" class="headerlink" title="Huff"></a>Huff</h2><h3 id="Huff-安装"><a href="#Huff-安装" class="headerlink" title="Huff 安装"></a>Huff 安装</h3><p>官网：<a target="_blank" rel="noopener" href="https://docs.huff.sh">https://docs.huff.sh</a> </p>
 <p>Windows系统下，能够成功按照 rust 和 Foundry 的话，直接通过 cargo 命令一次就能成功的安装 Huff。如果没有成功安装 Rust 和 Foundry，大致解决方法：</p>
 <span id="more"></span>
-
 <ul>
 <li>安装 gcc （我没安装 Visul Studio tool C++ 生成工具，那玩意太大了也不好按，网上有关于  Visul Studio tool C++ 生成工具的轻量级 C++ 生成工具的替代</li>
 <li>为 git 配置了代理，因为我感觉 cargo 有时候还是用的 git ，我是之前装 Foundry 卡了好几次，之前为了传博客给 git 挂了代理之后方便，安装 Huff 的时候一次成功</li>
@@ -278,479 +166,297 @@
 </ul>
 <ol>
 <li><h3 id="Huff-入门"><a href="#Huff-入门" class="headerlink" title="Huff 入门"></a>Huff 入门</h3><h4 id="基本构成："><a href="#基本构成：" class="headerlink" title="基本构成："></a>基本构成：</h4><p>Huff 需要主函数（main）函数，需要宏，注意，定义宏时，宏函数名需要全大写，然后加上<code>=</code>，<code>takes</code>，<code>returns</code>，takes 表示从堆栈上取的字节，returns 表示返回到堆栈上的字节。</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define <span class="keyword">macro</span> <span class="title function_ invoke__">MAIN</span>() = <span class="title function_ invoke__">takes</span>(<span class="number">0</span>) <span class="title function_ invoke__">returns</span>(<span class="number">0</span>) &#123;&#125;</span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust">#define <span class="token keyword">macro</span> <span class="token constant">MAIN</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token function">takes</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token function">returns</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <h4 id="编译-huff："><a href="#编译-huff：" class="headerlink" title="编译 huff："></a>编译 huff：</h4><h5 id="huffc-path-b"><a href="#huffc-path-b" class="headerlink" title="huffc path (-b)"></a>huffc path (-b)</h5><p>使用命令：<code>huffc &quot;路径.huff&quot;</code></p>
-<p>如果要获取对应的 solidity bytecode 可以加上 <code>-b</code> 选项</p>
-<p>上面的例子：</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define <span class="keyword">macro</span> <span class="title function_ invoke__">MAIN</span>() = <span class="title function_ invoke__">takes</span>(<span class="number">0</span>) <span class="title function_ invoke__">returns</span>(<span class="number">0</span>) &#123;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>   如果要获取对应的 solidity bytecode 可以加上 <code>-b</code> 选项</p>
+<p>   上面的例子：</p>
+   <pre class="line-numbers language-rust" data-language="rust"><code class="language-rust">#define <span class="token keyword">macro</span> <span class="token constant">MAIN</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token function">takes</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token function">returns</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>   中，虽然我们没有<code>runtimec code</code>，也没有编写任何代码，<strong>但是我们通过运行命令得到了相对应的 solidity bytecode</strong> ：<code>60008060093d393df3</code>。得到的这一部分其实就是上面提到的 <code>contract creation code</code> 这是 <code>huff</code> 编译器知道我们<strong>至少需要代码创建合约</strong>尽管我们编译这个huff合约不做任何事情。</p>
+<p>   对于刚刚的<code>60008060093d393df3</code>，我们可以对其进行分析：</p>
+<p>   比如 opcoded 39 是<code>codecopy</code>，上面的<code>F3 3D 39</code>确实看到了一个代码复制操作</p>
+<h5 id="huffc-path-—bin-runtime"><a href="#huffc-path-—bin-runtime" class="headerlink" title="huffc path —bin-runtime"></a>huffc path —bin-runtime</h5><p>   该命令是获取现在的 huff 代码在区块链上的 <code>runtime code</code>：</p>
+   <pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">huffc path --bin-runtime<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>   比如下面的代码：</p>
+   <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">// 60008060093d393df3</span>
 
-<p>中，虽然我们没有<code>runtimec code</code>，也没有编写任何代码，<strong>但是我们通过运行命令得到了相对应的 solidity bytecode</strong> ：<code>60008060093d393df3</code>。得到的这一部分其实就是上面提到的 <code>contract creation code </code> 这是 <code>huff</code> 编译器知道我们<strong>至少需要代码创建合约</strong>尽管我们编译这个huff合约不做任何事情。</p>
-<p>对于刚刚的<code>60008060093d393df3</code>，我们可以对其进行分析：</p>
-<p>比如 opcoded 39 是<code>codecopy</code>，上面的<code>F3 3D 39</code>确实看到了一个代码复制操作</p>
-<h5 id="huffc-path-–bin-runtime"><a href="#huffc-path-–bin-runtime" class="headerlink" title="huffc path –bin-runtime"></a>huffc path –bin-runtime</h5><p>该命令是获取现在的 huff 代码在区块链上的 <code>runtime code</code>：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">huffc path --bin-runtime</span><br></pre></td></tr></table></figure>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">macro</span> <span class="token expression"><span class="token function">MAIN</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token function">takes</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token function">returns</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span></span></span>
+    <span class="token comment">// 0x00             // [0]</span>
+    <span class="token comment">// // 0x02           // TOP [2, 0] BOTTOM</span>
+    <span class="token comment">// calldataload    // [calldata (32)] </span>
+    <span class="token comment">// // how do we cut down the calldata -> func selector?</span>
+    <span class="token comment">// // right shift 28 bytes, 224 bits | 224 -> 0xe0</span>
+    <span class="token comment">// 0xe0            // TOP [0xe0, calldata (32)] BOTTOM</span>
+    <span class="token comment">// shr             // [func selector]</span>
+    <span class="token number">0x00</span> calldataload <span class="token number">0xe0</span> shr <span class="token comment">// [function_selector]</span>
+        
+    <span class="token comment">// jump => function data associated with the selector</span>
+    <span class="token comment">// If f_select == updateHorseNumber -> jump to that code</span>
+    <span class="token comment">// If f_select == readHorseNumber -> jump to that code</span>
+    <span class="token comment">// 0xcdfead2e == update </span>
+    <span class="token comment">// 0xe026c017 == read </span>
 
-<p>比如下面的代码：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 60008060093d393df3</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> macro MAIN() = takes(0) returns(0) &#123;</span></span><br><span class="line">    <span class="comment">// 0x00             // [0]</span></span><br><span class="line">    <span class="comment">// // 0x02           // TOP [2, 0] BOTTOM</span></span><br><span class="line">    <span class="comment">// calldataload    // [calldata (32)] </span></span><br><span class="line">    <span class="comment">// // how do we cut down the calldata -&gt; func selector?</span></span><br><span class="line">    <span class="comment">// // right shift 28 bytes, 224 bits | 224 -&gt; 0xe0</span></span><br><span class="line">    <span class="comment">// 0xe0            // TOP [0xe0, calldata (32)] BOTTOM</span></span><br><span class="line">    <span class="comment">// shr             // [func selector]</span></span><br><span class="line">    <span class="number">0x00</span> calldataload <span class="number">0xe0</span> shr <span class="comment">// [function_selector]</span></span><br><span class="line">        </span><br><span class="line">    <span class="comment">// jump =&gt; function data associated with the selector</span></span><br><span class="line">    <span class="comment">// If f_select == updateHorseNumber -&gt; jump to that code</span></span><br><span class="line">    <span class="comment">// If f_select == readHorseNumber -&gt; jump to that code</span></span><br><span class="line">    <span class="comment">// 0xcdfead2e == update </span></span><br><span class="line">    <span class="comment">// 0xe026c017 == read </span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// updateHorseNumber selector</span></span><br><span class="line">    <span class="number">0xcdfead2e</span>          <span class="comment">// [0xcdfead2e. function_selector]</span></span><br><span class="line">    eq                  <span class="comment">// [true_if_func_selector_matches]</span></span><br><span class="line">    <span class="comment">// jump to updateHorseNumber code if true</span></span><br><span class="line">    updateJump          <span class="comment">// [updateHorseNumberProgramCounter, true/false]</span></span><br><span class="line">    jumpi</span><br><span class="line">    updateJump:</span><br><span class="line">        SET_NUMBER_OF_HORSE()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> macro SET_NUMBER_OF_HORSE() = takes(0) returns(0) &#123;&#125;</span></span><br></pre></td></tr></table></figure>
+    <span class="token comment">// updateHorseNumber selector</span>
+    <span class="token number">0xcdfead2e</span>          <span class="token comment">// [0xcdfead2e. function_selector]</span>
+    eq                  <span class="token comment">// [true_if_func_selector_matches]</span>
+    <span class="token comment">// jump to updateHorseNumber code if true</span>
+    updateJump          <span class="token comment">// [updateHorseNumberProgramCounter, true/false]</span>
+    jumpi
+    updateJump<span class="token operator">:</span>
+        <span class="token function">SET_NUMBER_OF_HORSE</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span>
 
-<p>运行<code>huffc path --bin-runtime</code>的结果为：<code>5f3560e01c63cdfead2e1461000f575b</code></p>
-<h4 id="Huff：-FUNC-SIG-Interface"><a href="#Huff：-FUNC-SIG-Interface" class="headerlink" title="Huff： __FUNC_SIG &amp; Interface"></a>Huff： __FUNC_SIG &amp; Interface</h4><p>在 Huff 中，我们无需通过 <code>cast sig</code> 命令获取函数选择器（function selector），Huff 提供了一个语法可以使得我们无需计算函数选择器：<code>__FUNC_SIG()</code></p>
-<p>同时，可以像在 Solidity 中一样定义一个接口 （Interface）</p>
-<p>注意：</p>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">macro</span> <span class="token expression"><span class="token function">SET_NUMBER_OF_HORSE</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token function">takes</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token function">returns</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>   运行<code>huffc path --bin-runtime</code>的结果为：<code>5f3560e01c63cdfead2e1461000f575b</code></p>
+<h4 id="Huff：-FUNC-SIG-amp-Interface"><a href="#Huff：-FUNC-SIG-amp-Interface" class="headerlink" title="Huff： __FUNC_SIG &amp; Interface"></a>Huff： __FUNC_SIG &amp; Interface</h4><p>   在 Huff 中，我们无需通过 <code>cast sig</code> 命令获取函数选择器（function selector），Huff 提供了一个语法可以使得我们无需计算函数选择器：<code>__FUNC_SIG()</code></p>
+<p>   同时，可以像在 Solidity 中一样定义一个接口 （Interface）</p>
+<p>   注意：</p>
 <ul>
 <li>在 <code>huff</code> 中，必须标记函数是否为<code>payable</code></li>
 <li>并且，要加上 <code>returns()</code> 即使没有返回值</li>
 </ul>
-<p>代码如下：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Interface */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> function updateHorseNumber(uint256) nonpayable returns()</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> function readNumberOfHorses() view returns(uint256)</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> marco MAIN() = takes(0) returns(0) &#123;</span></span><br><span class="line">	...</span><br><span class="line">    __FUNC_SIG(readNumberOfHorses) <span class="comment">// 等价于手动通过命令 cast sig 计算得到的函数 `updateHorseNumber(uint256)` 的选择器</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>   代码如下：</p>
+   <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">/* Interface */</span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">function</span> <span class="token expression"><span class="token function">updateHorseNumber</span><span class="token punctuation">(</span>uint256<span class="token punctuation">)</span> nonpayable <span class="token function">returns</span><span class="token punctuation">(</span><span class="token punctuation">)</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">function</span> <span class="token expression"><span class="token function">readNumberOfHorses</span><span class="token punctuation">(</span><span class="token punctuation">)</span> view <span class="token function">returns</span><span class="token punctuation">(</span>uint256<span class="token punctuation">)</span></span></span>
 
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">marco</span> <span class="token expression"><span class="token function">MAIN</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token function">takes</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token function">returns</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span></span></span>
+	<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+    <span class="token function">__FUNC_SIG</span><span class="token punctuation">(</span>readNumberOfHorses<span class="token punctuation">)</span> <span class="token comment">// 等价于手动通过命令 cast sig 计算得到的函数 `updateHorseNumber(uint256)` 的选择器</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>   这个语法糖可以很好的帮助我们计算函数选择器</p>
+<h4 id="Huff：-FREE-STORAGE-POINTER"><a href="#Huff：-FREE-STORAGE-POINTER" class="headerlink" title="Huff： FREE_STORAGE_POINTER"></a>Huff： FREE_STORAGE_POINTER</h4><p>   Huff 内置的一些语法使得我们能够更加轻松的处理内存，他们拥有抽象，有一个关键字称为<code>FREE_STORAGE_POINTER()</code>。<strong>其本质上只是一个计数器，用于显示那些存储插槽是打开的。</strong>我们可以在 huff 文件中<strong>通过<code>FREE_STORAGE_POINTER</code>为我们的 <code>slot</code> 值定义一个常量</strong>。当然我们可以硬编码，但是每个 slot 存储 <code>32</code> 字节，最好还是使用 Huff 的内置语法来实现 Storage 的存储。</p>
+   <pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">constant</span> <span class="token expression">NUMBER_OF_HOURSES_STORAGE_SLOT <span class="token operator">=</span> <span class="token function">REFF_STORAGE_POINTER</span><span class="token punctuation">(</span><span class="token punctuation">)</span></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h4 id="Huff：访问常量变量"><a href="#Huff：访问常量变量" class="headerlink" title="Huff：访问常量变量"></a>Huff：访问常量变量</h4><p>   如上，定义了对应<code>slot</code>位置常量之后，就可以直接传入该常量，注意：<strong>使用时，要把常量名用<code>[]</code>包裹</strong>：</p>
+   <pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">#define constant NUMBER_OF_HOURSES_STORAGE_SLOT &#x3D; FREE_STORAGE_POINTER()
 
+#define macro SET_NUMBER_OF_HORSES() &#x3D; takes(0) returns(0) &#123;
+    &#x2F;&#x2F; 1. Get the value to store from calldata
+    
+    &#x2F;&#x2F; 2. Give it a storage slot
+    [NUMBER_OF_HOURSES_STORAGE_SLOT]
+    &#x2F;&#x2F; 3. sstore opcode
 
-<p>这个语法糖可以很好的帮助我们计算函数选择器</p>
-<h4 id="Huff：-FREE-STORAGE-POINTER"><a href="#Huff：-FREE-STORAGE-POINTER" class="headerlink" title="Huff： FREE_STORAGE_POINTER"></a>Huff： FREE_STORAGE_POINTER</h4><p>Huff 内置的一些语法使得我们能够更加轻松的处理内存，他们拥有抽象，有一个关键字称为<code>FREE_STORAGE_POINTER()</code>。<strong>其本质上只是一个计数器，用于显示那些存储插槽是打开的。</strong>我们可以在 huff 文件中<strong>通过<code>FREE_STORAGE_POINTER</code>为我们的 <code>slot</code> 值定义一个常量</strong>。当然我们可以硬编码，但是每个 slot 存储 <code>32</code> 字节，最好还是使用 Huff 的内置语法来实现 Storage 的存储。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> constant NUMBER_OF_HOURSES_STORAGE_SLOT = REFF_STORAGE_POINTER()</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h4 id="Huff：访问常量变量"><a href="#Huff：访问常量变量" class="headerlink" title="Huff：访问常量变量"></a>Huff：访问常量变量</h4><p>如上，定义了对应<code>slot</code>位置常量之后，就可以直接传入该常量，注意：<strong>使用时，要把常量名用<code>[]</code>包裹</strong>：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> constant NUMBER_OF_HOURSES_STORAGE_SLOT = FREE_STORAGE_POINTER()</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> macro SET_NUMBER_OF_HORSES() = takes(0) returns(0) &#123;</span></span><br><span class="line">    <span class="comment">// 1. Get the value to store from calldata</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 2. Give it a storage slot</span></span><br><span class="line">    [NUMBER_OF_HOURSES_STORAGE_SLOT]</span><br><span class="line">    <span class="comment">// 3. sstore opcode</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h4 id="从-calldata-访问函数参数"><a href="#从-calldata-访问函数参数" class="headerlink" title="从 calldata 访问函数参数"></a>从 calldata 访问函数参数</h4><h4 id="Huff-opcode"><a href="#Huff-opcode" class="headerlink" title="Huff opcode"></a>Huff opcode</h4><h5 id="push"><a href="#push" class="headerlink" title="push"></a><em>push</em></h5><p>在 Huff 中执行 <code>push</code> opcode 时，直接把需要 push 到堆栈中的数据写下来即可，因为 huff 编译器能够根据数据的大小，智能的选择对应的 push 系操作码</p>
-<p><strong>所以，在 Huff 中执行 push opcode，只需要输入实际的值即可</strong></p>
-<p>当有人向智能合约发送任何调用数据时，智能合约现在唯一要做的就是将 0 push 到堆栈上去。</p>
-<p>举例：</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#define <span class="keyword">macro</span> <span class="title function_ invoke__">MAIN</span>() = <span class="title function_ invoke__">takes</span>(<span class="number">0</span>) <span class="title function_ invoke__">returns</span>(<span class="number">0</span>) &#123;</span><br><span class="line">    <span class="number">0x00</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>将下面的代码用 huffc 编译结果：<code>60018060093d393df35f</code>，得到的结果是比刚刚合约创建时的代码更长一些。在<code>f3</code>后，多了一个<code>5f</code> opcode 这个字节码就是 <code>PUSH0</code></p>
-<h5 id="calldataload"><a href="#calldataload" class="headerlink" title="calldataload"></a><em>calldataload</em></h5><p>**接收一个堆栈输入(Stack input)，并给出一个堆栈输出(Stack output)**，所以堆栈输入的数据加载是我们首先将零推到堆栈上（<code>PUSH0 5f</code>）的原因.</p>
-<p>查看调用数据，抓取栈顶的值，作为偏移量（offset）</p>
-<p><strong>Stack input 堆栈输入</strong></p>
-<p><code>i</code>: byte offset in the <a target="_blank" rel="noopener" href="https://www.evm.codes/about">calldata</a></p>
-<p>calldata 中的字节偏移量。</p>
-<p><strong>Stack output 堆栈输出</strong></p>
-<p><code>data[i]</code>: 32-byte value starting from the given offset of the <a target="_blank" rel="noopener" href="https://www.evm.codes/about">calldata</a>. All bytes after the end of the <a target="_blank" rel="noopener" href="https://www.evm.codes/about">calldata</a> are set to 0.data[i]</p>
-<p>从给定的 calldata 偏移量开始的 32 字节值。calldata 结束之后的所有字节都设置为 0。</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#define <span class="keyword">macro</span> <span class="title function_ invoke__">MAIN</span>() = <span class="title function_ invoke__">takes</span>(<span class="number">0</span>) <span class="title function_ invoke__">returns</span>(<span class="number">0</span>) &#123;</span><br><span class="line">    <span class="number">0x00</span>          <span class="comment">// [0]</span></span><br><span class="line">    <span class="comment">// 0x02         // TOP [2, 0] BOTTOM</span></span><br><span class="line">    calldataload  <span class="comment">// [calldata] (The first 32 bytes of calldata)</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><img src="/../images/Huff-1/image-20240304190428283-17097300625421.png" alt="image-20240304190428283"></p>
-<p>最开始的calldata为：<code>0xcdfead2e0000000000000000000000000000000000000000000000000000000000000001</code></p>
-<p>因为 calldataload 只能获取32 个字节，所以此时堆栈中的 calldata 其实是：<code>0xcdfead2e00000000000000000000000000000000000000000000000000000000</code>（但其实不是我们想要的）</p>
-<h5 id="shr-Right-Shift-右移位"><a href="#shr-Right-Shift-右移位" class="headerlink" title="shr(Right Shift) 右移位"></a><em>shr(Right Shift) 右移位</em></h5><p>Shift the bits towards the least significant one. The bits moved before the first one are discarded, the new bits are set to 0.</p>
-<p>将位移向最不重要的位。丢弃第一个位之前移动的位，新位设置为 0。</p>
-<p><strong>Stack input 堆栈输入</strong></p>
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="从-calldata-访问函数参数"><a href="#从-calldata-访问函数参数" class="headerlink" title="从 calldata 访问函数参数"></a>从 calldata 访问函数参数</h4><h4 id="Huff-opcode"><a href="#Huff-opcode" class="headerlink" title="Huff opcode"></a>Huff opcode</h4><h5 id="push"><a href="#push" class="headerlink" title="push"></a><em>push</em></h5><p>   在 Huff 中执行 <code>push</code> opcode 时，直接把需要 push 到堆栈中的数据写下来即可，因为 huff 编译器能够根据数据的大小，智能的选择对应的 push 系操作码</p>
+<p>   <strong>所以，在 Huff 中执行 push opcode，只需要输入实际的值即可</strong></p>
+<p>   当有人向智能合约发送任何调用数据时，智能合约现在唯一要做的就是将 0 push 到堆栈上去。</p>
+<p>   举例：</p>
+   <pre class="line-numbers language-rust" data-language="rust"><code class="language-rust">#define <span class="token keyword">macro</span> <span class="token constant">MAIN</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token function">takes</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token function">returns</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token number">0x00</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>   将下面的代码用 huffc 编译结果：<code>60018060093d393df35f</code>，得到的结果是比刚刚合约创建时的代码更长一些。在<code>f3</code>后，多了一个<code>5f</code> opcode 这个字节码就是 <code>PUSH0</code></p>
+<h5 id="calldataload"><a href="#calldataload" class="headerlink" title="calldataload"></a><em>calldataload</em></h5><p>   <strong>接收一个堆栈输入(Stack input)，并给出一个堆栈输出(Stack output)</strong>，所以堆栈输入的数据加载是我们首先将零推到堆栈上（<code>PUSH0 5f</code>）的原因.</p>
+<p>   查看调用数据，抓取栈顶的值，作为偏移量（offset）</p>
+<p>   <strong>Stack input 堆栈输入</strong></p>
+<p>   <code>i</code>: byte offset in the <a target="_blank" rel="noopener" href="https://www.evm.codes/about">calldata</a></p>
+<p>   calldata 中的字节偏移量。</p>
+<p>   <strong>Stack output 堆栈输出</strong></p>
+<p>   <code>data[i]</code>: 32-byte value starting from the given offset of the <a target="_blank" rel="noopener" href="https://www.evm.codes/about">calldata</a>. All bytes after the end of the <a target="_blank" rel="noopener" href="https://www.evm.codes/about">calldata</a> are set to 0.data[i]</p>
+<p>   从给定的 calldata 偏移量开始的 32 字节值。calldata 结束之后的所有字节都设置为 0。</p>
+   <pre class="line-numbers language-rust" data-language="rust"><code class="language-rust">#define <span class="token keyword">macro</span> <span class="token constant">MAIN</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token function">takes</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token function">returns</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token number">0x00</span>          <span class="token comment">// [0]</span>
+    <span class="token comment">// 0x02         // TOP [2, 0] BOTTOM</span>
+    calldataload  <span class="token comment">// [calldata] (The first 32 bytes of calldata)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>   <img src="../images/Huff-1/image-20240304190428283-17097300625421.png" alt="image-20240304190428283"></p>
+<p>   最开始的calldata为：<code>0xcdfead2e0000000000000000000000000000000000000000000000000000000000000001</code></p>
+<p>   因为 calldataload 只能获取32 个字节，所以此时堆栈中的 calldata 其实是：<code>0xcdfead2e00000000000000000000000000000000000000000000000000000000</code>（但其实不是我们想要的）</p>
+<h5 id="shr-Right-Shift-右移位"><a href="#shr-Right-Shift-右移位" class="headerlink" title="shr(Right Shift) 右移位"></a><em>shr(Right Shift) 右移位</em></h5><p>   Shift the bits towards the least significant one. The bits moved before the first one are discarded, the new bits are set to 0.</p>
+<p>   将位移向最不重要的位。丢弃第一个位之前移动的位，新位设置为 0。</p>
+<p>   <strong>Stack input 堆栈输入</strong></p>
 <ol>
 <li><code>shift</code>: number of bits to shift to the right.shift 向右移动的位数。</li>
 <li><code>value</code>: 32 bytes to shift. 要移位的 32 个字节。</li>
 </ol>
-<p><strong>Stack output 堆栈输出</strong></p>
-<p><code>value &gt;&gt; shift</code>: the shifted value. If <code>shift</code> is bigger than 255, returns 0.value &gt;&gt; shift </p>
-<p>移位值。如果 shift 大于 255，则返回 0。</p>
-<p>举例：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// SHR opcode</span></span><br><span class="line"><span class="comment">// 0x0102 (bytes)</span></span><br><span class="line"><span class="comment">// 1 bytes = 8 bits </span></span><br><span class="line"><span class="comment">// 0b100000010 &gt;&gt; 2</span></span><br><span class="line"><span class="comment">//  0b1000000</span></span><br></pre></td></tr></table></figure>
-
-<p>可以理解为 value 的二进制数据全部向右移两位（直接去掉后两位）</p>
-<p>举例：evm-code playground</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">PUSH2 0x0102</span><br><span class="line">PUSH1 0x04</span><br><span class="line">SHR</span><br></pre></td></tr></table></figure>
-
-
-
-<p>堆栈如下：</p>
-<p><img src="/../images/Huff-1/image-20240304192101966-17097300625422.png" alt="image-20240304192101966"></p>
-<p><em><strong>shr on calldata</strong></em></p>
-<p>对于calldata：<code>0xcdfead2e0000000000000000000000000000000000000000000000000000000000000001</code> 我们起初想要的其实是<code>0xcdfead2e</code>（函数选择器 selector）</p>
-<p>刚刚我们已经使用了<code>calldataload</code>，获得了 calldata(32bytes):<code>0xcdfead2e00000000000000000000000000000000000000000000000000000000</code>。但是接下来我们需要函数选择器，那么，借助 <code>shr</code> 右移位 224 即可（56 &#x2F; 2 &#x3D; 28 bytes 28 * 8 &#x3D; 224 bits | 224 -&gt; 0xe0)</p>
-<h5 id="EQ"><a href="#EQ" class="headerlink" title="EQ"></a><em>EQ</em></h5><p>从栈顶弹出两个数据进行比较，相同将 1 压入堆栈，不同将 0 压入堆栈。</p>
-<p><strong>Stack input 堆栈输入</strong></p>
+<p>   <strong>Stack output 堆栈输出</strong></p>
+<p>   <code>value &gt;&gt; shift</code>: the shifted value. If <code>shift</code> is bigger than 255, returns 0.value &gt;&gt; shift </p>
+<p>   移位值。如果 shift 大于 255，则返回 0。</p>
+<p>   举例：</p>
+   <pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token comment">// SHR opcode</span>
+<span class="token comment">// 0x0102 (bytes)</span>
+<span class="token comment">// 1 bytes = 8 bits </span>
+<span class="token comment">// 0b100000010 >> 2</span>
+<span class="token comment">//  0b1000000</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>   可以理解为 value 的二进制数据全部向右移两位（直接去掉后两位）</p>
+<p>   举例：evm-code playground</p>
+   <pre class="line-numbers language-assembly" data-language="assembly"><code class="language-assembly">PUSH2 0x0102
+PUSH1 0x04
+SHR<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>   堆栈如下：</p>
+<p>   <img src="../images/Huff-1/image-20240304192101966-17097300625422.png" alt="image-20240304192101966"></p>
+<p>   <strong><em>shr on calldata</em></strong></p>
+<p>   对于calldata：<code>0xcdfead2e0000000000000000000000000000000000000000000000000000000000000001</code> 我们起初想要的其实是<code>0xcdfead2e</code>（函数选择器 selector）</p>
+<p>   刚刚我们已经使用了<code>calldataload</code>，获得了 calldata(32bytes):<code>0xcdfead2e00000000000000000000000000000000000000000000000000000000</code>。但是接下来我们需要函数选择器，那么，借助 <code>shr</code> 右移位 224 即可（56 / 2 = 28 bytes 28 * 8 = 224 bits | 224 -&gt; 0xe0)</p>
+<h5 id="EQ"><a href="#EQ" class="headerlink" title="EQ"></a><em>EQ</em></h5><p>   从栈顶弹出两个数据进行比较，相同将 1 压入堆栈，不同将 0 压入堆栈。</p>
+<p>   <strong>Stack input 堆栈输入</strong></p>
 <ol>
 <li><code>a</code>: left side integer.    左边整数。</li>
 <li><code>b</code>: right side integer   右边整数。</li>
 </ol>
-<p><strong>Stack output 堆栈输出</strong></p>
-<p><code>a == b</code>: 1 if the left side is equal to the right side, 0 otherwise.a &#x3D;&#x3D; b  如果左侧等于右侧，则为 1，否则为 0。</p>
-<h5 id="JUMP-JUMPI-JUMPDEST"><a href="#JUMP-JUMPI-JUMPDEST" class="headerlink" title="JUMP &amp;  JUMPI &amp; JUMPDEST"></a><em>JUMP &amp;  JUMPI &amp; JUMPDEST</em></h5><p>The program counter (PC) is a byte offset in the deployed <a target="_blank" rel="noopener" href="https://www.evm.codes/about">code</a>. It indicates which instruction will be executed next. When an <a target="_blank" rel="noopener" href="https://www.evm.codes/#01">ADD</a> is executed, for example, the PC is incremented by 1, since the instruction is 1 byte. The <a target="_blank" rel="noopener" href="https://www.evm.codes/#60">PUSH</a> instructions are bigger than one byte, and so will increment the counter accordingly.</p>
-<p>程序计数器 （PC） 是已部署代码中的字节偏移量。它指示接下来将执行的指令。例如，当执行 ADD 时，PC 会递增 1，因为指令是 1 字节。PUSH 指令大于一个字节，因此会相应地递增计数器。</p>
-<p>The <strong>JUMP</strong> instruction alters the program counter, thus breaking the linear path of the execution to another point in the deployed <a target="_blank" rel="noopener" href="https://www.evm.codes/about">code</a>. It is used to implement functionalities like functions.JUMP</p>
-<p>指令更改程序计数器，从而将执行的线性路径中断到已部署代码中的另一个点。它用于实现功能等功能。</p>
-<p><strong>JUMP：</strong></p>
-<p><strong>Stack input 堆栈输入</strong></p>
-<p><code>counter</code>: byte offset in the deployed <a target="_blank" rel="noopener" href="https://www.evm.codes/about">code</a> where execution will continue from. Must be a <a target="_blank" rel="noopener" href="https://www.evm.codes/#5B">JUMPDEST</a> instruction.</p>
-<p>已部署代码中的字节偏移量，从中继续执行。必须是 JUMPDEST 指令。</p>
-<p><strong>JUMPI：</strong></p>
-<p><strong>Stack input 堆栈输入</strong></p>
-<p><strong>第一个值是 JUMPDEST 的偏移量，第二个值是 true&#x2F;false</strong></p>
-<p><code>counter</code>: byte offset in the deployed <a target="_blank" rel="noopener" href="https://www.evm.codes/about">code</a> where execution will continue from. Must be a <a target="_blank" rel="noopener" href="https://www.evm.codes/#5B">JUMPDEST</a> instruction.</p>
-<p>已部署代码中的字节偏移量，从中继续执行。必须是 JUMPDEST 指令。</p>
-<p><code>b</code>: the program counter will be altered with the new value only if this value is different from 0. Otherwise, the program counter is simply incremented and the next instruction will be executed.</p>
-<p>只有当新值与不为 0 时，程序计数器才会更改为新值。否则，程序计数器将简单地递增，并执行下一条指令。</p>
-<p><strong>JUMPDEST</strong></p>
-<p>Mark a valid destination for <a target="_blank" rel="noopener" href="https://www.evm.codes/#56">JUMP</a> or <a target="_blank" rel="noopener" href="https://www.evm.codes/#57">JUMPI</a>. This operation has no effect on machine state during execution.</p>
-<p>标记 JUMP 或 JUMPI 的有效目的地。此操作在执行期间对计算机状态没有影响。</p>
-<p><strong>使用 JUMP 和 JUMPI 需要计算程序计数器（PC）（因为 JUMP 和 JUMPI 的目标都必须是 JUMPDEST），但是 Huff 有相关的语法可以帮助我们</strong>，我们可以在这里写一些文本，将定义某个宏的程序计数器（PC）</p>
-<p>比如下面的代码：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">    <span class="number">0xe026c017</span>          <span class="comment">// [0xe026c017, function_selector]</span></span><br><span class="line">    eq                  <span class="comment">// [true_if_func_selector_matches]</span></span><br><span class="line">    readJump            <span class="comment">// [readJump, true_if_func_selector_matches]</span></span><br><span class="line">    jumpi</span><br><span class="line"></span><br><span class="line">    readJump:</span><br><span class="line">        GET_NUMBER_OF_HORSES()</span><br><span class="line">        </span><br><span class="line"><span class="meta">#<span class="keyword">define</span> macro GET_NUMBER_OF_HORSES() = takes(0) returns(0) &#123;&#125;</span></span><br></pre></td></tr></table></figure>
+<p>   <strong>Stack output 堆栈输出</strong></p>
+<p>   <code>a == b</code>: 1 if the left side is equal to the right side, 0 otherwise.a == b  如果左侧等于右侧，则为 1，否则为 0。</p>
+<h5 id="JUMP-amp-JUMPI-amp-JUMPDEST"><a href="#JUMP-amp-JUMPI-amp-JUMPDEST" class="headerlink" title="JUMP &amp;  JUMPI &amp; JUMPDEST"></a><em>JUMP &amp;  JUMPI &amp; JUMPDEST</em></h5><p>   The program counter (PC) is a byte offset in the deployed <a target="_blank" rel="noopener" href="https://www.evm.codes/about">code</a>. It indicates which instruction will be executed next. When an <a target="_blank" rel="noopener" href="https://www.evm.codes/#01">ADD</a> is executed, for example, the PC is incremented by 1, since the instruction is 1 byte. The <a target="_blank" rel="noopener" href="https://www.evm.codes/#60">PUSH</a> instructions are bigger than one byte, and so will increment the counter accordingly.</p>
+<p>   程序计数器 （PC） 是已部署代码中的字节偏移量。它指示接下来将执行的指令。例如，当执行 ADD 时，PC 会递增 1，因为指令是 1 字节。PUSH 指令大于一个字节，因此会相应地递增计数器。</p>
+<p>   The <strong>JUMP</strong> instruction alters the program counter, thus breaking the linear path of the execution to another point in the deployed <a target="_blank" rel="noopener" href="https://www.evm.codes/about">code</a>. It is used to implement functionalities like functions.JUMP</p>
+<p>   指令更改程序计数器，从而将执行的线性路径中断到已部署代码中的另一个点。它用于实现功能等功能。</p>
+<p>   <strong>JUMP：</strong></p>
+<p>   <strong>Stack input 堆栈输入</strong></p>
+<p>   <code>counter</code>: byte offset in the deployed <a target="_blank" rel="noopener" href="https://www.evm.codes/about">code</a> where execution will continue from. Must be a <a target="_blank" rel="noopener" href="https://www.evm.codes/#5B">JUMPDEST</a> instruction.</p>
+<p>   已部署代码中的字节偏移量，从中继续执行。必须是 JUMPDEST 指令。</p>
+<p>   <strong>JUMPI：</strong></p>
+<p>   <strong>Stack input 堆栈输入</strong></p>
+<p>   <strong>第一个值是 JUMPDEST 的偏移量，第二个值是 true/false</strong></p>
+<p>   <code>counter</code>: byte offset in the deployed <a target="_blank" rel="noopener" href="https://www.evm.codes/about">code</a> where execution will continue from. Must be a <a target="_blank" rel="noopener" href="https://www.evm.codes/#5B">JUMPDEST</a> instruction.</p>
+<p>   已部署代码中的字节偏移量，从中继续执行。必须是 JUMPDEST 指令。</p>
+<p>   <code>b</code>: the program counter will be altered with the new value only if this value is different from 0. Otherwise, the program counter is simply incremented and the next instruction will be executed.</p>
+<p>   只有当新值与不为 0 时，程序计数器才会更改为新值。否则，程序计数器将简单地递增，并执行下一条指令。</p>
+<p>   <strong>JUMPDEST</strong></p>
+<p>   Mark a valid destination for <a target="_blank" rel="noopener" href="https://www.evm.codes/#56">JUMP</a> or <a target="_blank" rel="noopener" href="https://www.evm.codes/#57">JUMPI</a>. This operation has no effect on machine state during execution.</p>
+<p>   标记 JUMP 或 JUMPI 的有效目的地。此操作在执行期间对计算机状态没有影响。</p>
+<p>   <strong>使用 JUMP 和 JUMPI 需要计算程序计数器（PC）（因为 JUMP 和 JUMPI 的目标都必须是 JUMPDEST），但是 Huff 有相关的语法可以帮助我们</strong>，我们可以在这里写一些文本，将定义某个宏的程序计数器（PC）</p>
+<p>   比如下面的代码：</p>
+   <pre class="line-numbers language-c" data-language="c"><code class="language-c">    <span class="token number">0xe026c017</span>          <span class="token comment">// [0xe026c017, function_selector]</span>
+    eq                  <span class="token comment">// [true_if_func_selector_matches]</span>
+    readJump            <span class="token comment">// [readJump, true_if_func_selector_matches]</span>
+    jumpi
 
-<p>堆栈图：</p>
-<p><img src="/../images/Huff-1/image-20240305195047849-17097300625423.png" alt="image-20240305195047849"></p>
-<h5 id="DUP"><a href="#DUP" class="headerlink" title="DUP"></a><em>DUP</em></h5><p>DUP 是一个大类的 opcode ，其范围为 1 ~ 16（即 DUP1 ~ DUP16，对应 0x80 ~ 0x8f），其功能是复制目前从栈顶开始的第 n 个值，并将复制得到的值压入堆栈</p>
-<p>DUP 代码举例：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dup1                // [function_selector, function_selector]</span><br><span class="line">0xcdfead2e          // [0xcdfead2e, function_selector, function_selector]</span><br><span class="line">eq                  // [true_if_func_selector_matches, function_selector]</span><br></pre></td></tr></table></figure>
-
-<p>堆栈图：</p>
-<p><img src="/../images/Huff-1/image-20240305200602341-17097300625424.png" alt="image-20240305200602341"></p>
-<p>接着以 DUP2 为其他的举例：</p>
-<p><img src="/../images/Huff-1/image-20240305200645472-17097300625425.png" alt="image-20240305200645472"></p>
-<h5 id="REVERT"><a href="#REVERT" class="headerlink" title="REVERT"></a><em>REVERT</em></h5><p>Stop the current context execution, revert the state changes (see <a target="_blank" rel="noopener" href="https://www.evm.codes/#FA">STATICCALL</a> for a list of state changing opcodes) and return the unused gas to the caller. It also reverts the gas refund to its value before the current context. If the execution is stopped with REVERT, the value 0 is put on the stack of the calling context, which continues to execute normally. The <a target="_blank" rel="noopener" href="https://www.evm.codes/about">return data</a> of the calling context is set as the given chunk of memory of this context.</p>
-<p>停止当前上下文执行，恢复状态更改（有关状态更改操作码的列表，请参阅 STATICCALL），并将未使用的 gas 返回给调用方。它还会将 gas 退款恢复到当前上下文之前的值。如果使用 REVERT 停止执行，则值 0 将放在调用上下文的堆栈上，该堆栈将继续正常执行。调用上下文的返回数据设置为此上下文的给定内存块。</p>
-<p><strong>Stack input 堆栈输入</strong></p>
+    readJump<span class="token operator">:</span>
+        <span class="token function">GET_NUMBER_OF_HORSES</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">macro</span> <span class="token expression"><span class="token function">GET_NUMBER_OF_HORSES</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token function">takes</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token function">returns</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>   堆栈图：</p>
+<p>   <img src="../images/Huff-1/image-20240305195047849-17097300625423.png" alt="image-20240305195047849"></p>
+<h5 id="DUP"><a href="#DUP" class="headerlink" title="DUP"></a><em>DUP</em></h5><p>   DUP 是一个大类的 opcode ，其范围为 1 ~ 16（即 DUP1 ~ DUP16，对应 0x80 ~ 0x8f），其功能是复制目前从栈顶开始的第 n 个值，并将复制得到的值压入堆栈</p>
+<p>   DUP 代码举例：</p>
+   <pre class="line-numbers language-assembly" data-language="assembly"><code class="language-assembly">dup1                &#x2F;&#x2F; [function_selector, function_selector]
+0xcdfead2e          &#x2F;&#x2F; [0xcdfead2e, function_selector, function_selector]
+eq                  &#x2F;&#x2F; [true_if_func_selector_matches, function_selector]<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>   堆栈图：</p>
+<p>   <img src="../images/Huff-1/image-20240305200602341-17097300625424.png" alt="image-20240305200602341"></p>
+<p>   接着以 DUP2 为其他的举例：</p>
+<p>   <img src="../images/Huff-1/image-20240305200645472-17097300625425.png" alt="image-20240305200645472"></p>
+<h5 id="REVERT"><a href="#REVERT" class="headerlink" title="REVERT"></a><em>REVERT</em></h5><p>   Stop the current context execution, revert the state changes (see <a target="_blank" rel="noopener" href="https://www.evm.codes/#FA">STATICCALL</a> for a list of state changing opcodes) and return the unused gas to the caller. It also reverts the gas refund to its value before the current context. If the execution is stopped with REVERT, the value 0 is put on the stack of the calling context, which continues to execute normally. The <a target="_blank" rel="noopener" href="https://www.evm.codes/about">return data</a> of the calling context is set as the given chunk of memory of this context.</p>
+<p>   停止当前上下文执行，恢复状态更改（有关状态更改操作码的列表，请参阅 STATICCALL），并将未使用的 gas 返回给调用方。它还会将 gas 退款恢复到当前上下文之前的值。如果使用 REVERT 停止执行，则值 0 将放在调用上下文的堆栈上，该堆栈将继续正常执行。调用上下文的返回数据设置为此上下文的给定内存块。</p>
+<p>   <strong>Stack input 堆栈输入</strong></p>
 <ol>
 <li><code>offset</code>: byte offset in the <a target="_blank" rel="noopener" href="https://www.evm.codes/about">memory</a> in bytes. The return data of the calling context.offset：内存中的字节偏移量（以字节为单位）。调用上下文的返回数据。</li>
 <li><code>size</code>: byte size to copy (size of the <a target="_blank" rel="noopener" href="https://www.evm.codes/about">return data</a>).size：要复制的字节大小（返回数据的大小）。</li>
 </ol>
-<h5 id="SSTORE"><a href="#SSTORE" class="headerlink" title="SSTORE"></a><em>SSTORE</em></h5><p>该操作码将堆栈中的数据存储到 Storage 中。</p>
-<p><strong>Stack input</strong></p>
+<h5 id="SSTORE"><a href="#SSTORE" class="headerlink" title="SSTORE"></a><em>SSTORE</em></h5><p>   该操作码将堆栈中的数据存储到 Storage 中。</p>
+<p>   <strong>Stack input</strong></p>
 <ol>
 <li><code>key</code>: 32-byte key in <a target="_blank" rel="noopener" href="https://www.evm.codes/about">storage</a>.key：存储中的 32 字节密钥。</li>
 <li><code>value</code>: 32-byte value to store.value：要存储的 32 字节值。</li>
 </ol>
-<h5 id="STOP"><a href="#STOP" class="headerlink" title="STOP"></a><em>STOP</em></h5><p>Exits the current <a target="_blank" rel="noopener" href="https://www.evm.codes/about">context</a> successfully.</p>
-<p>成功退出当前上下文。</p>
-<p>When a call is executed on an address with no code and the EVM tries to read the code data, the default value is returned, 0, which corresponds to this instruction and halts the execution.</p>
-<p>在没有代码的地址上执行调用并且 EVM 尝试读取代码数据时，将返回默认值 0，该值对应于此指令并停止执行。</p>
-<p>当我们执行完我们想要的目的后，我们就需要加上 <code>STOP</code> 字节码，使用<code>STOP</code>程序会推出执行（不会回滚）。</p>
-<p>如果不使用 <code>STOP</code> 程序会继续执行，并且会浪费 gas。</p>
-<h5 id="SLOAD"><a href="#SLOAD" class="headerlink" title="SLOAD"></a><em>SLOAD</em></h5><p><strong>Stack input 堆栈输入</strong></p>
-<p><code>key</code>: 32-byte key in <a target="_blank" rel="noopener" href="https://www.evm.codes/about">storage</a></p>
-<p>存储的32字节密钥。</p>
-<p><strong>Stack output 堆栈输出</strong></p>
-<p><code>value</code>: 32-byte value corresponding to that key. 0 if that key was never written before.</p>
-<p>与该键对应的 32 字节值。如果该键以前从未写入过，则为 0。</p>
-<h5 id="MSTORE"><a href="#MSTORE" class="headerlink" title="MSTORE"></a><em>MSTORE</em></h5><p><strong>Stack input 堆栈输入</strong></p>
+<h5 id="STOP"><a href="#STOP" class="headerlink" title="STOP"></a><em>STOP</em></h5><p>   Exits the current <a target="_blank" rel="noopener" href="https://www.evm.codes/about">context</a> successfully.</p>
+<p>   成功退出当前上下文。</p>
+<p>   When a call is executed on an address with no code and the EVM tries to read the code data, the default value is returned, 0, which corresponds to this instruction and halts the execution.</p>
+<p>   在没有代码的地址上执行调用并且 EVM 尝试读取代码数据时，将返回默认值 0，该值对应于此指令并停止执行。</p>
+<p>   当我们执行完我们想要的目的后，我们就需要加上 <code>STOP</code> 字节码，使用<code>STOP</code>程序会推出执行（不会回滚）。</p>
+<p>   如果不使用 <code>STOP</code> 程序会继续执行，并且会浪费 gas。</p>
+<h5 id="SLOAD"><a href="#SLOAD" class="headerlink" title="SLOAD"></a><em>SLOAD</em></h5><p>   <strong>Stack input 堆栈输入</strong></p>
+<p>   <code>key</code>: 32-byte key in <a target="_blank" rel="noopener" href="https://www.evm.codes/about">storage</a></p>
+<p>   存储的32字节密钥。</p>
+<p>   <strong>Stack output 堆栈输出</strong></p>
+<p>   <code>value</code>: 32-byte value corresponding to that key. 0 if that key was never written before.</p>
+<p>   与该键对应的 32 字节值。如果该键以前从未写入过，则为 0。</p>
+<h5 id="MSTORE"><a href="#MSTORE" class="headerlink" title="MSTORE"></a><em>MSTORE</em></h5><p>   <strong>Stack input 堆栈输入</strong></p>
 <ol>
 <li><code>offset</code>: offset in the <a target="_blank" rel="noopener" href="https://www.evm.codes/about">memory</a> in bytes.<br>内存中的偏移量（以字节为单位）。</li>
-<li><code>value</code>: 32-byte value to write in the <a target="_blank" rel="noopener" href="https://www.evm.codes/about">memory</a>.<br>要写入内存的 32 字节值。</li>
-</ol>
+<li><p><code>value</code>: 32-byte value to write in the <a target="_blank" rel="noopener" href="https://www.evm.codes/about">memory</a>.<br>要写入内存的 32 字节值。</p>
 <h5 id="RETURN"><a href="#RETURN" class="headerlink" title="RETURN"></a><em>RETURN</em></h5><p>成功退出当前上下文。</p>
 <p><strong>Stack input</strong></p>
-<ol>
-<li><code>offset</code>: byte offset in the <a target="_blank" rel="noopener" href="https://www.evm.codes/about">memory</a> in bytes, to copy what will be the <a target="_blank" rel="noopener" href="https://www.evm.codes/about">return data</a> of this <a target="_blank" rel="noopener" href="https://www.evm.codes/about">context</a>.<br>内存中的字节偏移量（以字节为单位），以复制此上下文的返回数据。</li>
-<li><code>size</code>: byte size to copy (size of the <a target="_blank" rel="noopener" href="https://www.evm.codes/about">return data</a>).<br>要复制的字节大小（返回数据的大小）</li>
-</ol>
+</li>
+<li><p><code>offset</code>: byte offset in the <a target="_blank" rel="noopener" href="https://www.evm.codes/about">memory</a> in bytes, to copy what will be the <a target="_blank" rel="noopener" href="https://www.evm.codes/about">return data</a> of this <a target="_blank" rel="noopener" href="https://www.evm.codes/about">context</a>.<br>内存中的字节偏移量（以字节为单位），以复制此上下文的返回数据。</p>
+</li>
+<li><p><code>size</code>: byte size to copy (size of the <a target="_blank" rel="noopener" href="https://www.evm.codes/about">return data</a>).<br>要复制的字节大小（返回数据的大小）</p>
 <p>本质上和 Return 相同，只是它会返回一些数据。并且，他是从<strong>内存</strong>中返回数据，因此我们想返回一个值就需要把这个值写进内存中去。将数据写到内存中，需要使用<code>MSTORE</code>关键字</p>
-<h4 id="通过-huff-实现函数调用"><a href="#通过-huff-实现函数调用" class="headerlink" title="通过 huff 实现函数调用"></a>通过 huff 实现函数调用</h4><ol>
-<li>首先<code>PUSH</code>一个<code>0x00</code>，然后调用 <code>calldataload</code> 获取 <code>calldata</code> 的前32位数据（calldataload 使用时，从堆栈弹出一个值，这个值是读取 calldata 的偏移量（起始位置））</li>
+<h4 id="通过-huff-实现函数调用"><a href="#通过-huff-实现函数调用" class="headerlink" title="通过 huff 实现函数调用"></a>通过 huff 实现函数调用</h4></li>
+<li><p>首先<code>PUSH</code>一个<code>0x00</code>，然后调用 <code>calldataload</code> 获取 <code>calldata</code> 的前32位数据（calldataload 使用时，从堆栈弹出一个值，这个值是读取 calldata 的偏移量（起始位置））</p>
+</li>
 <li>然后 <code>PUSH</code> 要右移的位数，使用<code>SHR</code>右移</li>
 <li>复制此时栈顶的函数选择器</li>
 <li>压入合约中已有的函数选择器，<code>EQ</code> 判断，将判断结果压入堆栈</li>
-<li>压入 <code>JUMPDEST </code>的偏移量（可通过 huff 宏编程）</li>
-<li><code>JUMPI </code>判断刚刚 <code>EQ </code>结果是否为真，若真则跳转到对应 <code>JUMPDEST</code></li>
+<li>压入 <code>JUMPDEST</code>的偏移量（可通过 huff 宏编程）</li>
+<li><code>JUMPI</code>判断刚刚 <code>EQ</code>结果是否为真，若真则跳转到对应 <code>JUMPDEST</code></li>
 <li>重复刚刚的过程</li>
-<li>最后压入两个 <code>0x00</code> 然后<code>REVERT</code>避免非预期输出</li>
-</ol>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 60008060093d393df3</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Interface */</span></span><br><span class="line">#define function <span class="title function_ invoke__">updateHorseNumber</span>(uint256) nonpayable <span class="title function_ invoke__">returns</span>()</span><br><span class="line">#define function <span class="title function_ invoke__">readNumberOfHorses</span>() view <span class="title function_ invoke__">returns</span>(uint256)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#define <span class="keyword">macro</span> <span class="title function_ invoke__">MAIN</span>() = <span class="title function_ invoke__">takes</span>(<span class="number">0</span>) <span class="title function_ invoke__">returns</span>(<span class="number">0</span>) &#123;</span><br><span class="line">    <span class="number">0x00</span> calldataload <span class="number">0xe0</span> shr               <span class="comment">// [function_selector]</span></span><br><span class="line">    dup1                                     <span class="comment">// [function_selector, function_selector]</span></span><br><span class="line">    __FUNC_SIG(updateHorseNumber)            <span class="comment">// [0xcdfead2e, function_selector, function_selector]</span></span><br><span class="line">    eq                                       <span class="comment">// [true_if_func_selector_matches, function_selector]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// jump to updateHorseNumber code if true</span></span><br><span class="line">    updateJump                               <span class="comment">// [updateHorseNumberProgramCounter, true/false, function_selector]</span></span><br><span class="line">    jumpi                                    <span class="comment">// [function_selector]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// readNumberOfHorses, 0xe026c017</span></span><br><span class="line">    __FUNC_SIG(readNumberOfHorses)           <span class="comment">// [0xe026c017, function_selector]</span></span><br><span class="line">    eq                                       <span class="comment">// [true_if_func_selector_matches]</span></span><br><span class="line">    readJump                                 <span class="comment">// [readJump, true_if_func_selector_matches]</span></span><br><span class="line">    jumpi</span><br><span class="line"></span><br><span class="line">    <span class="number">0x00</span> <span class="number">0x00</span> revert    </span><br><span class="line"></span><br><span class="line">    updateJump:</span><br><span class="line">        <span class="title function_ invoke__">SET_NUMBER_OF_HORSES</span>()</span><br><span class="line">    readJump:</span><br><span class="line">        <span class="title function_ invoke__">GET_NUMBER_OF_HORSES</span>()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#define <span class="keyword">macro</span> <span class="title function_ invoke__">SET_NUMBER_OF_HORSES</span>() = <span class="title function_ invoke__">takes</span>(<span class="number">0</span>) <span class="title function_ invoke__">returns</span>(<span class="number">0</span>) &#123;&#125;</span><br><span class="line"></span><br><span class="line">#define <span class="keyword">macro</span> <span class="title function_ invoke__">GET_NUMBER_OF_HORSES</span>() = <span class="title function_ invoke__">takes</span>(<span class="number">0</span>) <span class="title function_ invoke__">returns</span>(<span class="number">0</span>) &#123;&#125;</span><br></pre></td></tr></table></figure>
+<li><p>最后压入两个 <code>0x00</code> 然后<code>REVERT</code>避免非预期输出</p>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust"><span class="token comment">// 60008060093d393df3</span>
 
-<h4 id="通过-Huff-向-Storage-中写入数据"><a href="#通过-Huff-向-Storage-中写入数据" class="headerlink" title="通过 Huff 向 Storage 中写入数据"></a>通过 Huff 向 Storage 中写入数据</h4><p>这里向 Storage 中写入的数据是 <strong>calldata 中的参数</strong>。</p>
+<span class="token comment">/* Interface */</span>
+#define function <span class="token function">updateHorseNumber</span><span class="token punctuation">(</span>uint256<span class="token punctuation">)</span> nonpayable <span class="token function">returns</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+#define function <span class="token function">readNumberOfHorses</span><span class="token punctuation">(</span><span class="token punctuation">)</span> view <span class="token function">returns</span><span class="token punctuation">(</span>uint256<span class="token punctuation">)</span>
+
+
+#define <span class="token keyword">macro</span> <span class="token constant">MAIN</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token function">takes</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token function">returns</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token number">0x00</span> calldataload <span class="token number">0xe0</span> shr               <span class="token comment">// [function_selector]</span>
+    dup1                                     <span class="token comment">// [function_selector, function_selector]</span>
+    <span class="token function">__FUNC_SIG</span><span class="token punctuation">(</span>updateHorseNumber<span class="token punctuation">)</span>            <span class="token comment">// [0xcdfead2e, function_selector, function_selector]</span>
+    eq                                       <span class="token comment">// [true_if_func_selector_matches, function_selector]</span>
+
+    <span class="token comment">// jump to updateHorseNumber code if true</span>
+    updateJump                               <span class="token comment">// [updateHorseNumberProgramCounter, true/false, function_selector]</span>
+    jumpi                                    <span class="token comment">// [function_selector]</span>
+
+    <span class="token comment">// readNumberOfHorses, 0xe026c017</span>
+    <span class="token function">__FUNC_SIG</span><span class="token punctuation">(</span>readNumberOfHorses<span class="token punctuation">)</span>           <span class="token comment">// [0xe026c017, function_selector]</span>
+    eq                                       <span class="token comment">// [true_if_func_selector_matches]</span>
+    readJump                                 <span class="token comment">// [readJump, true_if_func_selector_matches]</span>
+    jumpi
+
+    <span class="token number">0x00</span> <span class="token number">0x00</span> revert    
+
+    updateJump<span class="token punctuation">:</span>
+        <span class="token constant">SET_NUMBER_OF_HORSES</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    readJump<span class="token punctuation">:</span>
+        <span class="token constant">GET_NUMBER_OF_HORSES</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span>
+
+#define <span class="token keyword">macro</span> <span class="token constant">SET_NUMBER_OF_HORSES</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token function">takes</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token function">returns</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+
+#define <span class="token keyword">macro</span> <span class="token constant">GET_NUMBER_OF_HORSES</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token function">takes</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token function">returns</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="通过-Huff-向-Storage-中写入数据"><a href="#通过-Huff-向-Storage-中写入数据" class="headerlink" title="通过 Huff 向 Storage 中写入数据"></a>通过 Huff 向 Storage 中写入数据</h4></li>
+</ol>
+<p>   这里向 Storage 中写入的数据是 <strong>calldata 中的参数</strong>。</p>
 <ol>
 <li>首先<code>PUSH</code> 0x04作为 <code>CALLDATALOAD</code> 的偏移，这样得到的直接就是 <strong>calldata 中的参数</strong></li>
 <li>压入要写入的 slot 的值（这里使用了 Huff 的语法糖，利用<code>FREE_STORAGE_POINTER</code>空闲存储指针定义的常量）</li>
 <li>调用<code>SSTORE</code>写入Storage</li>
-<li>调用<code>STOP</code>终止上下文的执行（此时已经执行完成，使用 <code>STOP</code> 终止，防止后续还会继续消耗 gas）</li>
-</ol>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">#define constant NUMBER_OF_HOURSES_STORAGE_SLOT = <span class="title function_ invoke__">FREE_STORAGE_POINTER</span>()</span><br><span class="line"></span><br><span class="line">#define <span class="keyword">macro</span> <span class="title function_ invoke__">SET_NUMBER_OF_HORSES</span>() = <span class="title function_ invoke__">takes</span>(<span class="number">0</span>) <span class="title function_ invoke__">returns</span>(<span class="number">0</span>) &#123;</span><br><span class="line">    <span class="comment">// 1. Get the value to store from calldata</span></span><br><span class="line">    <span class="number">0x04</span>                                      <span class="comment">// [0x04]</span></span><br><span class="line">    calldataload                              <span class="comment">// [value]</span></span><br><span class="line">    <span class="comment">// 2. Give it a storage slot</span></span><br><span class="line">    [NUMBER_OF_HOURSES_STORAGE_SLOT]          <span class="comment">// [storage_slot, value]</span></span><br><span class="line">    sstore</span><br><span class="line">    stop</span><br><span class="line">    <span class="comment">// 3. sstore opcode</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<li><p>调用<code>STOP</code>终止上下文的执行（此时已经执行完成，使用 <code>STOP</code> 终止，防止后续还会继续消耗 gas）</p>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust">#define constant <span class="token constant">NUMBER_OF_HOURSES_STORAGE_SLOT</span> <span class="token operator">=</span> <span class="token constant">FREE_STORAGE_POINTER</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
 
-<h4 id="通过-Huff-读取-slot-中的值"><a href="#通过-Huff-读取-slot-中的值" class="headerlink" title="通过 Huff 读取 slot 中的值"></a>通过 Huff 读取 slot 中的值</h4><ol>
-<li>压入要写入的 slot 的值（这里使用了 Huff 的语法糖，利用<code>FREE_STORAGE_POINTER</code>空闲存储指针定义的常量）</li>
+#define <span class="token keyword">macro</span> <span class="token constant">SET_NUMBER_OF_HORSES</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token function">takes</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token function">returns</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 1. Get the value to store from calldata</span>
+    <span class="token number">0x04</span>                                      <span class="token comment">// [0x04]</span>
+    calldataload                              <span class="token comment">// [value]</span>
+    <span class="token comment">// 2. Give it a storage slot</span>
+    <span class="token punctuation">[</span><span class="token constant">NUMBER_OF_HOURSES_STORAGE_SLOT</span><span class="token punctuation">]</span>          <span class="token comment">// [storage_slot, value]</span>
+    sstore
+    stop
+    <span class="token comment">// 3. sstore opcode</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="通过-Huff-读取-slot-中的值"><a href="#通过-Huff-读取-slot-中的值" class="headerlink" title="通过 Huff 读取 slot 中的值"></a>通过 Huff 读取 slot 中的值</h4></li>
+<li><p>压入要写入的 slot 的值（这里使用了 Huff 的语法糖，利用<code>FREE_STORAGE_POINTER</code>空闲存储指针定义的常量）</p>
+</li>
 <li><code>SLOAD</code>从堆栈中弹出要读取的 Storage 的 slot 的值</li>
 <li><code>PUSH</code> 0x00 ，然后调用 <code>MSTORE</code> 将 <code>SLOAD</code> 读取来的值存储到内存中。</li>
-<li><code>PUSH</code> 0x00， <code>PUSH</code> 0x00 然后<code>RETURN</code>把内存中的值返回</li>
+<li><p><code>PUSH</code> 0x00， <code>PUSH</code> 0x00 然后<code>RETURN</code>把内存中的值返回</p>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust">#define constant <span class="token constant">NUMBER_OF_HOURSES_STORAGE_SLOT</span> <span class="token operator">=</span> <span class="token constant">FREE_STORAGE_POINTER</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+#define <span class="token keyword">macro</span> <span class="token constant">GET_NUMBER_OF_HORSES</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token function">takes</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token function">returns</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 1. Get the storage slot</span>
+    <span class="token comment">// 2. Load the value of that slot into memory</span>
+    <span class="token comment">// 3. Return</span>
+    <span class="token punctuation">[</span><span class="token constant">NUMBER_OF_HOURSES_STORAGE_SLOT</span><span class="token punctuation">]</span>        <span class="token comment">// [key]</span>
+    sload                                   <span class="token comment">// [value]</span>
+    <span class="token number">0x00</span>                                    <span class="token comment">// [0, value]</span>
+    mstore                                  <span class="token comment">// []           // Memory: [value]</span>
+
+    <span class="token comment">// 0x20 == 32 bytes</span>
+    <span class="token number">0x20</span> <span class="token number">0x00</span> <span class="token keyword">return</span>                        <span class="token comment">// []</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
 </ol>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">#define constant NUMBER_OF_HOURSES_STORAGE_SLOT = <span class="title function_ invoke__">FREE_STORAGE_POINTER</span>()</span><br><span class="line"></span><br><span class="line">#define <span class="keyword">macro</span> <span class="title function_ invoke__">GET_NUMBER_OF_HORSES</span>() = <span class="title function_ invoke__">takes</span>(<span class="number">0</span>) <span class="title function_ invoke__">returns</span>(<span class="number">0</span>) &#123;</span><br><span class="line">    <span class="comment">// 1. Get the storage slot</span></span><br><span class="line">    <span class="comment">// 2. Load the value of that slot into memory</span></span><br><span class="line">    <span class="comment">// 3. Return</span></span><br><span class="line">    [NUMBER_OF_HOURSES_STORAGE_SLOT]        <span class="comment">// [key]</span></span><br><span class="line">    sload                                   <span class="comment">// [value]</span></span><br><span class="line">    <span class="number">0x00</span>                                    <span class="comment">// [0, value]</span></span><br><span class="line">    mstore                                  <span class="comment">// []           // Memory: [value]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 0x20 == 32 bytes</span></span><br><span class="line">    <span class="number">0x20</span> <span class="number">0x00</span> <span class="keyword">return</span>                        <span class="comment">// []</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-</ol>
-
-    </div>
-
-    
-    
-    
-        
-
-<div>
-<ul class="post-copyright">
-  <li class="post-copyright-author">
-    <strong>本文作者： </strong>Q1ngying
-  </li>
-  <li class="post-copyright-link">
-    <strong>本文链接：</strong>
-    <a href="http://q1ngying.cn/2024/03/05/Huff-1/" title="Huff(1)">http://q1ngying.cn/2024/03/05/Huff-1/</a>
-  </li>
-  <li class="post-copyright-license">
-    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
-  </li>
-</ul>
-</div>
-
-
-      <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/Solidity/" rel="tag"># Solidity</a>
-              <a href="/tags/EVM/" rel="tag"># EVM</a>
-              <a href="/tags/Opcode/" rel="tag"># Opcode</a>
-              <a href="/tags/Huff/" rel="tag"># Huff</a>
-          </div>
-
-        
-
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/2024/01/22/rust-%E5%A4%8D%E5%90%88%E7%B1%BB%E5%9E%8B/" rel="prev" title="rust-复合类型">
-      <i class="fa fa-chevron-left"></i> rust-复合类型
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/2024/03/06/go%E8%AF%AD%E8%A8%80%E5%85%A5%E9%97%A8-1/" rel="next" title="go语言入门-1">
-      go语言入门-1 <i class="fa fa-chevron-right"></i>
-    </a></div>
-    </div>
-      </footer>
-    
-  </article>
-  
-  
-  
-
-
-
-          </div>
-          
-
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
-
-        </div>
-          
-  
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
-  </div>
-
-  <aside class="sidebar">
-    <div class="sidebar-inner">
-
-      <ul class="sidebar-nav motion-element">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Huff"><span class="nav-number">1.</span> <span class="nav-text">Huff</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Huff-%E5%AE%89%E8%A3%85"><span class="nav-number">1.1.</span> <span class="nav-text">Huff 安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Huff-%E5%85%A5%E9%97%A8"><span class="nav-number">1.2.</span> <span class="nav-text">Huff 入门</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%9E%84%E6%88%90%EF%BC%9A"><span class="nav-number">1.2.1.</span> <span class="nav-text">基本构成：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%96%E8%AF%91-huff%EF%BC%9A"><span class="nav-number">1.2.2.</span> <span class="nav-text">编译 huff：</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#huffc-path-b"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">huffc path (-b)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#huffc-path-%E2%80%93bin-runtime"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">huffc path –bin-runtime</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Huff%EF%BC%9A-FUNC-SIG-Interface"><span class="nav-number">1.2.3.</span> <span class="nav-text">Huff： __FUNC_SIG &amp; Interface</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Huff%EF%BC%9A-FREE-STORAGE-POINTER"><span class="nav-number">1.2.4.</span> <span class="nav-text">Huff： FREE_STORAGE_POINTER</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Huff%EF%BC%9A%E8%AE%BF%E9%97%AE%E5%B8%B8%E9%87%8F%E5%8F%98%E9%87%8F"><span class="nav-number">1.2.5.</span> <span class="nav-text">Huff：访问常量变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%8E-calldata-%E8%AE%BF%E9%97%AE%E5%87%BD%E6%95%B0%E5%8F%82%E6%95%B0"><span class="nav-number">1.2.6.</span> <span class="nav-text">从 calldata 访问函数参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Huff-opcode"><span class="nav-number">1.2.7.</span> <span class="nav-text">Huff opcode</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#push"><span class="nav-number">1.2.7.1.</span> <span class="nav-text">push</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#calldataload"><span class="nav-number">1.2.7.2.</span> <span class="nav-text">calldataload</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#shr-Right-Shift-%E5%8F%B3%E7%A7%BB%E4%BD%8D"><span class="nav-number">1.2.7.3.</span> <span class="nav-text">shr(Right Shift) 右移位</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#EQ"><span class="nav-number">1.2.7.4.</span> <span class="nav-text">EQ</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#JUMP-JUMPI-JUMPDEST"><span class="nav-number">1.2.7.5.</span> <span class="nav-text">JUMP &amp;  JUMPI &amp; JUMPDEST</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#DUP"><span class="nav-number">1.2.7.6.</span> <span class="nav-text">DUP</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#REVERT"><span class="nav-number">1.2.7.7.</span> <span class="nav-text">REVERT</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#SSTORE"><span class="nav-number">1.2.7.8.</span> <span class="nav-text">SSTORE</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#STOP"><span class="nav-number">1.2.7.9.</span> <span class="nav-text">STOP</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#SLOAD"><span class="nav-number">1.2.7.10.</span> <span class="nav-text">SLOAD</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#MSTORE"><span class="nav-number">1.2.7.11.</span> <span class="nav-text">MSTORE</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#RETURN"><span class="nav-number">1.2.7.12.</span> <span class="nav-text">RETURN</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%9A%E8%BF%87-huff-%E5%AE%9E%E7%8E%B0%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8"><span class="nav-number">1.2.8.</span> <span class="nav-text">通过 huff 实现函数调用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%9A%E8%BF%87-Huff-%E5%90%91-Storage-%E4%B8%AD%E5%86%99%E5%85%A5%E6%95%B0%E6%8D%AE"><span class="nav-number">1.2.9.</span> <span class="nav-text">通过 Huff 向 Storage 中写入数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%9A%E8%BF%87-Huff-%E8%AF%BB%E5%8F%96-slot-%E4%B8%AD%E7%9A%84%E5%80%BC"><span class="nav-number">1.2.10.</span> <span class="nav-text">通过 Huff 读取 slot 中的值</span></a></li></ol></li></ol></li></ol></div>
-      </div>
-      <!--/noindex-->
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="Q1ngying"
-      src="/images/avatar.jpg">
-  <p class="site-author-name" itemprop="name">Q1ngying</p>
-  <div class="site-description" itemprop="description"></div>
-</div>
-<div class="site-state-wrap motion-element">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives/">
-        
-          <span class="site-state-item-count">76</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-          
-        <span class="site-state-item-count">29</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-          
-        <span class="site-state-item-count">29</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
-</div>
-  <div class="links-of-author motion-element">
-      <span class="links-of-author-item">
-        <a href="https://github.com/q1ngying" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;q1ngying" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="mailto:q1ngying@163.com" title="E-Mail → mailto:q1ngying@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="https://twitter.com/Q1ngYing" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;Q1ngYing" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="https://instagram.com/" title="Instagram → https:&#x2F;&#x2F;instagram.com&#x2F;" rel="noopener" target="_blank"><i class="fab fa-instagram fa-fw"></i>Instagram</a>
-      </span>
-  </div>
-
-
-
-      </div>
-
-    </div>
-  </aside>
-  <div id="sidebar-dimmer"></div>
-
-
-      </div>
-    </main>
-
-    <footer class="footer">
-      <div class="footer-inner">
-        
-
-        
-
-<div class="copyright">
-  
-  &copy; 2023-09 – 
-  <span itemprop="copyrightYear">2024</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">Q1ngying</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-chart-area"></i>
-    </span>
-      <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">195k</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-coffee"></i>
-    </span>
-      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">10:51</span>
-</div>
-
-<div class="powered-by">
-    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-    <i class="fa fa-user-md"></i>
-    <span id="busuanzi_container_site_uv">
-        本站访客数:<span id="busuanzi_value_site_uv"></span>人
-    </span>
-    <span class="post-meta-divider">|</span>
-    <span id="busuanzi_container_site_pv">
-        本站访问量<span id="busuanzi_value_site_pv"></span>人次
-    </span>
-</div>
-
-        
-
-
-
-
-
-
-
-
-      </div>
-    </footer>
-  </div>
-
-  
-  
-  <script color='255,201,74' opacity='1' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
-
-<script src="/js/utils.js"></script>
-
-<script src="/js/motion.js"></script>
-
-
-<script src="/js/schemes/pisces.js"></script>
-
-
-<script src="/js/next-boot.js"></script>
-
-
-
-
-  
-  <script>
-    (function(){
-      var canonicalURL, curProtocol;
-      //Get the <link> tag
-      var x=document.getElementsByTagName("link");
-		//Find the last canonical URL
-		if(x.length > 0){
-			for (i=0;i<x.length;i++){
-				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
-					canonicalURL=x[i].href;
-				}
-			}
-		}
-    //Get protocol
-	    if (!canonicalURL){
-	    	curProtocol = window.location.protocol.split(':')[0];
-	    }
-	    else{
-	    	curProtocol = canonicalURL.split(':')[0];
-	    }
-      //Get current URL if the canonical URL does not exist
-	    if (!canonicalURL) canonicalURL = window.location.href;
-	    //Assign script content. Replace current URL with the canonical URL
-      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
-  </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-
-  
-
-</body>
-</html>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://q1ngying.cn">Q1ngying</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://q1ngying.cn/2024/03/05/Huff-1/">https://q1ngying.cn/2024/03/05/Huff-1/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://q1ngying.cn" target="_blank">Q1ngying</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Solidity/">Solidity</a><a class="post-meta__tags" href="/tags/EVM/">EVM</a><a class="post-meta__tags" href="/tags/Opcode/">Opcode</a><a class="post-meta__tags" href="/tags/Huff/">Huff</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="prev-post pull-left" href="/2024/03/06/go%E8%AF%AD%E8%A8%80%E5%85%A5%E9%97%A8-1/" title="go语言入门-1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">go语言入门-1</div></div></a><a class="next-post pull-right" href="/2024/01/22/rust-%E5%A4%8D%E5%90%88%E7%B1%BB%E5%9E%8B/" title="rust-复合类型"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">rust-复合类型</div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a href="/2023/11/24/EVM-Opcodes-1/" title="EVM_Opcodes(1)"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-24</div><div class="title">EVM_Opcodes(1)</div></div></a><a href="/2023/11/27/EVM-Opcodes-3/" title="EVM_Opcodes(3)"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-27</div><div class="title">EVM_Opcodes(3)</div></div></a><a href="/2023/11/27/EVM-Opcodes-2/" title="EVM_Opcodes(2)"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-27</div><div class="title">EVM_Opcodes(2)</div></div></a><a href="/2023/09/26/EVM%E5%AD%A6%E4%B9%A0/" title="EVM学习"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-09-26</div><div class="title">EVM学习</div></div></a><a href="/2024/06/11/Storage%20%E8%BF%9B%E9%98%B6%E2%80%94%E2%80%94%E9%80%9A%E8%BF%87%E5%BC%95%E7%94%A8%20Storage%20%E6%8F%90%E9%AB%98%20gas%20%E5%88%A9%E7%94%A8%E7%8E%87/" title="Storage 进阶——通过引用 Storage 提高 gas 利用率"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-06-11</div><div class="title">Storage 进阶——通过引用 Storage 提高 gas 利用率</div></div></a><a href="/2023/11/22/Yul%E5%86%85%E8%81%94%E6%B1%87%E7%BC%96%E5%85%A5%E9%97%A8/" title="Yul内联汇编入门"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-22</div><div class="title">Yul内联汇编入门</div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info is-center"><div class="avatar-img"><img src="/img/butterfly-icon.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Q1ngying</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">29</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/q1ngying"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/q1ngying" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="https://weibo.com" target="_blank" title="微博"><i class="fab fa-weibo" style="color: #24292e;"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Huff"><span class="toc-number">1.</span> <span class="toc-text">Huff</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Huff-%E5%AE%89%E8%A3%85"><span class="toc-number">1.1.</span> <span class="toc-text">Huff 安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Huff-%E5%85%A5%E9%97%A8"><span class="toc-number">1.2.</span> <span class="toc-text">Huff 入门</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%9E%84%E6%88%90%EF%BC%9A"><span class="toc-number">1.2.1.</span> <span class="toc-text">基本构成：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%96%E8%AF%91-huff%EF%BC%9A"><span class="toc-number">1.2.2.</span> <span class="toc-text">编译 huff：</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#huffc-path-b"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">huffc path (-b)</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#huffc-path-%E2%80%94bin-runtime"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">huffc path —bin-runtime</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Huff%EF%BC%9A-FUNC-SIG-amp-Interface"><span class="toc-number">1.2.3.</span> <span class="toc-text">Huff： __FUNC_SIG &amp; Interface</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Huff%EF%BC%9A-FREE-STORAGE-POINTER"><span class="toc-number">1.2.4.</span> <span class="toc-text">Huff： FREE_STORAGE_POINTER</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Huff%EF%BC%9A%E8%AE%BF%E9%97%AE%E5%B8%B8%E9%87%8F%E5%8F%98%E9%87%8F"><span class="toc-number">1.2.5.</span> <span class="toc-text">Huff：访问常量变量</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%8E-calldata-%E8%AE%BF%E9%97%AE%E5%87%BD%E6%95%B0%E5%8F%82%E6%95%B0"><span class="toc-number">1.2.6.</span> <span class="toc-text">从 calldata 访问函数参数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Huff-opcode"><span class="toc-number">1.2.7.</span> <span class="toc-text">Huff opcode</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#push"><span class="toc-number">1.2.7.1.</span> <span class="toc-text">push</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#calldataload"><span class="toc-number">1.2.7.2.</span> <span class="toc-text">calldataload</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#shr-Right-Shift-%E5%8F%B3%E7%A7%BB%E4%BD%8D"><span class="toc-number">1.2.7.3.</span> <span class="toc-text">shr(Right Shift) 右移位</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#EQ"><span class="toc-number">1.2.7.4.</span> <span class="toc-text">EQ</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#JUMP-amp-JUMPI-amp-JUMPDEST"><span class="toc-number">1.2.7.5.</span> <span class="toc-text">JUMP &amp;  JUMPI &amp; JUMPDEST</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#DUP"><span class="toc-number">1.2.7.6.</span> <span class="toc-text">DUP</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#REVERT"><span class="toc-number">1.2.7.7.</span> <span class="toc-text">REVERT</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#SSTORE"><span class="toc-number">1.2.7.8.</span> <span class="toc-text">SSTORE</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#STOP"><span class="toc-number">1.2.7.9.</span> <span class="toc-text">STOP</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#SLOAD"><span class="toc-number">1.2.7.10.</span> <span class="toc-text">SLOAD</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#MSTORE"><span class="toc-number">1.2.7.11.</span> <span class="toc-text">MSTORE</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#RETURN"><span class="toc-number">1.2.7.12.</span> <span class="toc-text">RETURN</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%9A%E8%BF%87-huff-%E5%AE%9E%E7%8E%B0%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8"><span class="toc-number">1.2.8.</span> <span class="toc-text">通过 huff 实现函数调用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%9A%E8%BF%87-Huff-%E5%90%91-Storage-%E4%B8%AD%E5%86%99%E5%85%A5%E6%95%B0%E6%8D%AE"><span class="toc-number">1.2.9.</span> <span class="toc-text">通过 Huff 向 Storage 中写入数据</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%9A%E8%BF%87-Huff-%E8%AF%BB%E5%8F%96-slot-%E4%B8%AD%E7%9A%84%E5%80%BC"><span class="toc-number">1.2.10.</span> <span class="toc-text">通过 Huff 读取 slot 中的值</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/17/MakerDAO-Abacus/" title="MakerDAO-Abacus">MakerDAO-Abacus</a><time datetime="2024-07-17T07:06:42.000Z" title="发表于 2024-07-17 15:06:42">2024-07-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/17/MakerDAO-Clip/" title="MakerDAO-Clip">MakerDAO-Clip</a><time datetime="2024-07-17T07:06:32.000Z" title="发表于 2024-07-17 15:06:32">2024-07-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/15/MakerDAO-Join/" title="MakerDAO-Join">MakerDAO-Join</a><time datetime="2024-07-15T07:34:45.000Z" title="发表于 2024-07-15 15:34:45">2024-07-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/15/MakerDAO-Vat/" title="MakerDAO-Vat">MakerDAO-Vat</a><time datetime="2024-07-15T07:34:34.000Z" title="发表于 2024-07-15 15:34:34">2024-07-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/06/11/Storage%20%E8%BF%9B%E9%98%B6%E2%80%94%E2%80%94%E9%80%9A%E8%BF%87%E5%BC%95%E7%94%A8%20Storage%20%E6%8F%90%E9%AB%98%20gas%20%E5%88%A9%E7%94%A8%E7%8E%87/" title="Storage 进阶——通过引用 Storage 提高 gas 利用率">Storage 进阶——通过引用 Storage 提高 gas 利用率</a><time datetime="2024-06-11T09:13:23.000Z" title="发表于 2024-06-11 17:13:23">2024-06-11</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/back1.webp);"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By Q1ngying</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div></div></body></html>

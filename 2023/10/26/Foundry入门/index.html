@@ -1,41 +1,11 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 6.3.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/icons8-clover-ios-16-glyph-32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/icons8-clover-ios-16-glyph-16.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
-
-<link rel="stylesheet" href="/css/main.css">
-
-<link rel="stylesheet" href="//fonts.lug.ustc.edu.cn/css?family=Garamond:300,300italic,400,400italic,700,700italic|Courier New:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
-  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
-  <script src="/lib/pace/pace.min.js"></script>
-
-<script id="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"q1ngying.cn","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
-  </script>
-
-  <meta name="description" content="Foundry开始使用 Foundry 框架来开发或测试智能合约时，第一步需要在空白文件夹中使用命令： 1forge init  然后，Foundry 会在项目目录下生成一些文件，这些文件有一些是用于测试合约的 Solidity 脚本库。 注意，在 Foundry 框架中，所有的“真正的”合约要放在 *src目录中，脚本合约要放在script目录中，测试合约要放在test*目录中。同时，Found">
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Foundry入门 | Q1ngying</title><meta name="author" content="Q1ngying"><meta name="copyright" content="Q1ngying"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Foundry开始使用 Foundry 框架来开发或测试智能合约时，第一步需要在空白文件夹中使用命令： forge init 然后，Foundry 会在项目目录下生成一些文件，这些文件有一些是用于测试合约的 Solidity 脚本库。 注意，在 Foundry 框架中，所有的“真正的”合约要放在 src目录中，脚本合约要放在script目录中，测试合约要放在test目录中。同时，Foundry 还">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Foundry入门">
-<meta property="og:url" content="http://q1ngying.cn/2023/10/26/Foundry%E5%85%A5%E9%97%A8/index.html">
+<meta property="og:url" content="https://q1ngying.cn/2023/10/26/Foundry%E5%85%A5%E9%97%A8/index.html">
 <meta property="og:site_name" content="Q1ngying">
-<meta property="og:description" content="Foundry开始使用 Foundry 框架来开发或测试智能合约时，第一步需要在空白文件夹中使用命令： 1forge init  然后，Foundry 会在项目目录下生成一些文件，这些文件有一些是用于测试合约的 Solidity 脚本库。 注意，在 Foundry 框架中，所有的“真正的”合约要放在 *src目录中，脚本合约要放在script目录中，测试合约要放在test*目录中。同时，Found">
+<meta property="og:description" content="Foundry开始使用 Foundry 框架来开发或测试智能合约时，第一步需要在空白文件夹中使用命令： forge init 然后，Foundry 会在项目目录下生成一些文件，这些文件有一些是用于测试合约的 Solidity 脚本库。 注意，在 Foundry 框架中，所有的“真正的”合约要放在 src目录中，脚本合约要放在script目录中，测试合约要放在test目录中。同时，Foundry 还">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://q1ngying.cn/images/Foundry%E5%85%A5%E9%97%A8/image-20231014153755212.png">
-<meta property="og:image" content="http://q1ngying.cn/images/Foundry%E5%85%A5%E9%97%A8/image-20231014153831492.png">
-<meta property="og:image" content="http://q1ngying.cn/images/Foundry%E5%85%A5%E9%97%A8/image-20231014153952813.png">
-<meta property="og:image" content="http://q1ngying.cn/images/Foundry%E5%85%A5%E9%97%A8/image-20231016145433438.png">
-<meta property="og:image" content="http://q1ngying.cn/images/Foundry%E5%85%A5%E9%97%A8/image-20231016145651779.png">
-<meta property="og:image" content="http://q1ngying.cn/images/Foundry%E5%85%A5%E9%97%A8/image-20231016151352815.png">
-<meta property="og:image" content="http://q1ngying.cn/images/Foundry%E5%85%A5%E9%97%A8/image-20231014161215982.png">
+<meta property="og:image" content="https://q1ngying.cn/img/butterfly-icon.jpg">
 <meta property="article:published_time" content="2023-10-26T10:44:24.000Z">
 <meta property="article:modified_time" content="2023-12-20T12:08:35.865Z">
 <meta property="article:author" content="Q1ngying">
@@ -43,289 +13,246 @@
 <meta property="article:tag" content="Solidity">
 <meta property="article:tag" content="Foundry">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://q1ngying.cn/images/Foundry%E5%85%A5%E9%97%A8/image-20231014153755212.png">
+<meta name="twitter:image" content="https://q1ngying.cn/img/butterfly-icon.jpg"><link rel="shortcut icon" href="/img/icons8-clover-ios-16-glyph-32.png"><link rel="canonical" href="https://q1ngying.cn/2023/10/26/Foundry%E5%85%A5%E9%97%A8/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><meta name="google-site-verification" content="IzCM4B791_p7IAU4WhRfiLlP"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
 
-<link rel="canonical" href="http://q1ngying.cn/2023/10/26/Foundry%E5%85%A5%E9%97%A8/">
-
-
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : true,
-    lang   : 'zh-CN'
-  };
-</script>
-
-  <title>Foundry入门 | Q1ngying</title>
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
   
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
 
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
 
-
-
-
-
-  <noscript>
-  <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
-
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
-
-<!-- hexo injector head_end start -->
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Foundry入门',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-12-20 20:08:35'
+}</script><!-- hexo injector head_end start -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
-<!-- hexo injector head_end end --></head>
-
-<body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
-
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
-    </div>
-  </div>
-
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">Q1ngying</h1>
-      <span class="logo-line-after"><i></i></span>
-    </a>
-      <p class="site-subtitle" itemprop="description">今朝梦醒与君别，遥盼春风寄相思</p>
-  </div>
-
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
-    </div>
-  </div>
-</div>
-
-
-
-
-<nav class="site-nav">
-  <ul id="menu" class="main-menu menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
-
-  </li>
-        <li class="menu-item menu-item-about">
-
-    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
-
-  </li>
-  </ul>
-</nav>
-
-
-
-
-</div>
-    </header>
-
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-  <div class="reading-progress-bar"></div>
-
-
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-
-          <div class="content post posts-expand">
-            
-
-    
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://q1ngying.cn/2023/10/26/Foundry%E5%85%A5%E9%97%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Q1ngying">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Q1ngying">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          Foundry入门
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-10-26 18:44:24" itemprop="dateCreated datePublished" datetime="2023-10-26T18:44:24+08:00">2023-10-26</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-12-20 20:08:35" itemprop="dateModified" datetime="2023-12-20T20:08:35+08:00">2023-12-20</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Solidity/" itemprop="url" rel="index"><span itemprop="name">Solidity</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Foundry/" itemprop="url" rel="index"><span itemprop="name">Foundry</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>4.4k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>15 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-        <h1 id="Foundry"><a href="#Foundry" class="headerlink" title="Foundry"></a>Foundry</h1><h2 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h2><p>使用 Foundry 框架来开发或测试智能合约时，第一步需要在空白文件夹中使用命令：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">forge init</span><br></pre></td></tr></table></figure>
-
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/butterfly-icon.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">29</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/back1.webp);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Q1ngying</span></a><a class="nav-page-title" href="/"><span class="site-name">Foundry入门</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Foundry入门</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-10-26T10:44:24.000Z" title="发表于 2023-10-26 18:44:24">2023-10-26</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-12-20T12:08:35.865Z" title="更新于 2023-12-20 20:08:35">2023-12-20</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Solidity/">Solidity</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Foundry/">Foundry</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">81k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>4:29分钟</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Foundry"><a href="#Foundry" class="headerlink" title="Foundry"></a>Foundry</h1><h2 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h2><p>使用 Foundry 框架来开发或测试智能合约时，第一步需要在空白文件夹中使用命令：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">forge init<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>然后，Foundry 会在项目目录下生成一些文件，这些文件有一些是用于测试合约的 Solidity 脚本库。</p>
-<p>注意，在 Foundry 框架中，所有的“真正的”合约要放在 *<code>src</code><em>目录中，脚本合约要放在</em><code>script</code><em>目录中，测试合约要放在</em><code>test</code>*目录中。同时，Foundry 还规定，脚本合约的后缀名为<code>.s.sol</code>，测试合约的后缀名为<code>.t.sol</code></p>
+<p>注意，在 Foundry 框架中，所有的“真正的”合约要放在 <em><code>src</code></em>目录中，脚本合约要放在<em><code>script</code></em>目录中，测试合约要放在<em><code>test</code></em>目录中。同时，Foundry 还规定，脚本合约的后缀名为<code>.s.sol</code>，测试合约的后缀名为<code>.t.sol</code></p>
 <h2 id="使用-Foundry-进行编译"><a href="#使用-Foundry-进行编译" class="headerlink" title="使用 Foundry 进行编译"></a>使用 Foundry 进行编译</h2><p>在 Foundry 框架中：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">forge compile(或者 forge build)</span><br></pre></td></tr></table></figure>
-
-<p>使用该命令后，会在项目目录里生成两个新的目录：*<code>out</code><em>，</em>·<code>cache</code>*</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">forge compile<span class="token punctuation">(</span>或者 forge build<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>使用该命令后，会在项目目录里生成两个新的目录：<em><code>out</code></em>，<em>·<code>cache</code></em></p>
 <h2 id="在本地区块链上进行合约测试"><a href="#在本地区块链上进行合约测试" class="headerlink" title="在本地区块链上进行合约测试"></a>在本地区块链上进行合约测试</h2><ul>
 <li>Foundry 内置 anvil</li>
 <li>Ganache</li>
 </ul>
-<h2 id="使用-Foundry-对合约进行部署"><a href="#使用-Foundry-对合约进行部署" class="headerlink" title="使用 Foundry 对合约进行部署"></a>使用 Foundry 对合约进行部署</h2><h3 id="在命令行"><a href="#在命令行" class="headerlink" title="在命令行"></a>在命令行</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">forge create &quot;合约名称&quot; --rpc-url &quot;URL&quot; --interactive (私钥，测试时可以，注意堤防私钥泄露)</span><br></pre></td></tr></table></figure>
-
+<h2 id="使用-Foundry-对合约进行部署"><a href="#使用-Foundry-对合约进行部署" class="headerlink" title="使用 Foundry 对合约进行部署"></a>使用 Foundry 对合约进行部署</h2><h3 id="在命令行"><a href="#在命令行" class="headerlink" title="在命令行"></a>在命令行</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">forge create <span class="token string">"合约名称"</span> --rpc-url <span class="token string">"URL"</span> <span class="token parameter variable">--interactive</span> <span class="token punctuation">(</span>私钥，测试时可以，注意堤防私钥泄露<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>部署合约后，会在工作目录中生成两个新的目录</p>
-<h3 id="使用-solidity-脚本部署"><a href="#使用-solidity-脚本部署" class="headerlink" title="使用 solidity 脚本部署"></a>使用 solidity 脚本部署</h3><p>使用 Solidity 脚本部署合约，需要在*<code>script</code>*目录中新建一个<code>.sol</code>文件，以下面的例子举例：</p>
-<p>需要部署的文件为<code>SimpleStorage.sol</code>（位于 *<code>src</code>*目录下）合约代码如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line"></span><br><span class="line">pragma solidity ^0.8.19;</span><br><span class="line"></span><br><span class="line">// pragma solidity ^0.8.0;</span><br><span class="line">// pragma solidity &gt;=0.8.0 &lt;0.9.0;</span><br><span class="line"></span><br><span class="line">contract SimpleStorage &#123;</span><br><span class="line">    uint256 myFavoriteNumber;</span><br><span class="line"></span><br><span class="line">    struct Person &#123;</span><br><span class="line">        uint256 favoriteNumber;</span><br><span class="line">        string name;</span><br><span class="line">    &#125;</span><br><span class="line">    // uint256[] public anArray;</span><br><span class="line">    Person[] public listOfPeople;</span><br><span class="line"></span><br><span class="line">    mapping(string =&gt; uint256) public nameToFavoriteNumber;</span><br><span class="line"></span><br><span class="line">    function store(uint256 _favoriteNumber) public &#123;</span><br><span class="line">        myFavoriteNumber = _favoriteNumber;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function retrieve() public view returns (uint256) &#123;</span><br><span class="line">        return myFavoriteNumber;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function addPerson(string memory _name, uint256 _favoriteNumber) public &#123;</span><br><span class="line">        listOfPeople.push(Person(_favoriteNumber, _name));</span><br><span class="line">        nameToFavoriteNumber[_name] = _favoriteNumber;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="使用-solidity-脚本部署"><a href="#使用-solidity-脚本部署" class="headerlink" title="使用 solidity 脚本部署"></a>使用 solidity 脚本部署</h3><p>使用 Solidity 脚本部署合约，需要在<em><code>script</code></em>目录中新建一个<code>.sol</code>文件，以下面的例子举例：</p>
+<p>需要部署的文件为<code>SimpleStorage.sol</code>（位于 <em><code>src</code></em>目录下）合约代码如下：</p>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// SPDX-License-Identifier: MIT</span>
 
-<h4 id="Solidity-脚本书写"><a href="#Solidity-脚本书写" class="headerlink" title="Solidity 脚本书写"></a>Solidity 脚本书写</h4><p>而要使用 Solidity 脚本部署这个合约，可以在*<code>script</code>*目录下新建一个合约（我将其命名为<code>DeploySimpleStorage.s.sol</code>注意，后缀名最好为<code>.s.sol</code>，因为这是一个脚本文件。<code>DeploySimpleStorage.s.sol</code>代码如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line"></span><br><span class="line">pragma solidity ^0.8.18;</span><br><span class="line"></span><br><span class="line">import &#123;Script&#125; from &quot;forge-std/Script.sol&quot;;</span><br><span class="line">import &#123;SimpleStorage&#125; from &quot;../src/SimpleStorage.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract DeploySimpleStorage is Script &#123;</span><br><span class="line">    function run() external returns(SimpleStorage) &#123;</span><br><span class="line">        vm.startBroadcast(); </span><br><span class="line">        // 要部署的合约代码</span><br><span class="line">        SimpleStorage simplestprage = new SimpleStorage();</span><br><span class="line">        vm.stopBroadcast();</span><br><span class="line">        return (simplestprage);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.8.19</span><span class="token punctuation">;</span>
 
+<span class="token comment">// pragma solidity ^0.8.0;</span>
+<span class="token comment">// pragma solidity >=0.8.0 &lt;0.9.0;</span>
+
+<span class="token keyword">contract</span> <span class="token class-name">SimpleStorage</span> <span class="token punctuation">&#123;</span>
+    <span class="token builtin">uint256</span> myFavoriteNumber<span class="token punctuation">;</span>
+
+    <span class="token keyword">struct</span> <span class="token class-name">Person</span> <span class="token punctuation">&#123;</span>
+        <span class="token builtin">uint256</span> favoriteNumber<span class="token punctuation">;</span>
+        <span class="token builtin">string</span> name<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token comment">// uint256[] public anArray;</span>
+    Person<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token keyword">public</span> listOfPeople<span class="token punctuation">;</span>
+
+    <span class="token keyword">mapping</span><span class="token punctuation">(</span><span class="token builtin">string</span> <span class="token operator">=></span> <span class="token builtin">uint256</span><span class="token punctuation">)</span> <span class="token keyword">public</span> nameToFavoriteNumber<span class="token punctuation">;</span>
+
+    <span class="token keyword">function</span> <span class="token function">store</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> _favoriteNumber<span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        myFavoriteNumber <span class="token operator">=</span> _favoriteNumber<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">retrieve</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> myFavoriteNumber<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">addPerson</span><span class="token punctuation">(</span><span class="token builtin">string</span> <span class="token keyword">memory</span> _name<span class="token punctuation">,</span> <span class="token builtin">uint256</span> _favoriteNumber<span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        listOfPeople<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token function">Person</span><span class="token punctuation">(</span>_favoriteNumber<span class="token punctuation">,</span> _name<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        nameToFavoriteNumber<span class="token punctuation">[</span>_name<span class="token punctuation">]</span> <span class="token operator">=</span> _favoriteNumber<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="Solidity-脚本书写"><a href="#Solidity-脚本书写" class="headerlink" title="Solidity 脚本书写"></a>Solidity 脚本书写</h4><p>而要使用 Solidity 脚本部署这个合约，可以在<em><code>script</code></em>目录下新建一个合约（我将其命名为<code>DeploySimpleStorage.s.sol</code>注意，后缀名最好为<code>.s.sol</code>，因为这是一个脚本文件。<code>DeploySimpleStorage.s.sol</code>代码如下：</p>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// SPDX-License-Identifier: MIT</span>
+
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.8.18</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>Script<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"forge-std/Script.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>SimpleStorage<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"../src/SimpleStorage.sol"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">contract</span> <span class="token class-name">DeploySimpleStorage</span> <span class="token keyword">is</span> Script <span class="token punctuation">&#123;</span>
+    <span class="token keyword">function</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">returns</span><span class="token punctuation">(</span>SimpleStorage<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        vm<span class="token punctuation">.</span><span class="token function">startBroadcast</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 
+        <span class="token comment">// 要部署的合约代码</span>
+        SimpleStorage simplestprage <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SimpleStorage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        vm<span class="token punctuation">.</span><span class="token function">stopBroadcast</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token punctuation">(</span>simplestprage<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>上述脚本代码中，<code>vm.startBroadcast()</code>和<code>vm.stopBroadcast()</code>是一块出现的，中间的部分即为要部署的合约，可以 new 关键字新建合约，同时，记得使用 <code>return</code> 关键字返回部署的合约的地址。</p>
 <h4 id="Solidity-脚本运行"><a href="#Solidity-脚本运行" class="headerlink" title="Solidity 脚本运行"></a>Solidity 脚本运行</h4><p>要运行上述脚本，需要在 bash 中使用下面的指令：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">forge script script/DeploySimpleStorage.s.sol</span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">forge script script/DeploySimpleStorage.s.sol<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>这样会将合约部署在一个临时的 anvil 链上。如果想要模拟真正的交易,需要传递一个 rpc-url：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">forge script script/DeploySimpleStorage.s.sol --rpc-url <span class="string">&quot;rpc&quot;</span> </span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">forge script script/DeploySimpleStorage.s.sol --rpc-url <span class="token string">"rpc"</span> <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>上面的指令会<strong>模拟</strong>部署到 anvil 链上，同时还创建了一个新的目录，他<strong>会存放我们之前部署的信息</strong></p>
 <p>如果想要广播这个消息，需要加上<code>--broadcast</code>：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">forge script script/DeploySimpleStorage.s.sol --rpc-url <span class="string">&quot;rpc&quot;</span> --broadcast --private-key <span class="string">&quot;key&quot;</span></span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">forge script script/DeploySimpleStorage.s.sol --rpc-url <span class="token string">"rpc"</span> <span class="token parameter variable">--broadcast</span> --private-key <span class="token string">"key"</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>上述的命令中<code>DeploySimpleStorage.s.sol</code>可以替换为其他部署合约的脚本。</p>
-<p>使用上述命令部署合约后同样在目录 *<code>broadcast</code><em>下，存储部署这个合约时的信息。不同的是，没使用<code>--broadcast</code>选项的信息会存储在</em><code>broadcast</code><em>的子文件夹</em><code>dry-run</code>*下。</p>
-<h2 id="使用-thiedweb-部署合约"><a href="#使用-thiedweb-部署合约" class="headerlink" title="使用 thiedweb 部署合约"></a>使用 thiedweb 部署合约</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npx thirdweb deploy</span><br></pre></td></tr></table></figure>
-
-<h2 id="cast命令"><a href="#cast命令" class="headerlink" title="cast命令"></a>cast命令</h2><h3 id="cast-to-base将十六进制转换为十进制"><a href="#cast-to-base将十六进制转换为十进制" class="headerlink" title="cast --to-base将十六进制转换为十进制"></a><code>cast --to-base</code>将十六进制转换为十进制</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cast --to-base 0x714c2 dec</span><br></pre></td></tr></table></figure>
-
+<p>使用上述命令部署合约后同样在目录 <em><code>broadcast</code></em>下，存储部署这个合约时的信息。不同的是，没使用<code>--broadcast</code>选项的信息会存储在<em><code>broadcast</code></em>的子文件夹<em><code>dry-run</code></em>下。</p>
+<h2 id="使用-thiedweb-部署合约"><a href="#使用-thiedweb-部署合约" class="headerlink" title="使用 thiedweb 部署合约"></a>使用 thiedweb 部署合约</h2><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">npx thirdweb deploy<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="cast命令"><a href="#cast命令" class="headerlink" title="cast命令"></a>cast命令</h2><h3 id="cast-to-base将十六进制转换为十进制"><a href="#cast-to-base将十六进制转换为十进制" class="headerlink" title="cast --to-base将十六进制转换为十进制"></a><code>cast --to-base</code>将十六进制转换为十进制</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">cast --to-base 0x714c2 dec<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>返回结果：464066</p>
-<h3 id="cast-send-发送签名和交易（调用非只读函数）"><a href="#cast-send-发送签名和交易（调用非只读函数）" class="headerlink" title="cast send 发送签名和交易（调用非只读函数）"></a>cast send 发送签名和交易（调用非只读函数）</h3><p>Foundry 内置工具 cast 中有一个可以使用的命令**<code>send</code>**用于签名和发布交易：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cast send <span class="string">&quot;合约地址&quot;</span> <span class="string">&quot;函数签名&quot;</span> <span class="string">&quot;参数值&quot;</span> --rpc-url <span class="string">&quot;rpc&quot;</span> --private-key <span class="string">&quot;privatekey&quot;</span></span><br></pre></td></tr></table></figure>
-
+<h3 id="cast-send-发送签名和交易（调用非只读函数）"><a href="#cast-send-发送签名和交易（调用非只读函数）" class="headerlink" title="cast send 发送签名和交易（调用非只读函数）"></a>cast send 发送签名和交易（调用非只读函数）</h3><p>Foundry 内置工具 cast 中有一个可以使用的命令<strong><code>send</code></strong>用于签名和发布交易：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">cast send <span class="token string">"合约地址"</span> <span class="token string">"函数签名"</span> <span class="token string">"参数值"</span> --rpc-url <span class="token string">"rpc"</span> --private-key <span class="token string">"privatekey"</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>比如：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cast send 0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0 <span class="string">&quot;store(uint256)&quot;</span> 123 --rpc-url <span class="variable">$rpc</span> --private-key <span class="variable">$key0</span></span><br></pre></td></tr></table></figure>
-
-<h3 id=""><a href="#" class="headerlink" title=""></a></h3><h3 id="cast-call-从区块中读取数据（调用只读函数）"><a href="#cast-call-从区块中读取数据（调用只读函数）" class="headerlink" title="cast call 从区块中读取数据（调用只读函数）"></a><code>cast call</code> 从区块中读取数据（调用只读函数）</h3><p><strong>call 命令类似于 Remix 中的蓝色按钮，只能调用函数，不能发送交易</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cast call <span class="string">&quot;合约地址&quot;</span> <span class="string">&quot;函数名/变量名&quot;</span> --rpc-url <span class="string">&quot;rpc&quot;</span></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cast call 0xf0a005d0697a6518a09A378f371f0058a69F5c3B <span class="string">&quot;retrieve()&quot;</span> --rpc-url <span class="variable">$rpc</span></span><br></pre></td></tr></table></figure>
-
-
-
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">cast send 0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0 <span class="token string">"store(uint256)"</span> <span class="token number">123</span> --rpc-url <span class="token variable">$rpc</span> --private-key <span class="token variable">$key0</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id=""><a href="#" class="headerlink" title=" "></a> </h3><h3 id="cast-call-从区块中读取数据（调用只读函数）"><a href="#cast-call-从区块中读取数据（调用只读函数）" class="headerlink" title="cast call 从区块中读取数据（调用只读函数）"></a><code>cast call</code> 从区块中读取数据（调用只读函数）</h3><p><strong>call 命令类似于 Remix 中的蓝色按钮，只能调用函数，不能发送交易</strong></p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">cast call <span class="token string">"合约地址"</span> <span class="token string">"函数名/变量名"</span> --rpc-url <span class="token string">"rpc"</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">cast call 0xf0a005d0697a6518a09A378f371f0058a69F5c3B <span class="token string">"retrieve()"</span> --rpc-url <span class="token variable">$rpc</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <h2 id="加快与合约的交互方法（仅在开发调试时使用，实际生产中不可取）"><a href="#加快与合约的交互方法（仅在开发调试时使用，实际生产中不可取）" class="headerlink" title="加快与合约的交互方法（仅在开发调试时使用，实际生产中不可取）"></a>加快与合约的交互方法（仅在开发调试时使用，实际生产中不可取）</h2><p>在文件根目录新建一个<code>.env</code>文件。该文件格式可类似为：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">key0=0x517e11ba636227ffbdb3a4c8e2f2db11c9cc7fef4c290f6c88f28f76f5c9f789</span><br><span class="line">rpc=http://127.0.0.1:7545</span><br><span class="line">key1=0xc4c1bae53fb65f8549a2034f8dcc92f5be0840981912db5701435def7167099a</span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-env" data-language="env"><code class="language-env">key0&#x3D;0x517e11ba636227ffbdb3a4c8e2f2db11c9cc7fef4c290f6c88f28f76f5c9f789
+rpc&#x3D;http:&#x2F;&#x2F;127.0.0.1:7545
+key1&#x3D;0xc4c1bae53fb65f8549a2034f8dcc92f5be0840981912db5701435def7167099a<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <p>创建这个文件后，打开<code>.gitignore</code>文件，确保<code>.env</code>文件在其中被忽略。</p>
 <p>在<code>.env</code>中，我们可以设置“环境变量”。设置后，在终端运行：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">source</span> .<span class="built_in">env</span></span><br></pre></td></tr></table></figure>
-
-
-
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token builtin class-name">source</span> .env<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <h2 id="在测试网上模拟在主网中的操作"><a href="#在测试网上模拟在主网中的操作" class="headerlink" title="在测试网上模拟在主网中的操作"></a>在测试网上模拟在主网中的操作</h2><h3 id="部署合约到测试网"><a href="#部署合约到测试网" class="headerlink" title="部署合约到测试网"></a>部署合约到测试网</h3><p>要将合约部署到测试网上，需要有测试网的 rpc ，这里使用 Alchemy 来构建一个在 Sepolia 测试网上的项目，便会得到一个我们自己的在 Sepolia 测试网上的 rpc，同时，我们部署了合约后，可以在 Alchemy 面板上查看我们部署的合约。</p>
 <p>而部署的过程和刚刚在本地部署的过程没有很大的区别，唯一的区别就是需要把参数中的<code>rpc</code>和<code>private-key</code>换为我们在 Alchemy 生成的 rpc ，自己Meta Mask钱包中拥有 Sepolia ETH 的私钥。<strong>注意，如果要把自己的 Meta Mask 钱包的私钥放进 <code>.env</code> 环境变量之前，确保这个私钥在 ETH 主网上没有余额！！！</strong></p>
 <h3 id="合约验证"><a href="#合约验证" class="headerlink" title="合约验证"></a>合约验证</h3><h4 id="手动验证"><a href="#手动验证" class="headerlink" title="手动验证"></a>手动验证</h4><p>在 Etherscan 或者其他区块链浏览器上进行验证。</p>
-<p><img src="/../images/Foundry%E5%85%A5%E9%97%A8/image-20231014153755212.png" alt="image-20231014153755212"></p>
+<p><img src="../images/Foundry入门/image-20231014153755212.png" alt="image-20231014153755212"></p>
 <p>点击上方的合约验证</p>
-<p><img src="/../images/Foundry%E5%85%A5%E9%97%A8/image-20231014153831492.png" alt="image-20231014153831492"></p>
+<p><img src="../images/Foundry入门/image-20231014153831492.png" alt="image-20231014153831492"></p>
 <p>按照上述要求进行验证</p>
-<p><img src="/../images/Foundry%E5%85%A5%E9%97%A8/image-20231014153952813.png" alt="image-20231014153952813"></p>
+<p><img src="../images/Foundry入门/image-20231014153952813.png" alt="image-20231014153952813"></p>
 <p>继续操作，即可验证成功。</p>
 <p>验证成功后，可以在 Etherscan 上看到我们的合约源码，并且可以在区块链浏览器上与合约进行交互</p>
 <h2 id="清理项目"><a href="#清理项目" class="headerlink" title="清理项目"></a>清理项目</h2><p>当我们的项目基本上完成后，我们就可以对我们的项目进行最后一步的加工</p>
@@ -334,62 +261,235 @@
 <p>项目信息、使用说明、联系方式等。</p>
 <h1 id="Foundry-调试"><a href="#Foundry-调试" class="headerlink" title="Foundry 调试"></a>Foundry 调试</h1><p><strong>在 Foundry 中进行测试时，如果不指定链，Foundry 会自动启动一个 anvil 链。</strong></p>
 <h2 id="解决在-Remix-导入合约报错的问题"><a href="#解决在-Remix-导入合约报错的问题" class="headerlink" title="解决在 Remix 导入合约报错的问题"></a>解决在 Remix 导入合约报错的问题</h2><p>在 Remix 编译器中，可以通过使用<code>&quot;@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol&quot;</code>这种方式导入合约，但是使用其他编译器时编译器会报错，原因在于：<strong>在 Remix 收纳柜使用<code>@chainlink/contracts</code>时，Remix 会自动在 npm 包存储库中查找</strong>，而 Foundry 需要明确地知道从哪里获取依赖项。<strong>所以，我们要直接从 Github 下载，我们使用<code>forge install</code>命令安装这个依赖项：</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">forge install smartcontractkit/chainlink-brownie-contracts</span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">forge <span class="token function">install</span> smartcontractkit/chainlink-brownie-contracts<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>在大多数情况下，还需要添加<code>--no-commit</code>命令，同时还可以使用<code>@</code>来选择版本，所以最终的代码为：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">forge install smartcontractkit/chainlink-brownie-contracts@0.6.1 --no-commit</span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">forge <span class="token function">install</span> smartcontractkit/chainlink-brownie-contracts@0.6.1 --no-commit<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>接下来要在 <code>foundry.toml</code>文件中创建一个叫做<code>remappings</code>的重映射：</p>
 <p>在<code>profile.dedfault</code>下面创建一个叫做<code>remappings</code>的新部分：</p>
-<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[profile.default]</span></span><br><span class="line"><span class="attr">src</span> = <span class="string">&quot;src&quot;</span></span><br><span class="line"><span class="attr">out</span> = <span class="string">&quot;out&quot;</span></span><br><span class="line"><span class="attr">libs</span> = [<span class="string">&quot;lib&quot;</span>]</span><br><span class="line"><span class="attr">remappings</span> = [<span class="string">&quot;@chainlink/contracts/=lib/chainlink-brownie-contracts/contracts&quot;</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-toml" data-language="toml"><code class="language-toml"><span class="token punctuation">[</span><span class="token table class-name">profile.default</span><span class="token punctuation">]</span>
+<span class="token key property">src</span> <span class="token punctuation">=</span> <span class="token string">"src"</span>
+<span class="token key property">out</span> <span class="token punctuation">=</span> <span class="token string">"out"</span>
+<span class="token key property">libs</span> <span class="token punctuation">=</span> <span class="token punctuation">[</span><span class="token string">"lib"</span><span class="token punctuation">]</span>
+<span class="token key property">remappings</span> <span class="token punctuation">=</span> <span class="token punctuation">[</span><span class="token string">"@chainlink/contracts/=lib/chainlink-brownie-contracts/contracts"</span><span class="token punctuation">]</span>
 
+
+<span class="token comment"># See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>最好的做法是，在命名错误时，使用合约名称加上两个下划线，这样当遇到这个错误时，可以很容易地知道是哪个合约出了问题</p>
-<h2 id="forge-test-参数"><a href="#forge-test-参数" class="headerlink" title="forge test 参数"></a>forge test 参数</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">forge <span class="built_in">test</span> <span class="comment"># 进行所有的测试</span></span><br><span class="line">forge <span class="built_in">test</span> -vv <span class="comment"># 改变可见性，v越多可见性越高</span></span><br><span class="line"><span class="comment"># 如果我们在测试的时候没有为其提供 RPC URL 时，他会启动一个全新的空白 anvil 链进行测试</span></span><br><span class="line">fork <span class="built_in">test</span> --fork-url <span class="string">&quot;url&quot;</span> </span><br><span class="line"><span class="comment"># 上述命令中，anvil 被启动，但他会使用 Sepolia RPC URL 的副本来运行，他会启动一个 anvil 链，并模拟所有的交易，就像它们在 Sepolia 链上运行一样，他会假装部署和读取 Sepolia 链上的内容，而不是一个完全空白的链</span></span><br><span class="line">--fail-fast 快速失败，第一次失败后停止测试</span><br><span class="line">--gas-report 打印 gas 报告</span><br><span class="line">--match-test &lt;正则表达式&gt;，仅运行与指定正则表达式匹配的测试函数，(别名-mt)</span><br><span class="line">--no-match-test &lt;正则表达式&gt;，仅运行与指定正则表达式不匹配的合约测试，(别名-nmt)</span><br><span class="line">--match-contract &lt;正则表达式&gt;，仅运行与指定正则表达式匹配的合约测试，(别名-mc)</span><br><span class="line">--NO-match-contract &lt;正则表达式&gt;，仅运行与指定正则表达式不匹配的合约测试，(别名-nmc)</span><br><span class="line">-f</span><br><span class="line">--fork-url &lt;URL&gt; 通过远程端点获取状态而不是从一个空的状态</span><br><span class="line">--fork-block-number &lt;块&gt; 通过远程从特定块号获取状态端点。</span><br><span class="line">-v EVM 的详细程度。</span><br><span class="line">多次传递以增加详细程度（例如 -v、-vv、-vvv）。</span><br><span class="line">详细程度：</span><br><span class="line">- 2：打印所有测试的日志</span><br><span class="line">- 3：打印失败测试的执行跟踪</span><br><span class="line">- 4：打印所有测试的执行跟踪以及设置跟踪对于失败的测试</span><br><span class="line">- 5：打印所有测试的执行和设置跟踪</span><br><span class="line">forge coverage : 可以查看实际测试套件中实际测试了多少代码</span><br></pre></td></tr></table></figure>
-
+<h2 id="forge-test-参数"><a href="#forge-test-参数" class="headerlink" title="forge test 参数"></a>forge test 参数</h2><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">forge <span class="token builtin class-name">test</span> <span class="token comment"># 进行所有的测试</span>
+forge <span class="token builtin class-name">test</span> <span class="token parameter variable">-vv</span> <span class="token comment"># 改变可见性，v越多可见性越高</span>
+<span class="token comment"># 如果我们在测试的时候没有为其提供 RPC URL 时，他会启动一个全新的空白 anvil 链进行测试</span>
+fork <span class="token builtin class-name">test</span> --fork-url <span class="token string">"url"</span> 
+<span class="token comment"># 上述命令中，anvil 被启动，但他会使用 Sepolia RPC URL 的副本来运行，他会启动一个 anvil 链，并模拟所有的交易，就像它们在 Sepolia 链上运行一样，他会假装部署和读取 Sepolia 链上的内容，而不是一个完全空白的链</span>
+--fail-fast 快速失败，第一次失败后停止测试
+--gas-report 打印 gas 报告
+--match-test <span class="token operator">&lt;</span>正则表达式<span class="token operator">></span>，仅运行与指定正则表达式匹配的测试函数，<span class="token punctuation">(</span>别名-mt<span class="token punctuation">)</span>
+--no-match-test <span class="token operator">&lt;</span>正则表达式<span class="token operator">></span>，仅运行与指定正则表达式不匹配的合约测试，<span class="token punctuation">(</span>别名-nmt<span class="token punctuation">)</span>
+--match-contract <span class="token operator">&lt;</span>正则表达式<span class="token operator">></span>，仅运行与指定正则表达式匹配的合约测试，<span class="token punctuation">(</span>别名-mc<span class="token punctuation">)</span>
+--NO-match-contract <span class="token operator">&lt;</span>正则表达式<span class="token operator">></span>，仅运行与指定正则表达式不匹配的合约测试，<span class="token punctuation">(</span>别名-nmc<span class="token punctuation">)</span>
+<span class="token parameter variable">-f</span>
+--fork-url <span class="token operator">&lt;</span>URL<span class="token operator">></span> 通过远程端点获取状态而不是从一个空的状态
+--fork-block-number <span class="token operator">&lt;</span>块<span class="token operator">></span> 通过远程从特定块号获取状态端点。
+<span class="token parameter variable">-v</span> EVM 的详细程度。
+多次传递以增加详细程度（例如 -v、-vv、-vvv）。
+详细程度：
+- <span class="token number">2</span>：打印所有测试的日志
+- <span class="token number">3</span>：打印失败测试的执行跟踪
+- <span class="token number">4</span>：打印所有测试的执行跟踪以及设置跟踪对于失败的测试
+- <span class="token number">5</span>：打印所有测试的执行和设置跟踪
+forge coverage <span class="token builtin class-name">:</span> 可以查看实际测试套件中实际测试了多少代码<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h2 id="基本测试"><a href="#基本测试" class="headerlink" title="基本测试"></a>基本测试</h2><p>在 Foundry 框架中，有一些内置库和工具可以十分方便的测试合约，所以在编写一个测试合约的时候大致框架如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">import &#123;Test&#125; from &quot;forge-std/Test.sol&quot;</span><br><span class="line"></span><br><span class="line">contract Name is Test &#123;</span><br><span class="line">	function setUp() external &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line">    // 我们可以进行以下四种测试：</span><br><span class="line">    // 1. 单元测试</span><br><span class="line">    //   - 测试代码中的一个特定部分</span><br><span class="line">    // 2. 集成测试</span><br><span class="line">    //   - 测试多个不同合约是否能够正确地协同工作</span><br><span class="line">    // 3. Fork测试（可以认为时单元/集成测试的一部分）</span><br><span class="line">    //   - 模拟在真实环境中对代码进行测试</span><br><span class="line">    // 4. Staging 测试</span><br><span class="line">    //   - 将代码部署到测试网或者主网之类的环境中，并在这个真实环境中运行所有测试以确保事情能够正常工作</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.8.0</span><span class="token punctuation">;</span>
 
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>Test<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"forge-std/Test.sol"</span>
+
+<span class="token keyword">contract</span> <span class="token class-name">Name</span> <span class="token keyword">is</span> Test <span class="token punctuation">&#123;</span>
+	<span class="token keyword">function</span> <span class="token function">setUp</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+    <span class="token comment">// 我们可以进行以下四种测试：</span>
+    <span class="token comment">// 1. 单元测试</span>
+    <span class="token comment">//   - 测试代码中的一个特定部分</span>
+    <span class="token comment">// 2. 集成测试</span>
+    <span class="token comment">//   - 测试多个不同合约是否能够正确地协同工作</span>
+    <span class="token comment">// 3. Fork测试（可以认为时单元/集成测试的一部分）</span>
+    <span class="token comment">//   - 模拟在真实环境中对代码进行测试</span>
+    <span class="token comment">// 4. Staging 测试</span>
+    <span class="token comment">//   - 将代码部署到测试网或者主网之类的环境中，并在这个真实环境中运行所有测试以确保事情能够正常工作</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="简单的测试"><a href="#简单的测试" class="headerlink" title="简单的测试"></a>简单的测试</h3><p>在所有的测试中，第一件都是设置 setUp() 函数，在这里部署合约，然后就可以写需要进行的测试，举例：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">import &#123;Test&#125; from &quot;forge-std/Test.sol&quot;</span><br><span class="line"></span><br><span class="line">contract Name is Test &#123;</span><br><span class="line">	uint number = 1;</span><br><span class="line">	</span><br><span class="line">	function setUp() external &#123;</span><br><span class="line">		number = 2;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	function testDemo() public &#123;</span><br><span class="line">		assertEq(number, 2);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.8.0</span><span class="token punctuation">;</span>
 
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>Test<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"forge-std/Test.sol"</span>
+
+<span class="token keyword">contract</span> <span class="token class-name">Name</span> <span class="token keyword">is</span> Test <span class="token punctuation">&#123;</span>
+	<span class="token builtin">uint</span> number <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+	
+	<span class="token keyword">function</span> <span class="token function">setUp</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token punctuation">&#123;</span>
+		number <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+	
+	<span class="token keyword">function</span> <span class="token function">testDemo</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+		<span class="token function">assertEq</span><span class="token punctuation">(</span>number<span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>测试结果：</p>
-<p><img src="/../images/Foundry%E5%85%A5%E9%97%A8/image-20231016145433438.png" alt="image-20231016145433438"></p>
+<p><img src="../images/Foundry入门/image-20231016145433438.png" alt="image-20231016145433438"></p>
 <h3 id="console-log-测试、调试"><a href="#console-log-测试、调试" class="headerlink" title="console.log 测试、调试"></a>console.log 测试、调试</h3><p>另一种测试和调试的方法是使用<code>console.log</code>,Test是一个很大的库，还有另一个库叫做 <code>console</code>：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line"></span><br><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">import &#123;Test, console&#125; from &quot;forge-std/Test.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract FundMeTest is Test &#123;</span><br><span class="line"></span><br><span class="line">    uint number = 1;</span><br><span class="line"></span><br><span class="line">    function setUp() external &#123;</span><br><span class="line">        number = 2;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function testDemo() external &#123;</span><br><span class="line">        console.log(number);</span><br><span class="line">        console.log(&quot;Hello!&quot;);</span><br><span class="line">        assertEq(number, 2);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// SPDX-License-Identifier: MIT</span>
 
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.8.0</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>Test<span class="token punctuation">,</span> console<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"forge-std/Test.sol"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">contract</span> <span class="token class-name">FundMeTest</span> <span class="token keyword">is</span> Test <span class="token punctuation">&#123;</span>
+
+    <span class="token builtin">uint</span> number <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">function</span> <span class="token function">setUp</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token punctuation">&#123;</span>
+        number <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">testDemo</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token punctuation">&#123;</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>number<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"Hello!"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">assertEq</span><span class="token punctuation">(</span>number<span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>测试结果：</p>
-<p><img src="/../images/Foundry%E5%85%A5%E9%97%A8/image-20231016145651779.png" alt="image-20231016145651779"></p>
-<h2 id="对-FundMe-合约进行简单的调试"><a href="#对-FundMe-合约进行简单的调试" class="headerlink" title="对 FundMe 合约进行简单的调试"></a>对 FundMe 合约进行简单的调试</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line"></span><br><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">import &#123;Test, console&#125; from &quot;forge-std/Test.sol&quot;;</span><br><span class="line">import &#123;FundMe&#125; from &quot;../src/FundMe.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract FundMeTest is Test &#123;</span><br><span class="line">    FundMe fundMe; // 定义 FundMe 合约变量</span><br><span class="line"></span><br><span class="line">    function setUp() external &#123;</span><br><span class="line">        fundMe = new FundMe(); // 实例化一个 FundMe 合约 fundme</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function testMininumDollarIsFive() public &#123;</span><br><span class="line">        assertEq(fundMe.MINIMUM_USD(), 5e18);</span><br><span class="line">        // 对 FundMe 合约进行调试</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="../images/Foundry入门/image-20231016145651779.png" alt="image-20231016145651779"></p>
+<h2 id="对-FundMe-合约进行简单的调试"><a href="#对-FundMe-合约进行简单的调试" class="headerlink" title="对 FundMe 合约进行简单的调试"></a>对 FundMe 合约进行简单的调试</h2><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// SPDX-License-Identifier: MIT</span>
 
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.8.0</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>Test<span class="token punctuation">,</span> console<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"forge-std/Test.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>FundMe<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"../src/FundMe.sol"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">contract</span> <span class="token class-name">FundMeTest</span> <span class="token keyword">is</span> Test <span class="token punctuation">&#123;</span>
+    FundMe fundMe<span class="token punctuation">;</span> <span class="token comment">// 定义 FundMe 合约变量</span>
+
+    <span class="token keyword">function</span> <span class="token function">setUp</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token punctuation">&#123;</span>
+        fundMe <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FundMe</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 实例化一个 FundMe 合约 fundme</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">testMininumDollarIsFive</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        <span class="token function">assertEq</span><span class="token punctuation">(</span>fundMe<span class="token punctuation">.</span><span class="token function">MINIMUM_USD</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">5e18</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// 对 FundMe 合约进行调试</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="检验合约所有者是否为-msg-sender"><a href="#检验合约所有者是否为-msg-sender" class="headerlink" title="检验合约所有者是否为 msg.sender"></a>检验合约所有者是否为 <code>msg.sender</code></h3><p>可以这样写：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line"></span><br><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">import &#123;Test, console&#125; from &quot;forge-std/Test.sol&quot;;</span><br><span class="line">import &#123;FundMe&#125; from &quot;../src/FundMe.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract FundMeTest is Test &#123;</span><br><span class="line">    FundMe fundMe; // 定义 FundMe 合约变量</span><br><span class="line"></span><br><span class="line">    function setUp() external &#123;</span><br><span class="line">        fundMe = new FundMe(); // 实例化一个 FundMe 合约 fundme</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function testMininumDollarIsFive() public &#123;</span><br><span class="line">        assertEq(fundMe.MINIMUM_USD(), 5e18);</span><br><span class="line">        // 对 FundMe 合约进行调试</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    function testOwnerIsMsgSender() public &#123;</span><br><span class="line">    	assertEq(fundMe.i_owner(), msg.sender);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// SPDX-License-Identifier: MIT</span>
 
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.8.0</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>Test<span class="token punctuation">,</span> console<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"forge-std/Test.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>FundMe<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"../src/FundMe.sol"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">contract</span> <span class="token class-name">FundMeTest</span> <span class="token keyword">is</span> Test <span class="token punctuation">&#123;</span>
+    FundMe fundMe<span class="token punctuation">;</span> <span class="token comment">// 定义 FundMe 合约变量</span>
+
+    <span class="token keyword">function</span> <span class="token function">setUp</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token punctuation">&#123;</span>
+        fundMe <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FundMe</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 实例化一个 FundMe 合约 fundme</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">testMininumDollarIsFive</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        <span class="token function">assertEq</span><span class="token punctuation">(</span>fundMe<span class="token punctuation">.</span><span class="token function">MINIMUM_USD</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">5e18</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// 对 FundMe 合约进行调试</span>
+    <span class="token punctuation">&#125;</span>
+    
+    <span class="token keyword">function</span> <span class="token function">testOwnerIsMsgSender</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+    	<span class="token function">assertEq</span><span class="token punctuation">(</span>fundMe<span class="token punctuation">.</span><span class="token function">i_owner</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> msg<span class="token punctuation">.</span>sender<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>经过 forge 的调试，我们发现<code>msg.sender</code>不是合约的所有者，我们可以对上面的程序进行进一步的调整：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line"></span><br><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">import &#123;Test, console&#125; from &quot;forge-std/Test.sol&quot;;</span><br><span class="line">import &#123;FundMe&#125; from &quot;../src/FundMe.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract FundMeTest is Test &#123;</span><br><span class="line">    FundMe fundMe; // 定义 FundMe 合约变量</span><br><span class="line"></span><br><span class="line">    function setUp() external &#123;</span><br><span class="line">        fundMe = new FundMe(); // 实例化一个 FundMe 合约 fundme</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function testMininumDollarIsFive() public &#123;</span><br><span class="line">        assertEq(fundMe.MINIMUM_USD(), 5e18);</span><br><span class="line">        // 对 FundMe 合约进行调试</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    function testOwnerIsMsgSender() public &#123;</span><br><span class="line">    	console.log(fundMe.i_owner());</span><br><span class="line">    	console.log(msg.sender);</span><br><span class="line">    	assertEq(fundMe.i_owner(), msg.sender);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// SPDX-License-Identifier: MIT</span>
 
-<p><img src="/../images/Foundry%E5%85%A5%E9%97%A8/image-20231016151352815.png" alt="image-20231016151352815"></p>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.8.0</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>Test<span class="token punctuation">,</span> console<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"forge-std/Test.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>FundMe<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"../src/FundMe.sol"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">contract</span> <span class="token class-name">FundMeTest</span> <span class="token keyword">is</span> Test <span class="token punctuation">&#123;</span>
+    FundMe fundMe<span class="token punctuation">;</span> <span class="token comment">// 定义 FundMe 合约变量</span>
+
+    <span class="token keyword">function</span> <span class="token function">setUp</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token punctuation">&#123;</span>
+        fundMe <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FundMe</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 实例化一个 FundMe 合约 fundme</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">testMininumDollarIsFive</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        <span class="token function">assertEq</span><span class="token punctuation">(</span>fundMe<span class="token punctuation">.</span><span class="token function">MINIMUM_USD</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">5e18</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// 对 FundMe 合约进行调试</span>
+    <span class="token punctuation">&#125;</span>
+    
+    <span class="token keyword">function</span> <span class="token function">testOwnerIsMsgSender</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+    	console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>fundMe<span class="token punctuation">.</span><span class="token function">i_owner</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    	console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>msg<span class="token punctuation">.</span>sender<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    	<span class="token function">assertEq</span><span class="token punctuation">(</span>fundMe<span class="token punctuation">.</span><span class="token function">i_owner</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> msg<span class="token punctuation">.</span>sender<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="../images/Foundry入门/image-20231016151352815.png" alt="image-20231016151352815"></p>
 <p>经过测试发现：我 -&gt; FundMeTest -&gt; FundMe，我们不应该检验我们和是否为所有者，而是检测 FundMeTest 是不是所有者，所以将上面的<code>testOwnerIsMsgSender</code>函数修改为下面的形式即可：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function testOwnerIsMsgSender() public &#123;</span><br><span class="line">	console.log(fundMe.i_owner());</span><br><span class="line">	console.log(msg.sender);</span><br><span class="line">	assertEq(fundMe.i_owner(), address(this));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="检验版本-使用–fork-url-模拟实际链上的内容"><a href="#检验版本-使用–fork-url-模拟实际链上的内容" class="headerlink" title="检验版本(使用–fork-url 模拟实际链上的内容)"></a>检验版本(使用–fork-url 模拟实际链上的内容)</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">function testPriceFeedVersionIsAccurate() public &#123; // </span><br><span class="line">    uint256 version = fundMe.getVersion();</span><br><span class="line">    assertEq(version, 4);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>对这个函数进行测试时会报错，原因在于，FundMe 合约中的参数地址是 Sepolia 链上的地址，而我们在 Foundry 上测试其实是部署在一个新建的 anvil 链上，并在经过测试和自动关闭 anvil 链的。所以，这里就需要用到了 <code>--fork-url</code>选项，详见[forge test参数](##forge test 参数)</p>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">testOwnerIsMsgSender</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+	console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>fundMe<span class="token punctuation">.</span><span class="token function">i_owner</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>msg<span class="token punctuation">.</span>sender<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">assertEq</span><span class="token punctuation">(</span>fundMe<span class="token punctuation">.</span><span class="token function">i_owner</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token builtin">address</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="检验版本-使用—fork-url-模拟实际链上的内容"><a href="#检验版本-使用—fork-url-模拟实际链上的内容" class="headerlink" title="检验版本(使用—fork-url 模拟实际链上的内容)"></a>检验版本(使用—fork-url 模拟实际链上的内容)</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">testPriceFeedVersionIsAccurate</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span> <span class="token comment">// </span>
+    <span class="token builtin">uint256</span> version <span class="token operator">=</span> fundMe<span class="token punctuation">.</span><span class="token function">getVersion</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">assertEq</span><span class="token punctuation">(</span>version<span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>对这个函数进行测试时会报错，原因在于，FundMe 合约中的参数地址是 Sepolia 链上的地址，而我们在 Foundry 上测试其实是部署在一个新建的 anvil 链上，并在经过测试和自动关闭 anvil 链的。所以，这里就需要用到了 <code>--fork-url</code>选项，详见<a href="##forge test 参数">forge test参数</a></p>
 <p>然后，执行下面的bash命令会发现程序成功进行：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">forge <span class="built_in">test</span> --match-test  testPriceFeedVersionIsAccurate --fork-url https://eth-sepolia.g.alchemy.com/v2/htfp6AGYmR20uiC5S-rZfe7IZvuxManb</span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">forge <span class="token builtin class-name">test</span> --match-test  testPriceFeedVersionIsAccurate --fork-url https://eth-sepolia.g.alchemy.com/v2/htfp6AGYmR20uiC5S-rZfe7IZvuxManb<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p><strong>当我们使用 Frok-URL 时，我们会模拟实际链上的内容</strong>，这是一个在实际网络上轻松测试合约的一个好方法。<strong>但是，这些 Fork 的缺点是会对 Alchemy 节点进行大量的 API 调用，这可能会产生更多的费用</strong>，所以尽可能多的进行测试而不使用 Fork 是很重要的，当然除了一些必须在 Fork 上运行的测试。或者使用模拟来确保我们有足够的覆盖率来测试所有的合约。</p>
 <h2 id="测试一个是否发生回滚"><a href="#测试一个是否发生回滚" class="headerlink" title="测试一个是否发生回滚"></a>测试一个是否发生回滚</h2><p>有些时候我们需要交易回滚，所以我们可以通过<code>Foundry</code>来书写测试脚本来检查这个合约是否回滚：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function testFundFailsWithoutEnoughETH() public&#123;</span><br><span class="line">    vm.expectRevert(); // 这个函数的下一行应该回滚</span><br><span class="line">    // 等价于： assert(This tx fails/reverts)</span><br><span class="line">    uint256 cat = 1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">testFundFailsWithoutEnoughETH</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span><span class="token punctuation">&#123;</span>
+    vm<span class="token punctuation">.</span><span class="token function">expectRevert</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 这个函数的下一行应该回滚</span>
+    <span class="token comment">// 等价于： assert(This tx fails/reverts)</span>
+    <span class="token builtin">uint256</span> cat <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>在 bash 中 对上面这个函数进行测试：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">$ forge <span class="built_in">test</span> --mt testFundFailsWithoutEnoughETH</span><br><span class="line">[⠢] Compiling...</span><br><span class="line">[⠃] Compiling 1 files with 0.8.21</span><br><span class="line">[⠊] Solc 0.8.21 finished <span class="keyword">in</span> 670.25ms</span><br><span class="line">Compiler run successful with warnings:</span><br><span class="line">Warning (2072): Unused <span class="built_in">local</span> variable.</span><br><span class="line">  --&gt; <span class="built_in">test</span>/FundeMeTest.t.sol:44:9:</span><br><span class="line">   |</span><br><span class="line">44 |         uint256 <span class="built_in">cat</span> = 1;</span><br><span class="line">   |         ^^^^^^^^^^^</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Running 1 <span class="built_in">test</span> <span class="keyword">for</span> <span class="built_in">test</span>/FundeMeTest.t.sol:FundMeTest</span><br><span class="line">[FAIL. Reason: Call did not revert as expected] testFundFailsWithoutEnoughETH() (gas: 3047)</span><br><span class="line">Test result: FAILED. 0 passed; 1 failed; 0 skipped; finished <span class="keyword">in</span> 1.32ms</span><br><span class="line"> </span><br><span class="line">Ran 1 <span class="built_in">test</span> suites: 0 tests passed, 1 failed, 0 skipped (1 total tests)</span><br><span class="line"></span><br><span class="line">Failing tests:</span><br><span class="line">Encountered 1 failing <span class="built_in">test</span> <span class="keyword">in</span> <span class="built_in">test</span>/FundeMeTest.t.sol:FundMeTest</span><br><span class="line">[FAIL. Reason: Call did not revert as expected] testFundFailsWithoutEnoughETH() (gas: 3047)</span><br><span class="line"></span><br><span class="line">Encountered a total of 1 failing tests, 0 tests succeeded</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ forge <span class="token builtin class-name">test</span> <span class="token parameter variable">--mt</span> testFundFailsWithoutEnoughETH
+<span class="token punctuation">[</span>⠢<span class="token punctuation">]</span> Compiling<span class="token punctuation">..</span>.
+<span class="token punctuation">[</span>⠃<span class="token punctuation">]</span> Compiling <span class="token number">1</span> files with <span class="token number">0.8</span>.21
+<span class="token punctuation">[</span>⠊<span class="token punctuation">]</span> Solc <span class="token number">0.8</span>.21 finished <span class="token keyword">in</span> <span class="token number">670</span>.25ms
+Compiler run successful with warnings:
+Warning <span class="token punctuation">(</span><span class="token number">2072</span><span class="token punctuation">)</span>: Unused <span class="token builtin class-name">local</span> variable.
+  --<span class="token operator">></span> test/FundeMeTest.t.sol:44:9:
+   <span class="token operator">|</span>
+<span class="token number">44</span> <span class="token operator">|</span>         uint256 <span class="token function">cat</span> <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+   <span class="token operator">|</span>         ^^^^^^^^^^^
 
+
+Running <span class="token number">1</span> <span class="token builtin class-name">test</span> <span class="token keyword">for</span> test/FundeMeTest.t.sol:FundMeTest
+<span class="token punctuation">[</span>FAIL. Reason: Call did not revert as expected<span class="token punctuation">]</span> testFundFailsWithoutEnoughETH<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">(</span>gas: <span class="token number">3047</span><span class="token punctuation">)</span>
+Test result: FAILED. <span class="token number">0</span> passed<span class="token punctuation">;</span> <span class="token number">1</span> failed<span class="token punctuation">;</span> <span class="token number">0</span> skipped<span class="token punctuation">;</span> finished <span class="token keyword">in</span> <span class="token number">1</span>.32ms
+ 
+Ran <span class="token number">1</span> <span class="token builtin class-name">test</span> suites: <span class="token number">0</span> tests passed, <span class="token number">1</span> failed, <span class="token number">0</span> skipped <span class="token punctuation">(</span><span class="token number">1</span> total tests<span class="token punctuation">)</span>
+
+Failing tests:
+Encountered <span class="token number">1</span> failing <span class="token builtin class-name">test</span> <span class="token keyword">in</span> test/FundeMeTest.t.sol:FundMeTest
+<span class="token punctuation">[</span>FAIL. Reason: Call did not revert as expected<span class="token punctuation">]</span> testFundFailsWithoutEnoughETH<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">(</span>gas: <span class="token number">3047</span><span class="token punctuation">)</span>
+
+Encountered a total of <span class="token number">1</span> failing tests, <span class="token number">0</span> tests succeeded<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>如上所示，上面的测试失败，因为<code>vm.expectRevert()</code>的下一行语句没有发生回滚。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">function testFundFailsWithoutEnoughETH() public&#123;</span><br><span class="line">    vm.expectRevert(); // the next line, should revert!</span><br><span class="line">    // 等价于： assert(This tx fails/reverts)</span><br><span class="line">    fundMe.fund(); // send 0 value，根据fundme合约中的fund函数，会发生回滚。</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">testFundFailsWithoutEnoughETH</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span><span class="token punctuation">&#123;</span>
+    vm<span class="token punctuation">.</span><span class="token function">expectRevert</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// the next line, should revert!</span>
+    <span class="token comment">// 等价于： assert(This tx fails/reverts)</span>
+    fundMe<span class="token punctuation">.</span><span class="token function">fund</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// send 0 value，根据fundme合约中的fund函数，会发生回滚。</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>结果如下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ forge <span class="built_in">test</span> --mt testFundFailsWithoutEnoughETH</span><br><span class="line">[⠢] Compiling...</span><br><span class="line">[⠊] Compiling 1 files with 0.8.21</span><br><span class="line">[⠒] Solc 0.8.21 finished <span class="keyword">in</span> 727.78ms</span><br><span class="line">Compiler run successful!</span><br><span class="line"></span><br><span class="line">Running 1 <span class="built_in">test</span> <span class="keyword">for</span> <span class="built_in">test</span>/FundeMeTest.t.sol:FundMeTest</span><br><span class="line">[PASS] testFundFailsWithoutEnoughETH() (gas: 13305)</span><br><span class="line">Test result: ok. 1 passed; 0 failed; 0 skipped; finished <span class="keyword">in</span> 1.92ms</span><br><span class="line"> </span><br><span class="line">Ran 1 <span class="built_in">test</span> suites: 1 tests passed, 0 failed, 0 skipped (1 total tests)</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ forge <span class="token builtin class-name">test</span> <span class="token parameter variable">--mt</span> testFundFailsWithoutEnoughETH
+<span class="token punctuation">[</span>⠢<span class="token punctuation">]</span> Compiling<span class="token punctuation">..</span>.
+<span class="token punctuation">[</span>⠊<span class="token punctuation">]</span> Compiling <span class="token number">1</span> files with <span class="token number">0.8</span>.21
+<span class="token punctuation">[</span>⠒<span class="token punctuation">]</span> Solc <span class="token number">0.8</span>.21 finished <span class="token keyword">in</span> <span class="token number">727</span>.78ms
+Compiler run successful<span class="token operator">!</span>
 
+Running <span class="token number">1</span> <span class="token builtin class-name">test</span> <span class="token keyword">for</span> test/FundeMeTest.t.sol:FundMeTest
+<span class="token punctuation">[</span>PASS<span class="token punctuation">]</span> testFundFailsWithoutEnoughETH<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">(</span>gas: <span class="token number">13305</span><span class="token punctuation">)</span>
+Test result: ok. <span class="token number">1</span> passed<span class="token punctuation">;</span> <span class="token number">0</span> failed<span class="token punctuation">;</span> <span class="token number">0</span> skipped<span class="token punctuation">;</span> finished <span class="token keyword">in</span> <span class="token number">1</span>.92ms
+ 
+Ran <span class="token number">1</span> <span class="token builtin class-name">test</span> suites: <span class="token number">1</span> tests passed, <span class="token number">0</span> failed, <span class="token number">0</span> skipped <span class="token punctuation">(</span><span class="token number">1</span> total tests<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>交易发生回滚，是我们预期的结果。所以测试通过。</p>
 <h1 id="Alchemy"><a href="#Alchemy" class="headerlink" title="Alchemy"></a>Alchemy</h1><h2 id="Alchemy-简述"><a href="#Alchemy-简述" class="headerlink" title="Alchemy 简述"></a>Alchemy 简述</h2><p>Alchemy 是一个提供非托管的 Web3 开发者工具和平台，为 Web3 和 Web2 应用程序提供服务。</p>
 <p>Alchemy 可以理解为是一个 Web3 的云服务器（类似于 华为云，阿里云），它提供了 API SDK 和库，可以让开发者有更好的体验。</p>
@@ -398,297 +498,164 @@
 <li><strong>超级节点：</strong><br>他是一个基于我的节点的负载均衡器，可以确保始终从区块链中获取到最新的可用数据。在超级节点上，Alchemy 构建了公告 API （Announced APIs：公告 API 是一组 API，可以方便地从区块链中提取数据）</li>
 </ul>
 <h2 id="开始构建"><a href="#开始构建" class="headerlink" title="开始构建"></a>开始构建</h2><p>登录 <a target="_blank" rel="noopener" href="https://www.alchemy.com/">Alchemy 官网</a>，选择登录，进入页面就可以看到自己账号的所有项目（前提是已经创建完了）。 点击创建应用程序即可创建新的项目</p>
-<p><img src="/../images/Foundry%E5%85%A5%E9%97%A8/image-20231014161215982.png" alt="image-20231014161215982"></p>
+<p><img src="../images/Foundry入门/image-20231014161215982.png" alt="image-20231014161215982"></p>
 <p>创建成功后，点击我们创建的项目即可进入<strong>应用程序特定的仪表盘</strong></p>
 <p>Alchemy 是一个在实际开发 Web3 应用时很实用的一个工具，其余内容可查看 Alchemy 官方文档</p>
-<h1 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line">// FundMe.sol</span><br><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity ^0.8.18;</span><br><span class="line"></span><br><span class="line">import &#123;AggregatorV3Interface&#125; from &quot;@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol&quot;;</span><br><span class="line">import &#123;PriceConverter&#125; from &quot;./PriceConverter.sol&quot;;</span><br><span class="line"></span><br><span class="line">error FundMe_NotOwner();</span><br><span class="line"></span><br><span class="line">contract FundMe &#123;</span><br><span class="line">    using PriceConverter for uint256;</span><br><span class="line"></span><br><span class="line">    mapping(address =&gt; uint256) public addressToAmountFunded;</span><br><span class="line">    address[] public funders;</span><br><span class="line"></span><br><span class="line">    // Could we make this constant?  /* hint: no! We should make it immutable! */</span><br><span class="line">    address public /* immutable */ i_owner;</span><br><span class="line">    uint256 public constant MINIMUM_USD = 5 * 10 ** 18;</span><br><span class="line">    </span><br><span class="line">    constructor() &#123;</span><br><span class="line">        i_owner = msg.sender;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function fund() public payable &#123;</span><br><span class="line">        require(msg.value.getConversionRate() &gt;= MINIMUM_USD, &quot;You need to spend more ETH!&quot;);</span><br><span class="line">        // require(PriceConverter.getConversionRate(msg.value) &gt;= MINIMUM_USD, &quot;You need to spend more ETH!&quot;);</span><br><span class="line">        addressToAmountFunded[msg.sender] += msg.value;</span><br><span class="line">        funders.push(msg.sender);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    function getVersion() public view returns (uint256)&#123;</span><br><span class="line">        AggregatorV3Interface priceFeed = AggregatorV3Interface(0x694AA1769357215DE4FAC081bf1f309aDC325306);</span><br><span class="line">        return priceFeed.version();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    modifier onlyOwner &#123;</span><br><span class="line">        // require(msg.sender == owner);</span><br><span class="line">        if (msg.sender != i_owner) revert FundMe_NotOwner();</span><br><span class="line">        _;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    function withdraw() public onlyOwner &#123;</span><br><span class="line">        for (uint256 funderIndex=0; funderIndex &lt; funders.length; funderIndex++)&#123;</span><br><span class="line">            address funder = funders[funderIndex];</span><br><span class="line">            addressToAmountFunded[funder] = 0;</span><br><span class="line">        &#125;</span><br><span class="line">        funders = new address[](0);</span><br><span class="line">        // // transfer</span><br><span class="line">        // payable(msg.sender).transfer(address(this).balance);</span><br><span class="line">        </span><br><span class="line">        // // send</span><br><span class="line">        // bool sendSuccess = payable(msg.sender).send(address(this).balance);</span><br><span class="line">        // require(sendSuccess, &quot;Send failed&quot;);</span><br><span class="line"></span><br><span class="line">        // call</span><br><span class="line">        (bool callSuccess, ) = payable(msg.sender).call&#123;value: address(this).balance&#125;(&quot;&quot;);</span><br><span class="line">        require(callSuccess, &quot;Call failed&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    // Explainer from: https://solidity-by-example.org/fallback/</span><br><span class="line">    // Ether is sent to contract</span><br><span class="line">    //      is msg.data empty?</span><br><span class="line">    //          /   \ </span><br><span class="line">    //         yes  no</span><br><span class="line">    //         /     \</span><br><span class="line">    //    receive()?  fallback() </span><br><span class="line">    //     /   \ </span><br><span class="line">    //   yes   no</span><br><span class="line">    //  /        \</span><br><span class="line">    //receive()  fallback()</span><br><span class="line"></span><br><span class="line">    fallback() external payable &#123;</span><br><span class="line">        fund();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    receive() external payable &#123;</span><br><span class="line">        fund();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Concepts we didn&#x27;t cover yet (will cover in later sections)</span><br><span class="line">// 1. Enum</span><br><span class="line">// 2. Events</span><br><span class="line">// 3. Try / Catch</span><br><span class="line">// 4. Function Selector</span><br><span class="line">// 5. abi.encode / decode</span><br><span class="line">// 6. Hash with keccak256</span><br><span class="line">// 7. Yul / Assembly</span><br></pre></td></tr></table></figure>
+<h1 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h1><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// FundMe.sol</span>
+<span class="token comment">// SPDX-License-Identifier: MIT</span>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.8.18</span><span class="token punctuation">;</span>
 
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">// PriceConverter.sol</span><br><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity ^0.8.18;</span><br><span class="line"></span><br><span class="line">import &#123;AggregatorV3Interface&#125; from &quot;@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol&quot;;</span><br><span class="line"></span><br><span class="line">// Why is this a library and not abstract?</span><br><span class="line">// Why not an interface?</span><br><span class="line">library PriceConverter &#123;</span><br><span class="line">    // We could make this public, but then we&#x27;d have to deploy it</span><br><span class="line">    function getPrice() internal view returns (uint256) &#123;</span><br><span class="line">        // Sepolia ETH / USD Address</span><br><span class="line">        // https://docs.chain.link/data-feeds/price-feeds/addresses</span><br><span class="line">        AggregatorV3Interface priceFeed = AggregatorV3Interface(</span><br><span class="line">            0x694AA1769357215DE4FAC081bf1f309aDC325306</span><br><span class="line">        );</span><br><span class="line">        (, int256 answer, , , ) = priceFeed.latestRoundData();</span><br><span class="line">        // ETH/USD rate in 18 digit</span><br><span class="line">        return uint256(answer * 10000000000);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 1000000000</span><br><span class="line">    function getConversionRate(</span><br><span class="line">        uint256 ethAmount</span><br><span class="line">    ) internal view returns (uint256) &#123;</span><br><span class="line">        uint256 ethPrice = getPrice();</span><br><span class="line">        uint256 ethAmountInUsd = (ethPrice * ethAmount) / 1000000000000000000;</span><br><span class="line">        // the actual ETH/USD conversion rate, after adjusting the extra 0s.</span><br><span class="line">        return ethAmountInUsd;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>AggregatorV3Interface<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>PriceConverter<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"./PriceConverter.sol"</span><span class="token punctuation">;</span>
 
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">// FundMeTest.t.sol</span><br><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line"></span><br><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">import &#123;Test, console&#125; from &quot;forge-std/Test.sol&quot;;</span><br><span class="line">import &#123;FundMe&#125; from &quot;../src/FundMe.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract FundMeTest is Test &#123;</span><br><span class="line">    FundMe fundMe;</span><br><span class="line"></span><br><span class="line">    function setUp() external &#123;</span><br><span class="line">        fundMe = new FundMe(0x694AA1769357215DE4FAC081bf1f309aDC325306);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function testMininumDollarIsFive() public &#123;</span><br><span class="line">        assertEq(fundMe.MINIMUM_USD(), 5e18);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function testOwnerIsMsgSender() public &#123;</span><br><span class="line">        console.log(fundMe.i_owner());</span><br><span class="line">        console.log(msg.sender);</span><br><span class="line">        assertEq(fundMe.i_owner(), address(this));</span><br><span class="line">    &#125;</span><br><span class="line">    // 我们可以进行以下四种测试：</span><br><span class="line">    // 1. 单元测试</span><br><span class="line">    //   - 测试代码中的一个特定部分</span><br><span class="line">    // 2. 集成测试</span><br><span class="line">    //   - 测试多个不同合约是否能够正确地协同工作</span><br><span class="line">    // 3. Fork测试（可以认为时单元/集成测试的一部分）</span><br><span class="line">    //   - 模拟在真实环境中对代码进行测试</span><br><span class="line">    // 4. Staging 测试</span><br><span class="line">    //   - 将代码部署到测试网或者主网之类的环境中，并在这个真实环境中运行所有测试以确保事情能够正常工作</span><br><span class="line">    function testPriceFeedVersionIsAccurate() public &#123; // </span><br><span class="line">        uint256 version = fundMe.getVersion();</span><br><span class="line">        assertEq(version, 4);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+error <span class="token function">FundMe_NotOwner</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
+<span class="token keyword">contract</span> <span class="token class-name">FundMe</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">using</span> <span class="token class-name">PriceConverter</span> <span class="token keyword">for</span> <span class="token builtin">uint256</span><span class="token punctuation">;</span>
 
-    </div>
+    <span class="token keyword">mapping</span><span class="token punctuation">(</span><span class="token builtin">address</span> <span class="token operator">=></span> <span class="token builtin">uint256</span><span class="token punctuation">)</span> <span class="token keyword">public</span> addressToAmountFunded<span class="token punctuation">;</span>
+    <span class="token builtin">address</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token keyword">public</span> funders<span class="token punctuation">;</span>
 
+    <span class="token comment">// Could we make this constant?  /* hint: no! We should make it immutable! */</span>
+    <span class="token builtin">address</span> <span class="token keyword">public</span> <span class="token comment">/* immutable */</span> i_owner<span class="token punctuation">;</span>
+    <span class="token builtin">uint256</span> <span class="token keyword">public</span> <span class="token keyword">constant</span> MINIMUM_USD <span class="token operator">=</span> <span class="token number">5</span> <span class="token operator">*</span> <span class="token number">10</span> <span class="token operator">**</span> <span class="token number">18</span><span class="token punctuation">;</span>
     
+    <span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        i_owner <span class="token operator">=</span> msg<span class="token punctuation">.</span>sender<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">fund</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token keyword">payable</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span>msg<span class="token punctuation">.</span>value<span class="token punctuation">.</span><span class="token function">getConversionRate</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">>=</span> MINIMUM_USD<span class="token punctuation">,</span> <span class="token string">"You need to spend more ETH!"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// require(PriceConverter.getConversionRate(msg.value) >= MINIMUM_USD, "You need to spend more ETH!");</span>
+        addressToAmountFunded<span class="token punctuation">[</span>msg<span class="token punctuation">.</span>sender<span class="token punctuation">]</span> <span class="token operator">+=</span> msg<span class="token punctuation">.</span>value<span class="token punctuation">;</span>
+        funders<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>msg<span class="token punctuation">.</span>sender<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
     
+    <span class="token keyword">function</span> <span class="token function">getVersion</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        AggregatorV3Interface priceFeed <span class="token operator">=</span> <span class="token function">AggregatorV3Interface</span><span class="token punctuation">(</span><span class="token number">0x694AA1769357215DE4FAC081bf1f309aDC325306</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> priceFeed<span class="token punctuation">.</span><span class="token function">version</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
     
-        
-
-<div>
-<ul class="post-copyright">
-  <li class="post-copyright-author">
-    <strong>本文作者： </strong>Q1ngying
-  </li>
-  <li class="post-copyright-link">
-    <strong>本文链接：</strong>
-    <a href="http://q1ngying.cn/2023/10/26/Foundry%E5%85%A5%E9%97%A8/" title="Foundry入门">http://q1ngying.cn/2023/10/26/Foundry入门/</a>
-  </li>
-  <li class="post-copyright-license">
-    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
-  </li>
-</ul>
-</div>
-
-
-      <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/learn/" rel="tag"># learn</a>
-              <a href="/tags/Solidity/" rel="tag"># Solidity</a>
-              <a href="/tags/Foundry/" rel="tag"># Foundry</a>
-          </div>
-
-        
-
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/2023/10/23/2-2%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/" rel="prev" title="2.2基本类型">
-      <i class="fa fa-chevron-left"></i> 2.2基本类型
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/2023/11/05/EIP20%EF%BC%9AERC-20%E4%BB%A3%E5%B8%81%E6%A0%87%E5%87%86/" rel="next" title="EIP20：ERC-20代币标准">
-      EIP20：ERC-20代币标准 <i class="fa fa-chevron-right"></i>
-    </a></div>
-    </div>
-      </footer>
+    <span class="token keyword">modifier</span> onlyOwner <span class="token punctuation">&#123;</span>
+        <span class="token comment">// require(msg.sender == owner);</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>msg<span class="token punctuation">.</span>sender <span class="token operator">!=</span> i_owner<span class="token punctuation">)</span> <span class="token keyword">revert</span> <span class="token function">FundMe_NotOwner</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">_</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
     
-  </article>
-  
-  
-  
-
-
-
-          </div>
-          
-
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
-
-        </div>
-          
-  
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
-  </div>
-
-  <aside class="sidebar">
-    <div class="sidebar-inner">
-
-      <ul class="sidebar-nav motion-element">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Foundry"><span class="nav-number">1.</span> <span class="nav-text">Foundry</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B"><span class="nav-number">1.1.</span> <span class="nav-text">开始</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-Foundry-%E8%BF%9B%E8%A1%8C%E7%BC%96%E8%AF%91"><span class="nav-number">1.2.</span> <span class="nav-text">使用 Foundry 进行编译</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8%E6%9C%AC%E5%9C%B0%E5%8C%BA%E5%9D%97%E9%93%BE%E4%B8%8A%E8%BF%9B%E8%A1%8C%E5%90%88%E7%BA%A6%E6%B5%8B%E8%AF%95"><span class="nav-number">1.3.</span> <span class="nav-text">在本地区块链上进行合约测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-Foundry-%E5%AF%B9%E5%90%88%E7%BA%A6%E8%BF%9B%E8%A1%8C%E9%83%A8%E7%BD%B2"><span class="nav-number">1.4.</span> <span class="nav-text">使用 Foundry 对合约进行部署</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%A8%E5%91%BD%E4%BB%A4%E8%A1%8C"><span class="nav-number">1.4.1.</span> <span class="nav-text">在命令行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-solidity-%E8%84%9A%E6%9C%AC%E9%83%A8%E7%BD%B2"><span class="nav-number">1.4.2.</span> <span class="nav-text">使用 solidity 脚本部署</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Solidity-%E8%84%9A%E6%9C%AC%E4%B9%A6%E5%86%99"><span class="nav-number">1.4.2.1.</span> <span class="nav-text">Solidity 脚本书写</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Solidity-%E8%84%9A%E6%9C%AC%E8%BF%90%E8%A1%8C"><span class="nav-number">1.4.2.2.</span> <span class="nav-text">Solidity 脚本运行</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-thiedweb-%E9%83%A8%E7%BD%B2%E5%90%88%E7%BA%A6"><span class="nav-number">1.5.</span> <span class="nav-text">使用 thiedweb 部署合约</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cast%E5%91%BD%E4%BB%A4"><span class="nav-number">1.6.</span> <span class="nav-text">cast命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#cast-to-base%E5%B0%86%E5%8D%81%E5%85%AD%E8%BF%9B%E5%88%B6%E8%BD%AC%E6%8D%A2%E4%B8%BA%E5%8D%81%E8%BF%9B%E5%88%B6"><span class="nav-number">1.6.1.</span> <span class="nav-text">cast --to-base将十六进制转换为十进制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cast-send-%E5%8F%91%E9%80%81%E7%AD%BE%E5%90%8D%E5%92%8C%E4%BA%A4%E6%98%93%EF%BC%88%E8%B0%83%E7%94%A8%E9%9D%9E%E5%8F%AA%E8%AF%BB%E5%87%BD%E6%95%B0%EF%BC%89"><span class="nav-number">1.6.2.</span> <span class="nav-text">cast send 发送签名和交易（调用非只读函数）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link"><span class="nav-number">1.6.3.</span> <span class="nav-text"></span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cast-call-%E4%BB%8E%E5%8C%BA%E5%9D%97%E4%B8%AD%E8%AF%BB%E5%8F%96%E6%95%B0%E6%8D%AE%EF%BC%88%E8%B0%83%E7%94%A8%E5%8F%AA%E8%AF%BB%E5%87%BD%E6%95%B0%EF%BC%89"><span class="nav-number">1.6.4.</span> <span class="nav-text">cast call 从区块中读取数据（调用只读函数）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E5%BF%AB%E4%B8%8E%E5%90%88%E7%BA%A6%E7%9A%84%E4%BA%A4%E4%BA%92%E6%96%B9%E6%B3%95%EF%BC%88%E4%BB%85%E5%9C%A8%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E6%97%B6%E4%BD%BF%E7%94%A8%EF%BC%8C%E5%AE%9E%E9%99%85%E7%94%9F%E4%BA%A7%E4%B8%AD%E4%B8%8D%E5%8F%AF%E5%8F%96%EF%BC%89"><span class="nav-number">1.7.</span> <span class="nav-text">加快与合约的交互方法（仅在开发调试时使用，实际生产中不可取）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8%E6%B5%8B%E8%AF%95%E7%BD%91%E4%B8%8A%E6%A8%A1%E6%8B%9F%E5%9C%A8%E4%B8%BB%E7%BD%91%E4%B8%AD%E7%9A%84%E6%93%8D%E4%BD%9C"><span class="nav-number">1.8.</span> <span class="nav-text">在测试网上模拟在主网中的操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2%E5%90%88%E7%BA%A6%E5%88%B0%E6%B5%8B%E8%AF%95%E7%BD%91"><span class="nav-number">1.8.1.</span> <span class="nav-text">部署合约到测试网</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%88%E7%BA%A6%E9%AA%8C%E8%AF%81"><span class="nav-number">1.8.2.</span> <span class="nav-text">合约验证</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%89%8B%E5%8A%A8%E9%AA%8C%E8%AF%81"><span class="nav-number">1.8.2.1.</span> <span class="nav-text">手动验证</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B8%85%E7%90%86%E9%A1%B9%E7%9B%AE"><span class="nav-number">1.9.</span> <span class="nav-text">清理项目</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%BC%E5%BC%8F%E5%8C%96-solidity-%E4%BB%A3%E7%A0%81"><span class="nav-number">1.9.1.</span> <span class="nav-text">格式化 solidity 代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-README-md"><span class="nav-number">1.9.2.</span> <span class="nav-text">创建 README.md</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Foundry-%E8%B0%83%E8%AF%95"><span class="nav-number">2.</span> <span class="nav-text">Foundry 调试</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E5%9C%A8-Remix-%E5%AF%BC%E5%85%A5%E5%90%88%E7%BA%A6%E6%8A%A5%E9%94%99%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">2.1.</span> <span class="nav-text">解决在 Remix 导入合约报错的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#forge-test-%E5%8F%82%E6%95%B0"><span class="nav-number">2.2.</span> <span class="nav-text">forge test 参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%B5%8B%E8%AF%95"><span class="nav-number">2.3.</span> <span class="nav-text">基本测试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E7%9A%84%E6%B5%8B%E8%AF%95"><span class="nav-number">2.3.1.</span> <span class="nav-text">简单的测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#console-log-%E6%B5%8B%E8%AF%95%E3%80%81%E8%B0%83%E8%AF%95"><span class="nav-number">2.3.2.</span> <span class="nav-text">console.log 测试、调试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9-FundMe-%E5%90%88%E7%BA%A6%E8%BF%9B%E8%A1%8C%E7%AE%80%E5%8D%95%E7%9A%84%E8%B0%83%E8%AF%95"><span class="nav-number">2.4.</span> <span class="nav-text">对 FundMe 合约进行简单的调试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A3%80%E9%AA%8C%E5%90%88%E7%BA%A6%E6%89%80%E6%9C%89%E8%80%85%E6%98%AF%E5%90%A6%E4%B8%BA-msg-sender"><span class="nav-number">2.4.1.</span> <span class="nav-text">检验合约所有者是否为 msg.sender</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A3%80%E9%AA%8C%E7%89%88%E6%9C%AC-%E4%BD%BF%E7%94%A8%E2%80%93fork-url-%E6%A8%A1%E6%8B%9F%E5%AE%9E%E9%99%85%E9%93%BE%E4%B8%8A%E7%9A%84%E5%86%85%E5%AE%B9"><span class="nav-number">2.4.2.</span> <span class="nav-text">检验版本(使用–fork-url 模拟实际链上的内容)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E4%B8%80%E4%B8%AA%E6%98%AF%E5%90%A6%E5%8F%91%E7%94%9F%E5%9B%9E%E6%BB%9A"><span class="nav-number">2.5.</span> <span class="nav-text">测试一个是否发生回滚</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Alchemy"><span class="nav-number">3.</span> <span class="nav-text">Alchemy</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Alchemy-%E7%AE%80%E8%BF%B0"><span class="nav-number">3.1.</span> <span class="nav-text">Alchemy 简述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E6%9E%84%E5%BB%BA"><span class="nav-number">3.2.</span> <span class="nav-text">开始构建</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%BA%90%E7%A0%81"><span class="nav-number">4.</span> <span class="nav-text">源码</span></a></li></ol></div>
-      </div>
-      <!--/noindex-->
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="Q1ngying"
-      src="/images/avatar.jpg">
-  <p class="site-author-name" itemprop="name">Q1ngying</p>
-  <div class="site-description" itemprop="description"></div>
-</div>
-<div class="site-state-wrap motion-element">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives/">
+    <span class="token keyword">function</span> <span class="token function">withdraw</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> onlyOwner <span class="token punctuation">&#123;</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span> funderIndex<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span> funderIndex <span class="token operator">&lt;</span> funders<span class="token punctuation">.</span>length<span class="token punctuation">;</span> funderIndex<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+            <span class="token builtin">address</span> funder <span class="token operator">=</span> funders<span class="token punctuation">[</span>funderIndex<span class="token punctuation">]</span><span class="token punctuation">;</span>
+            addressToAmountFunded<span class="token punctuation">[</span>funder<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        funders <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">address</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// // transfer</span>
+        <span class="token comment">// payable(msg.sender).transfer(address(this).balance);</span>
         
-          <span class="site-state-item-count">76</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-          
-        <span class="site-state-item-count">29</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-          
-        <span class="site-state-item-count">29</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
-</div>
-  <div class="links-of-author motion-element">
-      <span class="links-of-author-item">
-        <a href="https://github.com/q1ngying" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;q1ngying" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="mailto:q1ngying@163.com" title="E-Mail → mailto:q1ngying@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="https://twitter.com/Q1ngYing" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;Q1ngYing" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i>Twitter</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="https://instagram.com/" title="Instagram → https:&#x2F;&#x2F;instagram.com&#x2F;" rel="noopener" target="_blank"><i class="fab fa-instagram fa-fw"></i>Instagram</a>
-      </span>
-  </div>
+        <span class="token comment">// // send</span>
+        <span class="token comment">// bool sendSuccess = payable(msg.sender).send(address(this).balance);</span>
+        <span class="token comment">// require(sendSuccess, "Send failed");</span>
 
+        <span class="token comment">// call</span>
+        <span class="token punctuation">(</span><span class="token builtin">bool</span> callSuccess<span class="token punctuation">,</span> <span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token keyword">payable</span><span class="token punctuation">(</span>msg<span class="token punctuation">.</span>sender<span class="token punctuation">)</span><span class="token punctuation">.</span>call<span class="token punctuation">&#123;</span>value<span class="token punctuation">:</span> <span class="token builtin">address</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">.</span>balance<span class="token punctuation">&#125;</span><span class="token punctuation">(</span><span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span>callSuccess<span class="token punctuation">,</span> <span class="token string">"Call failed"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token comment">// Explainer from: https://solidity-by-example.org/fallback/</span>
+    <span class="token comment">// Ether is sent to contract</span>
+    <span class="token comment">//      is msg.data empty?</span>
+    <span class="token comment">//          /   \ </span>
+    <span class="token comment">//         yes  no</span>
+    <span class="token comment">//         /     \</span>
+    <span class="token comment">//    receive()?  fallback() </span>
+    <span class="token comment">//     /   \ </span>
+    <span class="token comment">//   yes   no</span>
+    <span class="token comment">//  /        \</span>
+    <span class="token comment">//receive()  fallback()</span>
 
+    <span class="token function">fallback</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">payable</span> <span class="token punctuation">&#123;</span>
+        <span class="token function">fund</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-      </div>
+    <span class="token function">receive</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">payable</span> <span class="token punctuation">&#123;</span>
+        <span class="token function">fund</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    </div>
-  </aside>
-  <div id="sidebar-dimmer"></div>
+<span class="token punctuation">&#125;</span>
 
+<span class="token comment">// Concepts we didn't cover yet (will cover in later sections)</span>
+<span class="token comment">// 1. Enum</span>
+<span class="token comment">// 2. Events</span>
+<span class="token comment">// 3. Try / Catch</span>
+<span class="token comment">// 4. Function Selector</span>
+<span class="token comment">// 5. abi.encode / decode</span>
+<span class="token comment">// 6. Hash with keccak256</span>
+<span class="token comment">// 7. Yul / Assembly</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// PriceConverter.sol</span>
+<span class="token comment">// SPDX-License-Identifier: MIT</span>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.8.18</span><span class="token punctuation">;</span>
 
-      </div>
-    </main>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>AggregatorV3Interface<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol"</span><span class="token punctuation">;</span>
 
-    <footer class="footer">
-      <div class="footer-inner">
-        
+<span class="token comment">// Why is this a library and not abstract?</span>
+<span class="token comment">// Why not an interface?</span>
+<span class="token keyword">library</span> <span class="token class-name">PriceConverter</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// We could make this public, but then we'd have to deploy it</span>
+    <span class="token keyword">function</span> <span class="token function">getPrice</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">internal</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token comment">// Sepolia ETH / USD Address</span>
+        <span class="token comment">// https://docs.chain.link/data-feeds/price-feeds/addresses</span>
+        AggregatorV3Interface priceFeed <span class="token operator">=</span> <span class="token function">AggregatorV3Interface</span><span class="token punctuation">(</span>
+            <span class="token number">0x694AA1769357215DE4FAC081bf1f309aDC325306</span>
+        <span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">(</span><span class="token punctuation">,</span> <span class="token builtin">int256</span> answer<span class="token punctuation">,</span> <span class="token punctuation">,</span> <span class="token punctuation">,</span> <span class="token punctuation">)</span> <span class="token operator">=</span> priceFeed<span class="token punctuation">.</span><span class="token function">latestRoundData</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// ETH/USD rate in 18 digit</span>
+        <span class="token keyword">return</span> <span class="token builtin">uint256</span><span class="token punctuation">(</span>answer <span class="token operator">*</span> <span class="token number">10000000000</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-        
+    <span class="token comment">// 1000000000</span>
+    <span class="token keyword">function</span> <span class="token function">getConversionRate</span><span class="token punctuation">(</span>
+        <span class="token builtin">uint256</span> ethAmount
+    <span class="token punctuation">)</span> <span class="token keyword">internal</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token builtin">uint256</span> ethPrice <span class="token operator">=</span> <span class="token function">getPrice</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token builtin">uint256</span> ethAmountInUsd <span class="token operator">=</span> <span class="token punctuation">(</span>ethPrice <span class="token operator">*</span> ethAmount<span class="token punctuation">)</span> <span class="token operator">/</span> <span class="token number">1000000000000000000</span><span class="token punctuation">;</span>
+        <span class="token comment">// the actual ETH/USD conversion rate, after adjusting the extra 0s.</span>
+        <span class="token keyword">return</span> ethAmountInUsd<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// FundMeTest.t.sol</span>
+<span class="token comment">// SPDX-License-Identifier: MIT</span>
 
-<div class="copyright">
-  
-  &copy; 2023-09 – 
-  <span itemprop="copyrightYear">2024</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">Q1ngying</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-chart-area"></i>
-    </span>
-      <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">195k</span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item-icon">
-      <i class="fa fa-coffee"></i>
-    </span>
-      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">10:51</span>
-</div>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.8.0</span><span class="token punctuation">;</span>
 
-<div class="powered-by">
-    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-    <i class="fa fa-user-md"></i>
-    <span id="busuanzi_container_site_uv">
-        本站访客数:<span id="busuanzi_value_site_uv"></span>人
-    </span>
-    <span class="post-meta-divider">|</span>
-    <span id="busuanzi_container_site_pv">
-        本站访问量<span id="busuanzi_value_site_pv"></span>人次
-    </span>
-</div>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>Test<span class="token punctuation">,</span> console<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"forge-std/Test.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>FundMe<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"../src/FundMe.sol"</span><span class="token punctuation">;</span>
 
-        
+<span class="token keyword">contract</span> <span class="token class-name">FundMeTest</span> <span class="token keyword">is</span> Test <span class="token punctuation">&#123;</span>
+    FundMe fundMe<span class="token punctuation">;</span>
 
+    <span class="token keyword">function</span> <span class="token function">setUp</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token punctuation">&#123;</span>
+        fundMe <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FundMe</span><span class="token punctuation">(</span><span class="token number">0x694AA1769357215DE4FAC081bf1f309aDC325306</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
+    <span class="token keyword">function</span> <span class="token function">testMininumDollarIsFive</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        <span class="token function">assertEq</span><span class="token punctuation">(</span>fundMe<span class="token punctuation">.</span><span class="token function">MINIMUM_USD</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">5e18</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-
-
-
-
-
-      </div>
-    </footer>
-  </div>
-
-  
-  
-  <script color='255,201,74' opacity='1' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
-
-<script src="/js/utils.js"></script>
-
-<script src="/js/motion.js"></script>
-
-
-<script src="/js/schemes/pisces.js"></script>
-
-
-<script src="/js/next-boot.js"></script>
-
-
-
-
-  
-  <script>
-    (function(){
-      var canonicalURL, curProtocol;
-      //Get the <link> tag
-      var x=document.getElementsByTagName("link");
-		//Find the last canonical URL
-		if(x.length > 0){
-			for (i=0;i<x.length;i++){
-				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
-					canonicalURL=x[i].href;
-				}
-			}
-		}
-    //Get protocol
-	    if (!canonicalURL){
-	    	curProtocol = window.location.protocol.split(':')[0];
-	    }
-	    else{
-	    	curProtocol = canonicalURL.split(':')[0];
-	    }
-      //Get current URL if the canonical URL does not exist
-	    if (!canonicalURL) canonicalURL = window.location.href;
-	    //Assign script content. Replace current URL with the canonical URL
-      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
-  </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-
-  
-
-</body>
-</html>
+    <span class="token keyword">function</span> <span class="token function">testOwnerIsMsgSender</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>fundMe<span class="token punctuation">.</span><span class="token function">i_owner</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>msg<span class="token punctuation">.</span>sender<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">assertEq</span><span class="token punctuation">(</span>fundMe<span class="token punctuation">.</span><span class="token function">i_owner</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token builtin">address</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token comment">// 我们可以进行以下四种测试：</span>
+    <span class="token comment">// 1. 单元测试</span>
+    <span class="token comment">//   - 测试代码中的一个特定部分</span>
+    <span class="token comment">// 2. 集成测试</span>
+    <span class="token comment">//   - 测试多个不同合约是否能够正确地协同工作</span>
+    <span class="token comment">// 3. Fork测试（可以认为时单元/集成测试的一部分）</span>
+    <span class="token comment">//   - 模拟在真实环境中对代码进行测试</span>
+    <span class="token comment">// 4. Staging 测试</span>
+    <span class="token comment">//   - 将代码部署到测试网或者主网之类的环境中，并在这个真实环境中运行所有测试以确保事情能够正常工作</span>
+    <span class="token keyword">function</span> <span class="token function">testPriceFeedVersionIsAccurate</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span> <span class="token comment">// </span>
+        <span class="token builtin">uint256</span> version <span class="token operator">=</span> fundMe<span class="token punctuation">.</span><span class="token function">getVersion</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">assertEq</span><span class="token punctuation">(</span>version<span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://q1ngying.cn">Q1ngying</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://q1ngying.cn/2023/10/26/Foundry%E5%85%A5%E9%97%A8/">https://q1ngying.cn/2023/10/26/Foundry%E5%85%A5%E9%97%A8/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://q1ngying.cn" target="_blank">Q1ngying</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/learn/">learn</a><a class="post-meta__tags" href="/tags/Solidity/">Solidity</a><a class="post-meta__tags" href="/tags/Foundry/">Foundry</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="prev-post pull-left" href="/2023/11/05/EIP20%EF%BC%9AERC-20%E4%BB%A3%E5%B8%81%E6%A0%87%E5%87%86/" title="EIP20：ERC-20代币标准"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">EIP20：ERC-20代币标准</div></div></a><a class="next-post pull-right" href="/2023/10/23/2-2%E5%9F%BA%E6%9C%AC%E7%B1%BB%E5%9E%8B/" title="2.2基本类型"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">2.2基本类型</div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a href="/2023/12/20/Foundry-Test%E8%B0%83%E8%AF%95/" title="Foundry Test调试"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-12-20</div><div class="title">Foundry Test调试</div></div></a><a href="/2023/12/20/Foundry%E4%BD%9C%E5%BC%8A%E7%A0%81/" title="Foundry作弊码"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-12-20</div><div class="title">Foundry作弊码</div></div></a><a href="/2023/09/26/EVM%E5%AD%A6%E4%B9%A0/" title="EVM学习"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-09-26</div><div class="title">EVM学习</div></div></a><a href="/2023/12/20/%E4%BB%A3%E7%90%86%E5%90%88%E7%BA%A6/" title="代理合约"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-12-20</div><div class="title">代理合约</div></div></a><a href="/2024/01/09/Foundry%E6%A8%A1%E7%B3%8A%E6%B5%8B%E8%AF%95%E5%85%A5%E9%97%A8/" title="Foundry模糊测试入门"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-01-09</div><div class="title">Foundry模糊测试入门</div></div></a><a href="/2024/04/25/FuzzingTest%E8%BF%9B%E9%98%B6/" title="FuzzingTest进阶"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-04-25</div><div class="title">FuzzingTest进阶</div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info is-center"><div class="avatar-img"><img src="/img/butterfly-icon.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Q1ngying</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">29</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">29</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/q1ngying"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/q1ngying" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="https://weibo.com" target="_blank" title="微博"><i class="fab fa-weibo" style="color: #24292e;"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Foundry"><span class="toc-number">1.</span> <span class="toc-text">Foundry</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%80%E5%A7%8B"><span class="toc-number">1.1.</span> <span class="toc-text">开始</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-Foundry-%E8%BF%9B%E8%A1%8C%E7%BC%96%E8%AF%91"><span class="toc-number">1.2.</span> <span class="toc-text">使用 Foundry 进行编译</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9C%A8%E6%9C%AC%E5%9C%B0%E5%8C%BA%E5%9D%97%E9%93%BE%E4%B8%8A%E8%BF%9B%E8%A1%8C%E5%90%88%E7%BA%A6%E6%B5%8B%E8%AF%95"><span class="toc-number">1.3.</span> <span class="toc-text">在本地区块链上进行合约测试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-Foundry-%E5%AF%B9%E5%90%88%E7%BA%A6%E8%BF%9B%E8%A1%8C%E9%83%A8%E7%BD%B2"><span class="toc-number">1.4.</span> <span class="toc-text">使用 Foundry 对合约进行部署</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%A8%E5%91%BD%E4%BB%A4%E8%A1%8C"><span class="toc-number">1.4.1.</span> <span class="toc-text">在命令行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-solidity-%E8%84%9A%E6%9C%AC%E9%83%A8%E7%BD%B2"><span class="toc-number">1.4.2.</span> <span class="toc-text">使用 solidity 脚本部署</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Solidity-%E8%84%9A%E6%9C%AC%E4%B9%A6%E5%86%99"><span class="toc-number">1.4.2.1.</span> <span class="toc-text">Solidity 脚本书写</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Solidity-%E8%84%9A%E6%9C%AC%E8%BF%90%E8%A1%8C"><span class="toc-number">1.4.2.2.</span> <span class="toc-text">Solidity 脚本运行</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-thiedweb-%E9%83%A8%E7%BD%B2%E5%90%88%E7%BA%A6"><span class="toc-number">1.5.</span> <span class="toc-text">使用 thiedweb 部署合约</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cast%E5%91%BD%E4%BB%A4"><span class="toc-number">1.6.</span> <span class="toc-text">cast命令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#cast-to-base%E5%B0%86%E5%8D%81%E5%85%AD%E8%BF%9B%E5%88%B6%E8%BD%AC%E6%8D%A2%E4%B8%BA%E5%8D%81%E8%BF%9B%E5%88%B6"><span class="toc-number">1.6.1.</span> <span class="toc-text">cast --to-base将十六进制转换为十进制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#cast-send-%E5%8F%91%E9%80%81%E7%AD%BE%E5%90%8D%E5%92%8C%E4%BA%A4%E6%98%93%EF%BC%88%E8%B0%83%E7%94%A8%E9%9D%9E%E5%8F%AA%E8%AF%BB%E5%87%BD%E6%95%B0%EF%BC%89"><span class="toc-number">1.6.2.</span> <span class="toc-text">cast send 发送签名和交易（调用非只读函数）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">1.6.3.</span> <span class="toc-text"> </span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#cast-call-%E4%BB%8E%E5%8C%BA%E5%9D%97%E4%B8%AD%E8%AF%BB%E5%8F%96%E6%95%B0%E6%8D%AE%EF%BC%88%E8%B0%83%E7%94%A8%E5%8F%AA%E8%AF%BB%E5%87%BD%E6%95%B0%EF%BC%89"><span class="toc-number">1.6.4.</span> <span class="toc-text">cast call 从区块中读取数据（调用只读函数）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%A0%E5%BF%AB%E4%B8%8E%E5%90%88%E7%BA%A6%E7%9A%84%E4%BA%A4%E4%BA%92%E6%96%B9%E6%B3%95%EF%BC%88%E4%BB%85%E5%9C%A8%E5%BC%80%E5%8F%91%E8%B0%83%E8%AF%95%E6%97%B6%E4%BD%BF%E7%94%A8%EF%BC%8C%E5%AE%9E%E9%99%85%E7%94%9F%E4%BA%A7%E4%B8%AD%E4%B8%8D%E5%8F%AF%E5%8F%96%EF%BC%89"><span class="toc-number">1.7.</span> <span class="toc-text">加快与合约的交互方法（仅在开发调试时使用，实际生产中不可取）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9C%A8%E6%B5%8B%E8%AF%95%E7%BD%91%E4%B8%8A%E6%A8%A1%E6%8B%9F%E5%9C%A8%E4%B8%BB%E7%BD%91%E4%B8%AD%E7%9A%84%E6%93%8D%E4%BD%9C"><span class="toc-number">1.8.</span> <span class="toc-text">在测试网上模拟在主网中的操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%83%A8%E7%BD%B2%E5%90%88%E7%BA%A6%E5%88%B0%E6%B5%8B%E8%AF%95%E7%BD%91"><span class="toc-number">1.8.1.</span> <span class="toc-text">部署合约到测试网</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%88%E7%BA%A6%E9%AA%8C%E8%AF%81"><span class="toc-number">1.8.2.</span> <span class="toc-text">合约验证</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%89%8B%E5%8A%A8%E9%AA%8C%E8%AF%81"><span class="toc-number">1.8.2.1.</span> <span class="toc-text">手动验证</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B8%85%E7%90%86%E9%A1%B9%E7%9B%AE"><span class="toc-number">1.9.</span> <span class="toc-text">清理项目</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%BC%E5%BC%8F%E5%8C%96-solidity-%E4%BB%A3%E7%A0%81"><span class="toc-number">1.9.1.</span> <span class="toc-text">格式化 solidity 代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA-README-md"><span class="toc-number">1.9.2.</span> <span class="toc-text">创建 README.md</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Foundry-%E8%B0%83%E8%AF%95"><span class="toc-number">2.</span> <span class="toc-text">Foundry 调试</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E5%9C%A8-Remix-%E5%AF%BC%E5%85%A5%E5%90%88%E7%BA%A6%E6%8A%A5%E9%94%99%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">2.1.</span> <span class="toc-text">解决在 Remix 导入合约报错的问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#forge-test-%E5%8F%82%E6%95%B0"><span class="toc-number">2.2.</span> <span class="toc-text">forge test 参数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%B5%8B%E8%AF%95"><span class="toc-number">2.3.</span> <span class="toc-text">基本测试</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E5%8D%95%E7%9A%84%E6%B5%8B%E8%AF%95"><span class="toc-number">2.3.1.</span> <span class="toc-text">简单的测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#console-log-%E6%B5%8B%E8%AF%95%E3%80%81%E8%B0%83%E8%AF%95"><span class="toc-number">2.3.2.</span> <span class="toc-text">console.log 测试、调试</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%B9-FundMe-%E5%90%88%E7%BA%A6%E8%BF%9B%E8%A1%8C%E7%AE%80%E5%8D%95%E7%9A%84%E8%B0%83%E8%AF%95"><span class="toc-number">2.4.</span> <span class="toc-text">对 FundMe 合约进行简单的调试</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A3%80%E9%AA%8C%E5%90%88%E7%BA%A6%E6%89%80%E6%9C%89%E8%80%85%E6%98%AF%E5%90%A6%E4%B8%BA-msg-sender"><span class="toc-number">2.4.1.</span> <span class="toc-text">检验合约所有者是否为 msg.sender</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A3%80%E9%AA%8C%E7%89%88%E6%9C%AC-%E4%BD%BF%E7%94%A8%E2%80%94fork-url-%E6%A8%A1%E6%8B%9F%E5%AE%9E%E9%99%85%E9%93%BE%E4%B8%8A%E7%9A%84%E5%86%85%E5%AE%B9"><span class="toc-number">2.4.2.</span> <span class="toc-text">检验版本(使用—fork-url 模拟实际链上的内容)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E4%B8%80%E4%B8%AA%E6%98%AF%E5%90%A6%E5%8F%91%E7%94%9F%E5%9B%9E%E6%BB%9A"><span class="toc-number">2.5.</span> <span class="toc-text">测试一个是否发生回滚</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Alchemy"><span class="toc-number">3.</span> <span class="toc-text">Alchemy</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Alchemy-%E7%AE%80%E8%BF%B0"><span class="toc-number">3.1.</span> <span class="toc-text">Alchemy 简述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%80%E5%A7%8B%E6%9E%84%E5%BB%BA"><span class="toc-number">3.2.</span> <span class="toc-text">开始构建</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%BA%90%E7%A0%81"><span class="toc-number">4.</span> <span class="toc-text">源码</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/17/MakerDAO-Abacus/" title="MakerDAO-Abacus">MakerDAO-Abacus</a><time datetime="2024-07-17T07:06:42.000Z" title="发表于 2024-07-17 15:06:42">2024-07-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/17/MakerDAO-Clip/" title="MakerDAO-Clip">MakerDAO-Clip</a><time datetime="2024-07-17T07:06:32.000Z" title="发表于 2024-07-17 15:06:32">2024-07-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/15/MakerDAO-Join/" title="MakerDAO-Join">MakerDAO-Join</a><time datetime="2024-07-15T07:34:45.000Z" title="发表于 2024-07-15 15:34:45">2024-07-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/15/MakerDAO-Vat/" title="MakerDAO-Vat">MakerDAO-Vat</a><time datetime="2024-07-15T07:34:34.000Z" title="发表于 2024-07-15 15:34:34">2024-07-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/06/11/Storage%20%E8%BF%9B%E9%98%B6%E2%80%94%E2%80%94%E9%80%9A%E8%BF%87%E5%BC%95%E7%94%A8%20Storage%20%E6%8F%90%E9%AB%98%20gas%20%E5%88%A9%E7%94%A8%E7%8E%87/" title="Storage 进阶——通过引用 Storage 提高 gas 利用率">Storage 进阶——通过引用 Storage 提高 gas 利用率</a><time datetime="2024-06-11T09:13:23.000Z" title="发表于 2024-06-11 17:13:23">2024-06-11</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/back1.webp);"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By Q1ngying</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div></div></body></html>

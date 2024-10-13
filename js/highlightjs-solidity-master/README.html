@@ -1,0 +1,23 @@
+<p><code>highlight.js</code> syntax definition for Solidity.</p>
+<p>For more about highlight.js, see <a href="https://highlightjs.org/">https://highlightjs.org/</a></p>
+<p>For more about Solidity, see <a href="http://docs.soliditylang.org/">http://docs.soliditylang.org/</a></p>
+<h3 id="Usage"><a href="#Usage" class="headerlink" title="Usage"></a>Usage</h3><p>If you’re not using a build system and just want to embed this in your webpage:</p>
+<pre><code class="lang-html">&lt;script type=&quot;text/javascript&quot; src=&quot;/path/to/highlight.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/path/to/solidity.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/path/to/yul.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+    hljs.highlightAll();
+&lt;/script&gt;
+</code></pre>
+<p>If you’re using webpack / rollup / browserify / node:</p>
+<pre><code class="lang-javascript">var hljs = require(&#39;highlightjs&#39;);
+var hljsDefineSolidity = require(&#39;highlightjs-solidity&#39;);
+
+hljsDefineSolidity(hljs);
+hljs.initHighlightingOnLoad();
+</code></pre>
+<p>Doing this will define both <code>solidity</code> and <code>yul</code> languages.</p>
+<p>If you want to use this in your webpage, this package uses highlight.js’s CDN build system to build its Solidity and Yul grammars.</p>
+<h3 id="Compatibility"><a href="#Compatibility" class="headerlink" title="Compatibility"></a>Compatibility</h3><p>This package is not currently compatible with highlight.js version 11.</p>
+<h3 id="Advanced"><a href="#Advanced" class="headerlink" title="Advanced"></a>Advanced</h3><p>This is a pretty simple package, the only thing you might want to do differently is name the languages something other than <code>solidity</code> or <code>yul</code>. If you want to do this, simply <code>import { solidity, yul } from &#39;highlightjs-solidity&#39;;</code> and do <code>hljs.registerLanguage(&#39;othername1&#39;, solidity);</code> and <code>hljs.registerLanguage(&#39;othername2&#39;, yul);</code>.</p>
+<h3 id="About-the-author"><a href="#About-the-author" class="headerlink" title="About the author"></a>About the author</h3><p>Originally authored by <a href="http://pospi.spadgos.com">pospi</a>, currently maintained by <img src="https://www.trufflesuite.com/img/truffle-logomark.svg" width="15" /><a href="https://www.trufflesuite.com/">Truffle</a>.</p>
