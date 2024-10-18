@@ -1,0 +1,233 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>UniswapV2入门 | Q1ngying</title><meta name="author" content="Q1ngying"><meta name="copyright" content="Q1ngying"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#FFFFFF"><meta name="description" content="本文将主要围绕 UniswapV2 如何工作，其生态系统有、参与者，以及 V2 版本合约的一些简述。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UniswapV2入门">
+<meta property="og:url" content="https://q1ngying.cn/UniswapV2Intro/index.html">
+<meta property="og:site_name" content="Q1ngying">
+<meta property="og:description" content="本文将主要围绕 UniswapV2 如何工作，其生态系统有、参与者，以及 V2 版本合约的一些简述。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://q1ngying.cn/img/butterfly-icon.jpg">
+<meta property="article:published_time" content="2024-04-09T11:44:30.000Z">
+<meta property="article:modified_time" content="2024-10-18T07:35:56.978Z">
+<meta property="article:author" content="Q1ngying">
+<meta property="article:tag" content="Solidity">
+<meta property="article:tag" content="DeFi">
+<meta property="article:tag" content="Uniswap">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://q1ngying.cn/img/butterfly-icon.jpg"><link rel="shortcut icon" href="/img/icons8-clover-ios-16-glyph-32.png"><link rel="canonical" href="https://q1ngying.cn/UniswapV2Intro/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><meta name="google-site-verification" content="IzCM4B791_p7IAU4WhRfiLlPBnODnamJ7ixKxzoeNfk"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#1b1b1b')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#FFFFFF')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'UniswapV2入门',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-10-18 15:35:56'
+}</script><script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script><script>LA.init({id:"3Jzfa21KlLms3Lkh",ck:"3Jzfa21KlLms3Lkh"})</script><link rel="stylesheet" href="/css/style.css?1"><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/butterfly-icon.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">28</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">27</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/back1.webp);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Q1ngying</span></a><a class="nav-page-title" href="/"><span class="site-name">UniswapV2入门</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">UniswapV2入门</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-04-09T11:44:30.000Z" title="发表于 2024-04-09 19:44:30">2024-04-09</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-10-18T07:35:56.978Z" title="更新于 2024-10-18 15:35:56">2024-10-18</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Solidity/">Solidity</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/DeFi/">DeFi</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Uniswap/">Uniswap</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">6.4k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>21 mins.分钟</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="Uniswap-如何工作"><a href="#Uniswap-如何工作" class="headerlink" title="Uniswap 如何工作"></a>Uniswap 如何工作</h2><p><img src="https://raw.githubusercontent.com/Q1ngYing/images/master/images/anatomy-d22fb7ab46013a1195f086ee672468c7.jpg" alt="img"></p>
+<p>Uniswap 是一种<strong>自动化流动性协议</strong>，由<strong>恒定的产品公式</strong>支持。并在以太坊区块链上的不可升级合约系统中实施。</p>
+<p>每个 Uniswap 合约或者对都管理一个由两个 ERC20 代币储备组成的<strong>流动性池</strong>。</p>
+<p>任何人都可以通过存入等值的每个基础代币，从而成为池的<strong>流动性提供者（LP）</strong>。这些代币按比例追踪总储备中的有限合伙人份额，并可以随时赎回基础资产。</p>
+<p><img src="https://raw.githubusercontent.com/Q1ngYing/images/master/images/lp-c0b1b03ef921f1325971fa8ab6e9a4f1.jpg" alt="img"></p>
+<p>货币对充当<strong>自动做市商（AMM）</strong>，只要保留<strong>“恒定乘积公式”</strong>，就随时准备接受一种代币来交换另一种代币。<strong>该公式最简单地表示为<code>x * y = k</code>，规定交易不得的改变货币对储备余额（x和y）的乘积（k）。</strong>由于 <strong>k</strong> 在交易的参考系中保持不变，因此它<strong>通常被称为不变量</strong>。该公式具有理想的特性，即较大交易（相对于储备）的执行速度比较小交易差得多。</p>
+<p>实际上，<strong>Uniswap 对交易收取 <code>0.30%</code> 的费用</strong>，这笔费用会添加到<strong>准备金</strong>中。最终，<strong>每笔交易实际上都会增加 <code>k</code>。这相当于对有限合伙人的支付。</strong>当他们燃烧其池代币以提取总储备金的一部分时即可实现。未来，该费用可能会降低至 0.25%，其余 0.05% 作为协议范围内的费用扣留。</p>
+<p><img src="https://raw.githubusercontent.com/Q1ngYing/images/master/images/trade-b19a05be2c43a62708ab498766dc6d13.jpg" alt="img"></p>
+<p>由于两个货币对资产的<strong>相对价格只能通过交易来改变</strong>，Uniswap 价格与外部价格之间的背离创造了<strong>套利机会</strong>。这一机制确保 Uniswap 价格始终趋向于市场出清价格。</p>
+<h2 id="生态系统-amp-参与者"><a href="#生态系统-amp-参与者" class="headerlink" title="生态系统&amp;参与者"></a>生态系统&amp;参与者</h2><p><img src="https://raw.githubusercontent.com/Q1ngYing/images/master/images/participants-a3e150f3c98a0b402c2063de3e160f2e.jpg" alt="img"></p>
+<p>Uniswap 生态系统主要由三类用户组成：<strong>流动性提供者（liquidity providers：LP）、交易者（traders）、开发者（developer）。</strong></p>
+<ul>
+<li>流动性提供者（LP）：LP 向公共流动性池贡献  ERC-20 Token，这会使 LP 获得激励</li>
+<li>交易者：交易者可以以 0.30% 的固定费用（支付给 LP）将这些代币相互交换</li>
+<li>开发者：开发人员直接与 Uniswap 智能合约集成，以支持与代币、交易界面、零售体验等新的交互体验。</li>
+</ul>
+<p>这些用户之间互动创造了一个积极的反馈循环，通过定义一种可以汇集、交易和使用代币的通用语言来推动数字经济</p>
+<h3 id="Liquidity-Provider-流动性提供者"><a href="#Liquidity-Provider-流动性提供者" class="headerlink" title="Liquidity Provider 流动性提供者"></a>Liquidity Provider 流动性提供者</h3><p>LP 不是一个同质群体：</p>
+<ul>
+<li><strong>Passive LPs （被动 LPs）</strong>是希望<strong>被动投资其资产以积累交易费用</strong>的代币持有者</li>
+<li><strong>Professional LPs（专业 LPs）</strong>将<strong>做市</strong>作为<strong>主要的策略</strong>。他们通常开发定制工具和方法来<strong>跟踪不同 DeFI 项目的流动性头寸</strong>。</li>
+<li><strong>Token 项目</strong>有时候会成为 <strong>LP</strong>，为其代币创建一个流动性市场。这使得代币的买卖变得更加容易，并通过 Uniswap 解锁与其他 DeFi 项目的互操作性。</li>
+<li>最后，一些 DeFi 先驱正在探索复杂的流动性提供交互，例如激励流动性、流动性作为抵押品以及其他实验性策略。 Uniswap 是实验这些想法的项目的完美协议。</li>
+</ul>
+<h3 id="Traders-交易者"><a href="#Traders-交易者" class="headerlink" title="Traders 交易者"></a>Traders 交易者</h3><p>协议生态系统中有几类交易者：</p>
+<ul>
+<li><strong>Speculators（投机者）</strong>使用各种社区构建的宫颈炎和产品，利用从 Uniswap 协议中提供的流动性来交换代币</li>
+<li><strong>Arbitrage bots（套利机器人）</strong>通过比较不同平台上的价格来寻找优势来获取利润。（虽然这看起来可能是榨取性的，但这些机器人实际上有助于平衡更广泛的以太坊市场的价格并保持公平。）</li>
+<li><strong>DAPP users（DAPP 用户）</strong>在 Uniswap 上购买代币，用于以太坊上的其他应用程序</li>
+<li>通过实现交换功能（从 DEX 聚合器等产品到自定义 Solidity 脚本）来在协议上执行智能合约。</li>
+</ul>
+<p>在所有情况下，协议上的交易<strong>均需缴纳相同的固定费用</strong>。每一项对于提高价格准确性和激励流动性都很重要</p>
+<h3 id="Developers-Projects"><a href="#Developers-Projects" class="headerlink" title="Developers/Projects"></a>Developers/Projects</h3><p>Uniswap 在广泛的以太坊生态系统中的使用方法有很多，典型的例子有：</p>
+<ul>
+<li>Uniswap 的开源、可访问性一位置有无数的用户体验实验和前端来提供对 Uniswap 功能的访问。可以在大多数主要 DeFi 仪表盘项目中找到 Uniswap 功能。社区还构建了许多 Uniswap 专用工具</li>
+<li>钱包通常将交换和流动性提供功能集成为其产品的核心产品</li>
+<li>DEX 聚合器从许多流动性协议中提取流动性，通过分割交易为交易者提供更好的价格。Uniswap 是这些项目最大的单一去中心化流动性来源。</li>
+<li>智能合约开发人员使用可用的功能套件来发明新的 DeFi 工具和其他各种实验想法。</li>
+</ul>
+<h2 id="智能合约"><a href="#智能合约" class="headerlink" title="智能合约"></a>智能合约</h2><p>Uniswap V2 是一个二进制智能合约系统。核心合约为与 Uniswap 交互的各方提供基本的安全保障。外围合约与一个或多个核心合约交互，但其本身并不属于核心合约的一部分。</p>
+<h3 id="Core（核心）"><a href="#Core（核心）" class="headerlink" title="Core（核心）"></a>Core（核心）</h3><p>核心由<strong>一个单独的<a href="####Factory">工厂</a>和许多<a href="####Pair">交易对</a></strong>组成。工厂合约负责创建和索引。这些合约的规模很小。这样做的简单理由是：<strong>表面积较小的合约更容易推理，更不容易出现错误，而且功能更加优雅</strong>。（也许这种设计的最大优点是系统的许多所需属性可以直接在代码中断言，几乎没有出错的空间。）一个缺点是：<strong>核心合约对用户有些不友好</strong>。对于大多数的用例，不建议直接与这些合约交互。相反，应该使用外围合约。</p>
+<h4 id="Factory"><a href="#Factory" class="headerlink" title="Factory"></a>Factory</h4><p><a href="../UniswapV2-Factory">详细的关于Factory部分</a></p>
+<p>工厂<strong>持有为 pair 赋能的通用字节码</strong>。它的主要工作是为<strong>为每一个唯一的代币对创建一个且仅有一个智能合约</strong>。他还包含打开协议收费的逻辑。</p>
+<h4 id="Pair"><a href="#Pair" class="headerlink" title="Pair"></a>Pair</h4><p><a href="../UniswapV2-Pair">详细的关于Pair部分</a></p>
+<p>Token 对有两个主要目的：充当AMM和跟踪池代币余额。他们还公开可用于构建去中心化预言机的数据</p>
+<h4 id="Periphery"><a href="#Periphery" class="headerlink" title="Periphery"></a>Periphery</h4><p><a target="_blank" rel="noopener" href="https://github.com/Uniswap/uniswap-v2-periphery">外围合约代码示例</a></p>
+<p>外围设备是一组智能合约，旨在支持与核心的特定领域交互。由于 Uniswap 的无需许可的性质，下面描述的合约没有特殊权限，实际上只是可能的外围类合约的一小部分。</p>
+<h4 id="Library"><a href="#Library" class="headerlink" title="Library"></a>Library</h4><p><a href="../UniswapV2-Library">Library 代码示例</a></p>
+<p>库提供了各种用于获取数据和定价的便利函数.</p>
+<h4 id="Rounter"><a href="#Rounter" class="headerlink" title="Rounter"></a>Rounter</h4><p><a href="../UniswapV2-Router">详细的关于Rounter部分</a></p>
+<p>使用该库的路由器（Router）完全支持前端提供交易和流动性管理功能的所有基本要求。值得注意的是，它本身支持多对交易（例如：x 到y  到 z），将 ETH 视为一等公民，并提供元交易以消除流动性。</p>
+<h3 id="设计决策"><a href="#设计决策" class="headerlink" title="设计决策"></a>设计决策</h3><h4 id="发送-Token"><a href="#发送-Token" class="headerlink" title="发送 Token"></a>发送 Token</h4><p>通常需要代币来执行某些功能的智能合约要求潜在的交易者<strong>首先对代币合约进行批准，然后调用一个函数，该函数又在代币合约上调用 transferFrom</strong>（owner-&gt; approve Uniswap 合约可以转账代币 -&gt; Uniswap 合约调用代币合约的 transferFrom 转移 owner 的 token）。这<em>不是</em>V2对 Token 的接收方式。相反，双方在每次互动结束是检查他们的代币余额，然后，在下一次交互开始时，将当前余额与存储的值进行比较，以确定当前交互着发送的 token 数量。在<a target="_blank" rel="noopener" href="https://docs.uniswap.org/whitepaper.pdf">白皮书</a>中详细解释了为什么会出现这种情况。但要点是，在<strong>调用任何需要代币的方法之前，必须将代币转移到 Pairs</strong>（此规则的一个例外是 <a href="../FlashSwap">Flash Swaps</a>）</p>
+<h4 id="WETH"><a href="#WETH" class="headerlink" title="WETH"></a>WETH</h4><p><strong>V2 货币对不直接支持 ETH，因此 ETH⇄ERC-20 Pairs 必须用 WETH 进行模拟</strong>。这一选择背后的动机是删除核心中特定于 ETH 的代码，从而形成更精简的代码库。然而，<strong>通过简单地在外围包装/解开 ETH，最终用户可以完全不了解此实现细节。</strong></p>
+<p>路由器完全支持通过 ETH 与任何 WETH 对进行交互。</p>
+<h4 id="最低流动性"><a href="#最低流动性" class="headerlink" title="最低流动性"></a>最低流动性</h4><p>为了改善舍入误差并增加流动性供应的理论最小刻度大小，Pairs 会销毁第一个 MINIMUM_LIQUIDITY 池代币。对于绝大多数的配对来说，这只是一个微不足道的值。燃烧在第一次流动性供应期间自动发生，此后总供应量（totalSupply）将永远受到限制</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://q1ngying.cn">Q1ngying</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://q1ngying.cn/UniswapV2Intro/">https://q1ngying.cn/UniswapV2Intro/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://q1ngying.cn" target="_blank">Q1ngying</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Solidity/">Solidity</a><a class="post-meta__tags" href="/tags/DeFi/">DeFi</a><a class="post-meta__tags" href="/tags/Uniswap/">Uniswap</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.jpg" data-sites="twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="prev-post pull-left" href="/UniswapV2-Factory/" title="UniswapV2-Factory"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">UniswapV2-Factory</div></div></a><a class="next-post pull-right" href="/Reentrancy/" title="重入"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">重入</div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a href="/FlashSwap/" title="UniswapV2-Flash Swap"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-04-09</div><div class="title">UniswapV2-Flash Swap</div></div></a><a href="/UniswapV2-Factory/" title="UniswapV2-Factory"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-04-09</div><div class="title">UniswapV2-Factory</div></div></a><a href="/UniswapV2-Pair/" title="UniswapV2-Pair"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-04-09</div><div class="title">UniswapV2-Pair</div></div></a><a href="/UniswapV2-Router/" title="UniswapV2-Router"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-04-09</div><div class="title">UniswapV2-Router</div></div></a><a href="/UniswapV2-Library/" title="UniswapV2-Library"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-04-09</div><div class="title">UniswapV2-Library</div></div></a><a href="/UniswapV2/" title="UniswapV2合约"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-05</div><div class="title">UniswapV2合约</div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Uniswap-%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C"><span class="toc-number">1.</span> <span class="toc-text">Uniswap 如何工作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%9F%E6%80%81%E7%B3%BB%E7%BB%9F-amp-%E5%8F%82%E4%B8%8E%E8%80%85"><span class="toc-number">2.</span> <span class="toc-text">生态系统&amp;参与者</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Liquidity-Provider-%E6%B5%81%E5%8A%A8%E6%80%A7%E6%8F%90%E4%BE%9B%E8%80%85"><span class="toc-number">2.1.</span> <span class="toc-text">Liquidity Provider 流动性提供者</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Traders-%E4%BA%A4%E6%98%93%E8%80%85"><span class="toc-number">2.2.</span> <span class="toc-text">Traders 交易者</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Developers-Projects"><span class="toc-number">2.3.</span> <span class="toc-text">Developers&#x2F;Projects</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6"><span class="toc-number">3.</span> <span class="toc-text">智能合约</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Core%EF%BC%88%E6%A0%B8%E5%BF%83%EF%BC%89"><span class="toc-number">3.1.</span> <span class="toc-text">Core（核心）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Factory"><span class="toc-number">3.1.1.</span> <span class="toc-text">Factory</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Pair"><span class="toc-number">3.1.2.</span> <span class="toc-text">Pair</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Periphery"><span class="toc-number">3.1.3.</span> <span class="toc-text">Periphery</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Library"><span class="toc-number">3.1.4.</span> <span class="toc-text">Library</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Rounter"><span class="toc-number">3.1.5.</span> <span class="toc-text">Rounter</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BE%E8%AE%A1%E5%86%B3%E7%AD%96"><span class="toc-number">3.2.</span> <span class="toc-text">设计决策</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%91%E9%80%81-Token"><span class="toc-number">3.2.1.</span> <span class="toc-text">发送 Token</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#WETH"><span class="toc-number">3.2.2.</span> <span class="toc-text">WETH</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9C%80%E4%BD%8E%E6%B5%81%E5%8A%A8%E6%80%A7"><span class="toc-number">3.2.3.</span> <span class="toc-text">最低流动性</span></a></li></ol></li></ol></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url(/img/back1.webp);"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By Q1ngying</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script>(() => {
+  const panguFn = () => {
+    if (typeof pangu === 'object') pangu.autoSpacingPage()
+    else {
+      btf.getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+        .then(() => {
+          pangu.autoSpacingPage()
+        })
+    }
+  }
+
+  const panguInit = () => {
+    if (false){
+      GLOBAL_CONFIG_SITE.isPost && panguFn()
+    } else {
+      panguFn()
+    }
+  }
+
+  btf.addGlobalFn('pjaxComplete', panguInit, 'pangu')
+  document.addEventListener('DOMContentLoaded', panguInit)
+})()</script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="17,185,200" opacity="0.8" zIndex="-1" count="200" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script></div></body></html>

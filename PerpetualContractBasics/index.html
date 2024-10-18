@@ -1,0 +1,331 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>永续合约基础 | Q1ngying</title><meta name="author" content="Q1ngying"><meta name="copyright" content="Q1ngying"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#FFFFFF"><meta name="description" content="永续合约本质上是交易者在不实际购买代币的情况下，对某一特定指数代币的价格进行投注的一种方式，同时使交易者能够使用杠杆。之所以称之为永续合约，是因为交易者可以根据自己的意愿，无限期地保持他们的“永续”仓位开放。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="永续合约基础">
+<meta property="og:url" content="https://q1ngying.cn/PerpetualContractBasics/index.html">
+<meta property="og:site_name" content="Q1ngying">
+<meta property="og:description" content="永续合约本质上是交易者在不实际购买代币的情况下，对某一特定指数代币的价格进行投注的一种方式，同时使交易者能够使用杠杆。之所以称之为永续合约，是因为交易者可以根据自己的意愿，无限期地保持他们的“永续”仓位开放。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://q1ngying.cn/img/butterfly-icon.jpg">
+<meta property="article:published_time" content="2024-04-25T11:13:35.000Z">
+<meta property="article:modified_time" content="2024-10-18T07:45:14.727Z">
+<meta property="article:author" content="Q1ngying">
+<meta property="article:tag" content="DeFi">
+<meta property="article:tag" content="永续合约">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://q1ngying.cn/img/butterfly-icon.jpg"><link rel="shortcut icon" href="/img/icons8-clover-ios-16-glyph-32.png"><link rel="canonical" href="https://q1ngying.cn/PerpetualContractBasics/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><meta name="google-site-verification" content="IzCM4B791_p7IAU4WhRfiLlPBnODnamJ7ixKxzoeNfk"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#1b1b1b')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#FFFFFF')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '永续合约基础',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-10-18 15:45:14'
+}</script><script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script><script>LA.init({id:"3Jzfa21KlLms3Lkh",ck:"3Jzfa21KlLms3Lkh"})</script><link rel="stylesheet" href="/css/style.css?1"><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/butterfly-icon.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">28</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">27</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/back1.webp);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Q1ngying</span></a><a class="nav-page-title" href="/"><span class="site-name">永续合约基础</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">永续合约基础</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-04-25T11:13:35.000Z" title="发表于 2024-04-25 19:13:35">2024-04-25</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-10-18T07:45:14.727Z" title="更新于 2024-10-18 15:45:14">2024-10-18</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/DeFi/">DeFi</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%B0%B8%E7%BB%AD%E5%90%88%E7%BA%A6/">永续合约</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">6.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>21 mins.分钟</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="永续合约简介"><a href="#永续合约简介" class="headerlink" title="永续合约简介"></a>永续合约简介</h2><p>永续合约本质上是交易者在不实际购买代币的情况下，对某一特定<em>指数代币</em>的价格进行投注的一种方式，同时使交易者能够使用<em>杠杆</em>。</p>
+<p>之所以称之为永续合约，是因为交易者可以根据自己的意愿，无限期地保持他们的“永续”<em>仓位</em>开放。</p>
+<h3 id="永续合约中常见概念"><a href="#永续合约中常见概念" class="headerlink" title="永续合约中常见概念"></a>永续合约中常见概念</h3><span id="more"></span>
+<ol>
+<li><strong>永续合约（Perpetual Contracts）</strong>:<ul>
+<li>这是一种类似于传统金融市场的期货合约，但没有到期日，允许交易者无限期地持有仓位。永续合约通常用于加密货币市场，使交易者能够利用杠杆买卖资产。</li>
+</ul>
+</li>
+<li><strong>保证金（Margin）</strong>:<ul>
+<li>在开设永续合约仓位时所需存入的资金，以保证交易在价格不利移动时仍能持续。保证金可以是初始保证金和维持保证金，分别对应于开仓和保持仓位所需的最低资金水平。</li>
+</ul>
+</li>
+<li><strong>杠杆（Leverage）</strong>:<ul>
+<li>允许交易者以小额资本控制大额资产。杠杆增加了潜在的收益，同时也增加了风险，因为市场小幅度的移动会对交易者的盈亏产生较大影响。</li>
+</ul>
+</li>
+<li><strong>资金费率（Funding Rate）</strong>:<ul>
+<li>在永续合约市场中，资金费率是多头和空头之间交换的支付，目的是保持合约价格接近于标的资产的现货价格。资金费率可能是正的或负的，取决于仓位的多空关系。</li>
+</ul>
+</li>
+<li><strong>清算（Liquidation）</strong>:<ul>
+<li>如果市场的移动导致保证金账户的资金水平降至维持保证金以下，清算过程将启动。清算是强制平仓过程，用于防止进一步的损失，并确保市场不会因欠账而瘫痪。</li>
+</ul>
+</li>
+<li><strong>自动化市场制造商（AMM）</strong>:<ul>
+<li>在DeFi中，许多永续合约平台使用AMM而不是传统的订单簿。AMM利用算法提供流动性池，允许用户与智能合约而非其他交易者交易。</li>
+</ul>
+</li>
+<li><strong>流动性池（Liquidity Pool）</strong>:<ul>
+<li>用户可以向流动性池提供资金，这些资金被用来支持交易活动和贷款。为了鼓励提供流动性，提供者通常会获得交易费用的一部分作为回报。</li>
+</ul>
+</li>
+<li><strong>去中心化（Decentralization）</strong>:<ul>
+<li>DeFi永续合约平台通常是去中心化的，这意味着它们不由单一的中心机构控制。这有助于降低审查和单点故障的风险。</li>
+</ul>
+</li>
+<li><strong>智能合约（Smart Contracts）</strong>:<ul>
+<li>DeFi平台的所有操作都是通过智能合约进行的，这些是自动执行、在区块链上运行的程序，用于处理交易、计算资金费率和执行清算等。</li>
+</ul>
+</li>
+</ol>
+<h3 id="那么什么是仓位？"><a href="#那么什么是仓位？" class="headerlink" title="那么什么是仓位？"></a>那么什么是仓位？</h3><p>整个协议围绕属于交易者的“仓位”展开，一个仓位包括以下内容：</p>
+<ul>
+<li>规模 - 这是交易者指挥的“虚拟”资本量，一个BTC永续合约的仓位大小可能是1.5 BTC。如果BTC的价格上升，交易者能够实现其仓位中1.5 BTC的利润。</li>
+<li>抵押品 - 用来“支持”交易者仓位的一定量的资产，当交易者亏损时，他们的亏损将从抵押品中扣除。如果抵押品的数量被认为不足以支撑仓位的大小，该仓位将被<em>清算</em>或强制平仓。</li>
+</ul>
+<p><code>规模 / 抵押品</code>比率是仓位的<em>杠杆</em>。例如，如果我以10,000美元的USDC作为抵押品开设一个总额为20,000美元的BTC仓位，我的杠杆就是2倍。</p>
+<h3 id="多空头"><a href="#多空头" class="headerlink" title="多空头"></a>多空头</h3><p>永续合约的仓位可以有两种不同的<strong>方向</strong>。</p>
+<ul>
+<li><strong>多头</strong> → 当<em>指数代币</em>的价格上涨时，交易者盈利；当价格下跌时，交易者亏损。</li>
+<li><strong>空头</strong> → 当<em>指数代币</em>的价格下降时，交易者盈利；当价格上涨时，交易者亏损。</li>
+</ul>
+<p><strong>我们来看一个以 ETH为<em>指数代币</em>的<em>多头</em>仓位的例子：</strong></p>
+<ul>
+<li>ETH的当前价格为$5,000。</li>
+<li>在触发清算前允许的最大杠杆是15倍。</li>
+<li>Bob以$1,000的USDC作为抵押品，开设了$10,000规模的<em>多头</em>仓位。在当前ETH价格下，他$10,000的仓位规模相当于仓位中的2 ETH。</li>
+<li>Bob有$10,000的仓位规模，只有$1,000的抵押品——因此Bob仓位的杠杆是10倍，这在允许的范围内。</li>
+<li>ETH的价格上涨到$6,000——涨幅20%。</li>
+<li>Bob现在盈利了！他的永续仓位中有2 ETH的仓位规模，他的成本基础是$5,000——所以他的净PnL（盈亏）是<code>($6,000 - $5,000) * 2 = $2,000</code> 或者 <code>（当前市场价值 - 平均仓位价格）* 仓位规模中的代币数量</code>。</li>
+<li>Bob可以平仓并实现这$2,000的利润，然而Bob贪婪，他保持仓位开放希望获得更多利润。</li>
+<li>不可避免地，ETH的价格跌至$4,750。</li>
+<li>Bob的利润已经消失，实际上他现在处于亏损状态！他的永续仓位现在的PnL如下：<code>($4,750 - $5,000) * 2 = -$500</code>。</li>
+<li>这$500的亏损需要由Bob的抵押品来承担，这意味着他剩余的抵押品是：<code>$1,000 - $500 = $500</code>。Bob现在只剩下$500的抵押品来“支持”他的仓位，因此他的杠杆是他$10,000原始规模除以他$500剩余抵押品，<code>$10,000 / $500 = 20倍</code>。</li>
+<li>Bob的仓位已经超过了清算阈值，因此被<em>清算</em>。他的抵押品被没收，他$500的亏损连同额外的清算费一起发送给流动性提供者，他的剩余抵押品被退还给他。</li>
+</ul>
+<p>现在我们来看看<strong><em>空头</em>仓位是如何表现的</strong>：</p>
+<ul>
+<li>ETH的当前价格为$5,000。</li>
+<li>在触发清算前允许的最大杠杆是15倍。</li>
+<li>Bob以$1,000的USDC作为抵押品，开设了$10,000规模的<em>空头</em>仓位。在当前ETH价格下，他$10,000的仓位规模相当于仓位中的2 ETH。</li>
+<li>Bob的杠杆是10倍。</li>
+<li>ETH的价格下跌到$4,000——下降20%。</li>
+<li><p>Bob现在盈利了！他的永续仓位中有2 ETH的仓位规模，他的成本基础是$5,000——所以他的净PnL是<code>($5,000 - $4,000) * 2 =$2,000</code> 或者 <code>（平均仓位价格 - 当前市场价值）* 仓位规模中的代币数量</code>。</p>
+</li>
+<li><p>Bob可以平仓并实现这$2,000的利润，然而Bob贪婪，他保持仓位开放希望获得更多利润。</p>
+</li>
+<li>不可避免地，ETH的价格升至$5,250。</li>
+<li>Bob的利润已经消失，实际上他现在处于亏损状态！他的永续仓位现在的PnL如下：<code>($5,000 - $5,250) * 2 = -$500</code>。</li>
+<li>这$500的亏损需要由Bob的抵押品来承担，这意味着他剩余的抵押品是：<code>$1,000 - $500 = $500</code>。Bob现在只剩下$500的抵押品来“支持”他的仓位，因此他的杠杆是他$10,000原始规模除以他$500剩余抵押品，<code>$10,000 / $500 = 20倍</code>。</li>
+<li>Bob的仓位已经超过了清算阈值，因此被<em>清算</em>。他的抵押品被没收，他$500的亏损连同额外的清算费一起发送给流动性提供者，他的剩余抵押品被退还给他。</li>
+</ul>
+<p>💡 注意，<strong>多头的PnL公式与空头的不同</strong>：</p>
+<p><code>多头PnL = (当前市场价值 - 平均仓位价格) * 仓位规模中的代币数量</code><br><code>空头PnL = (平均仓位价格 - 当前市场价值) * 仓位规模中的代币数量</code></p>
+<h3 id="交易者"><a href="#交易者" class="headerlink" title="交易者"></a>交易者</h3><p><strong>交易者是开设永续仓位并对<em>指数代币</em>价格进行押注的行为主体。</strong></p>
+<p>当<em>指数代币</em>的价格朝着他们预测的方向移动时，交易者将获利；当价格朝着相反方向移动时，他们将亏损。</p>
+<p>交易者必须为他们的<em>仓位</em>提供抵押品，这些抵押品用于在价格与他们预测的方向相反时覆盖他们的损失。</p>
+<h3 id="流动性提供者"><a href="#流动性提供者" class="headerlink" title="流动性提供者"></a>流动性提供者</h3><p><strong>流动性提供者持有与交易者相反的仓位，当交易者亏钱或被清算时，他们将获得利润。流动性提供者还经常从交易者那里收取费用，比如开仓和平仓费，或者借贷费用。</strong></p>
+<p>流动性提供者提供资产。当交易者获利时，他们从流动性提供者那里获得代币。当交易者亏损时，他们会从自己的仓位抵押品中支付代币给流动性提供者。</p>
+<h3 id="开放利益"><a href="#开放利益" class="headerlink" title="开放利益"></a>开放利益</h3><p><strong>开放利益是所有开放仓位的总规模的度量。</strong></p>
+<p>在你的实现中，你可能会考虑跟踪两种类型的开放利益：</p>
+<ul>
+<li>开放利益 — 以美元值计量，由仓位最初开设时的“规模”增加。</li>
+<li>按代币计量的开放利益 — 以<em>指数代币</em>的价值计量，由仓位开设时的“代币规模”增加。</li>
+</ul>
+<h3 id="流动性储备"><a href="#流动性储备" class="headerlink" title="流动性储备"></a>流动性储备</h3><p><strong>流动性储备是必需的，</strong>以确保在任何时候流动性池（由流动性提供者提供）中都有足够的资产来支付仓位的利润。</p>
+<p>如果流动性提供者只存入了10美元的USDC，则允许交易者以$10,000的规模开设一个永续合约是不负责任的。如果价格哪怕只是稍微朝交易者的方向移动一点，他们的利润将超过10美元，但支付给他们的USDC将不足。</p>
+<p>流动性储备的限制可能有些任意，类似于配置的清算阈值。这里有一个合理的公式可以遵循：</p>
+<script type="math/tex; mode=display">
+totalOpenInterest < (depositedLiquidity * maxUtilizationPercentage) \newline
+总未平仓利息 < (存入的流动性 * 最大利用率百分比)</script><p>为了更准确，我们可以考虑多头/空头之间的差异。</p>
+<p>空头的利润永远不会超过仓位的原始规模，因此shortOpenInterest是支付给空头的最大可能金额。然而，多头的利润可以无限增加，因此我们可以计算总多头仓位的当前估值。</p>
+<script type="math/tex; mode=display">
+(shortOpenInterest) + (longOpenInterestInTokens * currentIndexTokenPrice) < (depositedLiquidity * maxUtilizationPercentage) \newline
+(空头开放利益) + (多头按代币计量的开放利益 * 当前指数代币价格) < (存入的流动性 * 最大利用率百分比)</script><p>一旦实施了类似上述的流动性储备验证，交易者就不能开设超出由存入的流动性合理支持的仓位，存款人也不能撤回对现有仓位至关重要的流动性。</p>
+<h3 id="额外"><a href="#额外" class="headerlink" title="额外"></a>额外</h3><p>以下是一些可能对你研究和实现永续期货协议有用的参考资料：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://gmx-docs.io/docs/trading/v2">GMX V2 文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=58om-oA1vpI">GMX V2 技术概览</a>（视频）</li>
+<li><a target="_blank" rel="noopener" href="https://drive.google.com/drive/u/1/folders/1Ykv3mRcPkOZz064spxUObxdC6xVgGyua">GMX V2 深入解析</a>（更深入）</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://q1ngying.cn">Q1ngying</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://q1ngying.cn/PerpetualContractBasics/">https://q1ngying.cn/PerpetualContractBasics/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://q1ngying.cn" target="_blank">Q1ngying</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/DeFi/">DeFi</a><a class="post-meta__tags" href="/tags/%E6%B0%B8%E7%BB%AD%E5%90%88%E7%BA%A6/">永续合约</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.jpg" data-sites="twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="prev-post pull-left" href="/FuzzingTestAdvanced/" title="FuzzingTest进阶"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">FuzzingTest进阶</div></div></a><a class="next-post pull-right" href="/Test/" title="Test分类"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Test分类</div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a href="/FlashSwap/" title="UniswapV2-Flash Swap"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-04-09</div><div class="title">UniswapV2-Flash Swap</div></div></a><a href="/MakerDAO-Abacus/" title="MakerDAO-Abacus"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-17</div><div class="title">MakerDAO-Abacus</div></div></a><a href="/MakerDAO-Join/" title="MakerDAO-Join"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-15</div><div class="title">MakerDAO-Join</div></div></a><a href="/MakerDAO-Clip/" title="MakerDAO-Clip"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-17</div><div class="title">MakerDAO-Clip</div></div></a><a href="/MakerDAO-Vat/" title="MakerDAO-Vat"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-15</div><div class="title">MakerDAO-Vat</div></div></a><a href="/UniswapV2-Factory/" title="UniswapV2-Factory"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-04-09</div><div class="title">UniswapV2-Factory</div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B0%B8%E7%BB%AD%E5%90%88%E7%BA%A6%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">永续合约简介</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B0%B8%E7%BB%AD%E5%90%88%E7%BA%A6%E4%B8%AD%E5%B8%B8%E8%A7%81%E6%A6%82%E5%BF%B5"><span class="toc-number">1.1.</span> <span class="toc-text">永续合约中常见概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%82%A3%E4%B9%88%E4%BB%80%E4%B9%88%E6%98%AF%E4%BB%93%E4%BD%8D%EF%BC%9F"><span class="toc-number">1.2.</span> <span class="toc-text">那么什么是仓位？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E7%A9%BA%E5%A4%B4"><span class="toc-number">1.3.</span> <span class="toc-text">多空头</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%A4%E6%98%93%E8%80%85"><span class="toc-number">1.4.</span> <span class="toc-text">交易者</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%81%E5%8A%A8%E6%80%A7%E6%8F%90%E4%BE%9B%E8%80%85"><span class="toc-number">1.5.</span> <span class="toc-text">流动性提供者</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%80%E6%94%BE%E5%88%A9%E7%9B%8A"><span class="toc-number">1.6.</span> <span class="toc-text">开放利益</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%81%E5%8A%A8%E6%80%A7%E5%82%A8%E5%A4%87"><span class="toc-number">1.7.</span> <span class="toc-text">流动性储备</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%9D%E5%A4%96"><span class="toc-number">1.8.</span> <span class="toc-text">额外</span></a></li></ol></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url(/img/back1.webp);"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By Q1ngying</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script>(() => {
+  const panguFn = () => {
+    if (typeof pangu === 'object') pangu.autoSpacingPage()
+    else {
+      btf.getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+        .then(() => {
+          pangu.autoSpacingPage()
+        })
+    }
+  }
+
+  const panguInit = () => {
+    if (false){
+      GLOBAL_CONFIG_SITE.isPost && panguFn()
+    } else {
+      panguFn()
+    }
+  }
+
+  btf.addGlobalFn('pjaxComplete', panguInit, 'pangu')
+  document.addEventListener('DOMContentLoaded', panguInit)
+})()</script><div class="js-pjax"><script>(() => {
+  const loadMathjax = () => {
+    if (!window.MathJax) {
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          tags: 'none',
+        },
+        chtml: {
+          scale: 1.1
+        },
+        options: {
+          enableMenu: true,
+          renderActions: {
+            findScript: [10, doc => {
+              for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+                const display = !!node.type.match(/; *mode=display/)
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+                const text = document.createTextNode('')
+                node.parentNode.replaceChild(text, node)
+                math.start = {node: text, delim: '', n: 0}
+                math.end = {node: text, delim: '', n: 0}
+                doc.math.push(math)
+              }
+            }, '']
+          }
+        }
+      }
+      
+      const script = document.createElement('script')
+      script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+      script.id = 'MathJax-script'
+      script.async = true
+      document.head.appendChild(script)
+    } else {
+      MathJax.startup.document.state(0)
+      MathJax.texReset()
+      MathJax.typesetPromise()
+    }
+  }
+
+  btf.addGlobalFn('encrypt', loadMathjax, 'mathjax')
+  window.pjax ? loadMathjax() : window.addEventListener('load', loadMathjax)
+})()</script></div><script id="canvas_nest" defer="defer" color="17,185,200" opacity="0.8" zIndex="-1" count="200" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script></div></body></html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>EIP173 | Q1ngying</title><meta name="author" content="Q1ngying"><meta name="copyright" content="Q1ngying"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#FFFFFF"><meta name="description" content="ERC-173 合约所有权标准简要说明： 合约所有权的标准接口">
+<meta property="og:type" content="article">
+<meta property="og:title" content="EIP173">
+<meta property="og:url" content="https://q1ngying.cn/EIP173-ERC173_ContractOwnershipStandard/index.html">
+<meta property="og:site_name" content="Q1ngying">
+<meta property="og:description" content="ERC-173 合约所有权标准简要说明： 合约所有权的标准接口">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://q1ngying.cn/img/butterfly-icon.jpg">
+<meta property="article:published_time" content="2023-11-05T12:05:11.000Z">
+<meta property="article:modified_time" content="2024-10-17T13:43:05.524Z">
+<meta property="article:author" content="Q1ngying">
+<meta property="article:tag" content="Solidity">
+<meta property="article:tag" content="EIPs">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://q1ngying.cn/img/butterfly-icon.jpg"><link rel="shortcut icon" href="/img/icons8-clover-ios-16-glyph-32.png"><link rel="canonical" href="https://q1ngying.cn/EIP173-ERC173_ContractOwnershipStandard/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><meta name="google-site-verification" content="IzCM4B791_p7IAU4WhRfiLlPBnODnamJ7ixKxzoeNfk"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#1b1b1b')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#FFFFFF')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'EIP173',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-10-17 21:43:05'
+}</script><script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script><script>LA.init({id:"3Jzfa21KlLms3Lkh",ck:"3Jzfa21KlLms3Lkh"})</script><link rel="stylesheet" href="/css/style.css?1"><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/butterfly-icon.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">28</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">27</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/back1.webp);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Q1ngying</span></a><a class="nav-page-title" href="/"><span class="site-name">EIP173</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">EIP173</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-11-05T12:05:11.000Z" title="发表于 2023-11-05 20:05:11">2023-11-05</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-10-17T13:43:05.524Z" title="更新于 2024-10-17 21:43:05">2024-10-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/EIPs/">EIPs</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">6.6k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>22 mins.分钟</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="ERC-173-合约所有权标准"><a href="#ERC-173-合约所有权标准" class="headerlink" title="ERC-173 合约所有权标准"></a>ERC-173 合约所有权标准</h1><p><strong>简要说明：</strong></p>
+<p>合约所有权的标准接口</p>
+<span id="more"></span>
+<p>原文章：<a target="_blank" rel="noopener" href="https://eips.ethereum.org/EIPS/eip-173">https://eips.ethereum.org/EIPS/eip-173</a></p>
+<h2 id="摘要："><a href="#摘要：" class="headerlink" title="摘要："></a>摘要：</h2><p>该规范定义了拥有或控制合约的标准功能。</p>
+<p>实现允许读取当前所有者（<strong><code>owner() returns (address)</code></strong>）并转移所有权（<strong><code>transferOwnership(address newOwner)</code></strong>）以及所有权变更时的标准化事件（<strong><code>OwnershipTransferred(address indexed previousOwner, address indexed newOwner)</code></strong>）。</p>
+<h2 id="动机："><a href="#动机：" class="headerlink" title="动机："></a>动机：</h2><p><strong>许多智能合约要求以某种方式拥有或控制它们</strong>。例如提取资金或执行管理操作，用于处理合约所有权的合约接口应该标准化，以允许与管理合约的用户界面和合约兼容，这是很常见的。</p>
+<p>下面是可以从此标准中受益的合约和应用程序类型的一些示例：</p>
+<ol>
+<li>购买/出售/拍卖以太坊合约的交易所。只有存在获取合约所有者和转让所有权的标准，这才有可能实现。</li>
+<li>合约钱包，持有合约的所有权，并且可以转让合约的所有权</li>
+<li>合约登记处。对于某些注册管理机构来说，只允许合约所有者添加/删除其合约是有意义的。这些合约注册中心必须存在一个标准，以再接受合约之前验证合约是否由其所有者提交</li>
+<li>显示和转让合约所有权的用户界面。</li>
+</ol>
+<h2 id="规范"><a href="#规范" class="headerlink" title="规范"></a>规范</h2><p>每个符合 ERC-173 的合约都必须实现该<code>ERC173</code>接口。合约还应该实现<code>REC165</code>ERC173 接口</p>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">/// @title ERC-173 Contract Ownership Standard</span>
+<span class="token comment">///  Note: the ERC-165 identifier for this interface is 0x7f5828d0</span>
+<span class="token keyword">interface</span> <span class="token class-name">ERC173</span> <span class="token punctuation">&#123;</span> <span class="token comment">// is ERC165</span>
+    <span class="token comment">/// @dev This emits when ownership of a contract changes.    </span>
+    <span class="token keyword">event</span> <span class="token function">OwnershipTransferred</span><span class="token punctuation">(</span><span class="token builtin">address</span> <span class="token keyword">indexed</span> previousOwner<span class="token punctuation">,</span> <span class="token builtin">address</span> <span class="token keyword">indexed</span> newOwner<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/// @notice Get the address of the owner    </span>
+    <span class="token comment">/// @return The address of the owner.</span>
+    <span class="token keyword">function</span> <span class="token function">owner</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">view</span> <span class="token keyword">external</span> <span class="token keyword">returns</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+    <span class="token comment">/// @notice Set the address of the new owner of the contract</span>
+    <span class="token comment">/// @dev Set _newOwner to address(0) to renounce any ownership.</span>
+    <span class="token comment">/// @param _newOwner The address of the new owner of the contract    </span>
+    <span class="token keyword">function</span> <span class="token function">transferOwnership</span><span class="token punctuation">(</span><span class="token builtin">address</span> _newOwner<span class="token punctuation">)</span> <span class="token keyword">external</span><span class="token punctuation">;</span>	
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">interface</span> <span class="token class-name">ERC165</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">/// @notice Query if a contract implements an interface</span>
+    <span class="token comment">/// @param interfaceID The interface identifier, as specified in ERC-165</span>
+    <span class="token comment">/// @dev Interface identification is specified in ERC-165. </span>
+    <span class="token comment">/// @return `true` if the contract implements `interfaceID` and</span>
+    <span class="token comment">///  `interfaceID` is not 0xffffffff, `false` otherwise</span>
+    <span class="token keyword">function</span> <span class="token function">supportsInterface</span><span class="token punctuation">(</span><span class="token builtin">bytes4</span> interfaceID<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">bool</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>该<code>owner()</code>函数可以实现为<code>pure</code>或<code>view</code></p>
+<p>该<code>transferOwnership(address _newOwner)</code>函数可以实现为<code>public</code>或<code>external</code></p>
+<p>要放弃合约的任何所有权，请将 _newOwner 设置为零地址：<code>transferOwnership(address(0))</code>。<strong>如果这样做了，那么合约将不再属于任何人</strong></p>
+<p>创建合约时应发出 OwnershipTransferred 事件。</p>
+<h2 id="基本原理："><a href="#基本原理：" class="headerlink" title="基本原理："></a>基本原理：</h2><p>映像标准的关键因素：</p>
+<ul>
+<li>将接口中的函数数量保持在最低限度，以防止合约膨胀</li>
+<li>与现有合约的向后兼容性</li>
+<li>简单</li>
+<li>气体效率高</li>
+</ul>
+<p>考虑了几种所有权方案。选择该标准中的方案是因为其简单、天然气成本低以及与现有合约的向后兼容性。</p>
+<p>以下是考虑过的其他方案：</p>
+<ol>
+<li><strong>将以太坊名称服务 (ENS) 域名与合同关联。</strong>合约的<code>owner()</code>函数可以查找特定 ENS 名称的所有者地址，并将其用作合约的所有者地址。使用此方案，可以通过将 ENS 域名的所有权转移到不同的地址来转移合同。这种方法的缺点是它不能向后兼容现有合约，并且需要gas对ENS相关合约进行外部调用以获取所有者地址。</li>
+<li><strong>将基于 ERC721 的不可替代代币 (NFT) 与合约关联。</strong>合约的所有权可能与 NFT 的所有权挂钩。这种方法的好处是现有的基于 ERC721 的基础设施可用于出售/购买/拍卖合同。这种方法的缺点是额外的复杂性和所需的基础设施。合约可以与特定的 NFT 相关联，但 NFT 不会跟踪它拥有合约的所有权，除非它被编程为跟踪合约。此外，以这种方式处理合约所有权并不向后兼容。</li>
+</ol>
+<p>本标准不排除上述所有权方案或其他方案也在同一合同中实施。例如，合同可以实施该标准，也可以实施其他方案，以便可以通过多种方式管理和转让所有权。该标准确实提供了一种简单的所有权方案，该方案向后兼容、轻量级且易于实施，并且可以被广泛采用和依赖。</p>
+<p>该标准可以（并且已经）由其他标准扩展以添加额外的所有权功能。</p>
+<h2 id="安全考虑"><a href="#安全考虑" class="headerlink" title="安全考虑"></a>安全考虑</h2><p>如果返回的地址<code>owner()</code>是外部拥有的帐户，则其私钥不得丢失或泄露。</p>
+<h2 id="向后兼容性"><a href="#向后兼容性" class="headerlink" title="向后兼容性"></a>向后兼容性</h2><p>许多现有合同已经实施该标准。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://q1ngying.cn">Q1ngying</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://q1ngying.cn/EIP173-ERC173_ContractOwnershipStandard/">https://q1ngying.cn/EIP173-ERC173_ContractOwnershipStandard/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://q1ngying.cn" target="_blank">Q1ngying</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Solidity/">Solidity</a><a class="post-meta__tags" href="/tags/EIPs/">EIPs</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.jpg" data-sites="twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="prev-post pull-left" href="/EIP191-ERC191_DataSignatureStandard/" title="EIP191"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">EIP191</div></div></a><a class="next-post pull-right" href="/EIP165-ERC165_StandardInterfaceDetection/" title="EIP165"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">EIP165</div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a href="/EIP1167-ERC1167_MinimalProxyContract/" title="EIP-1167：ERC-1167最小代理合约"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-27</div><div class="title">EIP-1167：ERC-1167最小代理合约</div></div></a><a href="/EIP191-ERC191_DataSignatureStandard/" title="EIP191"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-05</div><div class="title">EIP191</div></div></a><a href="/EIP20-ERC20Token/" title="EIP20"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-05</div><div class="title">EIP20</div></div></a><a href="/EIP2929_IncreasedGasCostForStateAccess%20opcodes/" title="EIP-2929：状态访问操作码的Gas成本增加"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-25</div><div class="title">EIP-2929：状态访问操作码的Gas成本增加</div></div></a><a href="/EIP165-ERC165_StandardInterfaceDetection/" title="EIP165"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-05</div><div class="title">EIP165</div></div></a><a href="/EIP601-ERC601_EthereumHierarchyForDeterministicWallets/" title="EIP601"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-05</div><div class="title">EIP601</div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#ERC-173-%E5%90%88%E7%BA%A6%E6%89%80%E6%9C%89%E6%9D%83%E6%A0%87%E5%87%86"><span class="toc-number">1.</span> <span class="toc-text">ERC-173 合约所有权标准</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%91%98%E8%A6%81%EF%BC%9A"><span class="toc-number">1.1.</span> <span class="toc-text">摘要：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%A8%E6%9C%BA%EF%BC%9A"><span class="toc-number">1.2.</span> <span class="toc-text">动机：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%84%E8%8C%83"><span class="toc-number">1.3.</span> <span class="toc-text">规范</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%EF%BC%9A"><span class="toc-number">1.4.</span> <span class="toc-text">基本原理：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E5%85%A8%E8%80%83%E8%99%91"><span class="toc-number">1.5.</span> <span class="toc-text">安全考虑</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%91%E5%90%8E%E5%85%BC%E5%AE%B9%E6%80%A7"><span class="toc-number">1.6.</span> <span class="toc-text">向后兼容性</span></a></li></ol></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url(/img/back1.webp);"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By Q1ngying</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script>(() => {
+  const panguFn = () => {
+    if (typeof pangu === 'object') pangu.autoSpacingPage()
+    else {
+      btf.getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+        .then(() => {
+          pangu.autoSpacingPage()
+        })
+    }
+  }
+
+  const panguInit = () => {
+    if (false){
+      GLOBAL_CONFIG_SITE.isPost && panguFn()
+    } else {
+      panguFn()
+    }
+  }
+
+  btf.addGlobalFn('pjaxComplete', panguInit, 'pangu')
+  document.addEventListener('DOMContentLoaded', panguInit)
+})()</script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="17,185,200" opacity="0.8" zIndex="-1" count="200" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script></div></body></html>

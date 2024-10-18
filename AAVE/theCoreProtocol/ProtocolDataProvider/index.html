@@ -1,0 +1,730 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>ProtocolDataProvider | Q1ngying</title><meta name="author" content="Q1ngying"><meta name="copyright" content="Q1ngying"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#FFFFFF"><meta name="description" content="该合约的目的是帮助集成商和开发人员更轻松的利用 Aave 协议的数据和功能。 源码：https:&#x2F;&#x2F;github.com&#x2F;aave&#x2F;protocol-v2&#x2F;blob&#x2F;ice&#x2F;mainnet-deployment-03-12-2020&#x2F;contracts&#x2F;misc&#x2F;AaveProtocolDataProvider.sol 每个市场都有一个单独的协议数据提供商。要获取特定市场的地址，请使用值 0x1调">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ProtocolDataProvider">
+<meta property="og:url" content="https://q1ngying.cn/AAVE/theCoreProtocol/ProtocolDataProvider/index.html">
+<meta property="og:site_name" content="Q1ngying">
+<meta property="og:description" content="该合约的目的是帮助集成商和开发人员更轻松的利用 Aave 协议的数据和功能。 源码：https:&#x2F;&#x2F;github.com&#x2F;aave&#x2F;protocol-v2&#x2F;blob&#x2F;ice&#x2F;mainnet-deployment-03-12-2020&#x2F;contracts&#x2F;misc&#x2F;AaveProtocolDataProvider.sol 每个市场都有一个单独的协议数据提供商。要获取特定市场的地址，请使用值 0x1调">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://q1ngying.cn/img/butterfly-icon.jpg">
+<meta property="article:published_time" content="2024-10-17T11:12:59.000Z">
+<meta property="article:modified_time" content="2024-10-18T08:56:25.857Z">
+<meta property="article:author" content="Q1ngying">
+<meta property="article:tag" content="DeFi">
+<meta property="article:tag" content="AAVE">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://q1ngying.cn/img/butterfly-icon.jpg"><link rel="shortcut icon" href="/img/icons8-clover-ios-16-glyph-32.png"><link rel="canonical" href="https://q1ngying.cn/AAVE/theCoreProtocol/ProtocolDataProvider/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><meta name="google-site-verification" content="IzCM4B791_p7IAU4WhRfiLlPBnODnamJ7ixKxzoeNfk"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#1b1b1b')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#FFFFFF')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'ProtocolDataProvider',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-10-18 16:56:25'
+}</script><script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script><script>LA.init({id:"3Jzfa21KlLms3Lkh",ck:"3Jzfa21KlLms3Lkh"})</script><link rel="stylesheet" href="/css/style.css?1"><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/butterfly-icon.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">28</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">27</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/back1.webp);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Q1ngying</span></a><a class="nav-page-title" href="/"><span class="site-name">ProtocolDataProvider</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">ProtocolDataProvider</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-10-17T11:12:59.000Z" title="发表于 2024-10-17 19:12:59">2024-10-17</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-10-18T08:56:25.857Z" title="更新于 2024-10-18 16:56:25">2024-10-18</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/DeFI/">DeFI</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AAVE/">AAVE</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">60k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>3:20分钟</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>该合约的目的是帮助集成商和开发人员更轻松的利用 Aave 协议的数据和功能。</p>
+<p>源码：<a target="_blank" rel="noopener" href="https://github.com/aave/protocol-v2/blob/ice/mainnet-deployment-03-12-2020/contracts/misc/AaveProtocolDataProvider.sol">https://github.com/aave/protocol-v2/blob/ice/mainnet-deployment-03-12-2020/contracts/misc/AaveProtocolDataProvider.sol</a></p>
+<p>每个市场都有一个单独的协议数据提供商。要获取特定市场的地址，请使用值 <code>0x1</code>调用<code>getAddress()</code></p>
+<h2 id="Methods"><a href="#Methods" class="headerlink" title="Methods"></a>Methods</h2><h3 id="getAllReservesTokens"><a href="#getAllReservesTokens" class="headerlink" title="getAllReservesTokens()"></a>getAllReservesTokens()</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">getAllReservesTokens</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>返回当前市场所有储备代币的数组，其形式为 TokenData 结构体，由代币符号和代币地址组成。</p>
+<p><strong>返回值</strong></p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TokenData[]</code></td>
+<td>有字符串类型的符号<code>symbol</code> 和地址类型的 <code>tokenAddress</code>组成的结构体</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="getAllTokens"><a href="#getAllTokens" class="headerlink" title="getAllTokens()"></a>getAllTokens()</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">getAllTokens</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>返回当前市场的所有 aToken 的数组，以 TokenData 结构体的形式返回，该结构体由 Token symbol 和 Token address 组成。</p>
+<p><strong>返回值</strong></p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TokenData[]</code></td>
+<td>一个结构体，由 string 类型的 symbol 和 address 类型的 tokenAddress 组成。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="getReserveConfigurationData"><a href="#getReserveConfigurationData" class="headerlink" title="getReserveConfigurationData()"></a>getReserveConfigurationData()</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">getReserveConfigurationData</span><span class="token punctuation">(</span><span class="token builtin">address</span> asset<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>返回<code>asset</code>的配置数据</p>
+<p><strong>返回值</strong></p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>uint256</code></td>
+<td><code>decimals</code>：储备使用的 decimals</td>
+</tr>
+<tr>
+<td><code>uint256</code></td>
+<td><code>ltv</code>：贷款价值</td>
+</tr>
+<tr>
+<td><code>uint256</code></td>
+<td><code>liquidationThreshold</code>：储备金的强平阈值</td>
+</tr>
+<tr>
+<td><code>uint256</code></td>
+<td><code>liquidationBonus</code>：授予清算人的赏金</td>
+</tr>
+<tr>
+<td><code>uint256</code></td>
+<td><code>reserveFactor</code>：储备因子</td>
+</tr>
+<tr>
+<td><code>bool</code></td>
+<td><code>usageAsCollateralEnable</code>：是否开启 reserve 作为抵押品</td>
+</tr>
+<tr>
+<td><code>bool</code></td>
+<td><code>borrowingEnable</code>：是否在 reserve 上启用借款</td>
+</tr>
+<tr>
+<td><code>bool</code></td>
+<td><code>stableBorrowRateEnable</code>：是否开启稳定利率借款</td>
+</tr>
+<tr>
+<td><code>bool</code></td>
+<td><code>isActive</code>：储备是否处于活跃状态</td>
+</tr>
+<tr>
+<td><code>bool</code></td>
+<td><code>isFrozen</code>：储备是否被冻结/禁用</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="getReserveData"><a href="#getReserveData" class="headerlink" title="getReserveData()"></a>getReserveData()</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">getReserveData</span><span class="token punctuation">(</span><span class="token builtin">address</span> asset<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>返回 <code>asset</code>相关联的数据。</p>
+<p><strong>返回值</strong></p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>uint256</code></td>
+<td><code>availableLiquidity</code>：可用的流动性数量</td>
+</tr>
+<tr>
+<td><code>uint256</code></td>
+<td><code>totalStableDebt</code>：以稳定利率借款的债务总额</td>
+</tr>
+<tr>
+<td><code>uint256</code></td>
+<td><code>totalVariableDebt</code>：以浮动利率借款的债务总额</td>
+</tr>
+<tr>
+<td><code>uint256</code></td>
+<td><code>liquidityRate</code>：存款/添加流动性的利率</td>
+</tr>
+<tr>
+<td><code>uint256</code></td>
+<td><code>variableBorrowRate</code>： 浮动利率借款的利率</td>
+</tr>
+<tr>
+<td><code>uint256</code></td>
+<td><code>stableBorrowRate</code>：稳定利率借款的利率</td>
+</tr>
+<tr>
+<td><code>uint256</code></td>
+<td><code>averageStableBorrowRate</code>：当前平均稳定借款利率</td>
+</tr>
+<tr>
+<td><code>uint256</code></td>
+<td><code>liquidityIndex</code>：用于流动性计算的指数</td>
+</tr>
+<tr>
+<td><code>uint256</code></td>
+<td><code>variableBorrowIndex</code>：用于浮动利率债务计算的指数</td>
+</tr>
+<tr>
+<td><code>uint40</code></td>
+<td><code>lastUpdateTimestamp</code>：储备上次更新的时间戳</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="getUserReserveData"><a href="#getUserReserveData" class="headerlink" title="getUserReserveData()"></a>getUserReserveData()</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">getUserReserveData</span><span class="token punctuation">(</span><span class="token builtin">address</span> asset<span class="token punctuation">,</span> <span class="token builtin">address</span> user<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>返回用户<code>user</code> 的指定资产 <code>asset</code>储备数据。</p>
+<p><strong>返回值</strong></p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>uint256</code></td>
+<td><code>currentATokenBalance</code>：<code>user</code>当前的 aToken 余额</td>
+</tr>
+<tr>
+<td><code>uint256</code></td>
+<td><code>currentStableDebt</code>：<code>user</code>当前的稳定利率债务</td>
+</tr>
+<tr>
+<td><code>uint256</code></td>
+<td><code>currentVariableDebt</code>：<code>user</code>当前的浮动利率债务</td>
+</tr>
+<tr>
+<td><code>uint256</code></td>
+<td><code>principalStableDebt</code>：<code>user</code>的本金稳定利率债务</td>
+</tr>
+<tr>
+<td><code>uint256</code></td>
+<td><code>scaledVariableDebt</code>：<code>user</code>的可变利率债务缩放值</td>
+</tr>
+<tr>
+<td><code>uint256</code></td>
+<td><code>stableBorrowRate</code>：<code>user</code>的稳定利率借款利率</td>
+</tr>
+<tr>
+<td><code>uint256</code></td>
+<td><code>liquidityRate</code>：<code>user</code>通过 <code>deposit</code>获得的利率</td>
+</tr>
+<tr>
+<td><code>uint40</code></td>
+<td><code>stableRateLastUpdated</code>：上次稳定利率更新的时间戳</td>
+</tr>
+<tr>
+<td><code>bool</code></td>
+<td><code>usageAsCollateralEnabled</code>：该资产是否已启用作为用户的抵押品</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>什么是“本金稳定利率债务”？</p>
+<blockquote>
+<p>以下回答来着 ChatGPT-4o：</p>
+<p>“用户的本金稳定利率债务” 是指用户通过稳定利率借款的 <strong>本金部分</strong>。在 DeFi 借贷协议中，本金指的是最初借入的金额，而稳定利率则是该笔借款的利率类型，即在借款期内利率相对稳定，不会频繁波动。</p>
+<p>具体来说，<strong>本金稳定利率债务</strong> 是用户在 Aave 协议中借入的、以稳定利率计算的初始债务金额，不包括利息部分。例如，如果用户借了 100 DAI 以稳定利率形式进行贷款，那么这 100 DAI 就是“本金稳定利率债务”，后续会基于这个金额计算利息。</p>
+<p>这种区分对于理解 DeFi 借贷中的利率和债务结构非常重要，因为在一笔借款中，本金和累积的利息会影响用户的还款总额。</p>
+</blockquote>
+<h3 id="getReserveTokensAddresses"><a href="#getReserveTokensAddresses" class="headerlink" title="getReserveTokensAddresses()"></a>getReserveTokensAddresses()</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">getReserveTokensAddresses</span><span class="token punctuation">(</span><span class="token builtin">address</span> asset<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>返回资产<code>asset</code>的关联地址。</p>
+<p><strong>返回值</strong></p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>address</code></td>
+<td><code>aTokenAddress</code>：代币化存款的地址</td>
+</tr>
+<tr>
+<td><code>address</code></td>
+<td><code>stableDebtTokenAddress</code>：稳定利率债务代币的地址</td>
+</tr>
+<tr>
+<td><code>address</code></td>
+<td><code>variableDebtTokenAddress</code>：可变利率债务代币的地址</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="ABI"><a href="#ABI" class="headerlink" title="ABI"></a>ABI</h2><pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">[</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token property">"inputs"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"contract ILendingPoolAddressesProvider"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"addressesProvider"</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"address"</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">"stateMutability"</span><span class="token operator">:</span> <span class="token string">"nonpayable"</span><span class="token punctuation">,</span>
+        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"constructor"</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token property">"inputs"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"ADDRESSES_PROVIDER"</span><span class="token punctuation">,</span>
+        <span class="token property">"outputs"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"contract ILendingPoolAddressesProvider"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"address"</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">"stateMutability"</span><span class="token operator">:</span> <span class="token string">"view"</span><span class="token punctuation">,</span>
+        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"function"</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token property">"inputs"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"getAllATokens"</span><span class="token punctuation">,</span>
+        <span class="token property">"outputs"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"components"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+                    <span class="token punctuation">&#123;</span>
+                        <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+                        <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"symbol"</span><span class="token punctuation">,</span>
+                        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span>
+                    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+                    <span class="token punctuation">&#123;</span>
+                        <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"address"</span><span class="token punctuation">,</span>
+                        <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"tokenAddress"</span><span class="token punctuation">,</span>
+                        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"address"</span>
+                    <span class="token punctuation">&#125;</span>
+                <span class="token punctuation">]</span><span class="token punctuation">,</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"struct AaveProtocolDataProvider.TokenData[]"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"tuple[]"</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">"stateMutability"</span><span class="token operator">:</span> <span class="token string">"view"</span><span class="token punctuation">,</span>
+        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"function"</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token property">"inputs"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"getAllReservesTokens"</span><span class="token punctuation">,</span>
+        <span class="token property">"outputs"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"components"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+                    <span class="token punctuation">&#123;</span>
+                        <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+                        <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"symbol"</span><span class="token punctuation">,</span>
+                        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span>
+                    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+                    <span class="token punctuation">&#123;</span>
+                        <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"address"</span><span class="token punctuation">,</span>
+                        <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"tokenAddress"</span><span class="token punctuation">,</span>
+                        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"address"</span>
+                    <span class="token punctuation">&#125;</span>
+                <span class="token punctuation">]</span><span class="token punctuation">,</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"struct AaveProtocolDataProvider.TokenData[]"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">""</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"tuple[]"</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">"stateMutability"</span><span class="token operator">:</span> <span class="token string">"view"</span><span class="token punctuation">,</span>
+        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"function"</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token property">"inputs"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"address"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"asset"</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"address"</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"getReserveConfigurationData"</span><span class="token punctuation">,</span>
+        <span class="token property">"outputs"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"uint256"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"decimals"</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"uint256"</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"uint256"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"ltv"</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"uint256"</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"uint256"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"liquidationThreshold"</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"uint256"</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"uint256"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"liquidationBonus"</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"uint256"</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"uint256"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"reserveFactor"</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"uint256"</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"bool"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"usageAsCollateralEnabled"</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"bool"</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"bool"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"borrowingEnabled"</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"bool"</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"bool"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"stableBorrowRateEnabled"</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"bool"</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"bool"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"isActive"</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"bool"</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"bool"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"isFrozen"</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"bool"</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">"stateMutability"</span><span class="token operator">:</span> <span class="token string">"view"</span><span class="token punctuation">,</span>
+        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"function"</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token property">"inputs"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"address"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"asset"</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"address"</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"getReserveData"</span><span class="token punctuation">,</span>
+        <span class="token property">"outputs"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"uint256"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"availableLiquidity"</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"uint256"</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"uint256"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"totalStableDebt"</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"uint256"</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"uint256"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"totalVariableDebt"</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"uint256"</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"uint256"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"liquidityRate"</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"uint256"</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"uint256"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"variableBorrowRate"</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"uint256"</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"uint256"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"stableBorrowRate"</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"uint256"</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"uint256"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"averageStableBorrowRate"</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"uint256"</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"uint256"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"liquidityIndex"</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"uint256"</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"uint256"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"variableBorrowIndex"</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"uint256"</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"uint40"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"lastUpdateTimestamp"</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"uint40"</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">"stateMutability"</span><span class="token operator">:</span> <span class="token string">"view"</span><span class="token punctuation">,</span>
+        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"function"</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token property">"inputs"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"address"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"asset"</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"address"</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"getReserveTokensAddresses"</span><span class="token punctuation">,</span>
+        <span class="token property">"outputs"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"address"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"aTokenAddress"</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"address"</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"address"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"stableDebtTokenAddress"</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"address"</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"address"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"variableDebtTokenAddress"</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"address"</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">"stateMutability"</span><span class="token operator">:</span> <span class="token string">"view"</span><span class="token punctuation">,</span>
+        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"function"</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token punctuation">&#123;</span>
+        <span class="token property">"inputs"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"address"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"asset"</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"address"</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"address"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"user"</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"address"</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"getUserReserveData"</span><span class="token punctuation">,</span>
+        <span class="token property">"outputs"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"uint256"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"currentATokenBalance"</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"uint256"</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"uint256"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"currentStableDebt"</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"uint256"</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"uint256"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"currentVariableDebt"</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"uint256"</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"uint256"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"principalStableDebt"</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"uint256"</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"uint256"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"scaledVariableDebt"</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"uint256"</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"uint256"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"stableBorrowRate"</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"uint256"</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"uint256"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"liquidityRate"</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"uint256"</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"uint40"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"stableRateLastUpdated"</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"uint40"</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+            <span class="token punctuation">&#123;</span>
+                <span class="token property">"internalType"</span><span class="token operator">:</span> <span class="token string">"bool"</span><span class="token punctuation">,</span>
+                <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"usageAsCollateralEnabled"</span><span class="token punctuation">,</span>
+                <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"bool"</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">"stateMutability"</span><span class="token operator">:</span> <span class="token string">"view"</span><span class="token punctuation">,</span>
+        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"function"</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="IProtocolDataProvider"><a href="#IProtocolDataProvider" class="headerlink" title="IProtocolDataProvider"></a>IProtocolDataProvider</h2><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// SPDX-License-Identifier: agpl-3.0</span>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token number">0.6</span><span class="token number">.12</span><span class="token punctuation">;</span>
+<span class="token keyword">pragma</span> experimental ABIEncoderV2<span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>ILendingPoolAddressesProvider<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'./ILendingPoolAddressesProvider.sol'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">interface</span> <span class="token class-name">IProtocolDataProvider</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">struct</span> <span class="token class-name">TokenData</span> <span class="token punctuation">&#123;</span>
+    <span class="token builtin">string</span> symbol<span class="token punctuation">;</span>
+    <span class="token builtin">address</span> tokenAddress<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token keyword">function</span> <span class="token function">ADDRESSES_PROVIDER</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span>ILendingPoolAddressesProvider<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">function</span> <span class="token function">getAllReservesTokens</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span>TokenData<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token keyword">memory</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">function</span> <span class="token function">getAllATokens</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span>TokenData<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token keyword">memory</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">function</span> <span class="token function">getReserveConfigurationData</span><span class="token punctuation">(</span><span class="token builtin">address</span> asset<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span> decimals<span class="token punctuation">,</span> <span class="token builtin">uint256</span> ltv<span class="token punctuation">,</span> <span class="token builtin">uint256</span> liquidationThreshold<span class="token punctuation">,</span> <span class="token builtin">uint256</span> liquidationBonus<span class="token punctuation">,</span> <span class="token builtin">uint256</span> reserveFactor<span class="token punctuation">,</span> <span class="token builtin">bool</span> usageAsCollateralEnabled<span class="token punctuation">,</span> <span class="token builtin">bool</span> borrowingEnabled<span class="token punctuation">,</span> <span class="token builtin">bool</span> stableBorrowRateEnabled<span class="token punctuation">,</span> <span class="token builtin">bool</span> isActive<span class="token punctuation">,</span> <span class="token builtin">bool</span> isFrozen<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">function</span> <span class="token function">getReserveData</span><span class="token punctuation">(</span><span class="token builtin">address</span> asset<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span> availableLiquidity<span class="token punctuation">,</span> <span class="token builtin">uint256</span> totalStableDebt<span class="token punctuation">,</span> <span class="token builtin">uint256</span> totalVariableDebt<span class="token punctuation">,</span> <span class="token builtin">uint256</span> liquidityRate<span class="token punctuation">,</span> <span class="token builtin">uint256</span> variableBorrowRate<span class="token punctuation">,</span> <span class="token builtin">uint256</span> stableBorrowRate<span class="token punctuation">,</span> <span class="token builtin">uint256</span> averageStableBorrowRate<span class="token punctuation">,</span> <span class="token builtin">uint256</span> liquidityIndex<span class="token punctuation">,</span> <span class="token builtin">uint256</span> variableBorrowIndex<span class="token punctuation">,</span> <span class="token builtin">uint40</span> lastUpdateTimestamp<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">function</span> <span class="token function">getUserReserveData</span><span class="token punctuation">(</span><span class="token builtin">address</span> asset<span class="token punctuation">,</span> <span class="token builtin">address</span> user<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span> currentATokenBalance<span class="token punctuation">,</span> <span class="token builtin">uint256</span> currentStableDebt<span class="token punctuation">,</span> <span class="token builtin">uint256</span> currentVariableDebt<span class="token punctuation">,</span> <span class="token builtin">uint256</span> principalStableDebt<span class="token punctuation">,</span> <span class="token builtin">uint256</span> scaledVariableDebt<span class="token punctuation">,</span> <span class="token builtin">uint256</span> stableBorrowRate<span class="token punctuation">,</span> <span class="token builtin">uint256</span> liquidityRate<span class="token punctuation">,</span> <span class="token builtin">uint40</span> stableRateLastUpdated<span class="token punctuation">,</span> <span class="token builtin">bool</span> usageAsCollateralEnabled<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">function</span> <span class="token function">getReserveTokensAddresses</span><span class="token punctuation">(</span><span class="token builtin">address</span> asset<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">address</span> aTokenAddress<span class="token punctuation">,</span> <span class="token builtin">address</span> stableDebtTokenAddress<span class="token punctuation">,</span> <span class="token builtin">address</span> variableDebtTokenAddress<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://q1ngying.cn">Q1ngying</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://q1ngying.cn/AAVE/theCoreProtocol/ProtocolDataProvider/">https://q1ngying.cn/AAVE/theCoreProtocol/ProtocolDataProvider/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://q1ngying.cn" target="_blank">Q1ngying</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/DeFi/">DeFi</a><a class="post-meta__tags" href="/tags/AAVE/">AAVE</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.jpg" data-sites="twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="prev-post pull-left" href="/AAVE/theCoreProtocol/aToken/" title="aToken"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">aToken</div></div></a><a class="next-post pull-right" href="/AAVE/theCoreProtocol/AddressProviderRegistry/" title="AddressProviderRegistry"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">AddressProviderRegistry</div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a href="/AAVE/theCoreProtocol/" title="AAVE 核心协议"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-17</div><div class="title">AAVE 核心协议</div></div></a><a href="/AAVE/theCoreProtocol/AAVEToken/" title="AAVEToken"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-17</div><div class="title">AAVEToken</div></div></a><a href="/AAVE/guide/Flashloan/" title="Flashloan"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-18</div><div class="title">Flashloan</div></div></a><a href="/AAVE/guide/CreateDelegate/" title="CreateDelegate"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-18</div><div class="title">CreateDelegate</div></div></a><a href="/AAVE/guide/TroublesshootingErrors/" title="TroublesshootingErrors"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-18</div><div class="title">TroublesshootingErrors</div></div></a><a href="/AAVE/theCoreProtocol/AddressProviderRegistry/" title="AddressProviderRegistry"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-17</div><div class="title">AddressProviderRegistry</div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Methods"><span class="toc-number">1.</span> <span class="toc-text">Methods</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#getAllReservesTokens"><span class="toc-number">1.1.</span> <span class="toc-text">getAllReservesTokens()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#getAllTokens"><span class="toc-number">1.2.</span> <span class="toc-text">getAllTokens()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#getReserveConfigurationData"><span class="toc-number">1.3.</span> <span class="toc-text">getReserveConfigurationData()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#getReserveData"><span class="toc-number">1.4.</span> <span class="toc-text">getReserveData()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#getUserReserveData"><span class="toc-number">1.5.</span> <span class="toc-text">getUserReserveData()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#getReserveTokensAddresses"><span class="toc-number">1.6.</span> <span class="toc-text">getReserveTokensAddresses()</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ABI"><span class="toc-number">2.</span> <span class="toc-text">ABI</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IProtocolDataProvider"><span class="toc-number">3.</span> <span class="toc-text">IProtocolDataProvider</span></a></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url(/img/back1.webp);"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By Q1ngying</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script>(() => {
+  const panguFn = () => {
+    if (typeof pangu === 'object') pangu.autoSpacingPage()
+    else {
+      btf.getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+        .then(() => {
+          pangu.autoSpacingPage()
+        })
+    }
+  }
+
+  const panguInit = () => {
+    if (false){
+      GLOBAL_CONFIG_SITE.isPost && panguFn()
+    } else {
+      panguFn()
+    }
+  }
+
+  btf.addGlobalFn('pjaxComplete', panguInit, 'pangu')
+  document.addEventListener('DOMContentLoaded', panguInit)
+})()</script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="17,185,200" opacity="0.8" zIndex="-1" count="200" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script></div></body></html>

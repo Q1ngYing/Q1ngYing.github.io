@@ -1,0 +1,499 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>EIP721：ERC721非同质化代币标准 | Q1ngying</title><meta name="author" content="Q1ngying"><meta name="copyright" content="Q1ngying"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#FFFFFF"><meta name="description" content="ERC721-非同质化代币标准简要说明：不可替代代币（NFT：non-fungible tokens）的标准接口。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="EIP721：ERC721非同质化代币标准">
+<meta property="og:url" content="https://q1ngying.cn/EIP721-ERC721_NFT/index.html">
+<meta property="og:site_name" content="Q1ngying">
+<meta property="og:description" content="ERC721-非同质化代币标准简要说明：不可替代代币（NFT：non-fungible tokens）的标准接口。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://q1ngying.cn/img/butterfly-icon.jpg">
+<meta property="article:published_time" content="2023-11-12T09:16:27.000Z">
+<meta property="article:modified_time" content="2023-11-12T09:25:40.934Z">
+<meta property="article:author" content="Q1ngying">
+<meta property="article:tag" content="Solidity">
+<meta property="article:tag" content="EIPs">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://q1ngying.cn/img/butterfly-icon.jpg"><link rel="shortcut icon" href="/img/icons8-clover-ios-16-glyph-32.png"><link rel="canonical" href="https://q1ngying.cn/EIP721-ERC721_NFT/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><meta name="google-site-verification" content="IzCM4B791_p7IAU4WhRfiLlPBnODnamJ7ixKxzoeNfk"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#1b1b1b')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#FFFFFF')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'EIP721：ERC721非同质化代币标准',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-11-12 17:25:40'
+}</script><script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script><script>LA.init({id:"3Jzfa21KlLms3Lkh",ck:"3Jzfa21KlLms3Lkh"})</script><link rel="stylesheet" href="/css/style.css?1"><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/butterfly-icon.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">28</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">27</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/back1.webp);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Q1ngying</span></a><a class="nav-page-title" href="/"><span class="site-name">EIP721：ERC721非同质化代币标准</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">EIP721：ERC721非同质化代币标准</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-11-12T09:16:27.000Z" title="发表于 2023-11-12 17:16:27">2023-11-12</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-11-12T09:25:40.934Z" title="更新于 2023-11-12 17:25:40">2023-11-12</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/EIPs/">EIPs</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">40k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>2:13分钟</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="ERC721-非同质化代币标准"><a href="#ERC721-非同质化代币标准" class="headerlink" title="ERC721-非同质化代币标准"></a>ERC721-非同质化代币标准</h1><p><strong>简要说明</strong>：不可替代代币（NFT：non-fungible tokens）的标准接口。</p>
+<span id="more"></span>
+<p>原文章：<a target="_blank" rel="noopener" href="https://eips.ethereum.org/EIPS/eip-721">https://eips.ethereum.org/EIPS/eip-721</a></p>
+<h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>以下标准允许在智能合约中实施 NFT 标准 API该标准提供了跟踪和传输 NFT 的基本功能。</p>
+<p>该提案考虑了个人拥有和交易 NFT 以及委托给第三方经纪人/钱包/拍卖商（“运营商”）的用例。NFT 可以代表数字或实物资产的所有权。该提案考虑了各种各样的资产，如：</p>
+<ul>
+<li>有形财产：房屋、独特的艺术品</li>
+<li>虚拟收藏品：独特的小猫图片、收藏卡</li>
+<li>“负价值”资产——贷款、负担和其他责任</li>
+</ul>
+<p>一般来说，所有的房子都是不同的，没有任何两只小猫是相同的。<strong>NFT 是可区分的，必须单独跟踪每一项 NFT 的所有权。</strong></p>
+<h2 id="动机"><a href="#动机" class="headerlink" title="动机"></a>动机</h2><p>标准接口允许钱包/经纪人/拍卖应用程序与以太坊上的任何 NFT 配合使用。我们提供简单的 ERC-721 智能合约以及跟踪任意大量 NFT 的合约。下面讨论其他应用。</p>
+<p>该标准受到 ERC-20 代币标准的启发，并建立在 EIP-20 创建以来两年的经验基础上。EIP-20 不足以跟踪 NFT，因为每种资产都是不同的（不可替代），而每个数量的代币都是相同的（可替代）</p>
+<p>下面探讨了该标准与 EIP-20 之间的差异。</p>
+<h2 id="规格"><a href="#规格" class="headerlink" title="规格"></a>规格</h2><p>每个符合 ERC-721 的合约都必须实现 ERC-721 和 ERC-165 接口：</p>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.4.20</span><span class="token punctuation">;</span>
+
+<span class="token comment">/// @title ERC-721 不可替代代币标准</span>
+<span class="token comment">/// @dev 参见 https://eips.ethereum.org/EIPs/eip-721</span>
+<span class="token comment">/// Note: 此接口的 ERC-165 标识符是 0x80ac58cd</span>
+<span class="token keyword">interface</span> <span class="token class-name">ERC721</span> <span class="token punctuation">&#123;</span> <span class="token comment">// is ERC165</span>
+	<span class="token comment">/// @dev 当任何 NFT 的所有权通过任何机制发生变化时，就会触发此事件</span>
+	<span class="token comment">/// 当 NFT 创建(`from` == 0)和销毁(`to` == 0)时发出此事件</span>
+	<span class="token comment">/// 例如在合约创建期间，可以创建和分配任意数量的 NFT，而无需发出 Transfer。</span>
+	<span class="token comment">/// 在任何转账时，该 NFT 的批准地址（如果有）将重置为 无</span>
+	<span class="token keyword">event</span> <span class="token function">Transfer</span><span class="token punctuation">(</span><span class="token builtin">address</span> <span class="token keyword">indexed</span> _from<span class="token punctuation">,</span> <span class="token builtin">address</span> <span class="token keyword">indexed</span> _to<span class="token punctuation">,</span> <span class="token builtin">uint256</span> <span class="token keyword">indexed</span> _tokenId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	<span class="token comment">/// @dev 当 NFT 的批准地址更改或重新确认时会触发该事件。零地址表示没有批准的地址</span>
+	<span class="token comment">/// 当 Transfer 事件发出时，这也表明该 NFT 的批准地址（如果有）被重置为无</span>
+	<span class="token keyword">event</span> <span class="token function">Approval</span><span class="token punctuation">(</span><span class="token builtin">address</span> <span class="token keyword">indexed</span> _owner<span class="token punctuation">,</span> <span class="token builtin">address</span> <span class="token keyword">indexed</span> _approved<span class="token punctuation">,</span> <span class="token builtin">uint256</span> <span class="token keyword">indexed</span> _tokenId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	<span class="token comment">/// @dev 当为所有者启用或禁止操作员时，触发该事件</span>
+	<span class="token comment">/// 运营者可以管理所有者的所有 NFT。</span>
+	<span class="token keyword">event</span> <span class="token function">ApprovalForAll</span><span class="token punctuation">(</span><span class="token builtin">address</span> <span class="token keyword">indexed</span>  _owner<span class="token punctuation">,</span> <span class="token builtin">address</span> <span class="token keyword">indexed</span> _approved<span class="token punctuation">,</span> <span class="token builtin">uint256</span> <span class="token keyword">indexed</span> _tokenId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	<span class="token comment">/// @notice 计算分配给所有者的所有 NFT</span>
+	<span class="token comment">/// @dev NFT 分给零地址被认为是无效的，并且该函数会抛出有关零地址的查询</span>
+	<span class="token comment">/// @param 要查询余额的地址</span>
+	<span class="token comment">/// @return 拥有 NFT 的数量，可能为 0</span>
+	<span class="token keyword">function</span> <span class="token function">balanceOf</span><span class="token punctuation">(</span><span class="token builtin">address</span> _owner<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span><span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	<span class="token comment">/// @notice 查找 NFT 的所有者</span>
+	<span class="token comment">/// @dev NFT 分配到零地址被认为是无效的，并且关于他们的查询确实会抛出</span>
+	<span class="token comment">/// @param _tokensId NFT 的标识符</span>
+	<span class="token comment">/// @return NFT 所有者的地址</span>
+	<span class="token keyword">function</span> <span class="token function">ownerOf</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> _tokenId<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	<span class="token comment">/// @notice 将 NFT 所有权从一个地址转移到另一个地址</span>
+	<span class="token comment">/// @dev 抛出异常，除非`msg.sender`是当前所有者、授权操作者或批准的地址</span>
+	<span class="token comment">/// 如果 `_from` 不是当前所有者，则抛出异常，如果`_to`是零地址，则抛出异常</span>
+	<span class="token comment">/// 传输完毕后，此函数检查“_to”是否是智能合约（code > 0）</span>
+	<span class="token comment">/// 如果是，他会在`_to`上调用`onERC721Received`</span>
+	<span class="token comment">/// 如果返回值不是`byte4(keccak256("onERC721Received(address, address, uint256, bytes)"))`,则会抛出异常</span>
+	<span class="token comment">/// @param _from NFT 的当前所有者</span>
+	<span class="token comment">/// @param _to 新的所有者</span>
+	<span class="token comment">/// @param _tokenId 要传输的 NFT</span>
+	<span class="token comment">/// @param data 没有指定格式的附加数据，在对`_to`的调用中发送</span>
+	<span class="token keyword">function</span> <span class="token function">safeTransferFrom</span><span class="token punctuation">(</span><span class="token builtin">address</span> _from<span class="token punctuation">,</span> <span class="token builtin">address</span> _to<span class="token punctuation">,</span> <span class="token builtin">uint256</span> _tokenId<span class="token punctuation">,</span> <span class="token builtin">bytes</span> data<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">payable</span><span class="token punctuation">;</span>
+	
+	<span class="token comment">/// @notice 将 NFT 的所有权从一个地址转移到另一个地址</span>
+	<span class="token comment">/// @dev 这与带有额外数据参数的另一函数的工作方式相同，知识该函数将 data 设置为""</span>
+	<span class="token comment">/// @param _from NFT 的当前所有者</span>
+	<span class="token comment">/// @param _to 新所有者</span>
+	<span class="token comment">/// @param _tokenId 要传输的 NFT</span>
+	<span class="token keyword">function</span> <span class="token function">safeTransferFrom</span><span class="token punctuation">(</span><span class="token builtin">address</span> _from<span class="token punctuation">,</span> <span class="token builtin">address</span> _to<span class="token punctuation">,</span> <span class="token builtin">uint256</span> _tokenId<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">payable</span><span class="token punctuation">;</span>
+	
+	<span class="token comment">/// @notice 转移 NFT 的所有权——调用者有责任确认`_to`能够接受 NFTs，否则它们可能会永久丢失</span>
+	<span class="token comment">/// @dev 抛出异常，除非`msg.sender`是当前所有者，一个授权的运营商，或该 NFT 的批准地址。如果 `_tokenId` 不是有效的 NFT，则抛出异常</span>
+	<span class="token comment">/// @param _from NFT的当前所有者</span>
+	<span class="token comment">/// @param _to 新所有者</span>
+	<span class="token comment">/// @param _tokenId 要传输的 NFT</span>
+	<span class="token keyword">function</span> <span class="token function">transferFrom</span><span class="token punctuation">(</span><span class="token builtin">address</span> _from<span class="token punctuation">,</span> <span class="token builtin">address</span> _to<span class="token punctuation">,</span> <span class="token builtin">uint256</span> _tokenId<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">payable</span><span class="token punctuation">;</span>
+	
+	<span class="token comment">/// @notice 更改或重新确认 NFT 的批准地址</span>
+	<span class="token comment">/// @dev 零地址表示没有批准的地址</span>
+	<span class="token comment">/// 除非 `msg.sender` 是当前 NFT 所有者或或当前所有者的授权操作员，否则抛出异常</span>
+	<span class="token comment">/// @param _approved 新批准的 NFT 控制着</span>
+	<span class="token comment">/// @param _tokenId 要批准的 NFT</span>
+	<span class="token keyword">function</span> <span class="token function">approve</span><span class="token punctuation">(</span><span class="token builtin">address</span> _approved<span class="token punctuation">,</span> <span class="token builtin">uint256</span> _tokenId<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">payable</span><span class="token punctuation">;</span>
+	
+	<span class="token comment">/// @notice 启用或禁用第三方（“操作员”）管理的批准</span>
+	<span class="token comment">/// `msg.sender` 的所有资产</span>
+	<span class="token comment">/// @dev 发出 ApprovalForAll 事件，合约必须允许每个所有者有多个操作员</span>
+	<span class="token comment">/// @param _operator 添加到授权操作员集合中的地址</span>
+	<span class="token comment">/// @param _approved 如果操作员获得批准为 true，如果撤销批准则为 false</span>
+	<span class="token keyword">function</span> <span class="token function">setApprovalForAll</span><span class="token punctuation">(</span><span class="token builtin">address</span> _operator<span class="token punctuation">,</span> <span class="token builtin">bool</span> _approved<span class="token punctuation">)</span> <span class="token keyword">external</span><span class="token punctuation">;</span>
+	
+	<span class="token comment">/// @notice 获得单个 NFT 的批准地址</span>
+	<span class="token comment">/// @dev 如果`_tokenId`不是有效的 NFT，则抛出异常</span>
+	<span class="token comment">/// @param _tokenId 用于查找批准地址的 NFT</span>
+	<span class="token comment">/// @return 返回该 NFT 的批准地址，如果没有则为零地址</span>
+	<span class="token keyword">function</span> <span class="token function">getApproved</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> _tokenId<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	<span class="token comment">/// @notice 查询一个地址是否是另一个地址的授权操作者</span>
+	<span class="token comment">/// @param _owner 拥有 NFT 的地址</span>
+	<span class="token comment">/// @param _operator 代表所有者的地址</span>
+	<span class="token comment">/// @return 如果`_operator`是`_owner`的批准操作员，则返回 true，否则返回 false</span>
+	<span class="token keyword">function</span> <span class="token function">isApprovedForAll</span><span class="token punctuation">(</span><span class="token builtin">address</span> _owner<span class="token punctuation">,</span> <span class="token builtin">address</span> _operator<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span><span class="token punctuation">(</span><span class="token builtin">bool</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">interface</span> <span class="token class-name">ERC165</span><span class="token punctuation">&#123;</span>
+	<span class="token comment">/// @notice 查询合约是否实现了接口</span>
+	<span class="token comment">/// @param interfaceID 接口标识符，如 ERC-165 中指定的</span>
+	<span class="token comment">/// @dev 接口标识在 ERC-165 中指定，这个功能使用的 gas 少于 30,000</span>
+	<span class="token comment">/// @return 如果合约实现了`interfaceID`，则返回 `true` 并且 `interfaceID` 不为 0xffffffff，否则为 `false`</span>
+	<span class="token keyword">function</span> <span class="token function">supportsInterface</span><span class="token punctuation">(</span><span class="token builtin">bytes4</span> interfaceID<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span><span class="token punctuation">(</span><span class="token builtin">bool</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如果钱包/经纪人/拍卖应用程序接受安全转账，则必须实现钱包接口。</p>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">/// @dev 注意：此接口的 ERC-165 标识符为 0x150b7a02</span>
+<span class="token keyword">interface</span> <span class="token class-name">ERC721TokenReceiver</span><span class="token punctuation">&#123;</span>
+	<span class="token comment">/// @notice 处理 NFT 的接收</span>
+	<span class="token comment">/// @dev ERC721 智能合约在“转账”后在接受者上调用此函数。该函数可能会抛出异常以恢复被拒绝传输，返回魔术变量意外的值必须导致交易回滚</span>
+	<span class="token comment">/// Note: 合约地址始终是消息发送者</span>
+	<span class="token comment">/// @param _operator 调用 `safeTransferFrom` 函数的地址</span>
+	<span class="token comment">/// @param _from 之前拥有该代币的地址</span>
+	<span class="token comment">/// @param _tokenId 正在传输的 NFT 标识符</span>
+	<span class="token comment">/// @param _data 没有指定格式的附加数据</span>
+	<span class="token comment">/// @return `bytes4(keccak256('onERC721Received(address, address, uint256, bytes)'))` 除非抛出</span>
+	<span class="token keyword">function</span> <span class="token function">onERC721Received</span><span class="token punctuation">(</span><span class="token builtin">address</span> _operator<span class="token punctuation">,</span> <span class="token builtin">address</span> _from<span class="token punctuation">,</span> <span class="token builtin">uint256</span> _tokenId<span class="token punctuation">,</span> <span class="token builtin">bytes</span> _data<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">returns</span><span class="token punctuation">(</span><span class="token builtin">bytes4</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>对于 ERC-721 智能合约，元数据拓展是可选的（参考下面的“注意事项”）。这允许访问智能合约的名称以及 NFT 所代表的资产的详细信息。</p>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">/// @title ERC-721 不可替代代币标准，可选元数据拓展</span>
+<span class="token comment">/// @dev 参考：https://eips.ethereum.org/EIPS/eip-721</span>
+<span class="token comment">/// Note：该接口的 ERC-165 标识符为 0x5b5e139f</span>
+<span class="token keyword">interface</span> <span class="token class-name">ERC721</span> Metadata <span class="token punctuation">&#123;</span> <span class="token comment">// is ERC721</span>
+	<span class="token comment">/// @notice 本合约中 NFT 集合的描述性名称</span>
+	<span class="token keyword">function</span> <span class="token function">name</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">string</span> _name<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	<span class="token comment">/// @notice 本合约中 NFT 的缩写名称</span>
+	<span class="token keyword">function</span> <span class="token function">symbol</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">string</span> _symbol<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	<span class="token comment">/// @notice 给定资产的独特统一资源标识符（URI）</span>
+	<span class="token comment">/// @dev 如果`_tokenId` 不是有效的 NFT，则抛出异常。URI 在 RFC3986 中定义.</span>
+	<span class="token comment">/// URI 可以指向符合“ERC721 元数据 JSON 架构”的 JSON 文件。</span>
+	<span class="token keyword">function</span> <span class="token function">tokenURI</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> _tokenId<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">string</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这是上面引用的“ERC721 元数据 JSON 架构”</p>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">&#123;</span>
+    <span class="token property">"title"</span><span class="token operator">:</span><span class="token string">"Asset Metadata"</span><span class="token punctuation">,</span>
+    <span class="token property">"type"</span><span class="token operator">:</span><span class="token string">"object"</span><span class="token punctuation">,</span>
+    <span class="token property">"properties"</span><span class="token operator">:</span><span class="token punctuation">&#123;</span>
+        <span class="token property">"name"</span><span class="token operator">:</span><span class="token punctuation">&#123;</span>
+        	<span class="token property">"type"</span><span class="token operator">:</span><span class="token string">"string"</span><span class="token punctuation">,</span>
+        	<span class="token property">"description"</span><span class="token operator">:</span><span class="token string">"Identifies the asset to which this NFT represents"</span>
+        <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    	<span class="token property">"description"</span><span class="token operator">:</span><span class="token punctuation">&#123;</span>
+        	<span class="token property">"type"</span><span class="token operator">:</span><span class="token string">"string"</span><span class="token punctuation">,</span>
+       		<span class="token property">"description"</span><span class="token operator">:</span><span class="token string">"Describes the asset to which this NFT represents"</span>
+    	<span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+        <span class="token property">"image"</span><span class="token operator">:</span><span class="token punctuation">&#123;</span>
+            <span class="token property">"type"</span><span class="token operator">:</span><span class="token string">"string"</span><span class="token punctuation">,</span>
+            <span class="token property">"description"</span><span class="token operator">:</span><span class="token string">"A URI pointing to a resource which mime type image/*representing the asset to which this NFT represents. Consider making any images at a width between 320 and 1080 pixels and aspect ratio between 1.91:1 and 4:5 inclusive."</span>
+	    <span class="token punctuation">&#125;</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>对于 ERC-721 合约，枚举拓展是可选的（参考下面的”注意事项”）。这允许合约发布其完整的 NFT 列表并使其可以被发现</p>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">/// @title ERC-721 不可替代代币标准，可选枚举拓展</span>
+<span class="token comment">/// @dev 参考：https://eips.ethereum.org/EIPS/eip-721</span>
+<span class="token comment">/// 注意：该接口的 ERC-165 标识符是 0x780e9d63</span>
+<span class="token keyword">interface</span> <span class="token class-name">ERC721Enumerable</span>  <span class="token punctuation">&#123;</span> <span class="token comment">//is ERC721</span>
+	<span class="token comment">/// @notice 计数该合约跟踪的 NFT</span>
+	<span class="token comment">/// @return 该合约跟踪的有效 NFT 计数，其中每个 NFT 都有一个指定且可查询的所有者，不等于零地址。</span>
+	<span class="token keyword">function</span> <span class="token function">totalSupply</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span><span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	<span class="token comment">/// @notice 枚举有效的 NFT</span>
+	<span class="token comment">/// @dev 如果`_index` >= `totalSupply()` 则抛出异常</span>
+	<span class="token comment">/// @param _index 小于`totalSupply()` 的计数器</span>
+	<span class="token comment">/// @return 返回第`_index`个 NFT 的代币标识符（未指定排序顺序）</span>
+	<span class="token keyword">function</span> <span class="token function">tokenByIndex</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> _index<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	<span class="token comment">/// @notice 美剧分配给所有者的 NFT</span>
+	<span class="token comment">/// @dev 如果 `_index` >= `balanceOf(_owner)` 或者如果`_owner`是零地址，则抛出，表示无效的 NFT</span>
+	<span class="token comment">/// @param _owner 我们对它们拥有的 NFT 感兴趣的地址</span>
+	<span class="token comment">/// @param _index 小于 `balanceOf(_owner)` 的计数器</span>
+	<span class="token comment">/// @return 分配给“_owner”的第“_index”个 NFT 的代币标识符（未指定排序顺序）</span>
+	<span class="token keyword">function</span> <span class="token function">tokenOfOwnerByIndex</span><span class="token punctuation">(</span><span class="token builtin">address</span> _owner<span class="token punctuation">,</span> <span class="token builtin">uint256</span> _index<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span><span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><p>Solidity 0.4.20 版本的接口语法表达能力不足以记录 ERC-721 标准。每个符号 ERC-721 的合约还必须遵守以下规定：</p>
+<ul>
+<li>Solidity issue #3412：上述接口包含每个函数的显性可变性保证。可变性保证从弱到强依次为：<code>`payable</code>，implicit nonpayable（隐式不可支付）、<code>view</code>和 <code>pure</code>。你的实现必须满足此接口中的可变性保证，并且你可能会满足更强的保证。例如，此接口中的 <code>payable</code> 函数可以在你的合约中实现为 nonpayable（未指定状态可变性）。我们预计更高版本的 Solidity 版本将允许你从该接口继承更严格的合约，但 0.4.20 版本的解决方案是你可以在从合约继承之前编辑此接口以添加更严格的可变性。</li>
+<li>Solidity issue #3419：实现 <code>ERC721Metadata</code> 或 <code>ERC721Enumerable</code> 的合约也应实现 <code>ERC721</code>。ERC-721 实现了ERC-165 接口的要求。</li>
+<li>Solidity issue #2330：如果一个函数在本规范中显示为<code>external</code>，那么如果它使用 <code>public</code> ，那么合约是合规的。作为 0.4.20 的解决方法，可以编辑此接口以在继承合约之前切换到公共接口</li>
+<li>Solidity issue #3494、#3544：使用<code>this.*.selector</code> 被 Solidity 标记为警告，Solidity 的未来版本不会将其标记为错误</li>
+</ul>
+<p>如果新版本的 Solidity 允许用代码表示警告，则可以更新此 EIP 并删除警告，这将等同于原始规范。</p>
+<h2 id="基本原理"><a href="#基本原理" class="headerlink" title="基本原理"></a>基本原理</h2><p>以太坊智能合约有许多议题的用途都依赖于跟踪可区分资产。现在或计划中的 NFT 的例子包括 Decentraland 中的 LAND、CryptoPunks 中的同名朋克，以及使用 DMarket 或 EnjinCoin 等系统的游戏内物品。未来的用途包括跟踪现实世界的资产，如房地产（正如 Ubiquity 或 Propyl 等公司所设想的那样）。在每种情况下，至关重要的是，<strong>这些项目不能作为分类帐本中的数字“集中在一起”</strong>，而是每项资产必须单独且原子地跟踪其所有权。无论这些资产的性质如何，如果我们拥有一个允许跨职能资产管理和销售平台的标准化接口，那么生态系统将会更加强大。</p>
+<h3 id="“NFT”选词"><a href="#“NFT”选词" class="headerlink" title="“NFT”选词"></a>“NFT”选词</h3><p>“NFT” 几乎让所有受访者感到满意，并且广泛适用于广泛的可区分数字资产，我们认识到“契约”对于本标准的某些应用（特别是物理属性）具有很强的描述性。</p>
+<p>考虑的替代方案：可区分资产、所有权、代币、资产、股票、票据</p>
+<h3 id="NFT-标识符（NFT-Identifiers）"><a href="#NFT-标识符（NFT-Identifiers）" class="headerlink" title="NFT 标识符（NFT Identifiers）"></a>NFT 标识符（NFT Identifiers）</h3><p>每个 NFT 都由 ERC-721 合约中唯一<code>uint256</code>ID 进行标识。该识别号码在合约有效期内不得更改。该Pair<code>contract address, uint256 tokenId)</code>将成为以太坊链上特定资产的全球唯一且完全合格的标识符。虽然某些 ERC-721 智能合约可能会发现从 ID 0 开始并为每一个新 NFT 简单地加一很方便，但调用者不应假设 ID 号具有任何特殊模式。并且必须将 ID 视为“黑匣子”。另外注意，NFT 可能会变得无效（被销毁）。请参阅枚举函数以了解支持的枚举接口。</p>
+<p><code>uint256</code> 的选择允许各种各样的应用程序，因为 UUID 和 sha3 哈希可以直接转换为<code>uint256</code></p>
+<h3 id="转移机制"><a href="#转移机制" class="headerlink" title="转移机制"></a>转移机制</h3><p>ERC-721 标准化了安全传输函数 <code>safeTransferFrom</code>（带不带字节参数重载）和不安全函数 <code>transferFrom</code>。转账可以通过以下方式发起：</p>
+<ul>
+<li>NFT 的所有者</li>
+<li>NFT 的批准地址</li>
+<li>NFT 当前所有者的授权运营商</li>
+</ul>
+<p>此外，授权商可以为 NFT 设置批准的地址。这为钱包、经纪商和拍卖应用程序提供了一套强大的工具来快速使用大量 NFT。</p>
+<p>传输和接受函数的文档仅指定事件必须抛出的条件。你的实现可能会引发其他情况。这使得实现能够获得有趣的结果：</p>
+<ul>
+<li><p><strong>如果合约已暂停，则禁止传输——</strong>现有技术，CryptoKitties 部署的合约，第 611 行</p>
+</li>
+<li><p><strong>在黑名单中阻止某些地址接收 NFT</strong>——先前的 CryptoKitties 部署的合约，第 565、566 行</p>
+</li>
+<li><p><strong>禁止不安全的传输</strong>——除非<code>_to</code>等于 <code>msg.sender</code>或<code>countOf(_to)</code>非零或之前非零（因为这种情况是安全的），否则 transferFrom 会抛出异常</p>
+</li>
+<li><p><strong>对交易的双方收取费用</strong>——调用 <code>approve</code> 时要求支付一个非零的 <code>_approved</code>（如果之前是零地址），如果调用 <code>approve</code> 时 <code>_approved</code> 是零地址并且之前是非零地址，则退款支付，调用任何转移函数时要求支付，要求转移参数 <code>_to</code> 等于 <code>msg.sender</code>，要求转移参数 <code>_to</code> 是 NFT 的批准地址</p>
+</li>
+<li><p><strong>只读 NFT 注册表</strong>——总是从<code>safeTransferFrom</code>、<code>transferFrom</code>、<code>approve</code>和<code>setApprovalForAll</code>中抛出异常</p>
+</li>
+</ul>
+<p><strong>失败的交易会抛出异常</strong>，这是 ERC-223、ERC-677、ERC-827 和 OpenZeppelin 的 SafeERC20.sol 中识别出的最佳做法。ERC-20定义了一个授权功能，当调用后稍后将其修改为不不同金额是，会造成问题，就像在 OpenZeppelin 的问题 #438 中。在 ERC-721 中，没有授权，因为每个 NFT 都是唯一的，数字是 0 或者 1，因此我们得到了 ERC-20 最初设计的好处，而没有后来发现的问题</p>
+<p>NFT 的创建（“铸造”）和销毁（“燃烧”）不包括在规范中。您的合约可以通过其他方式实现这些功能。请参考有关创建和销毁 NFT 时您的责任<code>event</code>文档</p>
+<p>我们质疑 <code>onERC721Received</code> 上的 <code>operator</code> 参数是否有必要，在我们能想象的所有情况中，如果操作员很重要，那么操作员可以将代币转移到自己名下，然后发送它，然后他们将成为 <code>from</code> 地址，这似乎时牵强的，因为我们认为操作员时代币的临时所有者（将其转移到自己时多余的）。当操作员发送代币时，它是操作员根据自己的意愿行事，而不是代币持有人的代理人行事。这就是为什么操作员和先前的代币所有者对于代币接收者都很重要的原因。</p>
+<p>考虑的替代方法：只允许两步 ERC-20 风格交易，要求转账功能从不引发异常，要求所有功能返回指示操作成功的布尔值。</p>
+<h3 id="ERC-165-接口"><a href="#ERC-165-接口" class="headerlink" title="ERC-165 接口"></a>ERC-165 接口</h3><p>我们选择了标准接口检查（ERC-165）来公开 ERC-721 智能合约支持的接口。</p>
+<p>未来的 EIP 可能会创建一个全球合约接口的注册表。我们强烈支持这样的 EIP，他将允许您的 ERC-721 实现通过委托到另一个合约来实现 <code>ERC721Enumerable</code>、<code>ERC721Metadata</code>或其他接口。</p>
+<h3 id="Gas-和复杂性（关于枚举拓展）"><a href="#Gas-和复杂性（关于枚举拓展）" class="headerlink" title="Gas 和复杂性（关于枚举拓展）"></a>Gas 和复杂性（关于枚举拓展）</h3><p>该规范考虑了管理少量和任意大量 NFT 的实现。如果您的应用程序能够增长，请避免在您的代码中使用 <code>for/while</code> 循环（参见 CryptoKitties 赏金问题 #4）。这些循环表明您的合约可能无法拓展，并且 Gas 成本将随着时间的推移而无限上升。</p>
+<p>我们已经部署了一个名为 XXXXERC721 的合约到测试网络，他实例化并跟踪了340282366920938463463374607431768211456个不同的契约（2^128）</p>
+<p>。这足以将每个 IPV6 地址分配给以太坊账户的所有者，或者根据尺寸只有几微米的纳米机器人的所有权，总计占地球大小的一般。您可以从区块链中查询它。而且每个功能所需的燃气比查询 ENS 所需的燃气费要少。</p>
+<p>这个例子清楚地说明了：ERC-721 标准时可拓展的。</p>
+<p>考虑的替代方法：如果需要 for 循环，则删除资产枚举功能，或者从枚举功能返回一个 Solidity 数组类型。</p>
+<h3 id="隐私"><a href="#隐私" class="headerlink" title="隐私"></a>隐私</h3><p>在动机部分中确定的钱包/经纪人/拍卖商对于确定所有者拥有的 NFT 具有强烈的需求。</p>
+<p>考虑到 NFT 不能被列举的用例可能会很有趣，比如私人的资产所有权注册表，或者部分私人的注册表。然而，<strong>隐私无法实现，因为攻击者可以简单地调用 ownerOf 以获取每个可能的 tokenId。</strong></p>
+<h3 id="元数据选择（元数据拓展）"><a href="#元数据选择（元数据拓展）" class="headerlink" title="元数据选择（元数据拓展）"></a>元数据选择（元数据拓展）</h3><p>我们在元数据拓展中要求了名称和符号函数，我们审查的每个代币 EIP 和草案（ERC-20、ERC-223、ERC-677、ERC-777、ERC-827）都包含了这些函数。</p>
+<p>我们提醒实现作者，如果你对此机制的使用标识抗议，空字符串是名称和符号的有效响应。我们还要提醒大家，任何合约都可以使用与您的合约相同的名称和符号。客户端如何确定哪些 ERC-721 智能合约是规范的，超出了此标准的范围。</p>
+<p>提供了一种将 NFT 与 URI 关联的机制。我们预计许多实现将利用此功能为每个 NFT 提供元数据。图像大小的建议取自 Instagram ，他们可能对图像可用性了解甚深。URI 可能是可变的（即它会随着时间变化）。我们考虑了一个代表房屋所有权的 NFT，这种情况下关于房屋的元数据（图像、居住者等）自然会发生变化。</p>
+<p>元数据以字符串值返回。目前，这只能从 web3 中调用，而不能从其他合约中调用。这是可以接受的，因为我们还没有考虑在区块链上应用程序会查询此类信息的用例。</p>
+<p>考虑的替代方案：将每个资产的所有数据存储在区块链上（成本过高），使用 URL 模板来查询元数据部分（URL 模板不能与所有 URL 方案一起使用，特别是 P2P URL），多地址网络地址（成熟度还不够）</p>
+<h3 id="社区共识"><a href="#社区共识" class="headerlink" title="社区共识"></a>社区共识</h3><p>在最初的ERC-721问题上进行了大量讨论，此外，我们在Gitter上举行了第一次现场会议，得到了良好的代表性和广泛宣传（在Reddit上，在Gitter的＃ERC频道上以及最初的ERC-721问题中）。感谢以下参与者：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/imallinnow">@ImAllInNow</a> Rob from DEC Gaming / 在密歇根以太坊聚会上介绍于2月7日 </li>
+<li><a target="_blank" rel="noopener" href="https://github.com/arachnid">@Arachnid</a> Nick Johnson</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/jadhavajay">@jadhavajay</a> AyanWorks的Ajay Jadhav </li>
+<li><a target="_blank" rel="noopener" href="https://github.com/superphly">@superphly</a> Cody Marx Bailey - XRAM Capital / 在1月20日的黑客马拉松中分享/联合国金融未来黑客马拉松。 </li>
+<li><a target="_blank" rel="noopener" href="https://github.com/fulldecent">@fulldecent</a> William Entriken 在ETHDenver 2018年举行了第二次活动，讨论可以区分的资产标准（笔记将被发布）。</li>
+</ul>
+<p>在这个过程中，我们一直非常包容，并邀请任何有疑问或贡献的人参与我们的讨论。然而，此标准仅编写以支持在此处列出的已确定的用例。</p>
+<h2 id="向后兼容性"><a href="#向后兼容性" class="headerlink" title="向后兼容性"></a>向后兼容性</h2><p>我们采用了来自 ERC-20 规范的<code>balanceOf</code>、<code>totalSupply</code>、<code>name</code>和<code>symbol</code>语义。实现也可以包括一个返回<code>uint8(0)</code>的函数<code>decimals</code>，如果其目标是更兼容 ERC-20 并支持此标准的话。然而，我们认为要求所有 ERC-721 实现都支持<code>decimals</code>函数是牵强附会的。</p>
+<p>截至2018年2月，以下是一些示例NFT实现：</p>
+<ul>
+<li>CryptoKitties - 与早期版本的此标准兼容。 </li>
+<li>CryptoPunks - 部分兼容 ERC-20，但不容易通用化，因为它在合约中直接包含拍卖功能，并使用将资产明确称为“punks”的函数名称。</li>
+<li>Auctionhouse Asset Interfacec 拍卖资产接口 - 作者需要一个拍卖房屋 ÐApp 的通用接口（目前搁置）。他的“资产”合约非常简单，但缺少 ERC-20 兼容性，<code>approve()</code>功能和元数据。在 EIP-173 的讨论中引用了这一努力。</li>
+</ul>
+<p>注意：像 Curio Cards 和 Rare Pepe 这样的“限量版、可收藏的代币”并不是可以区分的资产。实际上，它们是由许多个可互换的代币组成的集合，每个代币都由其自己的智能合约跟踪，并拥有自己的总供应量（在极端情况下可能为<code>`1</code>）。</p>
+<p><code>onERC721Received</code>函数专门解决了可能在某些情况下即使没有实现函数也会不经意地返回1（<code>true</code>）的旧部署合约问题（请参阅 Solidity 的 DelegateCallReturnValue 漏洞）。通过返回并检查一个魔术值，我们能够区分实际的肯定响应和这些无效的真值。</p>
+<h2 id="测试用例"><a href="#测试用例" class="headerlink" title="测试用例"></a>测试用例</h2><p>0xcert ERC-721 Token包括使用Truffle编写的测试用例。</p>
+<h2 id="实现示例"><a href="#实现示例" class="headerlink" title="实现示例"></a>实现示例</h2><ol>
+<li><p>0xcert ERC721 – 一个参考实现</p>
+<ul>
+<li>采用 MIT 许可，您可以自由地在您的项目中使用它</li>
+<li>包括测试用例</li>
+<li>有积极的漏洞赏金计划，如果您发现错误，您将会得到报酬</li>
+</ul>
+</li>
+<li><p>Su Squares – 一个广告平台，您可以在其中租用空间并放置图片</p>
+<ul>
+<li>参与 Su Squares 漏洞赏金计划，以寻找与此标准或其实现相关的问题</li>
+<li>实现了完整的标准和所有可选接口</li>
+</ul>
+</li>
+<li><p>ERC721ExampleDeed – 一个示例实现</p>
+<ul>
+<li>使用 OpenZeppelin 项目格式实现</li>
+</ul>
+</li>
+<li><p>XXXXERC721，由 William Entriken 提供 – 一个可扩展的示例实现</p>
+<ul>
+<li>部署在 Testnet 上，实例化并跟踪了 340282366920938463463374607431768211456 个不同的权利凭证（2^128）</li>
+<li>能够支持所有通过元数据扩展进行的查询。这证明了扩展性不是一个问题。</li>
+</ul>
+</li>
+</ol>
+<h2 id="References-参考资料"><a href="#References-参考资料" class="headerlink" title="References (参考资料):"></a>References (参考资料):</h2><h3 id="标准-Standards"><a href="#标准-Standards" class="headerlink" title="标准 (Standards):"></a>标准 (Standards):</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://eips.ethereum.org/EIPS/eip-20">ERC-20</a> 代币标准</li>
+<li><a target="_blank" rel="noopener" href="https://eips.ethereum.org/EIPS/eip-165">ERC-165</a> 标准接口检测</li>
+<li><a target="_blank" rel="noopener" href="https://eips.ethereum.org/EIPS/eip-173">ERC-173</a> 拥有标准</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/ethereum/EIPs/issues/223">ERC-223</a> 代币标准</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/ethereum/EIPs/issues/677">ERC-677</a> <code>transferAndCall</code> 代币标准</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/ethereum/EIPs/issues/827">ERC-827</a> 代币标准</li>
+<li>以太坊名字服务 (ENS)。<a target="_blank" rel="noopener" href="https://ens.domains">https://ens.domains</a></li>
+<li>Instagram – 图像分辨率是多少？<a target="_blank" rel="noopener" href="https://help.instagram.com/1631821640426723">https://help.instagram.com/1631821640426723</a></li>
+<li>JSON Schema。<a target="_blank" rel="noopener" href="https://json-schema.org/">https://json-schema.org/</a></li>
+<li>Multiaddr。<a target="_blank" rel="noopener" href="https://github.com/multiformats/multiaddr">https://github.com/multiformats/multiaddr</a></li>
+<li>RFC 2119 用于在 RFC 中指示要求级别的关键词。<a target="_blank" rel="noopener" href="https://www.ietf.org/rfc/rfc2119.txt">https://www.ietf.org/rfc/rfc2119.txt</a></li>
+</ul>
+<h3 id="问题-Issues"><a href="#问题-Issues" class="headerlink" title="问题 (Issues):"></a>问题 (Issues):</h3><ul>
+<li>最初的 ERC-721 问题。<br><a target="_blank" rel="noopener" href="https://github.com/ethereum/eips/issues/721">https://github.com/ethereum/eips/issues/721</a></li>
+<li>Solidity 问题 #2330 – 接口函数是外部的。<br><a target="_blank" rel="noopener" href="https://github.com/ethereum/solidity/issues/2330">https://github.com/ethereum/solidity/issues/2330</a></li>
+<li>Solidity 问题 #3412 – 实现接口：允许更严格的可变性。<br><a target="_blank" rel="noopener" href="https://github.com/ethereum/solidity/issues/3412">https://github.com/ethereum/solidity/issues/3412</a></li>
+<li>Solidity 问题 #3419 – 接口不能继承。<br><a target="_blank" rel="noopener" href="https://github.com/ethereum/solidity/issues/3419">https://github.com/ethereum/solidity/issues/3419</a></li>
+<li>Solidity 问题 #3494 – 编译器错误地推断了选择器函数。<br><a target="_blank" rel="noopener" href="https://github.com/ethereum/solidity/issues/3494">https://github.com/ethereum/solidity/issues/3494</a></li>
+<li>Solidity 问题 #3544 – 无法计算名为 transfer 的函数的选择器。<br><a target="_blank" rel="noopener" href="https://github.com/ethereum/solidity/issues/3544">https://github.com/ethereum/solidity/issues/3544</a></li>
+<li>CryptoKitties 赏金问题 #4 – 列出用户拥有的所有 Kitties 是 O(n^2)。<br><a target="_blank" rel="noopener" href="https://github.com/axiomzen/cryptokitties-bounty/issues/4">https://github.com/axiomzen/cryptokitties-bounty/issues/4</a></li>
+<li>OpenZeppelin 问题 #438 – approve 方法的实现违反了 ERC20 标准。<br><a target="_blank" rel="noopener" href="https://github.com/OpenZeppelin/zeppelin-solidity/issues/438">https://github.com/OpenZeppelin/zeppelin-solidity/issues/438</a></li>
+<li>Solidity DelegateCallReturnValue 漏洞。<br><a target="_blank" rel="noopener" href="https://solidity.readthedocs.io/en/develop/bugs.html#DelegateCallReturnValue">https://solidity.readthedocs.io/en/develop/bugs.html#DelegateCallReturnValue</a></li>
+</ul>
+<h3 id="讨论-Discussions"><a href="#讨论-Discussions" class="headerlink" title="讨论 (Discussions):"></a>讨论 (Discussions):</h3><ul>
+<li>Reddit (首次现场讨论的公告)。<br><a target="_blank" rel="noopener" href="https://www.reddit.com/r/ethereum/comments/7r2ena/friday_119_live_discussion_on_erc_nonfungible/">https://www.reddit.com/r/ethereum/comments/7r2ena/friday_119_live_discussion_on_erc_nonfungible/</a></li>
+<li>Gitter #EIPs (首次现场讨论的公告)。<br><a target="_blank" rel="noopener" href="https://gitter.im/ethereum/EIPs?at=5a5f823fb48e8c3566f0a5e7">https://gitter.im/ethereum/EIPs?at=5a5f823fb48e8c3566f0a5e7</a></li>
+<li>ERC-721 (首次现场讨论的公告)。<br><a target="_blank" rel="noopener" href="https://github.com/ethereum/eips/issues/721#issuecomment-358369377">https://github.com/ethereum/eips/issues/721#issuecomment-358369377</a></li>
+<li>ETHDenver 2018. <a target="_blank" rel="noopener" href="https://ethdenver.com">https://ethdenver.com</a></li>
+</ul>
+<h3 id="NFT-实现和其他项目-NFT-Implementations-and-Other-Projects"><a href="#NFT-实现和其他项目-NFT-Implementations-and-Other-Projects" class="headerlink" title="NFT 实现和其他项目 (NFT Implementations and Other Projects):"></a>NFT 实现和其他项目 (NFT Implementations and Other Projects):</h3><ul>
+<li>CryptoKitties。<a target="_blank" rel="noopener" href="https://www.cryptokitties.co">https://www.cryptokitties.co</a></li>
+<li>0xcert ERC-721 代币。<a target="_blank" rel="noopener" href="https://github.com/0xcert/ethereum-erc721">https://github.com/0xcert/ethereum-erc721</a></li>
+<li>Su Squares。<a target="_blank" rel="noopener" href="https://tenthousandsu.com">https://tenthousandsu.com</a></li>
+<li>Decentraland。<a target="_blank" rel="noopener" href="https://decentraland.org">https://decentraland.org</a></li>
+<li>CryptoPunks。<br><a target="_blank" rel="noopener" href="https://www.larvalabs.com/cryptopunks">https://www.larvalabs.com/cryptopunks</a></li>
+<li>DMarket。<a target="_blank" rel="noopener" href="https://www.dmarket.io">https://www.dmarket.io</a></li>
+<li>Enjin Coin。<a target="_blank" rel="noopener" href="https://enjincoin.io">https://enjincoin.io</a></li>
+<li>Ubitquity。<a target="_blank" rel="noopener" href="https://www.ubitquity.io">https://www.ubitquity.io</a></li>
+<li>Propy。<a target="_blank" rel="noopener" href="https://tokensale.propy.com">https://tokensale.propy.com</a></li>
+<li>CryptoKitties 部署的合约。<br><a target="_blank" rel="noopener" href="https://etherscan.io/address/0x06012c8cf97bead5deae237070f9587f8e7a266d#code">https://etherscan.io/address/0x06012c8cf97bead5deae237070f9587f8e7a266d#code</a></li>
+<li>Su Squares 漏洞赏金计划。<a target="_blank" rel="noopener" href="https://github.com/fulldecent/su-squares-bounty">https://github.com/fulldecent/su-squares-bounty</a></li>
+<li>XXXXERC721。<a target="_blank" rel="noopener" href="https://github.com/fulldecent/erc721-example">https://github.com/fulldecent/erc721-example</a></li>
+<li>ERC721ExampleDeed。<a target="_blank" rel="noopener" href="https://github.com/nastassiasachs/ERC721ExampleDeed">https://github.com/nastassiasachs/ERC721ExampleDeed</a></li>
+<li>Curio Cards。<a target="_blank" rel="noopener" href="https://mycuriocards.com">https://mycuriocards.com</a></li>
+<li>Rare Pepe。<a target="_blank" rel="noopener" href="https://rarepepewallet.com">https://rarepepewallet.com</a></li>
+<li>拍卖房屋资产接口。<a target="_blank" rel="noopener" href="https://github.com/dob/auctionhouse/blob/master/contracts/Asset.sol">https://github.com/dob/auctionhouse/blob/master/contracts/Asset.sol</a></li>
+<li>OpenZeppelin 的 SafeERC 20.sol 实现。<br><a target="_blank" rel="noopener" href="https://github.com/OpenZeppelin/zeppelin-solidity/blob/master/contracts/token/ERC20/SafeERC20.sol">https://github.com/OpenZeppelin/zeppelin-solidity/blob/master/contracts/token/ERC20/SafeERC20.sol</a></li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://q1ngying.cn">Q1ngying</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://q1ngying.cn/EIP721-ERC721_NFT/">https://q1ngying.cn/EIP721-ERC721_NFT/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://q1ngying.cn" target="_blank">Q1ngying</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Solidity/">Solidity</a><a class="post-meta__tags" href="/tags/EIPs/">EIPs</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.jpg" data-sites="twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="prev-post pull-left" href="/EIP777-ERC777Token/" title="EIP777：ERC777代币标准"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">EIP777：ERC777代币标准</div></div></a><a class="next-post pull-right" href="/UniswapV2/" title="UniswapV2合约"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">UniswapV2合约</div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a href="/EIP1167-ERC1167_MinimalProxyContract/" title="EIP-1167：ERC-1167最小代理合约"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-27</div><div class="title">EIP-1167：ERC-1167最小代理合约</div></div></a><a href="/EIP173-ERC173_ContractOwnershipStandard/" title="EIP173"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-05</div><div class="title">EIP173</div></div></a><a href="/EIP191-ERC191_DataSignatureStandard/" title="EIP191"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-05</div><div class="title">EIP191</div></div></a><a href="/EIP20-ERC20Token/" title="EIP20"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-05</div><div class="title">EIP20</div></div></a><a href="/EIP2929_IncreasedGasCostForStateAccess%20opcodes/" title="EIP-2929：状态访问操作码的Gas成本增加"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-25</div><div class="title">EIP-2929：状态访问操作码的Gas成本增加</div></div></a><a href="/EIP165-ERC165_StandardInterfaceDetection/" title="EIP165"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-05</div><div class="title">EIP165</div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#ERC721-%E9%9D%9E%E5%90%8C%E8%B4%A8%E5%8C%96%E4%BB%A3%E5%B8%81%E6%A0%87%E5%87%86"><span class="toc-number">1.</span> <span class="toc-text">ERC721-非同质化代币标准</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%91%98%E8%A6%81"><span class="toc-number">1.1.</span> <span class="toc-text">摘要</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%A8%E6%9C%BA"><span class="toc-number">1.2.</span> <span class="toc-text">动机</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%84%E6%A0%BC"><span class="toc-number">1.3.</span> <span class="toc-text">规格</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-number">1.4.</span> <span class="toc-text">注意事项</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86"><span class="toc-number">1.5.</span> <span class="toc-text">基本原理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%80%9CNFT%E2%80%9D%E9%80%89%E8%AF%8D"><span class="toc-number">1.5.1.</span> <span class="toc-text">“NFT”选词</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#NFT-%E6%A0%87%E8%AF%86%E7%AC%A6%EF%BC%88NFT-Identifiers%EF%BC%89"><span class="toc-number">1.5.2.</span> <span class="toc-text">NFT 标识符（NFT Identifiers）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BD%AC%E7%A7%BB%E6%9C%BA%E5%88%B6"><span class="toc-number">1.5.3.</span> <span class="toc-text">转移机制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ERC-165-%E6%8E%A5%E5%8F%A3"><span class="toc-number">1.5.4.</span> <span class="toc-text">ERC-165 接口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Gas-%E5%92%8C%E5%A4%8D%E6%9D%82%E6%80%A7%EF%BC%88%E5%85%B3%E4%BA%8E%E6%9E%9A%E4%B8%BE%E6%8B%93%E5%B1%95%EF%BC%89"><span class="toc-number">1.5.5.</span> <span class="toc-text">Gas 和复杂性（关于枚举拓展）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9A%90%E7%A7%81"><span class="toc-number">1.5.6.</span> <span class="toc-text">隐私</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%83%E6%95%B0%E6%8D%AE%E9%80%89%E6%8B%A9%EF%BC%88%E5%85%83%E6%95%B0%E6%8D%AE%E6%8B%93%E5%B1%95%EF%BC%89"><span class="toc-number">1.5.7.</span> <span class="toc-text">元数据选择（元数据拓展）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A4%BE%E5%8C%BA%E5%85%B1%E8%AF%86"><span class="toc-number">1.5.8.</span> <span class="toc-text">社区共识</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%91%E5%90%8E%E5%85%BC%E5%AE%B9%E6%80%A7"><span class="toc-number">1.6.</span> <span class="toc-text">向后兼容性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E7%94%A8%E4%BE%8B"><span class="toc-number">1.7.</span> <span class="toc-text">测试用例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E7%A4%BA%E4%BE%8B"><span class="toc-number">1.8.</span> <span class="toc-text">实现示例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#References-%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-number">1.9.</span> <span class="toc-text">References (参考资料):</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%87%E5%87%86-Standards"><span class="toc-number">1.9.1.</span> <span class="toc-text">标准 (Standards):</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%AE%E9%A2%98-Issues"><span class="toc-number">1.9.2.</span> <span class="toc-text">问题 (Issues):</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%A8%E8%AE%BA-Discussions"><span class="toc-number">1.9.3.</span> <span class="toc-text">讨论 (Discussions):</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#NFT-%E5%AE%9E%E7%8E%B0%E5%92%8C%E5%85%B6%E4%BB%96%E9%A1%B9%E7%9B%AE-NFT-Implementations-and-Other-Projects"><span class="toc-number">1.9.4.</span> <span class="toc-text">NFT 实现和其他项目 (NFT Implementations and Other Projects):</span></a></li></ol></li></ol></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url(/img/back1.webp);"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By Q1ngying</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script>(() => {
+  const panguFn = () => {
+    if (typeof pangu === 'object') pangu.autoSpacingPage()
+    else {
+      btf.getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+        .then(() => {
+          pangu.autoSpacingPage()
+        })
+    }
+  }
+
+  const panguInit = () => {
+    if (false){
+      GLOBAL_CONFIG_SITE.isPost && panguFn()
+    } else {
+      panguFn()
+    }
+  }
+
+  btf.addGlobalFn('pjaxComplete', panguInit, 'pangu')
+  document.addEventListener('DOMContentLoaded', panguInit)
+})()</script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="17,185,200" opacity="0.8" zIndex="-1" count="200" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script></div></body></html>

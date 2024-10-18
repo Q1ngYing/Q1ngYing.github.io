@@ -1,0 +1,336 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>深入EVM虚拟机-part5 | Q1ngying</title><meta name="author" content="Q1ngying"><meta name="copyright" content="Q1ngying"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#FFFFFF"><meta name="description" content="前言： 这一部分我们将从 Solidity、EVM 和 Geth 客户端层的工作原理，详细解读 CALL 和 DELEGATECALL 这两个操作码。 在我们深入探讨之前，我们需要先了解合约执行上下文的概念。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入EVM虚拟机-part5">
+<meta property="og:url" content="https://q1ngying.cn/EVMIntroPart5/index.html">
+<meta property="og:site_name" content="Q1ngying">
+<meta property="og:description" content="前言： 这一部分我们将从 Solidity、EVM 和 Geth 客户端层的工作原理，详细解读 CALL 和 DELEGATECALL 这两个操作码。 在我们深入探讨之前，我们需要先了解合约执行上下文的概念。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://q1ngying.cn/img/butterfly-icon.jpg">
+<meta property="article:published_time" content="2023-10-06T10:13:43.000Z">
+<meta property="article:modified_time" content="2024-10-18T06:58:29.304Z">
+<meta property="article:author" content="Q1ngying">
+<meta property="article:tag" content="Solidity">
+<meta property="article:tag" content="EVM">
+<meta property="article:tag" content="EVM 学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://q1ngying.cn/img/butterfly-icon.jpg"><link rel="shortcut icon" href="/img/icons8-clover-ios-16-glyph-32.png"><link rel="canonical" href="https://q1ngying.cn/EVMIntroPart5/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><meta name="google-site-verification" content="IzCM4B791_p7IAU4WhRfiLlPBnODnamJ7ixKxzoeNfk"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#1b1b1b')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#FFFFFF')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '深入EVM虚拟机-part5',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-10-18 14:58:29'
+}</script><script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script><script>LA.init({id:"3Jzfa21KlLms3Lkh",ck:"3Jzfa21KlLms3Lkh"})</script><link rel="stylesheet" href="/css/style.css?1"><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/butterfly-icon.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">28</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">27</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/back1.webp);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Q1ngying</span></a><a class="nav-page-title" href="/"><span class="site-name">深入EVM虚拟机-part5</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">深入EVM虚拟机-part5</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-10-06T10:13:43.000Z" title="发表于 2023-10-06 18:13:43">2023-10-06</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-10-18T06:58:29.304Z" title="更新于 2024-10-18 14:58:29">2024-10-18</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/learn/">learn</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Solidity/">Solidity</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/EVM/">EVM</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">10k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>35 mins.分钟</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p><strong>前言：</strong></p>
+<p>这一部分我们将从 Solidity、EVM 和 Geth 客户端层的工作原理，详细解读 CALL 和 DELEGATECALL 这两个操作码。</p>
+<p>在我们深入探讨之前，我们需要先了解合约执行上下文的概念。</p>
+<span id="more"></span>
+<h1 id="执行上下文"><a href="#执行上下文" class="headerlink" title="执行上下文"></a>执行上下文</h1><p>当以太坊虚拟机(EVM) 执行智能合约时，会为其创建一个上下文，由以下内容组成：</p>
+<ul>
+<li><strong>The Code</strong></li>
+</ul>
+<p>合约的字节码是不可改变的，它被存储在链上，并使用合约地址进行引用。代码是存储指令的区域。存储在代码中的指令数据作为合约账户状态字段的一部分是持久的。外部拥有的账户（或 EOA）有空的代码区域。代码是智能合约执行期间由 EVM 读取、解释和执行的字节。代码是不可变的，这意味着它不能被修改，但它可以通过指令 CODESIZE 和 CODECOPY 来读取。一个合约的代码可以被其他合约读取，通过指令 EXTCODESIZE 和 EXTCODECOPY。</p>
+<ul>
+<li><strong>The Stack</strong></li>
+</ul>
+<p>调用栈，每个 EVM 合约执行时都会初始化一个空的栈。栈是一个 32 字节的元素列表，用于存储智能合约指令的输入和输出。每个调用上下文创建一个栈，当调用上下文结束时，它被销毁。当一个新的值被放在栈区时，它被放在顶部，只有顶部的值才会被指令使用。目前，栈的最大限制是 1024 个值。所有的指令都与栈相互作用，但它可以直接用 PUSH1, POP, DUP1 或 SWAP1 等指令进行操作。</p>
+<ul>
+<li><strong>The Memory</strong></li>
+</ul>
+<p>合约内存，是为每个 EVM 合约执行而初始化一个空的内存。EVM 的内存是不永久的，在调用上下文结束时被销毁。在调用上下文开始时，内存被初始化为 0。从内存中读和写通常分别用 MLOAD 和 MSTORE 指令完成，但也可以用其他指令如 CREATE 或 EXTCODECOPY 来访问。</p>
+<ul>
+<li><strong>The Storage</strong></li>
+</ul>
+<p>存储区在执行过程中持久化，链上存储，根据合约地址和插槽寻址。合约存储是跨执行的，它存储在链上，通过合约地址和它的存储插槽被引用。存储器是一个 32 字节的插槽与 32 字节的值的映射。存储是智能合约的持久性内存：合约写入的每个值都会保留到调用完成后，除非其值被改为 0，或者执行 SELFDESTRUCT 指令。从未写入的密钥中读取存储的字节也会返回 0。每个合约都有自己的存储，不能读取或修改其他合约的存储。存储是用指令 SLAD 和 STORE 来读和写的。</p>
+<ul>
+<li><strong>The calldata</strong></li>
+</ul>
+<p>交易传入的数据。calldata 区域是作为智能合约交易的一部分发送给交易的数据。例如，当创建一个合约时，calldata 将是新合约的构造器代码。值得注意的是，当一个合约执行 xCALL 指令时，它也会创建一个内部交易，在新的上下文中产生一个 calldata 区域。calldata 是不可改变的，可以用指令 CALLDATALOAD, CALLDATASIZE 和 CALLDATACOPY 来读取。当一个合约执行 xCALL 指令时，它也会创建一个内部事务。因此，当执行 xCALL 时，在新的上下文中有一个 calldata 区域。</p>
+<ul>
+<li><strong>The Return Data</strong></li>
+</ul>
+<p>合约调用的返回数据。The Return Data 是智能合约在调用后可以返回一个值的方式。它可以由合约调用通过 RETURN 和 REVERT 指令设置，也可以由调用合约通过 RETURNDATASIZE 和 RETURNDATACOPY 读取。</p>
+<p>在阅读后面的内容时，请记住以上内容。我们将从 <a target="_blank" rel="noopener" href="https://solidity-by-example.org/delegatecall/">Smart Contract Programmer</a> 的 DELEGATECALL 合约实例讲起。</p>
+<h1 id="Solidity-实例"><a href="#Solidity-实例" class="headerlink" title="Solidity 实例"></a>Solidity 实例</h1><p>下图显示了同一个合约上两个函数调用的执行情况，一个使用 DELEGATECALL，另一个使用 CALL。</p>
+<p>我们将运行这两个函数并比较它们的不同之处。</p>
+<p><img src="https://raw.githubusercontent.com/Q1ngYing/images/master/images/image-20241017213953880.png" alt="image-20241017213953880"></p>
+<p>以下是这次交互的一些信息（如果我们在 remix 中自己执行的话，数据将会有所不同）：</p>
+<p>我们部署两个合约，名为合约 A 和 B，以及使用一个 EOA 地址，数据如下：</p>
+<ul>
+<li>EOA 地址：0x5B38Da6a701c568545dCfcB03FcB875f56beddC4</li>
+<li>合约 A 的地址：0x7b96aF9Bd211cBf6BA5b0dd53aa61Dc5806b6AcE</li>
+<li>合约 B 的地址：0x3328358128832A260C76A4141e19E2A943CD4B6D</li>
+</ul>
+<p>现在把 Contract B 的地址，一个 uint 值 12 以及 1000000000000000000 Wei（也就是 1 ETH）参数传入，来调用 Contract A 里的两个函数，setVarsDelegateCall 和 setVarsCall。</p>
+<h2 id="Delegate-Call"><a href="#Delegate-Call" class="headerlink" title="Delegate Call"></a>Delegate Call</h2><ol>
+<li><p>EOA 地址将合约 B 的地址，一个 uint 值 12 以及 1000000000000000000 Wei 传入，调用合约 A 的 setVarsDelegateCall，由 delegatecall 调用合约 B 执行 setVars(uint256)，参数为 12。</p>
+</li>
+<li><p>该 delagatecall 调用执行了合约 B 的 setVars(uint256) 代码，但更新了合约 A 的存储。执行时的存储、msg.sender 和 msg.value 与它的父调用 setVarsDelegateCall 相同。</p>
+</li>
+<li><p>这些值被设置在合约 A 的存储中，12 为 num，调用者 EOA 地址(0x5B38) 为 sender，100000000000000 为 value。尽管 setVars(uint256) 被合约 A 调用，但当我们检查 msg.sender 和 msg.value 时，我们得到了原 setVarsDelegateCall 的值。</p>
+</li>
+</ol>
+<p>执行这个函数后，检查合约 A 和 B 的 num, sender 和 value 状态，我们能看到合约 B 没有被初始化，而所有的值都在合约 A 中设置。</p>
+<h2 id="Call"><a href="#Call" class="headerlink" title="Call"></a>Call</h2><ol>
+<li><p>EOA 地址将合约 B 的地址，一个 uint 值 12 以及 1000000000000000000 Wei 传入，调用合约 A 的 setVarsCall，由 call 调用合约 B 执行 setVars(uint256)，参数为 12。</p>
+</li>
+<li><p>该 call 调用执行合约 B 的 setVars(uint256) ，不改变（本合约的）存储区、msg.sender 和 msg.value。</p>
+</li>
+<li><p>合约 B 的存储区写入数据：num = 12，sender = 合约 A 地址以及 value = 0（1000000000000000000 Wei 被传进了父调用 setVarsCall）。</p>
+</li>
+</ol>
+<p>在这个函数执行后，我们可以再次检查合约 A 和 B 的 num, sender 和 value 状态。我们看到情况正好相反，合约 A 中没有值被初始化，而合约 B 中所有的值都被设置。</p>
+<p>从概念上讲，delegatecall 实际上允许从另一个合约中复制粘贴一个函数到当前合约中。它将被运行，就像它被你的合约执行一样，并且可以访问相同的存储、msg.sender 和 msg.value。</p>
+<h2 id="Delegate-Call-和内存布局"><a href="#Delegate-Call-和内存布局" class="headerlink" title="Delegate Call 和内存布局"></a>Delegate Call 和内存布局</h2><p>在上述的例子中，你可能会注意合约 B 第 5 行的注释 “NOTE: storage layout must be the same as contract A（注意：内存布局需要和合约 A 一样）”。</p>
+<p>合约里的每一个函数都映射到一些静态字节码，这些静态字节码由编译时计算出。当我们从 Solidity 代码来看时，是一个个变量，如：num, sender 和 value。但是字节码并不是这样来识别的，它只认存储插槽，而声明变量的时候就把插槽定下来了.</p>
+<p>合约 B 的 setVars(uint256) 函数中，”num = _num” 是要把 _num 存进插槽 0。当我们看一个 DELEGATECALL 的时候我们不应该单纯考虑 num → num，sender → sender 的映射，因为在字节码的层面并不是这样的，而是需要认识到这是 slot 0 → slot 0, slot 1 → slot 1 的映射。</p>
+<p>下图显示了这种映射，以及相对应的变量名称。</p>
+<p><img src="https://raw.githubusercontent.com/Q1ngYing/images/master/images/640-16965861578441.png" alt="图片"></p>
+<p>如果我们改变了定义状态变量的顺序，会发生什么呢？</p>
+<p>这将改变存储插槽位置，同时也改变了 setVars(uint256) 函数的字节码。如果我们通过互换第 6 行的 num 和第 8 行的 value 来更新合约 B，将首先声明 “value” 状态变量，再声明 “num” 状态变量。</p>
+<p>这意味着 setVars(uint256) 中的第 11 行 “num = _num” 将 _num 存入存储插槽 2，第 13 行 “value = msg.value” 将 msg.value 存储在存储插槽 0 中。合约 A 和 B 之间的变量映射将不再与它们的存储插槽相匹配。</p>
+<p><img src="https://raw.githubusercontent.com/Q1ngYing/images/master/images/640-16965861578442.png" alt="图片"></p>
+<p>当我们调用 DELEGATECALL 时，num 变量将被存储在合约 A 的存储插槽 2 中，该槽映射到 “value” 状态变量。同样地，当 “value” 被存储时，它将被更新到 0 号插槽，该插槽映射到 “num” 状态变量。这也是为什么使用 DELEGATECALL 可能存在风险的原因之一。我们可能会不小心地用 value 值把 num 覆盖了，用 num 值把 value 覆盖了。但黑客不会，他们会有预谋有目的地对此进行攻击。</p>
+<p>试想一下我们有一个合约，存在一个开放式的 delegatecall，同时也知道此合约的 owner 存放在哪个插槽。这时我们就能够构建一个带有相同状态变量布局的合约。然后写一个更新 owner 的方法，并通过 delegatecall 这个更新方法来改变该合约的 owner。</p>
+<p>下面看一看操作码层面。</p>
+<h2 id="Opcodes"><a href="#Opcodes" class="headerlink" title="Opcodes"></a>Opcodes</h2><p>我们对 DELEGATECALL 的工作原理有了大致的了解，接下来深入了解一下 DELEGATECALL 和 CALL 的操作码。</p>
+<p>对于 DELEGATECALL，有以下输入变量：</p>
+<ul>
+<li>gas：执行所需要消耗的 gas 费。</li>
+<li>address ：需要执行的账户。</li>
+<li>argsOffset：输入内存中数据(calldata) 的字节偏移量。</li>
+<li>argsSize：需要复制数据(calldata) 的字节大小。</li>
+<li>retOffset：输出内存中数据(return data) 的字节偏移量。</li>
+<li>retSize：需要复制数据(return data) 的字节大小。</li>
+</ul>
+<p>CALL 与 DELEGATECALL 相比有完全相同的输入变量，但多出一个附加值 value。</p>
+<ul>
+<li>value：以 Wei 为单位的 value 数量的以太币发送到账户（仅限 call）。</li>
+</ul>
+<p>delegatecall 不需要 value 值输入，因为它是从它的父调用中继承。执行上下文的存储空间与它的父调用相同的存储区、msg.sender 和 msg.value。他们都是有一个布尔返回值 “success”，为 0 为执行失败，反之为 1。</p>
+<p>如果调用位置没有合约或者没有代码，那么 Delegatecall 将返回成功 “True”。如果在代码设计上我们期望 delegatecall 函数在不能执行时返回 “False”，这可能会导致出现 bug。</p>
+<p>为了理解这个操作码，让我们检查一下前面的例子中合约 A 和合约 B 是如何执行 DELEGATECALL 的。</p>
+<p><strong>通过 Remix 检查 DELEGATECALL 操作码</strong></p>
+<p>下面是 Remix 中调用 DELEGATECALL 操作码的截图。对应 Solidity 代码的 24 - 26 行。我们可以看到栈和内存的条目以及它们是怎么传进 DELEGATECALL 的。</p>
+<p><img src="https://raw.githubusercontent.com/Q1ngYing/images/master/images/640-16965861578443.png" alt="图片"></p>
+<p>下面将从 “操作码 → 栈 → 内存 → calldata” 的顺序来讲解。</p>
+<ol>
+<li><p>Solidity 代码的 24 行，使用了 delegatecall 调用合约 B的 setVars(unit256)，调用执行 DELEGATECALL 操作码。</p>
+</li>
+<li><p>DELEGATECALL 操作码从栈中取出的 6 个输入：</p>
+</li>
+</ol>
+<ul>
+<li>gas = 0x45eb；</li>
+<li>address = 0x3328358128832A260C76A4141e19E2A943CD4B6D（合约 B 的地址）；</li>
+<li>argsOffset = 0xc4；</li>
+<li>argsSize = 0x24；</li>
+<li>retOffset = 0xc4；</li>
+<li>retSize = 0x00。</li>
+</ul>
+<ol>
+<li><p>argsOffset 和 argsSize 代表了将被传递给合约 B 的 calldata。这两个变量表示从内存位置 0xc4 开始，并复制下一个 0x24（十进制的 36）字节作为 calldata。</p>
+</li>
+<li><p>我们得到了0x6466414b000000000000000000000000000000000000000000000000000000000000000c，可以拆分成 0x6466414b 和0x00000000000000000000000000000000000000000000c，前者是setVars(uint256) 的函数签名，后者是十进制的 12，代表我们对 num 的输入值。</p>
+</li>
+<li><p>这对应了 Solidity 代码的 25 行<code>abi.encodeWithSignature(&quot;setVars(uint256)&quot;, _num)。</code></p>
+</li>
+</ol>
+<p>因为 setVars(uint256) 并不返回任何值，所以 retSize 等于 0。如果存在返回值的情况，retSize 的值将被更新，返回的值将被存储在 retOffset 中。以上操作应该让我们对这个操作码的底层逻辑了解的深一点，也同 Solidity 代码联系起来了。</p>
+<p>接下来现在让我们来看看 Geth 客户端的实现。</p>
+<h1 id="Geth-实现"><a href="#Geth-实现" class="headerlink" title="Geth 实现"></a>Geth 实现</h1><p>我们来看一下 Geth 里 DELEGATECALL 的一个特定部分，目的是展示 DELEGATECALL 操作码在存储范围层面上与 CALL 操作码有什么不同，以及这与 LOAD 操作码有什么关系。</p>
+<p>下边的图看起来会显得很复杂，但是我们拆解开来一步一步做，在结束的时候会对 DELEGATECALL 和 CALL 有更深刻的认识了。</p>
+<p><img src="https://raw.githubusercontent.com/Q1ngYing/images/master/images/640-16965861578444.png" alt="图片"></p>
+<p>我们在左侧标注了 DELEGATECALL 和 CALL 操作码，在右下方标注了 LOAD 操作码。让我们看看它们是如何联系起来的。</p>
+<ol>
+<li><p>图中两个 [1] 为 instructions.go 中的代码，分别对应了 DELEGATECALL 和 CALL 操作码的 Geth 函数。我们可以看到从栈中弹出的那几个变量，之后看到调用 interpreter.evm.DeleagteCall 和 interpreter.evm.Call 这两个函数，并带有栈中的值、“to 地址” 和当前的合约范围。</p>
+</li>
+<li><p>图中两个 [2] 为 evm.go 中的代码，分别对应了 evm.DelegateCall 和 evm.Call 执行的函数代码。图中省略了函数代码的内容，重点关注 NewContract 函数的调用。NewContract 函数为我们创建了一个新的合约上下文，以便在其中执行。</p>
+</li>
+<li><p>图中两个 [3] 为 evm.DelegateCall 和 evm.Call 的 NewContract 函数调用，与 2 中内容非常相似，除了以下两点：</p>
+</li>
+</ol>
+<ul>
+<li>DelegateCall 中的参数值被设置为 nil，请记住，它从其父级上下文中继承值，所以不会写入这个参数中。</li>
+<li>输入到 NewContract 函数的内容是不同的。在 evm.DelegateCall 中，caller.Address() 被传入为合约 A 的地址。在 evm.Call 中，addrCopy 是复制的 toAddr 地址，也就是合约 B 的地址，这一点区别非常大。这两个都为 AccountRef 类型。</li>
+</ul>
+<ol>
+<li><p>DelegateCall 的 NewContract 将返回一个 Contract 结构体。其调用 AsDelegate() 函数（在 contract.go 中，图[4]）。它将 msg.sender 和 msg.value 设置为原始调用的值也就是 EOA 地址和 100000000000000 Wei。这在 Call 调用实现中是没有的。</p>
+</li>
+<li><p>在 contract.go 中的 evm.DelegateCall 和 evm.Call 都执行 NewContract 函数。NewContract 函数的第二个入参变量为 “object ContractRef”，对应 3 中提到的 AccountRef 的映射。</p>
+</li>
+<li><p>“object ContractRef” 和一些其他值被用来初始化合约，对应 Contract 结构体里的 “self”。</p>
+</li>
+<li><p>Contract 结构体（在 contract.go 中）有一个 “self” 字段，同时能看到也有其他与我们之前提到的执行上下文有关的字段。</p>
+</li>
+<li><p>现在我们跳到 Geth 里 SLOAD（在instructions.go 中）的实现上，它在调用 GetState 时用的参数为 scope.Contract.Address()。这里的 “Contract” 就是在 7 中提到的结构体。</p>
+</li>
+<li><p>Contract 结构体的 Address() 返回的是 self.Address。</p>
+</li>
+<li><p>Self 是一个 ContractRef 类型，ContractRef 必然有一个 Address() 方法。</p>
+</li>
+<li><p>ContractRef 是一个接口，规定如果一个类型要为 ContractRef，那必须有一个返回值类型是 common.Address 的 Address() 方法。common.Address 是一个长度为 20 的字节数组，也就是一个以太坊地址的长度。</p>
+</li>
+<li><p>我们回到 [3] 中来看 evm.DelegateCall 和 evm.Call 中 AccountRef 的区别，可以发现 AccountRef 就是一个有 Address() 函数的地址，同时也符合 ContractRef 接口的规则。</p>
+</li>
+<li><p>AccountRef 的 Address() 函数是把 AccountRef 转化成 common.Address，也就是 evm.DelegateCall 里的合约 A 地址和 evm.Call 里合约 B 地址。这意味着第 8 部分讲的 SLOAD 会在 DELEGATECALL 时使用合约 A 的存储区，在 CALL 时使用合约 B 的存储区。</p>
+</li>
+</ol>
+<p>看完 Geth 的实现，就会知道存储、msg.sender 和 msg.value 在 DelegateCall 中是怎样改变的了。现在我们也对 DELEGATECALL 操作码有了全面的了解。</p>
+<p><em>参考链接：</em></p>
+<p><em><a target="_blank" rel="noopener" href="https://noxx.substack.com/p/evm-deep-dives-the-path-to-shadowy-a5f">https://noxx.substack.com/p/evm-deep-dives-the-path-to-shadowy-a5f</a></em></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://q1ngying.cn">Q1ngying</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://q1ngying.cn/EVMIntroPart5/">https://q1ngying.cn/EVMIntroPart5/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://q1ngying.cn" target="_blank">Q1ngying</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Solidity/">Solidity</a><a class="post-meta__tags" href="/tags/EVM/">EVM</a><a class="post-meta__tags" href="/tags/EVM-%E5%AD%A6%E4%B9%A0/">EVM 学习</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.jpg" data-sites="twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="prev-post pull-left" href="/EVMIntroPart6/" title="深入EVM虚拟机-part6"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">深入EVM虚拟机-part6</div></div></a><a class="next-post pull-right" href="/EVMIntroPart4/" title="深入EVM虚拟机-part4"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">深入EVM虚拟机-part4</div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a href="/EVMIntroPart1/" title="深入EVM虚拟机-part1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-10-01</div><div class="title">深入EVM虚拟机-part1</div></div></a><a href="/EVMIntroPart3/" title="深入EVM虚拟机-part3"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-10-04</div><div class="title">深入EVM虚拟机-part3</div></div></a><a href="/EVMIntroPart2/" title="深入EVM虚拟机-part2"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-10-01</div><div class="title">深入EVM虚拟机-part2</div></div></a><a href="/EVMIntroPart4/" title="深入EVM虚拟机-part4"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-10-06</div><div class="title">深入EVM虚拟机-part4</div></div></a><a href="/EVMStorageStructure/" title="evm存储结构"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-14</div><div class="title">evm存储结构</div></div></a><a href="/Huff-1/" title="Huff(1)"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-03-05</div><div class="title">Huff(1)</div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%89%A7%E8%A1%8C%E4%B8%8A%E4%B8%8B%E6%96%87"><span class="toc-number">1.</span> <span class="toc-text">执行上下文</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Solidity-%E5%AE%9E%E4%BE%8B"><span class="toc-number">2.</span> <span class="toc-text">Solidity 实例</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Delegate-Call"><span class="toc-number">2.1.</span> <span class="toc-text">Delegate Call</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Call"><span class="toc-number">2.2.</span> <span class="toc-text">Call</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Delegate-Call-%E5%92%8C%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80"><span class="toc-number">2.3.</span> <span class="toc-text">Delegate Call 和内存布局</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Opcodes"><span class="toc-number">2.4.</span> <span class="toc-text">Opcodes</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Geth-%E5%AE%9E%E7%8E%B0"><span class="toc-number">3.</span> <span class="toc-text">Geth 实现</span></a></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url(/img/back1.webp);"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By Q1ngying</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script>(() => {
+  const panguFn = () => {
+    if (typeof pangu === 'object') pangu.autoSpacingPage()
+    else {
+      btf.getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+        .then(() => {
+          pangu.autoSpacingPage()
+        })
+    }
+  }
+
+  const panguInit = () => {
+    if (false){
+      GLOBAL_CONFIG_SITE.isPost && panguFn()
+    } else {
+      panguFn()
+    }
+  }
+
+  btf.addGlobalFn('pjaxComplete', panguInit, 'pangu')
+  document.addEventListener('DOMContentLoaded', panguInit)
+})()</script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="17,185,200" opacity="0.8" zIndex="-1" count="200" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script></div></body></html>

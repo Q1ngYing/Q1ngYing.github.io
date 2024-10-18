@@ -1,0 +1,544 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>aToken | Q1ngying</title><meta name="author" content="Q1ngying"><meta name="copyright" content="Q1ngying"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#FFFFFF"><meta name="description" content="aToken 是一种产生收益的代币，会在deposit时铸造，withdraw时销毁。aToken 的价值与对应存入的资产以 1:1 的比例挂钩，能够安全地存储、转移或交易。通过 aToken 储备金收集的所有利息会直接分配给 aToken 持有者，具体表现为其钱包余额的持续增长。   源码：https:&#x2F;&#x2F;github.com&#x2F;aave&#x2F;protocol-v2&#x2F;blob&#x2F;ice&#x2F;mainnet">
+<meta property="og:type" content="article">
+<meta property="og:title" content="aToken">
+<meta property="og:url" content="https://q1ngying.cn/AAVE/theCoreProtocol/aToken/index.html">
+<meta property="og:site_name" content="Q1ngying">
+<meta property="og:description" content="aToken 是一种产生收益的代币，会在deposit时铸造，withdraw时销毁。aToken 的价值与对应存入的资产以 1:1 的比例挂钩，能够安全地存储、转移或交易。通过 aToken 储备金收集的所有利息会直接分配给 aToken 持有者，具体表现为其钱包余额的持续增长。   源码：https:&#x2F;&#x2F;github.com&#x2F;aave&#x2F;protocol-v2&#x2F;blob&#x2F;ice&#x2F;mainnet">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://q1ngying.cn/img/butterfly-icon.jpg">
+<meta property="article:published_time" content="2024-10-17T11:13:06.000Z">
+<meta property="article:modified_time" content="2024-10-18T08:56:14.290Z">
+<meta property="article:author" content="Q1ngying">
+<meta property="article:tag" content="DeFi">
+<meta property="article:tag" content="AAVE">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://q1ngying.cn/img/butterfly-icon.jpg"><link rel="shortcut icon" href="/img/icons8-clover-ios-16-glyph-32.png"><link rel="canonical" href="https://q1ngying.cn/AAVE/theCoreProtocol/aToken/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><meta name="google-site-verification" content="IzCM4B791_p7IAU4WhRfiLlPBnODnamJ7ixKxzoeNfk"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#1b1b1b')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#FFFFFF')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'aToken',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-10-18 16:56:14'
+}</script><script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script><script>LA.init({id:"3Jzfa21KlLms3Lkh",ck:"3Jzfa21KlLms3Lkh"})</script><link rel="stylesheet" href="/css/style.css?1"><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/butterfly-icon.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">28</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">27</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/back1.webp);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Q1ngying</span></a><a class="nav-page-title" href="/"><span class="site-name">aToken</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">aToken</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-10-17T11:13:06.000Z" title="发表于 2024-10-17 19:13:06">2024-10-17</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-10-18T08:56:14.290Z" title="更新于 2024-10-18 16:56:14">2024-10-18</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/DeFI/">DeFI</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AAVE/">AAVE</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">42k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>2:20分钟</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p> aToken 是一种产生收益的代币，会在<code>deposit</code>时铸造，<code>withdraw</code>时销毁。aToken 的价值与对应存入的资产以 1:1 的比例挂钩，能够安全地存储、转移或交易。通过 aToken 储备金收集的所有利息会直接分配给 aToken 持有者，具体表现为其钱包余额的持续增长。  </p>
+<p>源码：<a target="_blank" rel="noopener" href="https://github.com/aave/protocol-v2/blob/ice/mainnet-deployment-03-12-2020/contracts/protocol/tokenization/AToken.sol">https://github.com/aave/protocol-v2/blob/ice/mainnet-deployment-03-12-2020/contracts/protocol/tokenization/AToken.sol</a></p>
+<p>有关所有 mint 和 burn 的操作，参阅<code>LendingPool</code>合约中的<code>Deposit()</code>和 <code>Withdraw()</code>方法</p>
+<h2 id="EIP20-Methods"><a href="#EIP20-Methods" class="headerlink" title="EIP20 Methods"></a>EIP20 Methods</h2><p>实现了所有标准的 EIP20 方法，例如 <code>balanceOf()</code>、<code>transfer()</code>、<code>transferFrom()</code>、<code>approve()</code>、<code>totalSupply()</code>等</p>
+<p><code>balanceOf()</code>将始终返回用户的最新余额，其中包括他们的本金余额 + 本金余额产生的利息。</p>
+<h2 id="EIP2612-Methods"><a href="#EIP2612-Methods" class="headerlink" title="EIP2612 Methods"></a>EIP2612 Methods</h2><h3 id="permit"><a href="#permit" class="headerlink" title="permit()"></a>permit()</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">permit</span><span class="token punctuation">(</span><span class="token builtin">address</span> owner<span class="token punctuation">,</span> <span class="token builtin">address</span> spender<span class="token punctuation">,</span> <span class="token builtin">uint256</span> value<span class="token punctuation">,</span> <span class="token builtin">uint256</span> deadline<span class="token punctuation">,</span><span class="token builtin">uint8</span> v<span class="token punctuation">,</span>  <span class="token builtin">bytes32</span> r<span class="token punctuation">,</span> <span class="token builtin">bytes32</span> s<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>允许用户允许其他账户（或合约）使用已签名的消息使用其资金。这实现了无 gas 交易和单一 approve/transfer 交易。</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>owner</code></td>
+<td>address</td>
+<td>资金的所有者</td>
+</tr>
+<tr>
+<td><code>spender</code></td>
+<td>address</td>
+<td>资金的花费着</td>
+</tr>
+<tr>
+<td><code>value</code></td>
+<td>uint256</td>
+<td>允许<code>spender</code>使用的金额</td>
+</tr>
+<tr>
+<td><code>deadline</code></td>
+<td>uint256</td>
+<td>许可有效的截止时间戳。使用 <code>type(uint).max</code>表示无截止日期。</td>
+</tr>
+<tr>
+<td><code>v</code></td>
+<td>uint8</td>
+<td>签名参数</td>
+</tr>
+<tr>
+<td><code>r</code></td>
+<td>bytes32</td>
+<td>签名参数</td>
+</tr>
+<tr>
+<td><code>s</code></td>
+<td>bytes32</td>
+<td>签名参数</td>
+</tr>
+</tbody>
+</table>
+</div>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span> signTypedData_v4 <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'eth-sig-util'</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> fromRpcSig <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'ethereumjs-util'</span>
+
+<span class="token comment">// ... other imports</span>
+
+<span class="token keyword">import</span> aTokenAbi <span class="token keyword">from</span> <span class="token string">"./aTokenAbi.json"</span>
+
+<span class="token comment">// ... setup your web3 provider</span>
+
+<span class="token keyword">const</span> aTokenAddress <span class="token operator">=</span> <span class="token string">"ATOKEN_ADDRESS"</span>
+<span class="token keyword">const</span> aTokenContract <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">web3<span class="token punctuation">.</span>eth<span class="token punctuation">.</span>Contract</span><span class="token punctuation">(</span>aTokenAbi<span class="token punctuation">,</span> aTokenAddress<span class="token punctuation">)</span>
+
+<span class="token keyword">const</span> privateKey <span class="token operator">=</span> <span class="token string">"YOUR_PRIVATE_KEY_WITHOUT_0x"</span>
+<span class="token keyword">const</span> chainId <span class="token operator">=</span> <span class="token number">1</span>
+<span class="token keyword">const</span> owner <span class="token operator">=</span> <span class="token string">"OWNER_ADDRESS"</span>
+<span class="token keyword">const</span> spender <span class="token operator">=</span> <span class="token string">"SPENDER_ADDRESS"</span>
+<span class="token keyword">const</span> value <span class="token operator">=</span> <span class="token number">100</span> <span class="token comment">// Amount the spender is permitted</span>
+<span class="token keyword">const</span> nonce <span class="token operator">=</span> <span class="token number">1</span> <span class="token comment">// The next valid nonce, use `_nonces()`</span>
+<span class="token keyword">const</span> deadline <span class="token operator">=</span> <span class="token number">1600093162</span>
+
+<span class="token keyword">const</span> permitParams <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+  <span class="token literal-property property">types</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+    <span class="token literal-property property">EIP712Domain</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+      <span class="token punctuation">&#123;</span> <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">"name"</span><span class="token punctuation">,</span> <span class="token literal-property property">type</span><span class="token operator">:</span> <span class="token string">"string"</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+      <span class="token punctuation">&#123;</span> <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">"version"</span><span class="token punctuation">,</span> <span class="token literal-property property">type</span><span class="token operator">:</span> <span class="token string">"string"</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+      <span class="token punctuation">&#123;</span> <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">"chainId"</span><span class="token punctuation">,</span> <span class="token literal-property property">type</span><span class="token operator">:</span> <span class="token string">"uint256"</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+      <span class="token punctuation">&#123;</span> <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">"verifyingContract"</span><span class="token punctuation">,</span> <span class="token literal-property property">type</span><span class="token operator">:</span> <span class="token string">"address"</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">Permit</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+      <span class="token punctuation">&#123;</span> <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">"owner"</span><span class="token punctuation">,</span> <span class="token literal-property property">type</span><span class="token operator">:</span> <span class="token string">"address"</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+      <span class="token punctuation">&#123;</span> <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">"spender"</span><span class="token punctuation">,</span> <span class="token literal-property property">type</span><span class="token operator">:</span> <span class="token string">"address"</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+      <span class="token punctuation">&#123;</span> <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">"value"</span><span class="token punctuation">,</span> <span class="token literal-property property">type</span><span class="token operator">:</span> <span class="token string">"uint256"</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+      <span class="token punctuation">&#123;</span> <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">"nonce"</span><span class="token punctuation">,</span> <span class="token literal-property property">type</span><span class="token operator">:</span> <span class="token string">"uint256"</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+      <span class="token punctuation">&#123;</span> <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">"deadline"</span><span class="token punctuation">,</span> <span class="token literal-property property">type</span><span class="token operator">:</span> <span class="token string">"uint256"</span> <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+    <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">primaryType</span><span class="token operator">:</span> <span class="token string">"Permit"</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">domain</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+    <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token string">"aTOKEN_NAME"</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">version</span><span class="token operator">:</span> <span class="token string">"1"</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">chainId</span><span class="token operator">:</span> chainId<span class="token punctuation">,</span>
+    <span class="token literal-property property">verifyingContract</span><span class="token operator">:</span> aTokenAddress<span class="token punctuation">,</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+  <span class="token literal-property property">message</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+    owner<span class="token punctuation">,</span>
+    spender<span class="token punctuation">,</span>
+    value<span class="token punctuation">,</span>
+    nonce<span class="token punctuation">,</span>
+    deadline<span class="token punctuation">,</span>
+  <span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">const</span> signature <span class="token operator">=</span> <span class="token function">signTypedData_v4</span><span class="token punctuation">(</span>
+  Buffer<span class="token punctuation">.</span><span class="token function">from</span><span class="token punctuation">(</span>privateKey<span class="token punctuation">,</span> <span class="token string">"hex"</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token punctuation">&#123;</span> <span class="token literal-property property">data</span><span class="token operator">:</span> permitParams <span class="token punctuation">&#125;</span>
+<span class="token punctuation">)</span>
+
+<span class="token comment">// The signature can now be used to execute the transaction</span>
+
+<span class="token keyword">const</span> <span class="token punctuation">&#123;</span> v<span class="token punctuation">,</span> r<span class="token punctuation">,</span> s <span class="token punctuation">&#125;</span> <span class="token operator">=</span> <span class="token function">fromRpcSig</span><span class="token punctuation">(</span>signature<span class="token punctuation">)</span>
+
+<span class="token keyword">await</span> aTokenContract<span class="token punctuation">.</span>methods
+    <span class="token punctuation">.</span><span class="token function">permit</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span>
+      owner<span class="token punctuation">,</span>
+      spender<span class="token punctuation">,</span>
+      value<span class="token punctuation">,</span>
+      deadline<span class="token punctuation">,</span>
+      v<span class="token punctuation">,</span>
+      r<span class="token punctuation">,</span>
+      s
+    <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">send</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">catch</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">e</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">throw</span> <span class="token function">Error</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">Error permitting: </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">$&#123;</span>e<span class="token punctuation">.</span>message<span class="token interpolation-punctuation punctuation">&#125;</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="nonces"><a href="#nonces" class="headerlink" title="_nonces()"></a>_nonces()</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">_nonce</span><span class="token punctuation">(</span><span class="token builtin">address</span> owner<span class="token punctuation">)</span> <span class="token keyword">public</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>返回调用<code>permit()</code>时要提交的下一个有效 <code>nonce</code></p>
+<h2 id="Methods"><a href="#Methods" class="headerlink" title="Methods"></a>Methods</h2><h3 id="UNDERLYING-ASSET-ADDRESS"><a href="#UNDERLYING-ASSET-ADDRESS" class="headerlink" title="UNDERLYING_ASSET_ADDRESS()"></a>UNDERLYING_ASSET_ADDRESS()</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">UNDERLYING_ASSET_ADDRESS</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>返回 <code>aToken</code>的底层资产。</p>
+<h3 id="RESERVE-TREASURY-ADDRESS"><a href="#RESERVE-TREASURY-ADDRESS" class="headerlink" title="RESERVE_TREASURY_ADDRESS()"></a>RESERVE_TREASURY_ADDRESS()</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">RESERVE_TREASURY_ADDRESS</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>返回 <code>aToken</code>储备金库的地址。</p>
+<h3 id="POOL"><a href="#POOL" class="headerlink" title="POOL()"></a>POOL()</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">POOL</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>返回 <code>aToken</code>的关联 <code>LendingPool</code>的地址。</p>
+<h3 id="scaledBalanceOf"><a href="#scaledBalanceOf" class="headerlink" title="scaledBalanceOf()"></a>scaledBalanceOf()</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">scaledBalanceOf</span><span class="token punctuation">(</span><span class="token builtin">address</span> user<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>返回 <code>user</code>的缩放金额（<code>uint256</code>表示）</p>
+<p>按比例调整的余额是用户存入的底层的资产余额，除以更新时的当前流动性指数。  </p>
+<p>i.e. <img src="https://cdn.nlark.com/yuque/__latex/5d79d8c0e6e5ddaedf8fa59d42bf7cc9.svg" alt="img"></p>
+<blockquote>
+<p>这本质上是“记录”用户存入储备池的时间，并可用于计算用户当前的复利 aToken 余额。  </p>
+<p>什么是“复利”？<br>以下解释来源于 ChatGPT-4o：<br><strong>复利</strong>（Compound Interest）是指在计算利息时，不仅对初始本金计算利息，还对之前累积的利息部分继续计算利息。换句话说，利息会周期性地加入到本金中，然后下一次利息计算时，基于新的总金额（本金 + 累积的利息）来计算利息。这种增长方式会使得资产随着时间呈现加速增长的特性。  </p>
+<h3 id="复利的公式："><a href="#复利的公式：" class="headerlink" title="复利的公式："></a>复利的公式：</h3><p>复利的计算公式为：</p>
+<p><img src="https://raw.githubusercontent.com/Q1ngYing/images/master/images/164359e3d94222643e1e51ddd5d00ec1.svg" alt="img"></p>
+<ul>
+<li><strong>A</strong>：最终金额（本金 + 利息）</li>
+<li><strong>P</strong>：初始本金</li>
+<li><strong>r</strong>：年利率</li>
+<li><strong>n</strong>：每年计息次数</li>
+<li><strong>t</strong>：年数</li>
+</ul>
+<h3 id="举例："><a href="#举例：" class="headerlink" title="举例："></a>举例：</h3><p>假设你存入了 1000 元，年利率为 5%，并且每年复利计算一次。如果保持 10 年，那么最终你将得到的金额是：</p>
+<p><img src="https://cdn.nlark.com/yuque/__latex/67fee3d98536d5ff72e31121358c38e4.svg" alt="img"></p>
+<p>这意味着 10 年后，你的 1000 元将变为 1628.89 元。</p>
+<h3 id="在-DeFi-中的复利："><a href="#在-DeFi-中的复利：" class="headerlink" title="在 DeFi 中的复利："></a>在 DeFi 中的复利：</h3><p>在 DeFi 协议中，如 Aave，复利的概念被广泛应用。例如，aToken 持有者在存入资产后，他们的收益以复利的形式不断增长，即存款利息会持续累积到本金中，并生成更多利息。这种复利机制确保用户的资产随着时间的推移不断增加。</p>
+<p>复利的力量在于长期持有，时间越长，资产增长得越快，因此复利被称为“世界第八大奇迹”。</p>
+</blockquote>
+<p>举例：</p>
+<ul>
+<li>User A 以 1.1 的流动性指数存入 1000 DAI</li>
+<li>User B 将另一笔金额存入同一资金池中</li>
+<li>流动性指数现在是 1.2</li>
+<li>因此，要计算用户 A 当前的复利 aToken 余额，应进行反向操作：<img src="https://cdn.nlark.com/yuque/__latex/789c926927f24b4b4fc531bf2b699054.svg" alt="img"></li>
+</ul>
+<h3 id="scaledTotalSupply"><a href="#scaledTotalSupply" class="headerlink" title="scaledTotalSupply()"></a>scaledTotalSupply()</h3><pre class="line-numbers language-none"><code class="language-none">function scaledTotalSupply()<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>返回 aToken 的缩放总供应量（<code>uint256</code>）</p>
+<p>缩放后的总供应量是所有更新的余额之和除以更新时的储备因子。</p>
+<pre class="line-numbers language-none"><code class="language-none">function isTransferAllowed(address user, uint256 amount)<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>如果允许转账，则返回 <code>true</code></p>
+<p>具体而言，如果转账后<code>user</code>的健康因子最终低于 1，则转账失败。</p>
+<h2 id="IAToken"><a href="#IAToken" class="headerlink" title="IAToken"></a>IAToken</h2><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// SPDX-License-Identifier: agpl-3.0</span>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token number">0.6</span><span class="token number">.12</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>IERC20<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'./IERC20.sol'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>IScaledBalanceToken<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'./IScaledBalanceToken.sol'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">interface</span> <span class="token class-name">IAToken</span> <span class="token keyword">is</span> IERC20<span class="token punctuation">,</span> IScaledBalanceToken <span class="token punctuation">&#123;</span>
+  <span class="token comment">/**
+   * @dev Emitted after the mint action
+   * @param from The address performing the mint
+   * @param value The amount being
+   * @param index The new liquidity index of the reserve
+   **/</span>
+  <span class="token keyword">event</span> <span class="token function">Mint</span><span class="token punctuation">(</span><span class="token builtin">address</span> <span class="token keyword">indexed</span> <span class="token keyword">from</span><span class="token punctuation">,</span> <span class="token builtin">uint256</span> value<span class="token punctuation">,</span> <span class="token builtin">uint256</span> index<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">/**
+   * @dev Mints `amount` aTokens to `user`
+   * @param user The address receiving the minted tokens
+   * @param amount The amount of tokens getting minted
+   * @param index The new liquidity index of the reserve
+   * @return `true` if the the previous balance of the user was 0
+   */</span>
+  <span class="token keyword">function</span> <span class="token function">mint</span><span class="token punctuation">(</span>
+    <span class="token builtin">address</span> user<span class="token punctuation">,</span>
+    <span class="token builtin">uint256</span> amount<span class="token punctuation">,</span>
+    <span class="token builtin">uint256</span> index
+  <span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">bool</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">/**
+   * @dev Emitted after aTokens are burned
+   * @param from The owner of the aTokens, getting them burned
+   * @param target The address that will receive the underlying
+   * @param value The amount being burned
+   * @param index The new liquidity index of the reserve
+   **/</span>
+  <span class="token keyword">event</span> <span class="token function">Burn</span><span class="token punctuation">(</span><span class="token builtin">address</span> <span class="token keyword">indexed</span> <span class="token keyword">from</span><span class="token punctuation">,</span> <span class="token builtin">address</span> <span class="token keyword">indexed</span> target<span class="token punctuation">,</span> <span class="token builtin">uint256</span> value<span class="token punctuation">,</span> <span class="token builtin">uint256</span> index<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">/**
+   * @dev Emitted during the transfer action
+   * @param from The user whose tokens are being transferred
+   * @param to The recipient
+   * @param value The amount being transferred
+   * @param index The new liquidity index of the reserve
+   **/</span>
+  <span class="token keyword">event</span> <span class="token function">BalanceTransfer</span><span class="token punctuation">(</span><span class="token builtin">address</span> <span class="token keyword">indexed</span> <span class="token keyword">from</span><span class="token punctuation">,</span> <span class="token builtin">address</span> <span class="token keyword">indexed</span> to<span class="token punctuation">,</span> <span class="token builtin">uint256</span> value<span class="token punctuation">,</span> <span class="token builtin">uint256</span> index<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">/**
+   * @dev Burns aTokens from `user` and sends the equivalent amount of underlying to `receiverOfUnderlying`
+   * @param user The owner of the aTokens, getting them burned
+   * @param receiverOfUnderlying The address that will receive the underlying
+   * @param amount The amount being burned
+   * @param index The new liquidity index of the reserve
+   **/</span>
+  <span class="token keyword">function</span> <span class="token function">burn</span><span class="token punctuation">(</span>
+    <span class="token builtin">address</span> user<span class="token punctuation">,</span>
+    <span class="token builtin">address</span> receiverOfUnderlying<span class="token punctuation">,</span>
+    <span class="token builtin">uint256</span> amount<span class="token punctuation">,</span>
+    <span class="token builtin">uint256</span> index
+  <span class="token punctuation">)</span> <span class="token keyword">external</span><span class="token punctuation">;</span>
+
+  <span class="token comment">/**
+   * @dev Mints aTokens to the reserve treasury
+   * @param amount The amount of tokens getting minted
+   * @param index The new liquidity index of the reserve
+   */</span>
+  <span class="token keyword">function</span> <span class="token function">mintToTreasury</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> amount<span class="token punctuation">,</span> <span class="token builtin">uint256</span> index<span class="token punctuation">)</span> <span class="token keyword">external</span><span class="token punctuation">;</span>
+
+  <span class="token comment">/**
+   * @dev Transfers aTokens in the event of a borrow being liquidated, in case the liquidators reclaims the aToken
+   * @param from The address getting liquidated, current owner of the aTokens
+   * @param to The recipient
+   * @param value The amount of tokens getting transferred
+   **/</span>
+  <span class="token keyword">function</span> <span class="token function">transferOnLiquidation</span><span class="token punctuation">(</span>
+    <span class="token builtin">address</span> <span class="token keyword">from</span><span class="token punctuation">,</span>
+    <span class="token builtin">address</span> to<span class="token punctuation">,</span>
+    <span class="token builtin">uint256</span> value
+  <span class="token punctuation">)</span> <span class="token keyword">external</span><span class="token punctuation">;</span>
+
+  <span class="token comment">/**
+   * @dev Transfers the underlying asset to `target`. Used by the LendingPool to transfer
+   * assets in borrow(), withdraw() and flashLoan()
+   * @param user The recipient of the aTokens
+   * @param amount The amount getting transferred
+   * @return The amount transferred
+   **/</span>
+  <span class="token keyword">function</span> <span class="token function">transferUnderlyingTo</span><span class="token punctuation">(</span><span class="token builtin">address</span> user<span class="token punctuation">,</span> <span class="token builtin">uint256</span> amount<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token comment">// SPDX-License-Identifier: agpl-3.0</span>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token number">0.6</span><span class="token number">.12</span><span class="token punctuation">;</span>
+
+<span class="token keyword">interface</span> <span class="token class-name">IScaledBalanceToken</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">/**
+   * @dev Returns the scaled balance of the user. The scaled balance is the sum of all the
+   * updated stored balance divided by the reserve's liquidity index at the moment of the update
+   * @param user The user whose balance is calculated
+   * @return The scaled balance of the user
+   **/</span>
+  <span class="token keyword">function</span> <span class="token function">scaledBalanceOf</span><span class="token punctuation">(</span><span class="token builtin">address</span> user<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">/**
+   * @dev Returns the scaled balance of the user and the scaled total supply.
+   * @param user The address of the user
+   * @return The scaled balance of the user
+   * @return The scaled balance and the scaled total supply
+   **/</span>
+  <span class="token keyword">function</span> <span class="token function">getScaledUserBalanceAndSupply</span><span class="token punctuation">(</span><span class="token builtin">address</span> user<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">,</span> <span class="token builtin">uint256</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">/**
+   * @dev Returns the scaled total supply of the variable debt token. Represents sum(debt/index)
+   * @return The scaled total supply
+   **/</span>
+  <span class="token keyword">function</span> <span class="token function">scaledTotalSupply</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token comment">// SPDX-License-Identifier: agpl-3.0</span>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token number">0.6</span><span class="token number">.8</span><span class="token punctuation">;</span>
+
+<span class="token comment">/**
+ * @dev Interface of the ERC20 standard as defined in the EIP.
+ */</span>
+<span class="token keyword">interface</span> <span class="token class-name">IERC20</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">/**
+   * @dev Returns the amount of tokens in existence.
+   */</span>
+  <span class="token keyword">function</span> <span class="token function">totalSupply</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">/**
+   * @dev Returns the amount of tokens owned by `account`.
+   */</span>
+  <span class="token keyword">function</span> <span class="token function">balanceOf</span><span class="token punctuation">(</span><span class="token builtin">address</span> account<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">/**
+   * @dev Moves `amount` tokens from the caller's account to `recipient`.
+   *
+   * Returns a boolean value indicating whether the operation succeeded.
+   *
+   * Emits a &#123;Transfer&#125; event.
+   */</span>
+  <span class="token keyword">function</span> <span class="token function">transfer</span><span class="token punctuation">(</span><span class="token builtin">address</span> recipient<span class="token punctuation">,</span> <span class="token builtin">uint256</span> amount<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">bool</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">/**
+   * @dev Returns the remaining number of tokens that `spender` will be
+   * allowed to spend on behalf of `owner` through &#123;transferFrom&#125;. This is
+   * zero by default.
+   *
+   * This value changes when &#123;approve&#125; or &#123;transferFrom&#125; are called.
+   */</span>
+  <span class="token keyword">function</span> <span class="token function">allowance</span><span class="token punctuation">(</span><span class="token builtin">address</span> owner<span class="token punctuation">,</span> <span class="token builtin">address</span> spender<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">/**
+   * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.
+   *
+   * Returns a boolean value indicating whether the operation succeeded.
+   *
+   * IMPORTANT: Beware that changing an allowance with this method brings the risk
+   * that someone may use both the old and the new allowance by unfortunate
+   * transaction ordering. One possible solution to mitigate this race
+   * condition is to first reduce the spender's allowance to 0 and set the
+   * desired value afterwards:
+   * https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
+   *
+   * Emits an &#123;Approval&#125; event.
+   */</span>
+  <span class="token keyword">function</span> <span class="token function">approve</span><span class="token punctuation">(</span><span class="token builtin">address</span> spender<span class="token punctuation">,</span> <span class="token builtin">uint256</span> amount<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">bool</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">/**
+   * @dev Moves `amount` tokens from `sender` to `recipient` using the
+   * allowance mechanism. `amount` is then deducted from the caller's
+   * allowance.
+   *
+   * Returns a boolean value indicating whether the operation succeeded.
+   *
+   * Emits a &#123;Transfer&#125; event.
+   */</span>
+  <span class="token keyword">function</span> <span class="token function">transferFrom</span><span class="token punctuation">(</span>
+    <span class="token builtin">address</span> sender<span class="token punctuation">,</span>
+    <span class="token builtin">address</span> recipient<span class="token punctuation">,</span>
+    <span class="token builtin">uint256</span> amount
+  <span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">bool</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">/**
+   * @dev Emitted when `value` tokens are moved from one account (`from`) to
+   * another (`to`).
+   *
+   * Note that `value` may be zero.
+   */</span>
+  <span class="token keyword">event</span> <span class="token function">Transfer</span><span class="token punctuation">(</span><span class="token builtin">address</span> <span class="token keyword">indexed</span> <span class="token keyword">from</span><span class="token punctuation">,</span> <span class="token builtin">address</span> <span class="token keyword">indexed</span> to<span class="token punctuation">,</span> <span class="token builtin">uint256</span> value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">/**
+   * @dev Emitted when the allowance of a `spender` for an `owner` is set by
+   * a call to &#123;approve&#125;. `value` is the new allowance.
+   */</span>
+  <span class="token keyword">event</span> <span class="token function">Approval</span><span class="token punctuation">(</span><span class="token builtin">address</span> <span class="token keyword">indexed</span> owner<span class="token punctuation">,</span> <span class="token builtin">address</span> <span class="token keyword">indexed</span> spender<span class="token punctuation">,</span> <span class="token builtin">uint256</span> value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://q1ngying.cn">Q1ngying</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://q1ngying.cn/AAVE/theCoreProtocol/aToken/">https://q1ngying.cn/AAVE/theCoreProtocol/aToken/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://q1ngying.cn" target="_blank">Q1ngying</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/DeFi/">DeFi</a><a class="post-meta__tags" href="/tags/AAVE/">AAVE</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.jpg" data-sites="twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="prev-post pull-left" href="/AAVE/theCoreProtocol/DebtTokens/" title="DebtTokens"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">DebtTokens</div></div></a><a class="next-post pull-right" href="/AAVE/theCoreProtocol/ProtocolDataProvider/" title="ProtocolDataProvider"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">ProtocolDataProvider</div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a href="/AAVE/theCoreProtocol/" title="AAVE 核心协议"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-17</div><div class="title">AAVE 核心协议</div></div></a><a href="/AAVE/theCoreProtocol/AAVEToken/" title="AAVEToken"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-17</div><div class="title">AAVEToken</div></div></a><a href="/AAVE/guide/Flashloan/" title="Flashloan"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-18</div><div class="title">Flashloan</div></div></a><a href="/AAVE/guide/CreateDelegate/" title="CreateDelegate"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-18</div><div class="title">CreateDelegate</div></div></a><a href="/AAVE/guide/TroublesshootingErrors/" title="TroublesshootingErrors"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-18</div><div class="title">TroublesshootingErrors</div></div></a><a href="/AAVE/theCoreProtocol/AddressProviderRegistry/" title="AddressProviderRegistry"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-17</div><div class="title">AddressProviderRegistry</div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#EIP20-Methods"><span class="toc-number">1.</span> <span class="toc-text">EIP20 Methods</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#EIP2612-Methods"><span class="toc-number">2.</span> <span class="toc-text">EIP2612 Methods</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#permit"><span class="toc-number">2.1.</span> <span class="toc-text">permit()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#nonces"><span class="toc-number">2.2.</span> <span class="toc-text">_nonces()</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Methods"><span class="toc-number">3.</span> <span class="toc-text">Methods</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#UNDERLYING-ASSET-ADDRESS"><span class="toc-number">3.1.</span> <span class="toc-text">UNDERLYING_ASSET_ADDRESS()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RESERVE-TREASURY-ADDRESS"><span class="toc-number">3.2.</span> <span class="toc-text">RESERVE_TREASURY_ADDRESS()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#POOL"><span class="toc-number">3.3.</span> <span class="toc-text">POOL()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#scaledBalanceOf"><span class="toc-number">3.4.</span> <span class="toc-text">scaledBalanceOf()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%8D%E5%88%A9%E7%9A%84%E5%85%AC%E5%BC%8F%EF%BC%9A"><span class="toc-number">3.5.</span> <span class="toc-text">复利的公式：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BE%E4%BE%8B%EF%BC%9A"><span class="toc-number">3.6.</span> <span class="toc-text">举例：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%A8-DeFi-%E4%B8%AD%E7%9A%84%E5%A4%8D%E5%88%A9%EF%BC%9A"><span class="toc-number">3.7.</span> <span class="toc-text">在 DeFi 中的复利：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#scaledTotalSupply"><span class="toc-number">3.8.</span> <span class="toc-text">scaledTotalSupply()</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IAToken"><span class="toc-number">4.</span> <span class="toc-text">IAToken</span></a></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url(/img/back1.webp);"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By Q1ngying</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script>(() => {
+  const panguFn = () => {
+    if (typeof pangu === 'object') pangu.autoSpacingPage()
+    else {
+      btf.getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+        .then(() => {
+          pangu.autoSpacingPage()
+        })
+    }
+  }
+
+  const panguInit = () => {
+    if (false){
+      GLOBAL_CONFIG_SITE.isPost && panguFn()
+    } else {
+      panguFn()
+    }
+  }
+
+  btf.addGlobalFn('pjaxComplete', panguInit, 'pangu')
+  document.addEventListener('DOMContentLoaded', panguInit)
+})()</script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="17,185,200" opacity="0.8" zIndex="-1" count="200" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script></div></body></html>
