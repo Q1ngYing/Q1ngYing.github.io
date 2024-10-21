@@ -1,0 +1,426 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Liquidity-mining | Q1ngying</title><meta name="author" content="Q1ngying"><meta name="copyright" content="Q1ngying"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#FFFFFF"><meta name="description" content="通过 AIP-16 在 Main Aave 市场实施了流动性挖矿&#x2F;激励，为存款和借款提供了激励。激励措施目前也在 Polygon 市场和 Avalanche 市场上实施。实施细节与本页描述的相同。     Market Code Address     Main Market Github 0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5   Polygon M">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Liquidity-mining">
+<meta property="og:url" content="https://q1ngying.cn/AAVE/guide/liquidity-mining/index.html">
+<meta property="og:site_name" content="Q1ngying">
+<meta property="og:description" content="通过 AIP-16 在 Main Aave 市场实施了流动性挖矿&#x2F;激励，为存款和借款提供了激励。激励措施目前也在 Polygon 市场和 Avalanche 市场上实施。实施细节与本页描述的相同。     Market Code Address     Main Market Github 0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5   Polygon M">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://q1ngying.cn/img/butterfly-icon.jpg">
+<meta property="article:published_time" content="2024-10-21T11:46:05.000Z">
+<meta property="article:modified_time" content="2024-10-21T11:52:39.190Z">
+<meta property="article:author" content="Q1ngying">
+<meta property="article:tag" content="DeFi">
+<meta property="article:tag" content="AAVE">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://q1ngying.cn/img/butterfly-icon.jpg"><link rel="shortcut icon" href="/img/icons8-clover-ios-16-glyph-32.png"><link rel="canonical" href="https://q1ngying.cn/AAVE/guide/liquidity-mining/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><meta name="google-site-verification" content="IzCM4B791_p7IAU4WhRfiLlPBnODnamJ7ixKxzoeNfk"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#1b1b1b')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#FFFFFF')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Liquidity-mining',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-10-21 19:52:39'
+}</script><script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script><script>LA.init({id:"3Jzfa21KlLms3Lkh",ck:"3Jzfa21KlLms3Lkh"})</script><link rel="stylesheet" href="/css/style.css?1"><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/butterfly-icon.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">78</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">28</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">27</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/back1.webp);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Q1ngying</span></a><a class="nav-page-title" href="/"><span class="site-name">Liquidity-mining</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Liquidity-mining</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-10-21T11:46:05.000Z" title="发表于 2024-10-21 19:46:05">2024-10-21</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-10-21T11:52:39.190Z" title="更新于 2024-10-21 19:52:39">2024-10-21</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/DeFI/">DeFI</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AAVE/">AAVE</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">1.2k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>4分钟</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>通过 AIP-16 在 Main Aave 市场实施了流动性挖矿/激励，为存款和借款提供了激励。激励措施目前也在 Polygon 市场和 Avalanche 市场上实施。实施细节与本页描述的相同。</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Market</th>
+<th>Code</th>
+<th>Address</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Main Market</td>
+<td><a target="_blank" rel="noopener" href="https://github.com/aave/incentives-proposal/blob/master/contracts/incentives/StakedTokenIncentivesController.sol">Github</a></td>
+<td><a target="_blank" rel="noopener" href="https://etherscan.io/address/0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5#readProxyContract">0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5</a></td>
+</tr>
+<tr>
+<td>Polygon Market</td>
+<td><a target="_blank" rel="noopener" href="https://github.com/aave/aave-stake-v2/blob/feat/incentives/mumbai-config/contracts/interfaces/IAaveIncentivesController.sol">Github</a></td>
+<td><a target="_blank" rel="noopener" href="https://explorer-mainnet.maticvigil.com/address/0x357D51124f59836DeD84c8a1730D72B749d8BC23/contracts">0x357D51124f59836DeD84c8a1730D72B749d8BC23</a></td>
+</tr>
+<tr>
+<td>Avalanche</td>
+<td><a target="_blank" rel="noopener" href="https://cchain.explorer.avax.network/address/0x198A4a8ECe13dfa29F5b37F5A5A3683a02185757/contracts">Code</a></td>
+<td><a target="_blank" rel="noopener" href="https://cchain.explorer.avax.network/address/0x01D83Fe6A10D2f2B7AF17034343746188272cAc9/contracts">0x01D83Fe6A10D2f2B7AF17034343746188272cAc</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="Integration-Guide（集成指南）"><a href="#Integration-Guide（集成指南）" class="headerlink" title="Integration Guide（集成指南）"></a>Integration Guide（集成指南）</h2><h3 id="先决条件"><a href="#先决条件" class="headerlink" title="先决条件"></a>先决条件</h3><p>我们的用户应该已经在协议中有了一定的占比。根据用户的市场和激励措施，它们应该已经在其中一个激励资产中存入、借款或二者兼有。</p>
+<p>要检查资产是否当前处于激励状态，请使用 <code>getAssetData()</code>方法，传入激励资产的关联  <strong>aToken</strong> 或 <strong>debtToken</strong> 地址。要获取每个资产的管理代币列表，另请参阅 Protocol Data Provider 中的 <code>getReserveTokensAddresses()</code></p>
+<h3 id="查看用户奖励余额"><a href="#查看用户奖励余额" class="headerlink" title="查看用户奖励余额"></a>查看用户奖励余额</h3><p>调用 <code>getRewardsBalance()</code>方法，以数组形式传入相关 token 地址（aTokens 和/或 debt Tokens ）</p>
+<h3 id="领取累积奖励"><a href="#领取累积奖励" class="headerlink" title="领取累积奖励"></a>领取累积奖励</h3><h4 id="用户领取奖励"><a href="#用户领取奖励" class="headerlink" title="用户领取奖励"></a>用户领取奖励</h4><p>调用 <code>claimRewards()</code> 方法，将相关 token 地址（aToken 和/或 debtTokens）作为数组传入。<code>msg.sender</code>必须与以获得奖励的用户地址匹配。</p>
+<h4 id="代替-User-领取奖励"><a href="#代替-User-领取奖励" class="headerlink" title="代替 User 领取奖励"></a>代替 User 领取奖励</h4><p>必须通过 <code>setClaimer()</code>方法设置申领者，使调用方能够代替用户申领。</p>
+<p>调用 <code>claimRewardsOnBehalf()</code>方阿飞，相关 token 地址（aToken 和/或 debt tokens）用一个数组传入。<code>msg.sender</code>必须事先通过 <code>setClaimer()</code>设置。</p>
+<h4 id="考虑奖励的代币"><a href="#考虑奖励的代币" class="headerlink" title="考虑奖励的代币"></a>考虑奖励的代币</h4><p>对于主网市场，stkAAVE 将获得奖励，停在领取后根据 Staking AAVE 参数自动计算利息。将 stkAAVE 转换为 AAVE 有 10 天的相关冷却期，还有 2 天的赎回期。确保向用户显示此信息并正确处理。</p>
+<p>对于 Polygon 市场，WMATIC 没有“锁定”期。确保我们考虑了 WMATIC 和 native WMATIC 之间的差异，特别是需要将 WMATIC 解包为 MATIC。这可以通过在 WMATIC 合约上调用 <code>withdraw()</code> 来完成。</p>
+<h3 id="计算奖励-APY"><a href="#计算奖励-APY" class="headerlink" title="计算奖励 APY"></a>计算奖励 APY</h3><pre class="line-numbers language-none"><code class="language-none">APY &#x3D; normalizedEmissionPerSecond * rewardTokenPriceInEth * SECONDS_PER_YEAR &#x2F; normalizedTotakTokenSupply<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><strong>Note：</strong></p>
+<ul>
+<li><code>normalizedEmissionPerSecond = emissionPerSecond/RWARD_TOKEN_DECIMALS</code></li>
+<li>主网的奖励代币是 AAVE，Polygon 的奖励代币是 MATIC</li>
+<li><code>normalizedTotalTokenSupply = tokenTotalSUpplyNormalized * tokenPriceInETH</code>，其中 token 为激励 a/s/v 代币，代币价格与基础资产价格相同。</li>
+<li>可以在 AavePriceOracle 获取奖励代币和储备代币的价格</li>
+</ul>
+<h2 id="Methods"><a href="#Methods" class="headerlink" title="Methods"></a>Methods</h2><h3 id="claimRewards"><a href="#claimRewards" class="headerlink" title="claimRewards()"></a>claimRewards()</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">claimRewards</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token keyword">calldata</span> assets<span class="token punctuation">,</span> <span class="token builtin">uint256</span> amount<span class="token punctuation">,</span> <span class="token builtin">address</span> to<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>领取资产<code>asset</code>的应计奖励，累积任何待处理的奖励。</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>assets</code></td>
+<td>address[]</td>
+<td>产生奖励的资产的地址，即 aToken 或 debtTokens 要获取每个资产的关联  token 列表，另请参阅 Protocol Data Provider 中的 <code>getReserveTokenAddresses()</code></td>
+</tr>
+<tr>
+<td><code>amount</code></td>
+<td>uint256</td>
+<td>要提取的金额，以 wei 表示</td>
+</tr>
+<tr>
+<td><code>to</code></td>
+<td>address</td>
+<td>领取的奖励将发送到的地址</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="claimRewardsOnBehalf"><a href="#claimRewardsOnBehalf" class="headerlink" title="claimRewardsOnBehalf()"></a>claimRewardsOnBehalf()</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">claimRewardsOnBehalf</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token keyword">calldata</span> assets<span class="token punctuation">,</span> <span class="token builtin">uint256</span> amount<span class="token punctuation">,</span> <span class="token builtin">address</span> user<span class="token punctuation">,</span> <span class="token builtin">address</span> to<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>代表用户<code>user</code> 领取资产<code>asset</code>的应计奖励，累积任何待处理的奖励。</p>
+<p><code>user</code>在此之前必须调用 <code>setClaimer()</code>函数，将<code>msg.sender</code>设置为已批准的声明者</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>assets</code></td>
+<td>address[]</td>
+<td>产生奖励的资产的地址，即 aToken 或 debtTokens 要获取每个资产的关联  token 列表，另请参阅 Protocol Data Provider 中的 <code>getReserveTokenAddresses()</code></td>
+</tr>
+<tr>
+<td><code>amount</code></td>
+<td>uint256</td>
+<td>要提取的金额，用 wei 表示</td>
+</tr>
+<tr>
+<td><code>user</code></td>
+<td>address</td>
+<td>有待领取奖励的用户的地址</td>
+</tr>
+<tr>
+<td><code>to</code></td>
+<td>address</td>
+<td>奖励将发送到的地址</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="setClaimer"><a href="#setClaimer" class="headerlink" title="setClaimer()"></a>setClaimer()</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">setClaimer</span><span class="token punctuation">(</span><span class="token builtin">address</span> user<span class="token punctuation">,</span> <span class="token builtin">address</span> caller<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>设置授权调用方 <code>caller</code>代表用户 <code>user</code>领取所有奖励。这只能通过 Governance 设置。</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>user</code></td>
+<td>address</td>
+<td>有待领取奖励的用户地址</td>
+</tr>
+<tr>
+<td><code>caller</code></td>
+<td>address</td>
+<td>新授权的 claimer 地址</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="View-Methods"><a href="#View-Methods" class="headerlink" title="View Methods"></a>View Methods</h2><h3 id="getAssetData"><a href="#getAssetData" class="headerlink" title="getAssetData()"></a>getAssetData()</h3><p><code>getAssetData()</code>目前仅在以太坊市场上可用。</p>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">getAssetData</span><span class="token punctuation">(</span><span class="token builtin">address</span> asset<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>返回资产指数，每秒排放量（即当前奖励率）和上次更新的时间戳</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>asset</code></td>
+<td>address</td>
+<td>产生奖励的资产的地址，即  aToken 或 debtTokens 要获取每个资产的关联  token 列表，另请参阅 Protocol Data Provider 中的 <code>getReserveTokenAddresses()</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="getClaimer"><a href="#getClaimer" class="headerlink" title="getClaimer()"></a>getClaimer()</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">getClaimer</span><span class="token punctuation">(</span><span class="token builtin">address</span> user<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>返回用户<code>user</code> 累计奖励的授权领取者。</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Parameter Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>user</code></td>
+<td>address</td>
+<td>授权领取者的地址</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="getRewardsBalance"><a href="#getRewardsBalance" class="headerlink" title="getRewardsBalance()"></a>getRewardsBalance()</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">getRewardsBalance</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">[</span><span class="token punctuation">]</span> assets<span class="token punctuation">,</span> <span class="token builtin">address</span> user<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>返回用户<code>user</code> 对于资产 <code>assets</code>的总奖励。</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>assets</code></td>
+<td>address[]</td>
+<td>产生奖励的资产的地址，即  aToken 或 debtTokens 要获取每个资产的关联  token 列表，另请参阅 Protocol Data Provider 中的 <code>getReserveTokenAddresses()</code></td>
+</tr>
+<tr>
+<td><code>user</code></td>
+<td>address</td>
+<td>有待处理奖励可领取的用户地址</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="getUserAssetData"><a href="#getUserAssetData" class="headerlink" title="getUserAssetData()"></a>getUserAssetData()</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">getUserAssetData</span><span class="token punctuation">(</span><span class="token builtin">address</span> user<span class="token punctuation">,</span> <span class="token builtin">address</span> asset<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>返回 用户<code>user</code> 在<code>asset</code>资产分配上的数据。</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>user</code></td>
+<td>address</td>
+<td>用户的地址</td>
+</tr>
+<tr>
+<td><code>asset</code></td>
+<td>address</td>
+<td>产生奖励的资产的地址，即  aToken 或 debtTokens 要获取每个资产的关联  token 列表，另请参阅 Protocol Data Provider 中的 <code>getReserveTokenAddresses()</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="getUserUnclaimedRewards"><a href="#getUserUnclaimedRewards" class="headerlink" title="getUserUnclaimedRewards()"></a>getUserUnclaimedRewards()</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">getUserUnclaimedRewards</span><span class="token punctuation">(</span><span class="token builtin">address</span> user<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>返回用户<code>user</code>在协议中的最后一次操作未领取的积累奖励。</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>参数名称</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>user</code></td>
+<td>address</td>
+<td>用户的地址</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="getDistrilbutionEnd"><a href="#getDistrilbutionEnd" class="headerlink" title="getDistrilbutionEnd()"></a>getDistrilbutionEnd()</h3><pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">function</span> <span class="token function">getDistributionEnd</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>返回分配期的结束时间</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://q1ngying.cn">Q1ngying</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://q1ngying.cn/AAVE/guide/liquidity-mining/">https://q1ngying.cn/AAVE/guide/liquidity-mining/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://q1ngying.cn" target="_blank">Q1ngying</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/DeFi/">DeFi</a><a class="post-meta__tags" href="/tags/AAVE/">AAVE</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.jpg" data-sites="twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="prev-post pull-left" href="/AAVE/guide/" title="AAVE guide"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">AAVE guide</div></div></a><a class="next-post pull-right" href="/AAVE/guide/TroublesshootingErrors/" title="TroublesshootingErrors"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">TroublesshootingErrors</div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a href="/AAVE/guide/" title="AAVE guide"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-21</div><div class="title">AAVE guide</div></div></a><a href="/AAVE/guide/CreateDelegate/" title="CreateDelegate"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-18</div><div class="title">CreateDelegate</div></div></a><a href="/AAVE/guide/Flashloan/" title="Flashloan"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-18</div><div class="title">Flashloan</div></div></a><a href="/AAVE/theCoreProtocol/" title="AAVE 核心协议"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-17</div><div class="title">AAVE 核心协议</div></div></a><a href="/AAVE/guide/TroublesshootingErrors/" title="TroublesshootingErrors"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-18</div><div class="title">TroublesshootingErrors</div></div></a><a href="/AAVE/theCoreProtocol/AAVEToken/" title="AAVEToken"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-17</div><div class="title">AAVEToken</div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Integration-Guide%EF%BC%88%E9%9B%86%E6%88%90%E6%8C%87%E5%8D%97%EF%BC%89"><span class="toc-number">1.</span> <span class="toc-text">Integration Guide（集成指南）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%88%E5%86%B3%E6%9D%A1%E4%BB%B6"><span class="toc-number">1.1.</span> <span class="toc-text">先决条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E7%94%A8%E6%88%B7%E5%A5%96%E5%8A%B1%E4%BD%99%E9%A2%9D"><span class="toc-number">1.2.</span> <span class="toc-text">查看用户奖励余额</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%86%E5%8F%96%E7%B4%AF%E7%A7%AF%E5%A5%96%E5%8A%B1"><span class="toc-number">1.3.</span> <span class="toc-text">领取累积奖励</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E9%A2%86%E5%8F%96%E5%A5%96%E5%8A%B1"><span class="toc-number">1.3.1.</span> <span class="toc-text">用户领取奖励</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%A3%E6%9B%BF-User-%E9%A2%86%E5%8F%96%E5%A5%96%E5%8A%B1"><span class="toc-number">1.3.2.</span> <span class="toc-text">代替 User 领取奖励</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%80%83%E8%99%91%E5%A5%96%E5%8A%B1%E7%9A%84%E4%BB%A3%E5%B8%81"><span class="toc-number">1.3.3.</span> <span class="toc-text">考虑奖励的代币</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E5%A5%96%E5%8A%B1-APY"><span class="toc-number">1.4.</span> <span class="toc-text">计算奖励 APY</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Methods"><span class="toc-number">2.</span> <span class="toc-text">Methods</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#claimRewards"><span class="toc-number">2.1.</span> <span class="toc-text">claimRewards()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#claimRewardsOnBehalf"><span class="toc-number">2.2.</span> <span class="toc-text">claimRewardsOnBehalf()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#setClaimer"><span class="toc-number">2.3.</span> <span class="toc-text">setClaimer()</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#View-Methods"><span class="toc-number">3.</span> <span class="toc-text">View Methods</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#getAssetData"><span class="toc-number">3.1.</span> <span class="toc-text">getAssetData()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#getClaimer"><span class="toc-number">3.2.</span> <span class="toc-text">getClaimer()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#getRewardsBalance"><span class="toc-number">3.3.</span> <span class="toc-text">getRewardsBalance()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#getUserAssetData"><span class="toc-number">3.4.</span> <span class="toc-text">getUserAssetData()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#getUserUnclaimedRewards"><span class="toc-number">3.5.</span> <span class="toc-text">getUserUnclaimedRewards()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#getDistrilbutionEnd"><span class="toc-number">3.6.</span> <span class="toc-text">getDistrilbutionEnd()</span></a></li></ol></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url(/img/back1.webp);"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By Q1ngying</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script>(() => {
+  const panguFn = () => {
+    if (typeof pangu === 'object') pangu.autoSpacingPage()
+    else {
+      btf.getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+        .then(() => {
+          pangu.autoSpacingPage()
+        })
+    }
+  }
+
+  const panguInit = () => {
+    if (false){
+      GLOBAL_CONFIG_SITE.isPost && panguFn()
+    } else {
+      panguFn()
+    }
+  }
+
+  btf.addGlobalFn('pjaxComplete', panguInit, 'pangu')
+  document.addEventListener('DOMContentLoaded', panguInit)
+})()</script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="17,185,200" opacity="0.8" zIndex="-1" count="200" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script></div></body></html>

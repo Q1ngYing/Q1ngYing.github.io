@@ -1,11 +1,13 @@
-<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Flashloan | Q1ngying</title><meta name="author" content="Q1ngying"><meta name="copyright" content="Q1ngying"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#FFFFFF"><meta property="og:type" content="article">
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Flashloan | Q1ngying</title><meta name="author" content="Q1ngying"><meta name="copyright" content="Q1ngying"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#FFFFFF"><meta name="description" content="Flash loan 是特殊的无抵押贷款，只要在交易结束前归还借入的金额（和费用），就可以借入资产。现实世界中没有和闪电贷相似的示例，因此它需要对区块链中的区块内的状态管理有一些基本的了解。 闪电贷是针对开发人员的高级概念。必须对以太坊、编程和智能合约有很好的了解才能利用他们 Overview对于开发人员，在开发解决方案时，可以考虑以下有用的心智模型：  您的合约通过调用 LendingPool">
+<meta property="og:type" content="article">
 <meta property="og:title" content="Flashloan">
 <meta property="og:url" content="https://q1ngying.cn/AAVE/guide/Flashloan/index.html">
 <meta property="og:site_name" content="Q1ngying">
+<meta property="og:description" content="Flash loan 是特殊的无抵押贷款，只要在交易结束前归还借入的金额（和费用），就可以借入资产。现实世界中没有和闪电贷相似的示例，因此它需要对区块链中的区块内的状态管理有一些基本的了解。 闪电贷是针对开发人员的高级概念。必须对以太坊、编程和智能合约有很好的了解才能利用他们 Overview对于开发人员，在开发解决方案时，可以考虑以下有用的心智模型：  您的合约通过调用 LendingPool">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://q1ngying.cn/img/butterfly-icon.jpg">
 <meta property="article:published_time" content="2024-10-18T08:08:13.000Z">
-<meta property="article:modified_time" content="2024-10-18T08:56:44.960Z">
+<meta property="article:modified_time" content="2024-10-18T12:45:51.517Z">
 <meta property="article:author" content="Q1ngying">
 <meta property="article:tag" content="DeFi">
 <meta property="article:tag" content="AAVE">
@@ -145,13 +147,628 @@
   isPost: true,
   isHome: false,
   isHighlightShrink: false,
-  isToc: false,
-  postUpdate: '2024-10-18 16:56:44'
+  isToc: true,
+  postUpdate: '2024-10-18 20:45:51'
 }</script><script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script><script>LA.init({id:"3Jzfa21KlLms3Lkh",ck:"3Jzfa21KlLms3Lkh"})</script><link rel="stylesheet" href="/css/style.css?1"><!-- hexo injector head_end start -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
-<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/butterfly-icon.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">28</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">27</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/back1.webp);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Q1ngying</span></a><a class="nav-page-title" href="/"><span class="site-name">Flashloan</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Flashloan</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-10-18T08:08:13.000Z" title="发表于 2024-10-18 16:08:13">2024-10-18</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-10-18T08:56:44.960Z" title="更新于 2024-10-18 16:56:44">2024-10-18</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/DeFI/">DeFI</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AAVE/">AAVE</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">0</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>1 mins.分钟</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://q1ngying.cn">Q1ngying</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://q1ngying.cn/AAVE/guide/Flashloan/">https://q1ngying.cn/AAVE/guide/Flashloan/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://q1ngying.cn" target="_blank">Q1ngying</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/DeFi/">DeFi</a><a class="post-meta__tags" href="/tags/AAVE/">AAVE</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.jpg" data-sites="twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="prev-post pull-left" href="/AAVE/guide/TroublesshootingErrors/" title="TroublesshootingErrors"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">TroublesshootingErrors</div></div></a><a class="next-post pull-right" href="/AAVE/guide/liquidations/" title="liquidations"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">liquidations</div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a href="/AAVE/theCoreProtocol/" title="AAVE 核心协议"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-17</div><div class="title">AAVE 核心协议</div></div></a><a href="/AAVE/theCoreProtocol/AAVEToken/" title="AAVEToken"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-17</div><div class="title">AAVEToken</div></div></a><a href="/AAVE/guide/CreateDelegate/" title="CreateDelegate"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-18</div><div class="title">CreateDelegate</div></div></a><a href="/AAVE/guide/TroublesshootingErrors/" title="TroublesshootingErrors"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-18</div><div class="title">TroublesshootingErrors</div></div></a><a href="/AAVE/theCoreProtocol/AddressProviderRegistry/" title="AddressProviderRegistry"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-17</div><div class="title">AddressProviderRegistry</div></div></a><a href="/AAVE/guide/liquidations/" title="liquidations"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-18</div><div class="title">liquidations</div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info is-center"><div class="avatar-img"><img src="/img/butterfly-icon.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Q1ngying</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">76</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">28</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">27</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/q1ngying"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/q1ngying" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="https://weibo.com" target="_blank" title="微博"><i class="fab fa-weibo" style="color: #24292e;"></i></a></div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/AAVE/guide/TroublesshootingErrors/" title="TroublesshootingErrors">TroublesshootingErrors</a><time datetime="2024-10-18T08:09:35.000Z" title="发表于 2024-10-18 16:09:35">2024-10-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/AAVE/guide/Flashloan/" title="Flashloan">Flashloan</a><time datetime="2024-10-18T08:08:13.000Z" title="发表于 2024-10-18 16:08:13">2024-10-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/AAVE/guide/liquidations/" title="liquidations">liquidations</a><time datetime="2024-10-18T08:07:28.000Z" title="发表于 2024-10-18 16:07:28">2024-10-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/AAVE/guide/CreateDelegate/" title="CreateDelegate">CreateDelegate</a><time datetime="2024-10-18T08:06:52.000Z" title="发表于 2024-10-18 16:06:52">2024-10-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/AAVE/theCoreProtocol/WETHGateway/" title="WETHGateway">WETHGateway</a><time datetime="2024-10-17T11:13:44.000Z" title="发表于 2024-10-17 19:13:44">2024-10-17</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/back1.webp);"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By Q1ngying</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script>(() => {
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/butterfly-icon.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">78</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">28</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">27</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/back1.webp);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Q1ngying</span></a><a class="nav-page-title" href="/"><span class="site-name">Flashloan</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Flashloan</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-10-18T08:08:13.000Z" title="发表于 2024-10-18 16:08:13">2024-10-18</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-10-18T12:45:51.517Z" title="更新于 2024-10-18 20:45:51">2024-10-18</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/DeFI/">DeFI</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AAVE/">AAVE</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">3.8k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>18分钟</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>Flash loan 是特殊的无抵押贷款，只要在交易结束前归还借入的金额（和费用），就可以借入资产。现实世界中没有和闪电贷相似的示例，因此它需要对区块链中的区块内的状态管理有一些基本的了解。</p>
+<p>闪电贷是针对开发人员的高级概念。必须对以太坊、编程和智能合约有很好的了解才能利用他们</p>
+<h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><p>对于开发人员，在开发解决方案时，可以考虑以下有用的心智模型：</p>
+<ol>
+<li>您的合约通过调用 <code>LendingPool</code> 合约的 <code>flashLoan()</code> 函数，申请一定数量的储备金进行闪电贷。</li>
+<li>经过健全性检查后，<code>LendingPool</code> 会将所请求的储备金转入您的合约，并调用您的合约或您指定的接收者合约的 <code>executeOperation()</code> 函数。</li>
+<li>您的合约在持有闪电贷资金后，可以执行任意的操作。<ul>
+<li>如果是“传统”闪电贷，执行完操作后，您需要将借贷的金额归还给 <code>LendingPool</code>。<ul>
+<li><code>LendingPool</code> 更新储备金的相关数据，并扣除借贷金额加上手续费。<ul>
+<li>与 v1 不同，v1 需要主动将资金推回 <code>LendingPool</code>，而 v2 则是 <code>LendingPool</code> 主动拉取资金。</li>
+</ul>
+</li>
+<li>如果无法偿还（因余额不足或未授权），交易将回滚。</li>
+</ul>
+</li>
+<li>如果是借债型闪电贷（参见 <code>flashLoan()</code> 函数的模式参数），将会产生债务。</li>
+</ul>
+</li>
+<li>上述所有操作都在一个交易中完成，发生在同一个以太坊区块内。</li>
+</ol>
+<h2 id="闪电贷的申请"><a href="#闪电贷的申请" class="headerlink" title="闪电贷的申请"></a>闪电贷的申请</h2><p>Aave 闪电贷已经与 Aave V2 一起广泛用于交换和/或迁移头寸。其他在野的例子包括：</p>
+<ul>
+<li>资产之间的套利，无需本金即可执行套利。Example：<a target="_blank" rel="noopener" href="https://medium.com/@bneiluj/flash-boys-arbitrage-dao-c0b96d094f93">ArbitrageDAO</a></li>
+<li>swap 贷款头寸的抵押品，无需偿还头寸的债务。Example：<a target="_blank" rel="noopener" href="https://collateralswap.com/">Collateral Swap</a>, <a target="_blank" rel="noopener" href="https://defisaver.com/">DeFiSaver</a>.</li>
+<li>其他示例： <a target="_blank" rel="noopener" href="https://medium.com/aave/sneak-peek-at-flash-loans-f2b28a394d62">here</a> and <a target="_blank" rel="noopener" href="https://medium.com/aave/building-the-post-liquidation-era-4e650935fc88">here</a>.</li>
+</ul>
+<h2 id="闪电贷费用"><a href="#闪电贷费用" class="headerlink" title="闪电贷费用"></a>闪电贷费用</h2><p>闪电贷费用目前是 0.09%，可通过正常的治理流程进行更改。要获取当前值，请在<code>LendingPool</code>合约上调用<code>FLASHLOAN_PERMIUM_TOTAL()</code>。</p>
+<h2 id="Step-by-Step"><a href="#Step-by-Step" class="headerlink" title="Step by Step"></a>Step by Step</h2><h3 id="Setting-up"><a href="#Setting-up" class="headerlink" title="Setting up"></a>Setting up</h3><p>接受闪电贷的合约必须通过实现相关的 <code>executeOperation()</code>函数来符合 <code>IFlashLoanReceiver</code>接口。在下面的示例中，我们从 <code>IFlashLoanReceiverBase</code>继承，它符合 <code>IFlashLoanReceiver()</code></p>
+<p>另外需要注意：由于欠款将由我们的合约中提取，因此我们的合约必须向 <code>LendingPool</code>授权相关的<code>allowance</code>，以提供这些资金来偿还闪电贷债务以及费用</p>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token number">0.6</span><span class="token number">.12</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> FlashLoanReceiverBase <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"./FlashLoanReceiverBase.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> ILendingPool <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"./ILendingPool.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> ILendingPoolAddressesProvider <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"./ILendingPoolAddressesProvider.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> IERC20 <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"./IERC20.sol"</span><span class="token punctuation">;</span>
+
+<span class="token comment">/** 
+    !!!
+    Never keep funds permanently on your FlashLoanReceiverBase contract as they could be 
+    exposed to a 'griefing' attack, where the stored funds are used by an attacker.
+    !!!
+ */</span>
+<span class="token keyword">contract</span> <span class="token class-name">MyV2FlashLoan</span> <span class="token keyword">is</span> FlashLoanReceiverBase <span class="token punctuation">&#123;</span>
+
+    <span class="token comment">/**
+        This function is called after your contract has received the flash loaned amount
+     */</span>
+    <span class="token keyword">function</span> <span class="token function">executeOperation</span><span class="token punctuation">(</span>
+        <span class="token builtin">address</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token keyword">calldata</span> assets<span class="token punctuation">,</span>
+        <span class="token builtin">uint256</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token keyword">calldata</span> amounts<span class="token punctuation">,</span>
+        <span class="token builtin">uint256</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token keyword">calldata</span> premiums<span class="token punctuation">,</span>
+        <span class="token builtin">address</span> initiator<span class="token punctuation">,</span>
+        <span class="token builtin">bytes</span> <span class="token keyword">calldata</span> params
+    <span class="token punctuation">)</span>
+        <span class="token keyword">external</span>
+        override
+        <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">bool</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+
+        <span class="token comment">//</span>
+        <span class="token comment">// This contract now has the funds requested.</span>
+        <span class="token comment">// Your logic goes here.</span>
+        <span class="token comment">//</span>
+        
+        <span class="token comment">// At the end of your logic above, this contract owes</span>
+        <span class="token comment">// the flashloaned amounts + premiums.</span>
+        <span class="token comment">// Therefore ensure your contract has enough to repay</span>
+        <span class="token comment">// these amounts.</span>
+        
+        <span class="token comment">// Approve the LendingPool contract allowance to *pull* the owed amount</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token builtin">uint</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> assets<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token builtin">uint</span> amountOwing <span class="token operator">=</span> amounts<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>premiums<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">IERC20</span><span class="token punctuation">(</span>assets<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">approve</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span>LENDING_POOL<span class="token punctuation">)</span><span class="token punctuation">,</span> amountOwing<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        
+        <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="Call-flashLoan"><a href="#Call-flashLoan" class="headerlink" title="Call flashLoan()"></a>Call <code>flashLoan()</code></h3><p>要在<code>LendingPool</code>上调用 <code>flashLoan()</code>，我们需要传入相关参数。有三种方法可以实现这一点</p>
+<h4 id="从-EOA-账户"><a href="#从-EOA-账户" class="headerlink" title="从 EOA 账户"></a>从 EOA 账户</h4><p>要使用 EOA 账户，需要使用 <code>flashLoan()</code>函数将交易发送到相关的 <code>LendingPool</code>。有关参数详细信息，参阅 flashLoan 函数文档，确保将步骤一中的合约地址作用于 <code>receiverAddress</code></p>
+<h4 id="从其他合约"><a href="#从其他合约" class="headerlink" title="从其他合约"></a>从其他合约</h4><p>与上述从 EOA 发送交易类似，请确保 <code>receiverAddress</code>是第一部中的合约地址。</p>
+<h4 id="来自同一合约"><a href="#来自同一合约" class="headerlink" title="来自同一合约"></a>来自同一合约</h4><p>如果要使用与步骤一中相同的合约，请在 <code>flashLoan()</code>函数中对 <code>receiverAddress()</code>参数使用<code>address(this)</code>。</p>
+<p>下面的示例使用了第三种情况，其中 <code>executeOperation()</code>在同一个合约中调用 <code>LendingPool</code>上的<code>flashLoan()</code></p>
+<p>切勿将资金永久保存在 <code>FlashLoanReceiverBase</code>合约上，因为他们可能会受到“恶意破坏”攻击，其中存储的资金被攻击者使用</p>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token number">0.6</span><span class="token number">.12</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> FlashLoanReceiverBase <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"./FlashLoanReceiverBase.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> ILendingPool <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"./ILendingPool.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> ILendingPoolAddressesProvider <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"./ILendingPoolAddressesProvider.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> IERC20 <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"./IERC20.sol"</span><span class="token punctuation">;</span>
+
+<span class="token comment">/** 
+    !!!
+    Never keep funds permanently on your FlashLoanReceiverBase contract as they could be 
+    exposed to a 'griefing' attack, where the stored funds are used by an attacker.
+    !!!
+ */</span>
+<span class="token keyword">contract</span> <span class="token class-name">MyV2FlashLoan</span> <span class="token keyword">is</span> FlashLoanReceiverBase <span class="token punctuation">&#123;</span>
+
+    <span class="token comment">/**
+        This function is called after your contract has received the flash loaned amount
+     */</span>
+    <span class="token keyword">function</span> <span class="token function">executeOperation</span><span class="token punctuation">(</span>
+        <span class="token builtin">address</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token keyword">calldata</span> assets<span class="token punctuation">,</span>
+        <span class="token builtin">uint256</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token keyword">calldata</span> amounts<span class="token punctuation">,</span>
+        <span class="token builtin">uint256</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token keyword">calldata</span> premiums<span class="token punctuation">,</span>
+        <span class="token builtin">address</span> initiator<span class="token punctuation">,</span>
+        <span class="token builtin">bytes</span> <span class="token keyword">calldata</span> params
+    <span class="token punctuation">)</span>
+        <span class="token keyword">external</span>
+        override
+        <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">bool</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+
+        <span class="token comment">//</span>
+        <span class="token comment">// This contract now has the funds requested.</span>
+        <span class="token comment">// Your logic goes here.</span>
+        <span class="token comment">//</span>
+        
+        <span class="token comment">// At the end of your logic above, this contract owes</span>
+        <span class="token comment">// the flashloaned amounts + premiums.</span>
+        <span class="token comment">// Therefore ensure your contract has enough to repay</span>
+        <span class="token comment">// these amounts.</span>
+        
+        <span class="token comment">// Approve the LendingPool contract allowance to *pull* the owed amount</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token builtin">uint</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> assets<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token builtin">uint</span> amountOwing <span class="token operator">=</span> amounts<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>premiums<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">IERC20</span><span class="token punctuation">(</span>assets<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">approve</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span>LENDING_POOL<span class="token punctuation">)</span><span class="token punctuation">,</span> amountOwing<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        
+        <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    
+    <span class="token keyword">function</span> <span class="token function">myFlashLoanCall</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+        <span class="token builtin">address</span> receiverAddress <span class="token operator">=</span> <span class="token builtin">address</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token builtin">address</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token keyword">memory</span> assets <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">address</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        assets<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token builtin">address</span><span class="token punctuation">(</span>INSERT_ASSET_ONE_ADDRESS<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        assets<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token builtin">address</span><span class="token punctuation">(</span>INSERT_ASSET_TWO_ADDRESS<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token builtin">uint256</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token keyword">memory</span> amounts <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">uint256</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        amounts<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> INSERT_ASSET_ONE_AMOUNT<span class="token punctuation">;</span>
+        amounts<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">=</span> INSERT_ASSET_TWO_AMOUNT<span class="token punctuation">;</span>
+
+        <span class="token comment">// 0 = no debt, 1 = stable, 2 = variable</span>
+        <span class="token builtin">uint256</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token keyword">memory</span> modes <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">uint256</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        modes<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> INSERT_ASSET_ONE_MODE<span class="token punctuation">;</span>
+        modes<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">=</span> INSERT_ASSET_TWO_MODE<span class="token punctuation">;</span>
+
+        <span class="token builtin">address</span> onBehalfOf <span class="token operator">=</span> <span class="token builtin">address</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token builtin">bytes</span> <span class="token keyword">memory</span> params <span class="token operator">=</span> <span class="token string">""</span><span class="token punctuation">;</span>
+        <span class="token builtin">uint16</span> referralCode <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+
+        LENDING_POOL<span class="token punctuation">.</span><span class="token function">flashLoan</span><span class="token punctuation">(</span>
+            receiverAddress<span class="token punctuation">,</span>
+            assets<span class="token punctuation">,</span>
+            amounts<span class="token punctuation">,</span>
+            modes<span class="token punctuation">,</span>
+            onBehalfOf<span class="token punctuation">,</span>
+            params<span class="token punctuation">,</span>
+            referralCode
+        <span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="完成闪电贷"><a href="#完成闪电贷" class="headerlink" title="完成闪电贷"></a>完成闪电贷</h3><p>一旦我们对闪电贷资产执行了逻辑（在 <code>executeOperation()</code>函数中），如果我们在<code>modes</code>参数中对任意资产使用了 <code>mode=0</code>，则需要偿还闪电贷金额。</p>
+<h4 id="偿还闪电贷资产"><a href="#偿还闪电贷资产" class="headerlink" title="偿还闪电贷资产"></a>偿还闪电贷资产</h4><p>确保我们的合约有相应的 amount + fee 来偿还借出的资产。我们可以通过传递给 <code>executeOperation()</code>函数的 <code>amounts</code>和 <code>premiums</code>数字种相关条目的综合来计算这一点。</p>
+<p>我们<strong>无需</strong>将欠款转回 <code>LendingPool</code>。资金将在我们操作结束时自动提取。</p>
+<p>个人认为：使用这种方法偿还闪电贷的金额可以很好的避免发送<strong>偿还闪电贷的资金，同时被用户用作其他目的</strong>的情况发生。</p>
+<h4 id="产生债务（即不立即归还债务）"><a href="#产生债务（即不立即归还债务）" class="headerlink" title="产生债务（即不立即归还债务）"></a>产生债务（即不立即归还债务）</h4><p>如果我们最初对 <code>modes</code>参数种的任何资产使用 <code>mode=1</code>或 <code>mode=2</code>，则如果 <code>onBehalfOf</code>地址之前已批准 <code>msg.sender</code>代表他们承担债务，则为 <code>onBehalfOf</code>传入的地址产生债务。</p>
+<p>这意味着我们可以拥有一些立即偿还的资产，而其他资产会产生债务。</p>
+<p>在 Aave 的闪电贷中，如果选择了产生债务（即 <code>modes[]</code> 中的值为 1 或 2，表示稳定利率或浮动利率的借款），<code>onBehalfOf</code> 地址必须有足够的抵押才能支持该债务。也就是说，协议会检查该地址是否已经抵押了足够的资产来借款。</p>
+<p>对于无抵押的债务，如果借款人不偿还债务，协议会触发清算机制，卖出借款人的抵押资产来偿还贷款。如果没有足够的抵押，协议可能面临损失，因此合理的抵押机制至关重要。</p>
+<h2 id="编码和解码参数"><a href="#编码和解码参数" class="headerlink" title="编码和解码参数"></a>编码和解码参数</h2><p>如果我们需要将参数传递到 flash loan 函数中，我们首先需要对其进行编码，然后在 <code>executeOperation()</code>种对其进行编码。</p>
+<h3 id="Encoding"><a href="#Encoding" class="headerlink" title="Encoding"></a>Encoding</h3><p>如果我们在 solidity 中编码，可以使用其内置的 <code>abi.encode()</code>函数：</p>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// Encoding an address and a uint256</span>
+<span class="token builtin">bytes</span> <span class="token keyword">memory</span> parms <span class="token operator">=</span> abi<span class="token punctuation">.</span><span class="token function">encode</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">1234</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>如果要在链下编码，则可以使用类似于 <code>web3.js</code>的包，其中包含 <code>abi.encodeParameters()</code>：</p>
+<pre class="line-numbers language-javascript" data-language="javascript"><code class="language-javascript"><span class="token keyword">const</span> params <span class="token operator">=</span> web3<span class="token punctuation">.</span>eth<span class="token punctuation">.</span>abi<span class="token punctuation">.</span><span class="token function">encodeParameters</span><span class="token punctuation">(</span>
+	<span class="token punctuation">[</span><span class="token string">"bytes32"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+	<span class="token punctuation">[</span>
+		web3<span class="token punctuation">.</span>utils<span class="token punctuation">.</span><span class="token function">utf8ToHex</span><span class="token punctuation">(</span><span class="token string">"some_value"</span><span class="token punctuation">)</span>
+	<span class="token punctuation">]</span>
+<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="Decoding"><a href="#Decoding" class="headerlink" title="Decoding"></a>Decoding</h3><p>在 <code>executeOperation()</code> 中解码时，我们需要使用内置的 <code>abi.decode()</code>函数：</p>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token punctuation">(</span><span class="token builtin">bytes32</span> someValue<span class="token punctuation">)</span> <span class="token operator">=</span> abi<span class="token punctuation">.</span><span class="token function">decode</span><span class="token punctuation">(</span>params<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token builtin">bytes32</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>有关更多信息，参阅 Solidity 官方文档。</p>
+<h2 id="IFlashLoanReceiver"><a href="#IFlashLoanReceiver" class="headerlink" title="IFlashLoanReceiver"></a>IFlashLoanReceiver</h2><p>切勿将资金永久保存在我们的 <code>FlashLoanReceiverBase</code>合约上，因为他们可能会受到“恶意破坏”攻击，其中存储的资金被攻击者使用</p>
+<p>在进行闪电贷时，接受资金的合约必须符合以下的 solidity 接口：</p>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// SPDX-License-Identifier: agpl-3.0</span>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token number">0.6</span><span class="token number">.12</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> ILendingPoolAddressesProvider <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'./ILendingPoolAddressesProvider.sol'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> ILendingPool <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'./ILendingPool.sol'</span><span class="token punctuation">;</span>
+
+<span class="token comment">/**
+ * @title IFlashLoanReceiver interface
+ * @notice Interface for the Aave fee IFlashLoanReceiver.
+ * @author Aave
+ * @dev implement this interface to develop a flashloan-compatible flashLoanReceiver contract
+ **/</span>
+<span class="token keyword">interface</span> <span class="token class-name">IFlashLoanReceiver</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">function</span> <span class="token function">executeOperation</span><span class="token punctuation">(</span>
+    <span class="token builtin">address</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token keyword">calldata</span> assets<span class="token punctuation">,</span>
+    <span class="token builtin">uint256</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token keyword">calldata</span> amounts<span class="token punctuation">,</span>
+    <span class="token builtin">uint256</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token keyword">calldata</span> premiums<span class="token punctuation">,</span>
+    <span class="token builtin">address</span> initiator<span class="token punctuation">,</span>
+    <span class="token builtin">bytes</span> <span class="token keyword">calldata</span> params
+  <span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">bool</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">function</span> <span class="token function">ADDRESSES_PROVIDER</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span>ILendingPoolAddressesProvider<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">function</span> <span class="token function">LENDING_POOL</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span>ILendingPool<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="FlashLoanReceiverBase"><a href="#FlashLoanReceiverBase" class="headerlink" title="FlashLoanReceiverBase"></a>FlashLoanReceiverBase</h3><p>下面是一个可以用作实际生产基础的抽象合约示例：</p>
+<p>可以在<a href="about:blank">此处</a>找到 <code>ILendingPoolAddressesProvider</code>的接口</p>
+<p>“FlashLoanReceiverBase.sol”</p>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// SPDX-License-Identifier: agpl-3.0</span>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token operator">^</span><span class="token version number">0.6.8</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> SafeMath <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'./SafeMath.sol'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> IERC20 <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'./IERC20.sol'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> SafeERC20 <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'./SafeERC20.sol'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> IFlashLoanReceiver <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'./IFlashLoanReceiver.sol'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> ILendingPoolAddressesProvider <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'./ILendingPoolAddressesProvider.sol'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span> ILendingPool <span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'./ILendingPool.sol'</span><span class="token punctuation">;</span>
+
+<span class="token comment">/** 
+    !!!
+    Never keep funds permanently on your FlashLoanReceiverBase contract as they could be 
+    exposed to a 'griefing' attack, where the stored funds are used by an attacker.
+    !!!
+ */</span>
+abstract <span class="token keyword">contract</span> <span class="token class-name">FlashLoanReceiverBase</span> <span class="token keyword">is</span> IFlashLoanReceiver <span class="token punctuation">&#123;</span>
+  <span class="token keyword">using</span> <span class="token class-name">SafeERC20</span> <span class="token keyword">for</span> IERC20<span class="token punctuation">;</span>
+  <span class="token keyword">using</span> <span class="token class-name">SafeMath</span> <span class="token keyword">for</span> <span class="token builtin">uint256</span><span class="token punctuation">;</span>
+
+  ILendingPoolAddressesProvider <span class="token keyword">public</span> immutable override ADDRESSES_PROVIDER<span class="token punctuation">;</span>
+  ILendingPool <span class="token keyword">public</span> immutable override LENDING_POOL<span class="token punctuation">;</span>
+
+  <span class="token keyword">constructor</span><span class="token punctuation">(</span>ILendingPoolAddressesProvider provider<span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token punctuation">&#123;</span>
+    ADDRESSES_PROVIDER <span class="token operator">=</span> provider<span class="token punctuation">;</span>
+    LENDING_POOL <span class="token operator">=</span> <span class="token function">ILendingPool</span><span class="token punctuation">(</span>provider<span class="token punctuation">.</span><span class="token function">getLendingPool</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>“IERC20.sol”</p>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// SPDX-License-Identifier: agpl-3.0</span>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token number">0.6</span><span class="token number">.8</span><span class="token punctuation">;</span>
+
+<span class="token comment">/**
+ * @dev Interface of the ERC20 standard as defined in the EIP.
+ */</span>
+<span class="token keyword">interface</span> <span class="token class-name">IERC20</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">/**
+   * @dev Returns the amount of tokens in existence.
+   */</span>
+  <span class="token keyword">function</span> <span class="token function">totalSupply</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">/**
+   * @dev Returns the amount of tokens owned by `account`.
+   */</span>
+  <span class="token keyword">function</span> <span class="token function">balanceOf</span><span class="token punctuation">(</span><span class="token builtin">address</span> account<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">/**
+   * @dev Moves `amount` tokens from the caller's account to `recipient`.
+   *
+   * Returns a boolean value indicating whether the operation succeeded.
+   *
+   * Emits a &#123;Transfer&#125; event.
+   */</span>
+  <span class="token keyword">function</span> <span class="token function">transfer</span><span class="token punctuation">(</span><span class="token builtin">address</span> recipient<span class="token punctuation">,</span> <span class="token builtin">uint256</span> amount<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">bool</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">/**
+   * @dev Returns the remaining number of tokens that `spender` will be
+   * allowed to spend on behalf of `owner` through &#123;transferFrom&#125;. This is
+   * zero by default.
+   *
+   * This value changes when &#123;approve&#125; or &#123;transferFrom&#125; are called.
+   */</span>
+  <span class="token keyword">function</span> <span class="token function">allowance</span><span class="token punctuation">(</span><span class="token builtin">address</span> owner<span class="token punctuation">,</span> <span class="token builtin">address</span> spender<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">/**
+   * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.
+   *
+   * Returns a boolean value indicating whether the operation succeeded.
+   *
+   * IMPORTANT: Beware that changing an allowance with this method brings the risk
+   * that someone may use both the old and the new allowance by unfortunate
+   * transaction ordering. One possible solution to mitigate this race
+   * condition is to first reduce the spender's allowance to 0 and set the
+   * desired value afterwards:
+   * https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
+   *
+   * Emits an &#123;Approval&#125; event.
+   */</span>
+  <span class="token keyword">function</span> <span class="token function">approve</span><span class="token punctuation">(</span><span class="token builtin">address</span> spender<span class="token punctuation">,</span> <span class="token builtin">uint256</span> amount<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">bool</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">/**
+   * @dev Moves `amount` tokens from `sender` to `recipient` using the
+   * allowance mechanism. `amount` is then deducted from the caller's
+   * allowance.
+   *
+   * Returns a boolean value indicating whether the operation succeeded.
+   *
+   * Emits a &#123;Transfer&#125; event.
+   */</span>
+  <span class="token keyword">function</span> <span class="token function">transferFrom</span><span class="token punctuation">(</span>
+    <span class="token builtin">address</span> sender<span class="token punctuation">,</span>
+    <span class="token builtin">address</span> recipient<span class="token punctuation">,</span>
+    <span class="token builtin">uint256</span> amount
+  <span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">bool</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">/**
+   * @dev Emitted when `value` tokens are moved from one account (`from`) to
+   * another (`to`).
+   *
+   * Note that `value` may be zero.
+   */</span>
+  <span class="token keyword">event</span> <span class="token function">Transfer</span><span class="token punctuation">(</span><span class="token builtin">address</span> <span class="token keyword">indexed</span> <span class="token keyword">from</span><span class="token punctuation">,</span> <span class="token builtin">address</span> <span class="token keyword">indexed</span> to<span class="token punctuation">,</span> <span class="token builtin">uint256</span> value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">/**
+   * @dev Emitted when the allowance of a `spender` for an `owner` is set by
+   * a call to &#123;approve&#125;. `value` is the new allowance.
+   */</span>
+  <span class="token keyword">event</span> <span class="token function">Approval</span><span class="token punctuation">(</span><span class="token builtin">address</span> <span class="token keyword">indexed</span> owner<span class="token punctuation">,</span> <span class="token builtin">address</span> <span class="token keyword">indexed</span> spender<span class="token punctuation">,</span> <span class="token builtin">uint256</span> value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>“SafeERC20.sol”</p>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// SPDX-License-Identifier: MIT</span>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token number">0.6</span><span class="token number">.8</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>IERC20<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'./IERC20.sol'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>SafeMath<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'./SafeMath.sol'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>Address<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">'./Address.sol'</span><span class="token punctuation">;</span>
+
+<span class="token comment">/**
+ * @title SafeERC20
+ * @dev Wrappers around ERC20 operations that throw on failure (when the token
+ * contract returns false). Tokens that return no value (and instead revert or
+ * throw on failure) are also supported, non-reverting calls are assumed to be
+ * successful.
+ * To use this library you can add a `using SafeERC20 for IERC20;` statement to your contract,
+ * which allows you to call the safe operations as `token.safeTransfer(...)`, etc.
+ */</span>
+<span class="token keyword">library</span> <span class="token class-name">SafeERC20</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">using</span> <span class="token class-name">SafeMath</span> <span class="token keyword">for</span> <span class="token builtin">uint256</span><span class="token punctuation">;</span>
+  <span class="token keyword">using</span> <span class="token class-name">Address</span> <span class="token keyword">for</span> <span class="token builtin">address</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">function</span> <span class="token function">safeTransfer</span><span class="token punctuation">(</span>
+    IERC20 token<span class="token punctuation">,</span>
+    <span class="token builtin">address</span> to<span class="token punctuation">,</span>
+    <span class="token builtin">uint256</span> value
+  <span class="token punctuation">)</span> <span class="token keyword">internal</span> <span class="token punctuation">&#123;</span>
+    <span class="token function">callOptionalReturn</span><span class="token punctuation">(</span>token<span class="token punctuation">,</span> abi<span class="token punctuation">.</span><span class="token function">encodeWithSelector</span><span class="token punctuation">(</span>token<span class="token punctuation">.</span>transfer<span class="token punctuation">.</span>selector<span class="token punctuation">,</span> to<span class="token punctuation">,</span> value<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token keyword">function</span> <span class="token function">safeTransferFrom</span><span class="token punctuation">(</span>
+    IERC20 token<span class="token punctuation">,</span>
+    <span class="token builtin">address</span> <span class="token keyword">from</span><span class="token punctuation">,</span>
+    <span class="token builtin">address</span> to<span class="token punctuation">,</span>
+    <span class="token builtin">uint256</span> value
+  <span class="token punctuation">)</span> <span class="token keyword">internal</span> <span class="token punctuation">&#123;</span>
+    <span class="token function">callOptionalReturn</span><span class="token punctuation">(</span>token<span class="token punctuation">,</span> abi<span class="token punctuation">.</span><span class="token function">encodeWithSelector</span><span class="token punctuation">(</span>token<span class="token punctuation">.</span>transferFrom<span class="token punctuation">.</span>selector<span class="token punctuation">,</span> <span class="token keyword">from</span><span class="token punctuation">,</span> to<span class="token punctuation">,</span> value<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token keyword">function</span> <span class="token function">safeApprove</span><span class="token punctuation">(</span>
+    IERC20 token<span class="token punctuation">,</span>
+    <span class="token builtin">address</span> spender<span class="token punctuation">,</span>
+    <span class="token builtin">uint256</span> value
+  <span class="token punctuation">)</span> <span class="token keyword">internal</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">require</span><span class="token punctuation">(</span>
+      <span class="token punctuation">(</span>value <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token punctuation">(</span>token<span class="token punctuation">.</span><span class="token function">allowance</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">,</span> spender<span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+      <span class="token string">'SafeERC20: approve from non-zero to non-zero allowance'</span>
+    <span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">callOptionalReturn</span><span class="token punctuation">(</span>token<span class="token punctuation">,</span> abi<span class="token punctuation">.</span><span class="token function">encodeWithSelector</span><span class="token punctuation">(</span>token<span class="token punctuation">.</span>approve<span class="token punctuation">.</span>selector<span class="token punctuation">,</span> spender<span class="token punctuation">,</span> value<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token keyword">function</span> <span class="token function">callOptionalReturn</span><span class="token punctuation">(</span>IERC20 token<span class="token punctuation">,</span> <span class="token builtin">bytes</span> <span class="token keyword">memory</span> data<span class="token punctuation">)</span> <span class="token keyword">private</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">require</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span>token<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">isContract</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">'SafeERC20: call to non-contract'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// solhint-disable-next-line avoid-low-level-calls</span>
+    <span class="token punctuation">(</span><span class="token builtin">bool</span> success<span class="token punctuation">,</span> <span class="token builtin">bytes</span> <span class="token keyword">memory</span> returndata<span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token builtin">address</span><span class="token punctuation">(</span>token<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">require</span><span class="token punctuation">(</span>success<span class="token punctuation">,</span> <span class="token string">'SafeERC20: low-level call failed'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>returndata<span class="token punctuation">.</span>length <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token comment">// Return data is optional</span>
+      <span class="token comment">// solhint-disable-next-line max-line-length</span>
+      <span class="token keyword">require</span><span class="token punctuation">(</span>abi<span class="token punctuation">.</span><span class="token function">decode</span><span class="token punctuation">(</span>returndata<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token builtin">bool</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">'SafeERC20: ERC20 operation did not succeed'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>“SafeMath.sol”</p>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// SPDX-License-Identifier: agpl-3.0</span>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token number">0.6</span><span class="token number">.8</span><span class="token punctuation">;</span>
+
+<span class="token comment">/**
+ * @dev Wrappers over Solidity's arithmetic operations with added overflow
+ * checks.
+ *
+ * Arithmetic operations in Solidity wrap on overflow. This can easily result
+ * in bugs, because programmers usually assume that an overflow raises an
+ * error, which is the standard behavior in high level programming languages.
+ * `SafeMath` restores this intuition by reverting the transaction when an
+ * operation overflows.
+ *
+ * Using this library instead of the unchecked operations eliminates an entire
+ * class of bugs, so it's recommended to use it always.
+ */</span>
+<span class="token keyword">library</span> <span class="token class-name">SafeMath</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">/**
+   * @dev Returns the addition of two unsigned integers, reverting on
+   * overflow.
+   *
+   * Counterpart to Solidity's `+` operator.
+   *
+   * Requirements:
+   * - Addition cannot overflow.
+   */</span>
+  <span class="token keyword">function</span> <span class="token function">add</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> a<span class="token punctuation">,</span> <span class="token builtin">uint256</span> b<span class="token punctuation">)</span> <span class="token keyword">internal</span> <span class="token keyword">pure</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token builtin">uint256</span> c <span class="token operator">=</span> a <span class="token operator">+</span> b<span class="token punctuation">;</span>
+    <span class="token keyword">require</span><span class="token punctuation">(</span>c <span class="token operator">>=</span> a<span class="token punctuation">,</span> <span class="token string">'SafeMath: addition overflow'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">return</span> c<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token comment">/**
+   * @dev Returns the subtraction of two unsigned integers, reverting on
+   * overflow (when the result is negative).
+   *
+   * Counterpart to Solidity's `-` operator.
+   *
+   * Requirements:
+   * - Subtraction cannot overflow.
+   */</span>
+  <span class="token keyword">function</span> <span class="token function">sub</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> a<span class="token punctuation">,</span> <span class="token builtin">uint256</span> b<span class="token punctuation">)</span> <span class="token keyword">internal</span> <span class="token keyword">pure</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token function">sub</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> b<span class="token punctuation">,</span> <span class="token string">'SafeMath: subtraction overflow'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token comment">/**
+   * @dev Returns the subtraction of two unsigned integers, reverting with custom message on
+   * overflow (when the result is negative).
+   *
+   * Counterpart to Solidity's `-` operator.
+   *
+   * Requirements:
+   * - Subtraction cannot overflow.
+   */</span>
+  <span class="token keyword">function</span> <span class="token function">sub</span><span class="token punctuation">(</span>
+    <span class="token builtin">uint256</span> a<span class="token punctuation">,</span>
+    <span class="token builtin">uint256</span> b<span class="token punctuation">,</span>
+    <span class="token builtin">string</span> <span class="token keyword">memory</span> errorMessage
+  <span class="token punctuation">)</span> <span class="token keyword">internal</span> <span class="token keyword">pure</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">require</span><span class="token punctuation">(</span>b <span class="token operator">&lt;=</span> a<span class="token punctuation">,</span> errorMessage<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token builtin">uint256</span> c <span class="token operator">=</span> a <span class="token operator">-</span> b<span class="token punctuation">;</span>
+
+    <span class="token keyword">return</span> c<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token comment">/**
+   * @dev Returns the multiplication of two unsigned integers, reverting on
+   * overflow.
+   *
+   * Counterpart to Solidity's `*` operator.
+   *
+   * Requirements:
+   * - Multiplication cannot overflow.
+   */</span>
+  <span class="token keyword">function</span> <span class="token function">mul</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> a<span class="token punctuation">,</span> <span class="token builtin">uint256</span> b<span class="token punctuation">)</span> <span class="token keyword">internal</span> <span class="token keyword">pure</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// Gas optimization: this is cheaper than requiring 'a' not being zero, but the</span>
+    <span class="token comment">// benefit is lost if 'b' is also tested.</span>
+    <span class="token comment">// See: https://github.com/OpenZeppelin/openzeppelin-contracts/pull/522</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>a <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token builtin">uint256</span> c <span class="token operator">=</span> a <span class="token operator">*</span> b<span class="token punctuation">;</span>
+    <span class="token keyword">require</span><span class="token punctuation">(</span>c <span class="token operator">/</span> a <span class="token operator">==</span> b<span class="token punctuation">,</span> <span class="token string">'SafeMath: multiplication overflow'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">return</span> c<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token comment">/**
+   * @dev Returns the integer division of two unsigned integers. Reverts on
+   * division by zero. The result is rounded towards zero.
+   *
+   * Counterpart to Solidity's `/` operator. Note: this function uses a
+   * `revert` opcode (which leaves remaining gas untouched) while Solidity
+   * uses an invalid opcode to revert (consuming all remaining gas).
+   *
+   * Requirements:
+   * - The divisor cannot be zero.
+   */</span>
+  <span class="token keyword">function</span> <span class="token function">div</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> a<span class="token punctuation">,</span> <span class="token builtin">uint256</span> b<span class="token punctuation">)</span> <span class="token keyword">internal</span> <span class="token keyword">pure</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token function">div</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> b<span class="token punctuation">,</span> <span class="token string">'SafeMath: division by zero'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token comment">/**
+   * @dev Returns the integer division of two unsigned integers. Reverts with custom message on
+   * division by zero. The result is rounded towards zero.
+   *
+   * Counterpart to Solidity's `/` operator. Note: this function uses a
+   * `revert` opcode (which leaves remaining gas untouched) while Solidity
+   * uses an invalid opcode to revert (consuming all remaining gas).
+   *
+   * Requirements:
+   * - The divisor cannot be zero.
+   */</span>
+  <span class="token keyword">function</span> <span class="token function">div</span><span class="token punctuation">(</span>
+    <span class="token builtin">uint256</span> a<span class="token punctuation">,</span>
+    <span class="token builtin">uint256</span> b<span class="token punctuation">,</span>
+    <span class="token builtin">string</span> <span class="token keyword">memory</span> errorMessage
+  <span class="token punctuation">)</span> <span class="token keyword">internal</span> <span class="token keyword">pure</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// Solidity only automatically asserts when dividing by 0</span>
+    <span class="token keyword">require</span><span class="token punctuation">(</span>b <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">,</span> errorMessage<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token builtin">uint256</span> c <span class="token operator">=</span> a <span class="token operator">/</span> b<span class="token punctuation">;</span>
+    <span class="token comment">// assert(a == b * c + a % b); // There is no case in which this doesn't hold</span>
+
+    <span class="token keyword">return</span> c<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token comment">/**
+   * @dev Returns the remainder of dividing two unsigned integers. (unsigned integer modulo),
+   * Reverts when dividing by zero.
+   *
+   * Counterpart to Solidity's `%` operator. This function uses a `revert`
+   * opcode (which leaves remaining gas untouched) while Solidity uses an
+   * invalid opcode to revert (consuming all remaining gas).
+   *
+   * Requirements:
+   * - The divisor cannot be zero.
+   */</span>
+  <span class="token keyword">function</span> <span class="token function">mod</span><span class="token punctuation">(</span><span class="token builtin">uint256</span> a<span class="token punctuation">,</span> <span class="token builtin">uint256</span> b<span class="token punctuation">)</span> <span class="token keyword">internal</span> <span class="token keyword">pure</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token function">mod</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> b<span class="token punctuation">,</span> <span class="token string">'SafeMath: modulo by zero'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token comment">/**
+   * @dev Returns the remainder of dividing two unsigned integers. (unsigned integer modulo),
+   * Reverts with custom message when dividing by zero.
+   *
+   * Counterpart to Solidity's `%` operator. This function uses a `revert`
+   * opcode (which leaves remaining gas untouched) while Solidity uses an
+   * invalid opcode to revert (consuming all remaining gas).
+   *
+   * Requirements:
+   * - The divisor cannot be zero.
+   */</span>
+  <span class="token keyword">function</span> <span class="token function">mod</span><span class="token punctuation">(</span>
+    <span class="token builtin">uint256</span> a<span class="token punctuation">,</span>
+    <span class="token builtin">uint256</span> b<span class="token punctuation">,</span>
+    <span class="token builtin">string</span> <span class="token keyword">memory</span> errorMessage
+  <span class="token punctuation">)</span> <span class="token keyword">internal</span> <span class="token keyword">pure</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">uint256</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">require</span><span class="token punctuation">(</span>b <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">,</span> errorMessage<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> a <span class="token operator">%</span> b<span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>“Address.sol”</p>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// SPDX-License-Identifier: agpl-3.0</span>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token number">0.6</span><span class="token number">.8</span><span class="token punctuation">;</span>
+
+<span class="token comment">/**
+ * @dev Collection of functions related to the address type
+ */</span>
+<span class="token keyword">library</span> <span class="token class-name">Address</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">/**
+   * @dev Returns true if `account` is a contract.
+   *
+   * [IMPORTANT]
+   * ====
+   * It is unsafe to assume that an address for which this function returns
+   * false is an externally-owned account (EOA) and not a contract.
+   *
+   * Among others, `isContract` will return false for the following
+   * types of addresses:
+   *
+   *  - an externally-owned account
+   *  - a contract in construction
+   *  - an address where a contract will be created
+   *  - an address where a contract lived, but was destroyed
+   * ====
+   */</span>
+  <span class="token keyword">function</span> <span class="token function">isContract</span><span class="token punctuation">(</span><span class="token builtin">address</span> account<span class="token punctuation">)</span> <span class="token keyword">internal</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">bool</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// According to EIP-1052, 0x0 is the value returned for not-yet created accounts</span>
+    <span class="token comment">// and 0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470 is returned</span>
+    <span class="token comment">// for accounts without code, i.e. `keccak256('')`</span>
+    <span class="token builtin">bytes32</span> codehash<span class="token punctuation">;</span>
+    <span class="token builtin">bytes32</span> accountHash <span class="token operator">=</span> <span class="token number">0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470</span><span class="token punctuation">;</span>
+    <span class="token comment">// solhint-disable-next-line no-inline-assembly</span>
+    <span class="token keyword">assembly</span> <span class="token punctuation">&#123;</span>
+      codehash <span class="token operator">:=</span> <span class="token function">extcodehash</span><span class="token punctuation">(</span>account<span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">return</span> <span class="token punctuation">(</span>codehash <span class="token operator">!=</span> accountHash <span class="token operator">&amp;&amp;</span> codehash <span class="token operator">!=</span> <span class="token number">0x0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token comment">/**
+   * @dev Replacement for Solidity's `transfer`: sends `amount` wei to
+   * `recipient`, forwarding all available gas and reverting on errors.
+   *
+   * https://eips.ethereum.org/EIPS/eip-1884[EIP1884] increases the gas cost
+   * of certain opcodes, possibly making contracts go over the 2300 gas limit
+   * imposed by `transfer`, making them unable to receive funds via
+   * `transfer`. &#123;sendValue&#125; removes this limitation.
+   *
+   * https://diligence.consensys.net/posts/2019/09/stop-using-soliditys-transfer-now/[Learn more].
+   *
+   * IMPORTANT: because control is transferred to `recipient`, care must be
+   * taken to not create reentrancy vulnerabilities. Consider using
+   * &#123;ReentrancyGuard&#125; or the
+   * https://solidity.readthedocs.io/en/v0.5.11/security-considerations.html#use-the-checks-effects-interactions-pattern[checks-effects-interactions pattern].
+   */</span>
+  <span class="token keyword">function</span> <span class="token function">sendValue</span><span class="token punctuation">(</span><span class="token builtin">address</span> <span class="token keyword">payable</span> recipient<span class="token punctuation">,</span> <span class="token builtin">uint256</span> amount<span class="token punctuation">)</span> <span class="token keyword">internal</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">require</span><span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">.</span>balance <span class="token operator">>=</span> amount<span class="token punctuation">,</span> <span class="token string">'Address: insufficient balance'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// solhint-disable-next-line avoid-low-level-calls, avoid-call-value</span>
+    <span class="token punctuation">(</span><span class="token builtin">bool</span> success<span class="token punctuation">,</span> <span class="token punctuation">)</span> <span class="token operator">=</span> recipient<span class="token punctuation">.</span>call<span class="token punctuation">&#123;</span>value<span class="token punctuation">:</span> amount<span class="token punctuation">&#125;</span><span class="token punctuation">(</span><span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">require</span><span class="token punctuation">(</span>success<span class="token punctuation">,</span> <span class="token string">'Address: unable to send value, recipient may have reverted'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://q1ngying.cn">Q1ngying</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://q1ngying.cn/AAVE/guide/Flashloan/">https://q1ngying.cn/AAVE/guide/Flashloan/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://q1ngying.cn" target="_blank">Q1ngying</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/DeFi/">DeFi</a><a class="post-meta__tags" href="/tags/AAVE/">AAVE</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.jpg" data-sites="twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="prev-post pull-left" href="/AAVE/guide/TroublesshootingErrors/" title="TroublesshootingErrors"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">TroublesshootingErrors</div></div></a><a class="next-post pull-right" href="/AAVE/guide/liquidations/" title="Liquidations"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Liquidations</div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a href="/AAVE/guide/" title="AAVE guide"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-21</div><div class="title">AAVE guide</div></div></a><a href="/AAVE/guide/CreateDelegate/" title="CreateDelegate"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-18</div><div class="title">CreateDelegate</div></div></a><a href="/AAVE/theCoreProtocol/" title="AAVE 核心协议"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-17</div><div class="title">AAVE 核心协议</div></div></a><a href="/AAVE/guide/TroublesshootingErrors/" title="TroublesshootingErrors"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-18</div><div class="title">TroublesshootingErrors</div></div></a><a href="/AAVE/theCoreProtocol/AAVEToken/" title="AAVEToken"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-17</div><div class="title">AAVEToken</div></div></a><a href="/AAVE/theCoreProtocol/AddressProviderRegistry/" title="AddressProviderRegistry"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-17</div><div class="title">AddressProviderRegistry</div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Overview"><span class="toc-number">1.</span> <span class="toc-text">Overview</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%AA%E7%94%B5%E8%B4%B7%E7%9A%84%E7%94%B3%E8%AF%B7"><span class="toc-number">2.</span> <span class="toc-text">闪电贷的申请</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%AA%E7%94%B5%E8%B4%B7%E8%B4%B9%E7%94%A8"><span class="toc-number">3.</span> <span class="toc-text">闪电贷费用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Step-by-Step"><span class="toc-number">4.</span> <span class="toc-text">Step by Step</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Setting-up"><span class="toc-number">4.1.</span> <span class="toc-text">Setting up</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Call-flashLoan"><span class="toc-number">4.2.</span> <span class="toc-text">Call flashLoan()</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%8E-EOA-%E8%B4%A6%E6%88%B7"><span class="toc-number">4.2.1.</span> <span class="toc-text">从 EOA 账户</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%8E%E5%85%B6%E4%BB%96%E5%90%88%E7%BA%A6"><span class="toc-number">4.2.2.</span> <span class="toc-text">从其他合约</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9D%A5%E8%87%AA%E5%90%8C%E4%B8%80%E5%90%88%E7%BA%A6"><span class="toc-number">4.2.3.</span> <span class="toc-text">来自同一合约</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%8C%E6%88%90%E9%97%AA%E7%94%B5%E8%B4%B7"><span class="toc-number">4.3.</span> <span class="toc-text">完成闪电贷</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%81%BF%E8%BF%98%E9%97%AA%E7%94%B5%E8%B4%B7%E8%B5%84%E4%BA%A7"><span class="toc-number">4.3.1.</span> <span class="toc-text">偿还闪电贷资产</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%A7%E7%94%9F%E5%80%BA%E5%8A%A1%EF%BC%88%E5%8D%B3%E4%B8%8D%E7%AB%8B%E5%8D%B3%E5%BD%92%E8%BF%98%E5%80%BA%E5%8A%A1%EF%BC%89"><span class="toc-number">4.3.2.</span> <span class="toc-text">产生债务（即不立即归还债务）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%96%E7%A0%81%E5%92%8C%E8%A7%A3%E7%A0%81%E5%8F%82%E6%95%B0"><span class="toc-number">5.</span> <span class="toc-text">编码和解码参数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Encoding"><span class="toc-number">5.1.</span> <span class="toc-text">Encoding</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Decoding"><span class="toc-number">5.2.</span> <span class="toc-text">Decoding</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IFlashLoanReceiver"><span class="toc-number">6.</span> <span class="toc-text">IFlashLoanReceiver</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#FlashLoanReceiverBase"><span class="toc-number">6.1.</span> <span class="toc-text">FlashLoanReceiverBase</span></a></li></ol></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url(/img/back1.webp);"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2024 By Q1ngying</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script>(() => {
   const panguFn = () => {
     if (typeof pangu === 'object') pangu.autoSpacingPage()
     else {
