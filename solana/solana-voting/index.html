@@ -1,0 +1,620 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>用 Solana 实现一个投票合约 | Q1ngying</title><meta name="author" content="Q1ngying"><meta name="copyright" content="Q1ngying"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#FFFFFF"><meta name="description" content="本文为 Solana 2024 训练营 project 2 anchor 构建 voting 合约我自己的一些见解，以及 solidity 生态入门 Solana 生态的一些思考角度">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用 Solana 实现一个投票合约">
+<meta property="og:url" content="https://q1ngying.cn/solana/solana-voting/index.html">
+<meta property="og:site_name" content="Q1ngying">
+<meta property="og:description" content="本文为 Solana 2024 训练营 project 2 anchor 构建 voting 合约我自己的一些见解，以及 solidity 生态入门 Solana 生态的一些思考角度">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://q1ngying.cn/img/butterfly-icon.jpg">
+<meta property="article:published_time" content="2025-01-08T07:24:21.000Z">
+<meta property="article:modified_time" content="2025-01-08T07:52:20.290Z">
+<meta property="article:author" content="Q1ngying">
+<meta property="article:tag" content="Rust">
+<meta property="article:tag" content="Solana">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://q1ngying.cn/img/butterfly-icon.jpg"><link rel="shortcut icon" href="/img/icons8-clover-ios-16-glyph-32.png"><link rel="canonical" href="https://q1ngying.cn/solana/solana-voting/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><meta name="google-site-verification" content="IzCM4B791_p7IAU4WhRfiLlPBnODnamJ7ixKxzoeNfk"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#1b1b1b')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#FFFFFF')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '用 Solana 实现一个投票合约',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-01-08 15:52:20'
+}</script><script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script><script>LA.init({id:"3Jzfa21KlLms3Lkh",ck:"3Jzfa21KlLms3Lkh"})</script><link rel="stylesheet" href="/css/style.css?1"><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/butterfly-icon.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">84</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">30</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/back1.webp);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Q1ngying</span></a><a class="nav-page-title" href="/"><span class="site-name">用 Solana 实现一个投票合约</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">用 Solana 实现一个投票合约</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-01-08T07:24:21.000Z" title="发表于 2025-01-08 15:24:21">2025-01-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-01-08T07:52:20.290Z" title="更新于 2025-01-08 15:52:20">2025-01-08</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Rust/">Rust</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Solana/">Solana</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">3.4k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>13分钟</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="见解"><a href="#见解" class="headerlink" title="见解"></a>见解</h2><p>对于 Solana 合约的编写，个人认为包括如下流程：</p>
+<p>首先新建 Solana 合约项目，此时，会自动为我们派生 program id。接着为我们的 Solana program 定义 instruction，而一个 instruction 的执行，需要对应的上下文即 Context，比如，我们的 instruction 是来 init 一个 poll，那么我们就可以声明一个 Context Account。</p>
+<p>对于 context 的生成，我们依赖 anchor 的宏。</p>
+<p>先回归到基础的 rust：</p>
+<ul>
+<li>像<code>#[account]</code>这样的类似 <code>#[...]</code>是 rust 中的<strong>属性宏</strong></li>
+<li>像 <code>#[derive(Account)</code>这样的，类似 <code>[derive(...)]</code>是 rust 中的<strong>派生宏</strong></li>
+</ul>
+<p>回到 Solana program 中，在 anchor 框架中声明一个 context 就很简单了，使用 anchor 已经实现的派生宏 <code>#[derive(Account)]</code>即可。当然，我们在执行 instruction 的时候，需要一些参数，这些参数的声明，可以使用 anchor 框架的属性宏 <code>#[instruction(...)]</code>：</p>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust"><span class="token comment">// 账户结构（Solana 上的一切都是 Account，同时 Account 是无状态的）</span>
+<span class="token attribute attr-name">#[derive(Accounts)]</span> <span class="token comment">// Anchor 宏，派生 Accounts</span>
+<span class="token attribute attr-name">#[instruction(poll_id: u64)]</span> <span class="token comment">// 说明此账户结构依赖于调用者提供的参数 poll_id</span>
+<span class="token keyword">pub</span> <span class="token keyword">struct</span> <span class="token type-definition class-name">InitializePoll</span><span class="token operator">&lt;</span><span class="token lifetime-annotation symbol">'info</span><span class="token operator">></span> <span class="token punctuation">&#123;</span>
+    <span class="token attribute attr-name">#[account(mut)]</span>
+    <span class="token keyword">pub</span> signer<span class="token punctuation">:</span> <span class="token class-name">Signer</span><span class="token operator">&lt;</span><span class="token lifetime-annotation symbol">'info</span><span class="token operator">></span><span class="token punctuation">,</span> <span class="token comment">// 用于支付的 Signer，mut 表示此账户可以在指令中被修改</span>
+    #<span class="token punctuation">[</span><span class="token function">account</span><span class="token punctuation">(</span>
+        init<span class="token punctuation">,</span> <span class="token comment">// 代表这是一个新账户的初始化</span>
+        payer<span class="token operator">=</span>signer<span class="token punctuation">,</span> <span class="token comment">// 新账户的租金由 `signer` 支付</span>
+        space <span class="token operator">=</span> <span class="token number">8</span> <span class="token operator">+</span> <span class="token class-name">Poll</span><span class="token punctuation">::</span><span class="token constant">INIT_SPACE</span><span class="token punctuation">,</span> <span class="token comment">// 定义 account 所需的空间</span>
+                                      <span class="token comment">// 8 为 Solana Account数据头长度</span>
+                                      <span class="token comment">// Poll::INIT_SPACE 是通过宏得出的 Poll 所需的空间</span>
+        <span class="token comment">// seeds 和 bump 用于 PDA，`poll_id` 作为种子，`bump` 用于确保地址的唯一性</span>
+        seeds<span class="token operator">=</span> <span class="token punctuation">[</span>poll_id<span class="token punctuation">.</span><span class="token function">to_le_bytes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">as_ref</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        bump<span class="token punctuation">,</span>
+    <span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">pub</span> poll<span class="token punctuation">:</span> <span class="token class-name">Account</span><span class="token operator">&lt;</span><span class="token lifetime-annotation symbol">'info</span><span class="token punctuation">,</span> <span class="token class-name">Poll</span><span class="token operator">></span><span class="token punctuation">,</span>
+
+    <span class="token comment">// 指向 Solana system program，用于创建账户和管理基础功能</span>
+    <span class="token keyword">pub</span> system_program<span class="token punctuation">:</span> <span class="token class-name">Program</span><span class="token operator">&lt;</span><span class="token lifetime-annotation symbol">'info</span><span class="token punctuation">,</span> <span class="token class-name">System</span><span class="token operator">></span><span class="token punctuation">,</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>上述代码 context 例子，我们来 init 一个 poll 投票，这里实际是新建了一个 data account。<strong>Solana program 是无状态的。Solana 存储数据都是通过 Data account 来存储的。</strong>我们 InitalizePoll 这个 context 对应的 instruction 就是来创建一个 poll 的。在创建之前，我们先需要对其进行声明。</p>
+<p>data account 的声明，我们可以使用 anchor 的 <code>#[account]</code>属性宏。由于区块链的分布式特点，Solana 和 solidity 一样，链上存储数据肯定是需要 gas 的。对于 gas 的衡量，肯定是依赖于数据占据的空间。<strong>所以，Solana 的 data account 的大小一定是明确的。</strong>对于<strong>动态类型</strong>，我们要限制他们的<strong>最大长度</strong>。动态类型的 gas 费用就按照定义的最大长度收取。这里提前说一点，在我们 context 中声明新建 data account 时，是需要明确指出其大小的。我们可以使用 anchor 的 <code>#[derive(InitSpace)]</code>派生宏自动计算其空间。动态数据类型（例如 String）我们需要 <code>#[max_len()]</code>属性宏限制大小：</p>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust"><span class="token attribute attr-name">#[account]</span> <span class="token comment">// 标记此结构用于账户数据存储。</span>
+<span class="token attribute attr-name">#[derive(InitSpace)]</span> <span class="token comment">// 自动为此结构生成存储所需的初始空间大小。</span>
+<span class="token keyword">pub</span> <span class="token keyword">struct</span> <span class="token type-definition class-name">Poll</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">pub</span> poll_id<span class="token punctuation">:</span> <span class="token keyword">u64</span><span class="token punctuation">,</span>
+    <span class="token attribute attr-name">#[max_len(280)]</span>
+    <span class="token keyword">pub</span> description<span class="token punctuation">:</span> <span class="token class-name">String</span><span class="token punctuation">,</span>
+    <span class="token keyword">pub</span> poll_start<span class="token punctuation">:</span> <span class="token keyword">u64</span><span class="token punctuation">,</span>
+    <span class="token keyword">pub</span> poll_end<span class="token punctuation">:</span> <span class="token keyword">u64</span><span class="token punctuation">,</span>
+    <span class="token keyword">pub</span> candidate_amount<span class="token punctuation">:</span> <span class="token keyword">u64</span><span class="token punctuation">,</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>接着回到我们的 context 中。当我们新建一个 data account 的时候，我们需要在对应的 context 中添加如下属性宏：</p>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust"><span class="token attribute attr-name">#[account(mut)]</span>
+<span class="token keyword">pub</span> signer<span class="token punctuation">:</span> <span class="token class-name">Signer</span><span class="token operator">&lt;</span><span class="token lifetime-annotation symbol">'info</span><span class="token operator">></span><span class="token punctuation">,</span> <span class="token comment">// 用于支付的 Signer，mut 表示此账户可以在指令中被修改</span>
+#<span class="token punctuation">[</span><span class="token function">account</span><span class="token punctuation">(</span>
+    init<span class="token punctuation">,</span> <span class="token comment">// 代表这是一个新账户的初始化</span>
+    payer<span class="token operator">=</span>signer<span class="token punctuation">,</span> <span class="token comment">// 新账户的租金由 `signer` 支付</span>
+    space <span class="token operator">=</span> <span class="token number">8</span> <span class="token operator">+</span> <span class="token class-name">Poll</span><span class="token punctuation">::</span><span class="token constant">INIT_SPACE</span><span class="token punctuation">,</span> <span class="token comment">// 定义 account 所需的空间</span>
+                                  <span class="token comment">// 8 为 Solana Account数据头长度</span>
+                                  <span class="token comment">// Poll::INIT_SPACE 是通过宏得出的 Poll 所需的空间</span>
+    <span class="token comment">// seeds 和 bump 用于 PDA，`poll_id` 作为种子，`bump` 用于确保地址的唯一性</span>
+    seeds<span class="token operator">=</span> <span class="token punctuation">[</span>poll_id<span class="token punctuation">.</span><span class="token function">to_le_bytes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">as_ref</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    bump<span class="token punctuation">,</span>
+<span class="token punctuation">)</span><span class="token punctuation">]</span>
+<span class="token keyword">pub</span> poll<span class="token punctuation">:</span> <span class="token class-name">Account</span><span class="token operator">&lt;</span><span class="token lifetime-annotation symbol">'info</span><span class="token punctuation">,</span> <span class="token class-name">Poll</span><span class="token operator">></span><span class="token punctuation">,</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>第一行标记 signer 为可变账户的原因是因为当我们通过 instruction 来新建 data account 的时候，signer 需要支付一定的费用（租金 rent）修改了 signer 的余额，所以需要可变（注意，由于 gas 导致的 signer 余额发生变化，不需要标记 signer 为 mut，因为这一部分是由 Solana 的 system program 来执行的）</p>
+<p>这里基本是固定的了。对于 13 行 <code>pub poll: Account&lt;&#39;info, Poll&gt;</code>，<code>&#39;info</code>是生命周期，Poll 指定对应的  data account。</p>
+<p>当我们新建一个 Data account 的时候，实际上使用的是 solana 的 PDA（program derived address 有点像 Solidity 的 create2）。</p>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust"><span class="token comment">// seeds 和 bump 用于 PDA，`poll_id` 作为种子，`bump` 用于确保地址的唯一性</span>
+seeds<span class="token operator">=</span> <span class="token punctuation">[</span>poll_id<span class="token punctuation">.</span><span class="token function">to_le_bytes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">as_ref</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+bump<span class="token punctuation">,</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>这两部分就是用来计算生成的 poll data account 的 program id（地址）。</p>
+<p>现在。context 完成后，我们就可以在 program 中声明我们的 instruction 了：</p>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust"><span class="token attribute attr-name">#![allow(clippy::result_large_err)]</span>
+
+<span class="token keyword">use</span> <span class="token namespace">anchor_lang<span class="token punctuation">::</span>prelude<span class="token punctuation">::</span></span><span class="token operator">*</span><span class="token punctuation">;</span>
+
+<span class="token macro property">declare_id!</span><span class="token punctuation">(</span><span class="token string">"4vGpJ1U7dC49BVp7jLYm7mvqidCqKkcx8bGDo9buoMnG"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// program 声明（合约声明）</span>
+<span class="token attribute attr-name">#[program]</span>
+<span class="token keyword">pub</span> <span class="token keyword">mod</span> <span class="token module-declaration namespace">voting</span> <span class="token punctuation">&#123;</span>
+
+    <span class="token keyword">use</span> <span class="token keyword">super</span><span class="token punctuation">::</span><span class="token operator">*</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">pub</span> <span class="token keyword">fn</span> <span class="token function-definition function">initialize_poll</span><span class="token punctuation">(</span>
+        ctx<span class="token punctuation">:</span> <span class="token class-name">Context</span><span class="token operator">&lt;</span><span class="token class-name">InitializePoll</span><span class="token operator">></span><span class="token punctuation">,</span>
+        poll_id<span class="token punctuation">:</span> <span class="token keyword">u64</span><span class="token punctuation">,</span>
+        description<span class="token punctuation">:</span> <span class="token class-name">String</span><span class="token punctuation">,</span>
+        poll_start<span class="token punctuation">:</span> <span class="token keyword">u64</span><span class="token punctuation">,</span>
+        poll_end<span class="token punctuation">:</span> <span class="token keyword">u64</span><span class="token punctuation">,</span>
+    <span class="token punctuation">)</span> <span class="token punctuation">-></span> <span class="token class-name">Result</span><span class="token operator">&lt;</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">></span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">let</span> poll <span class="token operator">=</span> <span class="token operator">&amp;</span><span class="token keyword">mut</span> ctx<span class="token punctuation">.</span>accounts<span class="token punctuation">.</span>poll<span class="token punctuation">;</span> <span class="token comment">// 这样我们可以更新投票账户</span>
+        poll<span class="token punctuation">.</span>poll_id <span class="token operator">=</span> poll_id<span class="token punctuation">;</span>
+        poll<span class="token punctuation">.</span>description <span class="token operator">=</span> description<span class="token punctuation">;</span>
+        poll<span class="token punctuation">.</span>poll_start <span class="token operator">=</span> poll_start<span class="token punctuation">;</span>
+        poll<span class="token punctuation">.</span>poll_end <span class="token operator">=</span> poll_end<span class="token punctuation">;</span>
+        poll<span class="token punctuation">.</span>candidate_amount <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        <span class="token class-name">Ok</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>#[program] 属性宏，使用 anchor 宏，声明 program。可以看到，我们指定了执行的上下文：</p>
+<p><code>ctx: Context&lt;InitializePoll&gt;</code>，这里的 Context 是 anchor 封装的泛型，传递我们刚刚声明的 anchor context 类型即可。而 instruction 里面的，便是对上下文 ctx 中，accounts poll 的赋值了。</p>
+<p>接下来是初始化候选者：</p>
+<p>首先还是，先把 program 中的 instruction 先声明：</p>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust"><span class="token keyword">pub</span> <span class="token keyword">fn</span> <span class="token function-definition function">initialize_candidate</span><span class="token punctuation">(</span>
+    ctx<span class="token punctuation">:</span> <span class="token class-name">Context</span><span class="token operator">&lt;</span><span class="token class-name">InitalizeCandidate</span><span class="token operator">></span><span class="token punctuation">,</span>
+<span class="token punctuation">)</span> <span class="token punctuation">-></span> <span class="token class-name">Result</span><span class="token operator">&lt;</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">></span> <span class="token punctuation">&#123;</span>
+    <span class="token class-name">Ok</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>后续需要什么，我们再补充即可。接下来是 initialize_candidate 这个 instruction 的 context。由于我们是 init 一个候选者，肯定需要候选者的 data account。声明 data account：</p>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust"><span class="token attribute attr-name">#[account]</span>
+<span class="token attribute attr-name">#[derive(InitSpace)]</span>
+<span class="token keyword">pub</span> <span class="token keyword">struct</span> <span class="token type-definition class-name">Candidate</span> <span class="token punctuation">&#123;</span>
+    <span class="token attribute attr-name">#[max_len(32)]</span>
+    <span class="token keyword">pub</span> candidate_name<span class="token punctuation">:</span> <span class="token class-name">String</span><span class="token punctuation">,</span>
+    <span class="token keyword">pub</span> candidate_votes<span class="token punctuation">:</span> <span class="token keyword">u64</span><span class="token punctuation">,</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>完成 InitalizeCandidate Context：</p>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust"><span class="token attribute attr-name">#[derive(Accounts)]</span>
+<span class="token attribute attr-name">#[instruction(candidate_name: String, poll_id:u64)]</span>
+<span class="token keyword">pub</span> <span class="token keyword">struct</span> <span class="token type-definition class-name">InitalizeCandidate</span><span class="token operator">&lt;</span><span class="token lifetime-annotation symbol">'info</span><span class="token operator">></span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 我们要进行投票，那么就需要 signer 以及 投票的 poll</span>
+    <span class="token attribute attr-name">#[account(mut)]</span>
+    <span class="token keyword">pub</span> signer<span class="token punctuation">:</span> <span class="token class-name">Signer</span><span class="token operator">&lt;</span><span class="token lifetime-annotation symbol">'info</span><span class="token operator">></span><span class="token punctuation">,</span>
+
+    <span class="token comment">// 但是实际上我们不需要创建 poll，需要的是引用，所以前三项可以删除</span>
+    #<span class="token punctuation">[</span><span class="token function">account</span><span class="token punctuation">(</span>
+        <span class="token keyword">mut</span><span class="token punctuation">,</span>
+        seeds<span class="token operator">=</span><span class="token punctuation">[</span>poll_id<span class="token punctuation">.</span><span class="token function">to_le_bytes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">as_ref</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        bump
+    <span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">pub</span> poll<span class="token punctuation">:</span> <span class="token class-name">Account</span><span class="token operator">&lt;</span><span class="token lifetime-annotation symbol">'info</span><span class="token punctuation">,</span> <span class="token class-name">Poll</span><span class="token operator">></span><span class="token punctuation">,</span>
+
+    <span class="token comment">// 最后我们要新建一个 account，这个 account 是一个候选人 candidate</span>
+    #<span class="token punctuation">[</span><span class="token function">account</span><span class="token punctuation">(</span>
+        init<span class="token punctuation">,</span>
+        payer <span class="token operator">=</span> signer<span class="token punctuation">,</span>
+        space <span class="token operator">=</span> <span class="token number">0</span><span class="token operator">+</span> <span class="token class-name">Candidate</span><span class="token punctuation">::</span><span class="token constant">INIT_SPACE</span><span class="token punctuation">,</span>
+        seeds<span class="token operator">=</span><span class="token punctuation">[</span>candidate_name<span class="token punctuation">.</span><span class="token function">as_bytes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> poll_id<span class="token punctuation">.</span><span class="token function">to_le_bytes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">as_ref</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        bump
+    <span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">pub</span> candidate<span class="token punctuation">:</span> <span class="token class-name">Account</span><span class="token operator">&lt;</span><span class="token lifetime-annotation symbol">'info</span><span class="token punctuation">,</span> <span class="token class-name">Candidate</span><span class="token operator">></span><span class="token punctuation">,</span>
+
+    <span class="token keyword">pub</span> system_program<span class="token punctuation">:</span> <span class="token class-name">Program</span><span class="token operator">&lt;</span><span class="token lifetime-annotation symbol">'info</span><span class="token punctuation">,</span> <span class="token class-name">System</span><span class="token operator">></span><span class="token punctuation">,</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>需要注意的是，我们需要引用 poll data account（因为我们刚刚已经新建了），而引用它，我们需要知道它的地址。由于 poll 是通过 program 的 instruction 通过 PDA 出来的，我们使用：</p>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust">#<span class="token punctuation">[</span><span class="token function">account</span><span class="token punctuation">(</span>
+    <span class="token keyword">mut</span><span class="token punctuation">,</span>
+    seeds<span class="token operator">=</span><span class="token punctuation">[</span>poll_id<span class="token punctuation">.</span><span class="token function">to_le_bytes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">as_ref</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    bump
+<span class="token punctuation">)</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>方可计算出来。这里由于我们最终的 instruction 修改了 poll，我们需要标记其为 mut 可变的。 </p>
+<p>完成 instruction：</p>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust"><span class="token keyword">pub</span> <span class="token keyword">fn</span> <span class="token function-definition function">initialize_candidate</span><span class="token punctuation">(</span>
+    ctx<span class="token punctuation">:</span> <span class="token class-name">Context</span><span class="token operator">&lt;</span><span class="token class-name">InitializeCandidate</span><span class="token operator">></span><span class="token punctuation">,</span>
+    candidate_name<span class="token punctuation">:</span> <span class="token class-name">String</span><span class="token punctuation">,</span>
+    _poll_id<span class="token punctuation">:</span> <span class="token keyword">u64</span><span class="token punctuation">,</span>
+<span class="token punctuation">)</span> <span class="token punctuation">-></span> <span class="token class-name">Result</span><span class="token operator">&lt;</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">></span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">let</span> candidate <span class="token operator">=</span> <span class="token operator">&amp;</span><span class="token keyword">mut</span> ctx<span class="token punctuation">.</span>accounts<span class="token punctuation">.</span>candidate<span class="token punctuation">;</span>
+    <span class="token keyword">let</span> poll <span class="token operator">=</span> <span class="token operator">&amp;</span><span class="token keyword">mut</span> ctx<span class="token punctuation">.</span>accounts<span class="token punctuation">.</span>poll<span class="token punctuation">;</span>
+    poll<span class="token punctuation">.</span>candidate_amount <span class="token operator">+=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+    candidate<span class="token punctuation">.</span>candidate_name <span class="token operator">=</span> candidate_name<span class="token punctuation">;</span>
+    candidate<span class="token punctuation">.</span>candidate_votes <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token class-name">Ok</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>最终关于 vote 部分的代码，逻辑相同，不多赘述。完整代码：</p>
+<pre class="line-numbers language-rust" data-language="rust"><code class="language-rust"><span class="token keyword">use</span> <span class="token namespace">anchor_lang<span class="token punctuation">::</span>prelude<span class="token punctuation">::</span></span><span class="token operator">*</span><span class="token punctuation">;</span>
+
+<span class="token macro property">declare_id!</span><span class="token punctuation">(</span><span class="token string">"coUnmi3oBUtwtd9fjeAvSsJssXh5A5xyPbhpewyzRVF"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// program 声明（合约声明）</span>
+<span class="token attribute attr-name">#[program]</span>
+<span class="token keyword">pub</span> <span class="token keyword">mod</span> <span class="token module-declaration namespace">votingdapp</span> <span class="token punctuation">&#123;</span>
+
+    <span class="token keyword">use</span> <span class="token keyword">super</span><span class="token punctuation">::</span><span class="token operator">*</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">pub</span> <span class="token keyword">fn</span> <span class="token function-definition function">initialize_poll</span><span class="token punctuation">(</span>
+        ctx<span class="token punctuation">:</span> <span class="token class-name">Context</span><span class="token operator">&lt;</span><span class="token class-name">InitalizePoll</span><span class="token operator">></span><span class="token punctuation">,</span>
+        poll_id<span class="token punctuation">:</span> <span class="token keyword">u64</span><span class="token punctuation">,</span>
+        description<span class="token punctuation">:</span> <span class="token class-name">String</span><span class="token punctuation">,</span>
+        poll_start<span class="token punctuation">:</span> <span class="token keyword">u64</span><span class="token punctuation">,</span>
+        poll_end<span class="token punctuation">:</span> <span class="token keyword">u64</span><span class="token punctuation">,</span>
+    <span class="token punctuation">)</span> <span class="token punctuation">-></span> <span class="token class-name">Result</span><span class="token operator">&lt;</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">></span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">let</span> poll <span class="token operator">=</span> <span class="token operator">&amp;</span><span class="token keyword">mut</span> ctx<span class="token punctuation">.</span>accounts<span class="token punctuation">.</span>poll<span class="token punctuation">;</span> <span class="token comment">// 这样我们可以更新投票账户</span>
+        poll<span class="token punctuation">.</span>poll_id <span class="token operator">=</span> poll_id<span class="token punctuation">;</span>
+        poll<span class="token punctuation">.</span>description <span class="token operator">=</span> description<span class="token punctuation">;</span>
+        poll<span class="token punctuation">.</span>poll_start <span class="token operator">=</span> poll_start<span class="token punctuation">;</span>
+        poll<span class="token punctuation">.</span>poll_end <span class="token operator">=</span> poll_end<span class="token punctuation">;</span>
+        poll<span class="token punctuation">.</span>candidate_amount <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        <span class="token class-name">Ok</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">pub</span> <span class="token keyword">fn</span> <span class="token function-definition function">initialize_candidate</span><span class="token punctuation">(</span>
+        ctx<span class="token punctuation">:</span> <span class="token class-name">Context</span><span class="token operator">&lt;</span><span class="token class-name">InitalizeCandidate</span><span class="token operator">></span><span class="token punctuation">,</span>
+        candidate_name<span class="token punctuation">:</span> <span class="token class-name">String</span><span class="token punctuation">,</span>
+        _poll_id<span class="token punctuation">:</span> <span class="token keyword">u64</span><span class="token punctuation">,</span>
+    <span class="token punctuation">)</span> <span class="token punctuation">-></span> <span class="token class-name">Result</span><span class="token operator">&lt;</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">></span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">let</span> candidate <span class="token operator">=</span> <span class="token operator">&amp;</span><span class="token keyword">mut</span> ctx<span class="token punctuation">.</span>accounts<span class="token punctuation">.</span>candidate<span class="token punctuation">;</span>
+        <span class="token keyword">let</span> poll <span class="token operator">=</span> <span class="token operator">&amp;</span><span class="token keyword">mut</span> ctx<span class="token punctuation">.</span>accounts<span class="token punctuation">.</span>poll<span class="token punctuation">;</span>
+        poll<span class="token punctuation">.</span>candidate_amount <span class="token operator">+=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+        candidate<span class="token punctuation">.</span>candidate_name <span class="token operator">=</span> candidate_name<span class="token punctuation">;</span>
+        candidate<span class="token punctuation">.</span>candidate_votes <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        <span class="token class-name">Ok</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">pub</span> <span class="token keyword">fn</span> <span class="token function-definition function">vote</span><span class="token punctuation">(</span>ctx<span class="token punctuation">:</span> <span class="token class-name">Context</span><span class="token operator">&lt;</span><span class="token class-name">Vote</span><span class="token operator">></span><span class="token punctuation">,</span> _candidate_name<span class="token punctuation">:</span> <span class="token class-name">String</span><span class="token punctuation">,</span> _poll_id<span class="token punctuation">:</span> <span class="token keyword">u64</span><span class="token punctuation">)</span> <span class="token punctuation">-></span> <span class="token class-name">Result</span><span class="token operator">&lt;</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">></span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">let</span> candidate <span class="token operator">=</span> <span class="token operator">&amp;</span><span class="token keyword">mut</span> ctx<span class="token punctuation">.</span>accounts<span class="token punctuation">.</span>candidate<span class="token punctuation">;</span>
+        candidate<span class="token punctuation">.</span>candidate_votes <span class="token operator">+=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+        <span class="token macro property">msg!</span><span class="token punctuation">(</span><span class="token string">"Voted for candidate: &#123;&#125;"</span><span class="token punctuation">,</span> candidate<span class="token punctuation">.</span>candidate_name<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token macro property">msg!</span><span class="token punctuation">(</span><span class="token string">"Votes: &#123;&#125;"</span><span class="token punctuation">,</span> candidate<span class="token punctuation">.</span>candidate_votes<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">Ok</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token attribute attr-name">#[derive(Accounts)]</span>
+<span class="token attribute attr-name">#[instruction(candidate_name: String, poll_id:u64)]</span>
+<span class="token keyword">pub</span> <span class="token keyword">struct</span> <span class="token type-definition class-name">Vote</span><span class="token operator">&lt;</span><span class="token lifetime-annotation symbol">'info</span><span class="token operator">></span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 我们要进行投票，那么就需要 signer 以及 投票的 poll</span>
+    <span class="token keyword">pub</span> signer<span class="token punctuation">:</span> <span class="token class-name">Signer</span><span class="token operator">&lt;</span><span class="token lifetime-annotation symbol">'info</span><span class="token operator">></span><span class="token punctuation">,</span>
+
+    <span class="token comment">// 但是实际上我们不需要创建 poll，需要的是引用，所以前三项可以删除</span>
+    #<span class="token punctuation">[</span><span class="token function">account</span><span class="token punctuation">(</span>
+        seeds<span class="token operator">=</span><span class="token punctuation">[</span>poll_id<span class="token punctuation">.</span><span class="token function">to_le_bytes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">as_ref</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        bump
+    <span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">pub</span> poll<span class="token punctuation">:</span> <span class="token class-name">Account</span><span class="token operator">&lt;</span><span class="token lifetime-annotation symbol">'info</span><span class="token punctuation">,</span> <span class="token class-name">Poll</span><span class="token operator">></span><span class="token punctuation">,</span>
+
+    <span class="token comment">// 最后我们要新建一个 account，这个 account 是一个候选人 candidate</span>
+    #<span class="token punctuation">[</span><span class="token function">account</span><span class="token punctuation">(</span>
+        <span class="token keyword">mut</span><span class="token punctuation">,</span>
+        seeds<span class="token operator">=</span><span class="token punctuation">[</span>candidate_name<span class="token punctuation">.</span><span class="token function">as_bytes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> poll_id<span class="token punctuation">.</span><span class="token function">to_le_bytes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">as_ref</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        bump
+    <span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">pub</span> candidate<span class="token punctuation">:</span> <span class="token class-name">Account</span><span class="token operator">&lt;</span><span class="token lifetime-annotation symbol">'info</span><span class="token punctuation">,</span> <span class="token class-name">Candidate</span><span class="token operator">></span><span class="token punctuation">,</span>
+
+    <span class="token keyword">pub</span> system_program<span class="token punctuation">:</span> <span class="token class-name">Program</span><span class="token operator">&lt;</span><span class="token lifetime-annotation symbol">'info</span><span class="token punctuation">,</span> <span class="token class-name">System</span><span class="token operator">></span><span class="token punctuation">,</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token attribute attr-name">#[derive(Accounts)]</span>
+<span class="token attribute attr-name">#[instruction(candidate_name: String, poll_id:u64)]</span>
+<span class="token keyword">pub</span> <span class="token keyword">struct</span> <span class="token type-definition class-name">InitalizeCandidate</span><span class="token operator">&lt;</span><span class="token lifetime-annotation symbol">'info</span><span class="token operator">></span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 我们要进行投票，那么就需要 signer 以及 投票的 poll</span>
+    <span class="token attribute attr-name">#[account(mut)]</span>
+    <span class="token keyword">pub</span> signer<span class="token punctuation">:</span> <span class="token class-name">Signer</span><span class="token operator">&lt;</span><span class="token lifetime-annotation symbol">'info</span><span class="token operator">></span><span class="token punctuation">,</span>
+
+    <span class="token comment">// 但是实际上我们不需要创建 poll，需要的是引用，所以前三项可以删除</span>
+    #<span class="token punctuation">[</span><span class="token function">account</span><span class="token punctuation">(</span>
+        <span class="token keyword">mut</span><span class="token punctuation">,</span>
+        seeds<span class="token operator">=</span><span class="token punctuation">[</span>poll_id<span class="token punctuation">.</span><span class="token function">to_le_bytes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">as_ref</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        bump
+    <span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">pub</span> poll<span class="token punctuation">:</span> <span class="token class-name">Account</span><span class="token operator">&lt;</span><span class="token lifetime-annotation symbol">'info</span><span class="token punctuation">,</span> <span class="token class-name">Poll</span><span class="token operator">></span><span class="token punctuation">,</span>
+
+    <span class="token comment">// 最后我们要新建一个 account，这个 account 是一个候选人 candidate</span>
+    #<span class="token punctuation">[</span><span class="token function">account</span><span class="token punctuation">(</span>
+        init<span class="token punctuation">,</span>
+        payer <span class="token operator">=</span> signer<span class="token punctuation">,</span>
+        space <span class="token operator">=</span> <span class="token number">0</span><span class="token operator">+</span> <span class="token class-name">Candidate</span><span class="token punctuation">::</span><span class="token constant">INIT_SPACE</span><span class="token punctuation">,</span>
+        seeds<span class="token operator">=</span><span class="token punctuation">[</span>candidate_name<span class="token punctuation">.</span><span class="token function">as_bytes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> poll_id<span class="token punctuation">.</span><span class="token function">to_le_bytes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">as_ref</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        bump
+    <span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">pub</span> candidate<span class="token punctuation">:</span> <span class="token class-name">Account</span><span class="token operator">&lt;</span><span class="token lifetime-annotation symbol">'info</span><span class="token punctuation">,</span> <span class="token class-name">Candidate</span><span class="token operator">></span><span class="token punctuation">,</span>
+
+    <span class="token keyword">pub</span> system_program<span class="token punctuation">:</span> <span class="token class-name">Program</span><span class="token operator">&lt;</span><span class="token lifetime-annotation symbol">'info</span><span class="token punctuation">,</span> <span class="token class-name">System</span><span class="token operator">></span><span class="token punctuation">,</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token attribute attr-name">#[account]</span>
+<span class="token attribute attr-name">#[derive(InitSpace)]</span>
+<span class="token keyword">pub</span> <span class="token keyword">struct</span> <span class="token type-definition class-name">Candidate</span> <span class="token punctuation">&#123;</span>
+    <span class="token attribute attr-name">#[max_len(32)]</span>
+    <span class="token keyword">pub</span> candidate_name<span class="token punctuation">:</span> <span class="token class-name">String</span><span class="token punctuation">,</span>
+    <span class="token keyword">pub</span> candidate_votes<span class="token punctuation">:</span> <span class="token keyword">u64</span><span class="token punctuation">,</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// 账户结构（Solana 上的一切都是 Account，同时 Account 是无状态的）</span>
+<span class="token attribute attr-name">#[derive(Accounts)]</span> <span class="token comment">// Anchor 宏，派生 Accounts</span>
+<span class="token attribute attr-name">#[instruction(poll_id: u64)]</span> <span class="token comment">// 说明此账户结构依赖于调用者提供的参数 poll_id</span>
+<span class="token keyword">pub</span> <span class="token keyword">struct</span> <span class="token type-definition class-name">InitalizePoll</span><span class="token operator">&lt;</span><span class="token lifetime-annotation symbol">'info</span><span class="token operator">></span> <span class="token punctuation">&#123;</span>
+    <span class="token attribute attr-name">#[account(mut)]</span>
+    <span class="token keyword">pub</span> signer<span class="token punctuation">:</span> <span class="token class-name">Signer</span><span class="token operator">&lt;</span><span class="token lifetime-annotation symbol">'info</span><span class="token operator">></span><span class="token punctuation">,</span> <span class="token comment">// 用于支付的 Signer，mut 表示此账户可以在指令中被修改</span>
+    #<span class="token punctuation">[</span><span class="token function">account</span><span class="token punctuation">(</span>
+        init<span class="token punctuation">,</span> <span class="token comment">// 代表这是一个新账户的初始化</span>
+        payer<span class="token operator">=</span>signer<span class="token punctuation">,</span> <span class="token comment">// 新账户的租金由 `signer` 支付</span>
+        space <span class="token operator">=</span> <span class="token number">8</span> <span class="token operator">+</span> <span class="token class-name">Poll</span><span class="token punctuation">::</span><span class="token constant">INIT_SPACE</span><span class="token punctuation">,</span> <span class="token comment">// 定义 account 所需的空间</span>
+                                      <span class="token comment">// 8 为 Solana Account数据头长度</span>
+                                      <span class="token comment">// Poll::INIT_SPACE 是通过宏得出的 Poll 所需的空间</span>
+        <span class="token comment">// seeds 和 bump 用于 PDA，`poll_id` 作为种子，`bump` 用于确保地址的唯一性</span>
+        seeds<span class="token operator">=</span> <span class="token punctuation">[</span>poll_id<span class="token punctuation">.</span><span class="token function">to_le_bytes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">as_ref</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        bump<span class="token punctuation">,</span>
+    <span class="token punctuation">)</span><span class="token punctuation">]</span>
+    <span class="token keyword">pub</span> poll<span class="token punctuation">:</span> <span class="token class-name">Account</span><span class="token operator">&lt;</span><span class="token lifetime-annotation symbol">'info</span><span class="token punctuation">,</span> <span class="token class-name">Poll</span><span class="token operator">></span><span class="token punctuation">,</span>
+
+    <span class="token comment">// 指向 Solana system program，用于创建账户和管理基础功能</span>
+    <span class="token keyword">pub</span> system_program<span class="token punctuation">:</span> <span class="token class-name">Program</span><span class="token operator">&lt;</span><span class="token lifetime-annotation symbol">'info</span><span class="token punctuation">,</span> <span class="token class-name">System</span><span class="token operator">></span><span class="token punctuation">,</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token attribute attr-name">#[account]</span> <span class="token comment">// 标记此结构用于账户数据存储。</span>
+<span class="token attribute attr-name">#[derive(InitSpace)]</span> <span class="token comment">// 自动为此结构生成存储所需的初始空间大小。</span>
+<span class="token keyword">pub</span> <span class="token keyword">struct</span> <span class="token type-definition class-name">Poll</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">pub</span> poll_id<span class="token punctuation">:</span> <span class="token keyword">u64</span><span class="token punctuation">,</span>
+    <span class="token attribute attr-name">#[max_len(280)]</span>
+    <span class="token keyword">pub</span> description<span class="token punctuation">:</span> <span class="token class-name">String</span><span class="token punctuation">,</span>
+    <span class="token keyword">pub</span> poll_start<span class="token punctuation">:</span> <span class="token keyword">u64</span><span class="token punctuation">,</span>
+    <span class="token keyword">pub</span> poll_end<span class="token punctuation">:</span> <span class="token keyword">u64</span><span class="token punctuation">,</span>
+    <span class="token keyword">pub</span> candidate_amount<span class="token punctuation">:</span> <span class="token keyword">u64</span><span class="token punctuation">,</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>注意，Context：Vote  的 signer 为不可变的，因为 Vote 的上下文中，<strong>没有通过 PDA 生成新的 account</strong>。</p>
+<h2 id="代码书写过程中遇到的问题："><a href="#代码书写过程中遇到的问题：" class="headerlink" title="代码书写过程中遇到的问题："></a>代码书写过程中遇到的问题：</h2><ul>
+<li><code>#[program]</code>：Anchor 的宏，用于标记程序逻辑。模块中的所有函数会被导出，供客户端调用。</li>
+<li><code>Context&lt;T&gt;</code>时 Anchor 中的上下文类型，用于验证账户的合法性</li>
+<li><p>在 Solana Anchor 框架中，<strong>账户的初始化和验证通常需要动态计算的参数</strong>（<code>#[instruction(poll_id: u64)]</code>）</p>
+</li>
+<li><ul>
+<li><code>poll_id</code> 是由调用方传递的唯一标识符，Anchor 使用它来验证账户的合法性和确定性</li>
+<li>它用于生成账户的 PDA（Program Derived Address）。</li>
+<li>它在创建账户时会作为种子的一部分，确保生成的账户与参数匹配。</li>
+<li>由于 <strong>Solana 是无状态的链，程序无法直接存储数据，只能通过账户读取和写入</strong></li>
+</ul>
+</li>
+<li><p>注明声明周期 <code>&lt;&#39;info&gt;</code>的原因：</p>
+</li>
+<li><ul>
+<li>告诉编译器：这些引用只能在当前指令的生命周期内使用，超出范围后它们就无效。</li>
+<li>它标注了 <code>signer</code>、<code>poll</code> 和 <code>system_program</code> 的生命周期与 <code>InitalizePoll</code> 的生命周期绑定。</li>
+<li>表示这些账户数据的引用仅在 <code>initialize_poll</code> 指令执行期间有效。</li>
+</ul>
+</li>
+<li><p><code>InitializePoll</code> 是用来创建一个 PDA 并为 <code>Poll</code> 账户分配空间的。</p>
+</li>
+<li><ul>
+<li><strong>在 Solana 的账户模型中，账户的大小在初始化时必须明确指定，因为 Solana 的账户存储是固定长度的。</strong></li>
+<li>因此，在初始化账户时需要：</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>明确账户所需的总字节数（空间大小）。</li>
+<li>使用 <code>system_program::create_account</code> 为账户分配指定大小的存储。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li>使用宏<code>#[derive(InitSpace)]</code>可以自动计算 Account 需要的大小</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>动态数据需要我们使用<code>#[max_len(280)]</code>宏指定最大长度</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li><ul>
+<li>对于 String：字符串最长长度</li>
+<li>对于 Vec：数组的最大元素数量</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>对于动态结构的租金：是根据其静态确定的最大空间来收取的（即：按照其填装满的大小收取）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>为什么使用 <code>bump</code>？</p>
+</li>
+<li><ul>
+<li>PDA 的生成规则要求结果地址是：</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>可预测的（基于 <code>Program ID</code> 和种子计算）。</li>
+<li>不可控的（因为使用了 <code>bump</code> 来避免重复）。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li>当使用指定的种子无法生成有效的 PDA 时，Anchor 会尝试通过增加 <code>bump</code> 值，直到找到一个有效的 PDA。</li>
+<li><code>bump</code> 的核心在于它是一个 1 字节的值（0 到 255），用于调整生成地址的哈希值，使其符合 PDA 的规则（地址必须不落在 Ed25519 椭圆曲线的可签名范围内）。</li>
+<li><code>bump</code> <strong>基本上是每个 PDA (Program Derived Address) 中的必备组成部分</strong></li>
+</ul>
+</li>
+<li><p><code>#[account]</code>宏用于<strong>定义数据账户（Data Account）的结构</strong>。</p>
+</li>
+<li><ul>
+<li>特性，带有 <code>#[account]</code>的结构：</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li><strong>必须是存储在 Solana 区块链上的账户。</strong></li>
+<li>必须是 <code>AnchorSerialize</code> 和 <code>AnchorDeserialize</code> 的实例（Anchor 自动派生）。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>而<code>#[derive(Accounts)]</code> 宏用于<strong>定义账户上下文（Account Context）的结构</strong>。</p>
+</li>
+<li><ul>
+<li>上下文描述了程序调用时，必须传递的所有账户及其访问权限。</li>
+<li>每个上下文结构表示一次 Solana 程序调用中涉及的账户集合。</li>
+<li>特性，带有 <code>#[derive(Accounts)]</code>标记的程序：</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>每个字段是一个账户类型（如 <code>Signer</code>、<code>Account</code>、<code>Program</code>）。</li>
+<li>Anchor 自动为这些账户类型生成验证逻辑（如访问权限检查、种子匹配验证等）。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><code>#[derive(Accounts)]</code>的账户<strong>不完全是 program：</strong></li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li><code>#[derive(Accounts)]</code> 定义的是账户上下文（Account Context），<strong>用于描述调用程序时涉及的账户集合。</strong></li>
+<li>如果上下文中包括 <code>Program&lt;&#39;info, YourProgram&gt;</code>，那么它可以理解为与特定程序相关的账户。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li>可以把 <code>#[derive(Accounts)]</code> 理解为：</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>定义调用程序时所需的账户集合和规则的一个“模板”。</li>
+<li>类似于 Solidity 函数调用中的 <code>msg.sender</code>、目标地址（合约）以及相关参数。</li>
+<li>同时，它额外负责自动验证账户的状态、权限、租金支付等功能，从而大大简化了程序开发的复杂性。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li>其中的 <code>init</code>代表了这会新建一个 Data Account</li>
+</ul>
+</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://q1ngying.cn">Q1ngying</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://q1ngying.cn/solana/solana-voting/">https://q1ngying.cn/solana/solana-voting/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://q1ngying.cn" target="_blank">Q1ngying</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Rust/">Rust</a><a class="post-meta__tags" href="/tags/Solana/">Solana</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.jpg" data-sites="twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="prev-post pull-left" href="/wp/track-ctf/" title="track-ctf 美梦成真"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">track-ctf 美梦成真</div></div></a><a class="next-post pull-right" href="/DoSAttack/" title="solidity DoS Attack"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">solidity DoS Attack</div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a href="/RustBasic/" title="Rust 基本概念，变量绑定与解构"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-10-23</div><div class="title">Rust 基本概念，变量绑定与解构</div></div></a><a href="/RustBasicType/" title="Rust 基本类型"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-10-23</div><div class="title">Rust 基本类型</div></div></a><a href="/RustCompositeType/" title="rust 复合类型"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-01-22</div><div class="title">rust 复合类型</div></div></a><a href="/RustOwnerableBorrow/" title="Rust 所有权和借用"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-10-23</div><div class="title">Rust 所有权和借用</div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%81%E8%A7%A3"><span class="toc-number">1.</span> <span class="toc-text">见解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E4%B9%A6%E5%86%99%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">代码书写过程中遇到的问题：</span></a></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url(/img/back1.webp);"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2025 By Q1ngying</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script>(() => {
+  const panguFn = () => {
+    if (typeof pangu === 'object') pangu.autoSpacingPage()
+    else {
+      btf.getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+        .then(() => {
+          pangu.autoSpacingPage()
+        })
+    }
+  }
+
+  const panguInit = () => {
+    if (false){
+      GLOBAL_CONFIG_SITE.isPost && panguFn()
+    } else {
+      panguFn()
+    }
+  }
+
+  btf.addGlobalFn('pjaxComplete', panguInit, 'pangu')
+  document.addEventListener('DOMContentLoaded', panguInit)
+})()</script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="17,185,200" opacity="0.8" zIndex="-1" count="200" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script></div></body></html>
